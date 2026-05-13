@@ -29,7 +29,7 @@ body{
 }
 
 .wrapper{
-  max-width:980px;
+ max-width:1200px;
   margin:auto;
   padding:18px;
 }
@@ -132,7 +132,7 @@ body{
 
 .teams{
   display:grid;
-  grid-template-columns:1fr auto 1fr;
+grid-template-columns:1fr 120px 1fr;
   gap:8px;
   align-items:center;
 }
@@ -291,51 +291,87 @@ async function loadMatches(){
 
     container.innerHTML = "";
 
-    allMatches.forEach((match, index) => {
-      const homeTier = match.tier_home || "";
-      const awayTier = match.tier_away || "";
+   const grouped = {};
 
-      container.innerHTML += `
-        <div class="card">
-          <div class="match-header">
-            <div class="match-title">${match.home} vs ${match.away}</div>
-            <div class="group">Gruppe ${match.group || ""}</div>
-          </div>
+allMatches.forEach(match => {
+  const group = match.group || "?";
 
-          <div class="teams">
-            <div class="team">
-              <div class="team-name">${match.home}</div>
-              <div class="tier tier-${homeTier}">Tier ${homeTier}</div>
-            </div>
+  if(!grouped[group]){
+    grouped[group] = [];
+  }
 
-            <div class="score">
-              <input 
-                type="number" 
-                min="0" 
-                inputmode="numeric"
-                data-match-id="${match.id}"
-                data-side="home"
-                oninput="updateProgress()"
-              >
-              <span>-</span>
-              <input 
-                type="number" 
-                min="0" 
-                inputmode="numeric"
-                data-match-id="${match.id}"
-                data-side="away"
-                oninput="updateProgress()"
-              >
-            </div>
+  grouped[group].push(match);
+});
 
-            <div class="team">
-              <div class="team-name">${match.away}</div>
-              <div class="tier tier-${awayTier}">Tier ${awayTier}</div>
-            </div>
+container.innerHTML = "";
+
+Object.keys(grouped).forEach(group => {
+
+  container.innerHTML += `
+    <h2 class="section-title">
+      Gruppe ${group}
+    </h2>
+  `;
+
+  grouped[group].forEach(match => {
+
+    const homeTier = match.tier_home || "";
+    const awayTier = match.tier_away || "";
+
+    container.innerHTML += `
+
+      <div class="card">
+
+        <div class="match-header">
+          <div class="match-title">
+            ${match.home} vs ${match.away}
           </div>
         </div>
-      `;
-    });
+
+        <div class="teams">
+
+          <div class="team">
+            <div class="team-name">${match.home}</div>
+            <div class="tier tier-${homeTier}">
+              T${homeTier}
+            </div>
+          </div>
+
+          <div class="score">
+            <input 
+              type="number"
+              min="0"
+              inputmode="numeric"
+              data-match-id="${match.id}"
+              data-side="home"
+              oninput="updateProgress()"
+            >
+
+            <span>-</span>
+
+            <input 
+              type="number"
+              min="0"
+              inputmode="numeric"
+              data-match-id="${match.id}"
+              data-side="away"
+              oninput="updateProgress()"
+            >
+          </div>
+
+          <div class="team">
+            <div class="team-name">${match.away}</div>
+            <div class="tier tier-${awayTier}">
+              T${awayTier}
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    `;
+  });
 
     updateProgress();
 
