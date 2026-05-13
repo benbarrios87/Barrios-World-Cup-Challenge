@@ -289,89 +289,70 @@ async function loadMatches(){
     const res = await fetch(API_URL);
     allMatches = await res.json();
 
+    const grouped = {};
+
+    allMatches.forEach(match => {
+      const group = match.group || "?";
+
+      if(!grouped[group]){
+        grouped[group] = [];
+      }
+
+      grouped[group].push(match);
+    });
+
     container.innerHTML = "";
 
-   const grouped = {};
+    Object.keys(grouped).forEach(group => {
+      container.innerHTML += `
+        <h2 class="section-title">Gruppe ${group}</h2>
+      `;
 
-allMatches.forEach(match => {
-  const group = match.group || "?";
+      grouped[group].forEach(match => {
+        const homeTier = match.tier_home || "";
+        const awayTier = match.tier_away || "";
 
-  if(!grouped[group]){
-    grouped[group] = [];
-  }
+        container.innerHTML += `
+          <div class="card">
+            <div class="match-header">
+              <div class="match-title">${match.home} vs ${match.away}</div>
+            </div>
 
-  grouped[group].push(match);
-});
+            <div class="teams">
+              <div class="team">
+                <div class="team-name">${match.home}</div>
+                <div class="tier tier-${homeTier}">T${homeTier}</div>
+              </div>
 
-container.innerHTML = "";
+              <div class="score">
+                <input 
+                  type="number"
+                  min="0"
+                  inputmode="numeric"
+                  data-match-id="${match.id}"
+                  data-side="home"
+                  oninput="updateProgress()"
+                >
+                <span>-</span>
+                <input 
+                  type="number"
+                  min="0"
+                  inputmode="numeric"
+                  data-match-id="${match.id}"
+                  data-side="away"
+                  oninput="updateProgress()"
+                >
+              </div>
 
-Object.keys(grouped).forEach(group => {
-
-  container.innerHTML += `
-    <h2 class="section-title">
-      Gruppe ${group}
-    </h2>
-  `;
-
-  grouped[group].forEach(match => {
-
-    const homeTier = match.tier_home || "";
-    const awayTier = match.tier_away || "";
-
-    container.innerHTML += `
-
-      <div class="card">
-
-        <div class="match-header">
-          <div class="match-title">
-            ${match.home} vs ${match.away}
-          </div>
-        </div>
-
-        <div class="teams">
-
-          <div class="team">
-            <div class="team-name">${match.home}</div>
-            <div class="tier tier-${homeTier}">
-              T${homeTier}
+              <div class="team">
+                <div class="team-name">${match.away}</div>
+                <div class="tier tier-${awayTier}">T${awayTier}</div>
+              </div>
             </div>
           </div>
-
-          <div class="score">
-            <input 
-              type="number"
-              min="0"
-              inputmode="numeric"
-              data-match-id="${match.id}"
-              data-side="home"
-              oninput="updateProgress()"
-            >
-
-            <span>-</span>
-
-            <input 
-              type="number"
-              min="0"
-              inputmode="numeric"
-              data-match-id="${match.id}"
-              data-side="away"
-              oninput="updateProgress()"
-            >
-          </div>
-
-          <div class="team">
-            <div class="team-name">${match.away}</div>
-            <div class="tier tier-${awayTier}">
-              T${awayTier}
-            </div>
-          </div>
-
-        </div>
-
-      </div>
-
-    `;
-  });
+        `;
+      });
+    });
 
     updateProgress();
 
