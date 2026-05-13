@@ -1,10 +1,225 @@
-
 <!DOCTYPE html>
-<html>
+<html lang="no">
 <head>
-  <title>Barrios World Cup Challenge 2026</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Barrios World Cup Challenge 2026</title>
+
+<style>
+:root{
+  --bg:#07111f;
+  --card:rgba(255,255,255,0.08);
+  --line:rgba(255,255,255,0.12);
+  --text:#ffffff;
+  --muted:rgba(255,255,255,0.7);
+  --green:#2ecc71;
+  --red:#ff4757;
+  --gold:#ffd166;
+}
+
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:
+    radial-gradient(circle at top left,#123,#07111f 60%);
+  color:var(--text);
+  min-height:100vh;
+}
+
+.wrapper{
+  max-width:900px;
+  margin:auto;
+  padding:20px;
+}
+
+.hero{
+  text-align:center;
+  margin-bottom:30px;
+}
+
+.hero h1{
+  font-size:42px;
+  margin-bottom:10px;
+}
+
+.hero p{
+  color:var(--muted);
+}
+
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:20px;
+  margin-bottom:18px;
+  backdrop-filter:blur(10px);
+}
+
+.match-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:15px;
+}
+
+.group{
+  background:rgba(255,255,255,0.08);
+  padding:6px 10px;
+  border-radius:999px;
+  font-size:12px;
+}
+
+.teams{
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
+  gap:10px;
+  align-items:center;
+}
+
+.team{
+  background:rgba(255,255,255,0.05);
+  padding:14px;
+  border-radius:14px;
+  text-align:center;
+}
+
+.score{
+  display:flex;
+  gap:10px;
+  justify-content:center;
+  align-items:center;
+}
+
+input{
+  width:60px;
+  height:50px;
+  border:none;
+  border-radius:12px;
+  font-size:22px;
+  text-align:center;
+  background:white;
+}
+
+.submit-btn{
+  width:100%;
+  height:60px;
+  border:none;
+  border-radius:16px;
+  background:var(--green);
+  color:white;
+  font-size:20px;
+  font-weight:bold;
+  cursor:pointer;
+  margin-top:20px;
+}
+
+.submit-btn:hover{
+  opacity:0.9;
+}
+
+.progress{
+  margin-bottom:25px;
+}
+
+.progress-bar{
+  height:14px;
+  background:rgba(255,255,255,0.08);
+  border-radius:999px;
+  overflow:hidden;
+}
+
+.progress-fill{
+  width:25%;
+  height:100%;
+  background:var(--green);
+}
+
+@media(max-width:700px){
+
+.hero h1{
+  font-size:30px;
+}
+
+}
+</style>
 </head>
+
 <body>
-  <h1>VM 2026 kommer 👀</h1>
+
+<div class="wrapper">
+
+  <div class="hero">
+    <h1>🏆 Barrios World Cup Challenge 2026</h1>
+    <p>Tipp VM. Treff outsiders. Vinn evig skryterett.</p>
+  </div>
+
+  <div class="progress">
+    <p>4 / 16 kamper fylt ut</p>
+    <div class="progress-bar">
+      <div class="progress-fill"></div>
+    </div>
+  </div>
+
+  <div class="card">
+
+    <div class="match-header">
+      <strong>Mexico vs Japan</strong>
+      <div class="group">Gruppe A</div>
+    </div>
+
+    <div class="teams">
+
+      <div class="team">
+        Mexico
+      </div>
+
+      <div class="score">
+        <input type="number" min="0">
+        <span>-</span>
+        <input type="number" min="0">
+      </div>
+
+      <div class="team">
+        Japan
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="card">
+
+    <div class="match-header">
+      <strong>Norge vs Brasil</strong>
+      <div class="group">Gruppe C</div>
+    </div>
+
+    <div class="teams">
+
+      <div class="team">
+        Norge
+      </div>
+
+      <div class="score">
+        <input type="number" min="0">
+        <span>-</span>
+        <input type="number" min="0">
+      </div>
+
+      <div class="team">
+        Brasil
+      </div>
+
+    </div>
+
+  </div>
+
+  <button class="submit-btn">
+    Send inn tips
+  </button>
+
+</div>
+
 </body>
 </html>
