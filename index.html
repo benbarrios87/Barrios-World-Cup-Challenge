@@ -288,6 +288,7 @@ const API_URL =
 "https://opensheet.elk.sh/1Ud5i11MEUXwvKDDsfyxvNIdyJgMbY_pS50BkecyzhDo/API_MATCHES";
 
 let allMatches = [];
+  let currentGroup = "ALL";
 
 async function loadMatches(){
   const container = document.getElementById("matches");
@@ -307,7 +308,12 @@ async function loadMatches(){
 
       grouped[group].push(match);
     });
+    renderFilters(Object.keys(grouped));
+Object.keys(grouped).forEach(group => {
 
+  if(currentGroup !== "ALL" && currentGroup !== group){
+    return;
+  }
     container.innerHTML = "";
 
     Object.keys(grouped).forEach(group => {
@@ -368,7 +374,48 @@ async function loadMatches(){
         `;
       });
     });
+function renderFilters(groups){
 
+  const filterContainer =
+  document.getElementById("groupFilters");
+
+  const allGroups = ["ALL", ...groups];
+
+  filterContainer.innerHTML = "";
+
+  allGroups.forEach(group => {
+
+    const btn = document.createElement("button");
+
+    btn.textContent =
+    group === "ALL"
+    ? "Alle"
+    : group;
+
+    btn.style.cssText = `
+      border:none;
+      border-radius:999px;
+      padding:10px 14px;
+      background:${
+        currentGroup === group
+        ? "#2ecc71"
+        : "rgba(255,255,255,0.08)"
+      };
+      color:white;
+      cursor:pointer;
+      font-weight:bold;
+    `;
+
+    btn.onclick = () => {
+      currentGroup = group;
+      loadMatches();
+    };
+
+    filterContainer.appendChild(btn);
+
+  });
+
+}
     updateProgress();
 
   }catch(error){
