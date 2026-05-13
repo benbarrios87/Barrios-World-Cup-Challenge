@@ -315,7 +315,15 @@ async function loadMatches(){
         container.innerHTML += `
           <div class="card">
             <div class="match-header">
-              <div class="match-title">${match.home} vs ${match.away}</div>
+              <div>
+  <div class="match-title">
+    ${match.home} vs ${match.away}
+  </div>
+
+  <div style="font-size:12px;color:rgba(255,255,255,0.6);margin-top:4px;">
+    ${match.date || ""}
+  </div>
+</div>
             </div>
 
             <div class="teams">
