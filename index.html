@@ -288,7 +288,7 @@ const API_URL =
 "https://opensheet.elk.sh/1Ud5i11MEUXwvKDDsfyxvNIdyJgMbY_pS50BkecyzhDo/API_MATCHES";
 
 let allMatches = [];
-  let currentGroup = "ALL";
+let currentGroup = "ALL";
 
 async function loadMatches(){
   const container = document.getElementById("matches");
@@ -297,100 +297,119 @@ async function loadMatches(){
     const res = await fetch(API_URL);
     allMatches = await res.json();
 
-    const grouped = {};
+    renderMatches();
+    updateProgress();
 
-    allMatches.forEach(match => {
-      const group = match.group || "?";
-
-      if(!grouped[group]){
-        grouped[group] = [];
-      }
-
-      grouped[group].push(match);
-    });
-    renderFilters(Object.keys(grouped));
-Object.keys(grouped).forEach(group => {
-
-  if(currentGroup !== "ALL" && currentGroup !== group){
-    return;
+  }catch(error){
+    container.innerHTML = `
+      <div class="card">
+        Klarte ikke å laste kampene. Sjekk at Google Sheet er delt som "Alle med linken kan se".
+      </div>
+    `;
+    console.error(error);
   }
-    container.innerHTML = "";
+}
 
-    Object.keys(grouped).forEach(group => {
+function getGroupedMatches(){
+  const grouped = {};
+
+  allMatches.forEach(match => {
+    const group = match.group || "?";
+
+    if(!grouped[group]){
+      grouped[group] = [];
+    }
+
+    grouped[group].push(match);
+  });
+
+  return grouped;
+}
+
+function renderMatches(){
+  const container = document.getElementById("matches");
+  const grouped = getGroupedMatches();
+  const groups = Object.keys(grouped);
+
+  renderFilters(groups);
+
+  container.innerHTML = "";
+
+  groups.forEach(group => {
+    if(currentGroup !== "ALL" && currentGroup !== group){
+      return;
+    }
+
+    container.innerHTML += `
+      <h2 class="section-title">Gruppe ${group}</h2>
+    `;
+
+    grouped[group].forEach(match => {
+      const homeTier = match.tier_home || "";
+      const awayTier = match.tier_away || "";
+
       container.innerHTML += `
-        <h2 class="section-title">Gruppe ${group}</h2>
-      `;
-
-      grouped[group].forEach(match => {
-        const homeTier = match.tier_home || "";
-        const awayTier = match.tier_away || "";
-
-        container.innerHTML += `
-          <div class="card">
-            <div class="match-header">
-              <div>
-  <div class="match-title">
-    ${match.home} vs ${match.away}
-  </div>
-
-  <div style="font-size:12px;color:rgba(255,255,255,0.6);margin-top:4px;">
-    ${match.date || ""}
-  </div>
-</div>
-            </div>
-
-            <div class="teams">
-              <div class="team">
-                <div class="team-name">${match.home}</div>
-                <div class="tier tier-${homeTier}">T${homeTier}</div>
+        <div class="card">
+          <div class="match-header">
+            <div>
+              <div class="match-title">
+                ${match.home} vs ${match.away}
               </div>
 
-              <div class="score">
-                <input 
-                  type="number"
-                  min="0"
-                  inputmode="numeric"
-                  data-match-id="${match.id}"
-                  data-side="home"
-                  oninput="updateProgress()"
-                >
-                <span>-</span>
-                <input 
-                  type="number"
-                  min="0"
-                  inputmode="numeric"
-                  data-match-id="${match.id}"
-                  data-side="away"
-                  oninput="updateProgress()"
-                >
-              </div>
-
-              <div class="team">
-                <div class="team-name">${match.away}</div>
-                <div class="tier tier-${awayTier}">T${awayTier}</div>
+              <div style="font-size:12px;color:rgba(255,255,255,0.6);margin-top:4px;">
+                ${match.date || ""}
               </div>
             </div>
           </div>
-        `;
-      });
-    });
-function renderFilters(groups){
 
-  const filterContainer =
-  document.getElementById("groupFilters");
+          <div class="teams">
+            <div class="team">
+              <div class="team-name">${match.home}</div>
+              <div class="tier tier-${homeTier}">T${homeTier}</div>
+            </div>
+
+            <div class="score">
+              <input 
+                type="number"
+                min="0"
+                inputmode="numeric"
+                data-match-id="${match.id}"
+                data-side="home"
+                oninput="updateProgress()"
+              >
+              <span>-</span>
+              <input 
+                type="number"
+                min="0"
+                inputmode="numeric"
+                data-match-id="${match.id}"
+                data-side="away"
+                oninput="updateProgress()"
+              >
+            </div>
+
+            <div class="team">
+              <div class="team-name">${match.away}</div>
+              <div class="tier tier-${awayTier}">T${awayTier}</div>
+            </div>
+          </div>
+        </div>
+      `;
+    });
+  });
+}
+
+function renderFilters(groups){
+  const filterContainer = document.getElementById("groupFilters");
 
   const allGroups = ["ALL", ...groups];
 
   filterContainer.innerHTML = "";
 
   allGroups.forEach(group => {
-
     const btn = document.createElement("button");
 
-    btn.textContent =
-    group === "ALL"
-    ? "Alle"
-    : group;
+    btn.textContent = group === "ALL" ? "Alle" : group;
 
     btn.style.cssText = `
       border:none;
@@ -408,24 +427,12 @@ function renderFilters(groups){
 
     btn.onclick = () => {
       currentGroup = group;
-      loadMatches();
+      renderMatches();
+      updateProgress();
     };
 
     filterContainer.appendChild(btn);
-
   });
-
-}
-    updateProgress();
-
-  }catch(error){
-    container.innerHTML = `
-      <div class="card">
-        Klarte ikke å laste kampene. Sjekk at Google Sheet er delt som "Alle med linken kan se".
-      </div>
-    `;
-    console.error(error);
-  }
 }
 
 function updateProgress(){
