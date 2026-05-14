@@ -73,6 +73,27 @@ body::before{
   box-shadow:0 12px 35px rgba(0,0,0,0.28);
 }
 
+.nav{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-bottom:22px;
+}
+
+.nav-btn,.filter-btn{
+  border:none;
+  border-radius:999px;
+  padding:11px 16px;
+  background:rgba(255,255,255,0.08);
+  color:white;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.nav-btn:hover,.filter-btn:hover{
+  background:rgba(255,255,255,0.18);
+}
+
 .name-field{
   width:100%;
   box-sizing:border-box;
@@ -187,6 +208,16 @@ body::before{
   font-weight:bold;
 }
 
+.result-box{
+  margin-top:14px;
+  padding:10px 12px;
+  border-radius:12px;
+  background:rgba(46,204,113,0.16);
+  border:1px solid rgba(46,204,113,0.35);
+  font-weight:bold;
+  text-align:center;
+}
+
 .scoring-preview{
   margin-top:14px;
   padding:12px;
@@ -248,28 +279,6 @@ body::before{
   cursor:pointer;
   margin:24px 0 30px;
 }
-.nav-btn{
-  border:none;
-  border-radius:999px;
-  padding:12px 18px;
-  background:rgba(255,255,255,0.08);
-  color:white;
-  font-weight:bold;
-  cursor:pointer;
-  transition:0.2s;
-}
-
-.nav-btn:hover{
-  background:rgba(255,255,255,0.18);
-}
-.filter-btn{
-  border:none;
-  border-radius:999px;
-  padding:10px 14px;
-  color:white;
-  cursor:pointer;
-  font-weight:bold;
-}
 
 .loading{
   color:var(--muted);
@@ -295,17 +304,14 @@ body::before{
     <h1>🏆 Barrios World Cup Challenge 2026</h1>
     <p>Tipp VM. Treff outsiders. Vinn evig skryterett.</p>
   </div>
-<div id="topNav" style="
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-  margin-bottom:22px;
-">
-  <button class="nav-btn" onclick="scrollToSection('matchesSection')">Kamptips</button>
-  <button class="nav-btn" onclick="scrollToSection('bonusSection')">Bonus</button>
-  <button class="nav-btn" onclick="scrollToSection('leaderboardSection')">Leaderboard</button>
-  <button class="nav-btn" onclick="scrollToSection('rulesSection')">Regler</button>
-</div>
+
+  <div class="nav">
+    <button class="nav-btn" onclick="scrollToSection('matchesSection')">Kamptips</button>
+    <button class="nav-btn" onclick="scrollToSection('bonusSection')">Bonus</button>
+    <button class="nav-btn" onclick="scrollToSection('leaderboardSection')">Leaderboard</button>
+    <button class="nav-btn" onclick="scrollToSection('rulesSection')">Regler</button>
+  </div>
+
   <div class="top-box" id="rulesSection">
     <button id="toggleRulesBtn" style="width:100%;height:52px;border:none;border-radius:14px;background:rgba(255,255,255,0.08);color:white;font-size:16px;font-weight:bold;cursor:pointer;">
       ❓ Vis poengsystem
@@ -337,30 +343,31 @@ body::before{
   </div>
 
   <div id="matchesSection">
-<h2 class="section-title">Kamptips</h2>
-  <div id="groupFilters" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;"></div>
-
-  <div id="matches">
-    <div class="loading">Laster kamper fra Google Sheets...</div>
-  </div>
-</div>
-  
-  <div class="top-box" id="bonusSection">
-    <h2 style="margin-top:0;">Beste spiller</h2>
-    <div id="bestPlayerContainer"></div>
-    <div id="bestPlayerStatus" style="margin-top:12px;color:rgba(255,255,255,0.7);font-size:14px;">0 / 10 poeng brukt</div>
+    <h2 class="section-title">Kamptips</h2>
+    <div id="groupFilters" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;"></div>
+    <div id="matches">
+      <div class="loading">Laster kamper fra Google Sheets...</div>
+    </div>
   </div>
 
-<div class="top-box">
-  <h2 style="margin-top:0;">Toppscorer</h2>
-  <div id="topScorerContainer"></div>
-  <div id="topScorerStatus" style="margin-top:12px;color:rgba(255,255,255,0.7);font-size:14px;">0 / 10 poeng brukt</div>
-</div>
+  <div id="bonusSection">
+    <div class="top-box">
+      <h2 style="margin-top:0;">Beste spiller</h2>
+      <div id="bestPlayerContainer"></div>
+      <div id="bestPlayerStatus" style="margin-top:12px;color:rgba(255,255,255,0.7);font-size:14px;">0 / 10 poeng brukt</div>
+    </div>
+
+    <div class="top-box">
+      <h2 style="margin-top:0;">Toppscorer</h2>
+      <div id="topScorerContainer"></div>
+      <div id="topScorerStatus" style="margin-top:12px;color:rgba(255,255,255,0.7);font-size:14px;">0 / 10 poeng brukt</div>
+    </div>
+  </div>
 
   <div class="top-box" id="leaderboardSection">
-  <h2 style="margin-top:0;">Leaderboard</h2>
-  <div id="leaderboardContainer">Laster leaderboard...</div>
-</div>
+    <h2 style="margin-top:0;">Leaderboard</h2>
+    <div id="leaderboardContainer">Laster leaderboard...</div>
+  </div>
 
   <button class="submit-btn" onclick="submitTips()">Send inn tips</button>
 
@@ -388,19 +395,42 @@ let diffRules = [];
 let exactRules = [];
 let results = [];
 
+function normalizeRow(row){
+  const clean = {};
+
+  Object.keys(row).forEach(key => {
+    const cleanKey = key
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g,"_")
+      .replace(/-/g,"_");
+
+    clean[cleanKey] = typeof row[key] === "string"
+      ? row[key].trim()
+      : row[key];
+  });
+
+  return clean;
+}
+
+async function fetchSheet(url){
+  const data = await (await fetch(url)).json();
+  return data.map(normalizeRow);
+}
+
 async function loadScoringRules(){
-  outcomeRules = await (await fetch(OUTCOME_API_URL)).json();
-  diffRules = await (await fetch(DIFF_API_URL)).json();
-  exactRules = await (await fetch(EXACT_API_URL)).json();
+  outcomeRules = await fetchSheet(OUTCOME_API_URL);
+  diffRules = await fetchSheet(DIFF_API_URL);
+  exactRules = await fetchSheet(EXACT_API_URL);
 }
 
 async function loadPlayers(){
-  const data = await (await fetch(PLAYERS_API_URL)).json();
+  const data = await fetchSheet(PLAYERS_API_URL);
 
   players = data
     .map(row => ({
       name: row.name,
-      multiplier: Number(row.multiplier || row.Multiplier || 1)
+      multiplier: Number(row.multiplier || 1)
     }))
     .filter(player => player.name);
 
@@ -408,11 +438,20 @@ async function loadPlayers(){
   loadSavedTips();
 }
 
+async function loadResults(){
+  try{
+    results = await fetchSheet(RESULTS_API_URL);
+  }catch(error){
+    results = [];
+    console.error(error);
+  }
+}
+
 async function loadMatches(){
   const container = document.getElementById("matches");
 
   try{
-    allMatches = await (await fetch(API_URL)).json();
+    allMatches = await fetchSheet(API_URL);
     renderMatches();
     loadSavedTips();
     updateProgress();
@@ -421,78 +460,12 @@ async function loadMatches(){
     console.error(error);
   }
 }
-async function loadResults(){
 
-  try{
-    const data =
-    await (await fetch(RESULTS_API_URL)).json();
-
-    results = data.map(row => {
-      const clean = {};
-
-      Object.keys(row).forEach(key => {
-        clean[key.trim()] = row[key];
-      });
-
-      return clean;
-    });
-
-    document.body.insertAdjacentHTML("afterbegin", `
-      <div style="
-        position:fixed;
-        bottom:10px;
-        left:10px;
-        right:10px;
-        z-index:9999;
-        background:#111;
-        color:#fff;
-        padding:12px;
-        border:2px solid lime;
-        border-radius:10px;
-        font-size:12px;
-      ">
-        RESULT TEST:
-        ${JSON.stringify(results[0])}
-      </div>
-    `);
-
-  }catch(error){
-    document.body.insertAdjacentHTML("afterbegin", `
-      <div style="
-        position:fixed;
-        bottom:10px;
-        left:10px;
-        right:10px;
-        z-index:9999;
-        background:#400;
-        color:#fff;
-        padding:12px;
-        border:2px solid red;
-        border-radius:10px;
-      ">
-        RESULTS FEIL: ${error.message}
-      </div>
-    `);
-  }
-}
-
-function getResultForMatch(matchId){
-
-  const cleanMatchId = Number(String(matchId).trim());
-
-  return results.find(result => {
-
-    const cleanResultId =
-      Number(String(result.id).trim());
-
-    return cleanResultId === cleanMatchId;
-  });
-}
 async function loadLeaderboard(){
   const container = document.getElementById("leaderboardContainer");
 
   try{
-    const data = await (await fetch(LEADERBOARD_API_URL)).json();
+    const data = await fetchSheet(LEADERBOARD_API_URL);
 
     const rows = data
       .filter(row => row.name)
@@ -506,9 +479,11 @@ async function loadLeaderboard(){
     container.innerHTML = "";
 
     rows.forEach((row,index) => {
+      const medal = index === 0 ? "🥇" : index === 1 ? "🥈" : index === 2 ? "🥉" : `${index + 1}.`;
+
       container.innerHTML += `
         <div class="leaderboard-row">
-          <strong>${index + 1}.</strong>
+          <strong>${medal}</strong>
           <span>${row.name}</span>
           <strong>${row.points || 0} p</strong>
         </div>
@@ -522,16 +497,32 @@ async function loadLeaderboard(){
 
 function getGroupedMatches(){
   const grouped = {};
+
   allMatches.forEach(match => {
     const group = match.group || "?";
     if(!grouped[group]) grouped[group] = [];
     grouped[group].push(match);
   });
+
   return grouped;
 }
 
 function getRule(rules, tierDiff){
   return rules.find(r => Number(r.tier_diff) === Number(tierDiff));
+}
+
+function getResultForMatch(matchId){
+  return results.find(result =>
+    String(result.id || "").trim() === String(matchId || "").trim()
+  );
+}
+
+function hasResult(result){
+  return result &&
+    result.actual_home !== undefined &&
+    result.actual_home !== "" &&
+    result.actual_away !== undefined &&
+    result.actual_away !== "";
 }
 
 function getScoringPreview(match){
@@ -576,7 +567,6 @@ function renderMatches(){
       const awayTier = match.tier_away || "";
       const scoring = getScoringPreview(match);
       const result = getResultForMatch(match.id);
-      console.log("MATCH ID:", match.id, "RESULT:", result, "ALL RESULTS:", results);
 
       container.innerHTML += `
         <div class="card">
@@ -602,19 +592,13 @@ function renderMatches(){
               <input class="team-score" type="number" min="0" inputmode="numeric" data-match-id="${match.id}" data-side="away" oninput="updateProgress(); saveTipsLocally()">
             </div>
           </div>
-${result && result.actual_home != null && result.actual_home !== "" && result.actual_away != null && result.actual_away !== "" ? `
-  <div style="
-    margin-top:14px;
-    padding:10px 12px;
-    border-radius:12px;
-    background:rgba(255,255,255,0.08);
-    font-weight:bold;
-    text-align:center;
-  ">
-    Sluttresultat:
-    ${result.actual_home} - ${result.actual_away}
-  </div>
-` : ""}
+
+          ${hasResult(result) ? `
+            <div class="result-box">
+              Sluttresultat: ${result.actual_home} - ${result.actual_away}
+            </div>
+          ` : ""}
+
           <div class="scoring-preview">
             <div style="font-size:11px;opacity:0.65;margin-bottom:7px;">${match.home} / Uavgjort / ${match.away}</div>
             <div class="scoring-grid">
@@ -688,7 +672,10 @@ function updateProgress(){
   allMatches.forEach(match => {
     const homeInput = document.querySelector(`input[data-match-id="${match.id}"][data-side="home"]`);
     const awayInput = document.querySelector(`input[data-match-id="${match.id}"][data-side="away"]`);
-    if(homeInput && awayInput && homeInput.value !== "" && awayInput.value !== "") completed++;
+
+    if(homeInput && awayInput && homeInput.value !== "" && awayInput.value !== ""){
+      completed++;
+    }
   });
 
   const percent = total ? Math.round((completed / total) * 100) : 0;
@@ -702,8 +689,13 @@ function updateBonusStatus(){
   let bestTotal = 0;
   let scorerTotal = 0;
 
-  document.querySelectorAll(".best-player-input").forEach(input => bestTotal += Number(input.value || 0));
-  document.querySelectorAll(".top-scorer-input").forEach(input => scorerTotal += Number(input.value || 0));
+  document.querySelectorAll(".best-player-input").forEach(input => {
+    bestTotal += Number(input.value || 0);
+  });
+
+  document.querySelectorAll(".top-scorer-input").forEach(input => {
+    scorerTotal += Number(input.value || 0);
+  });
 
   document.getElementById("bestPlayerStatus").textContent = `${bestTotal} / 10 poeng brukt`;
   document.getElementById("topScorerStatus").textContent = `${scorerTotal} / 10 poeng brukt`;
@@ -724,6 +716,7 @@ function saveTipsLocally(){
   const tips = allMatches.map(match => {
     const homeInput = document.querySelector(`input[data-match-id="${match.id}"][data-side="home"]`);
     const awayInput = document.querySelector(`input[data-match-id="${match.id}"][data-side="away"]`);
+
     return {
       id: match.id,
       tips_home: homeInput ? homeInput.value : "",
@@ -745,7 +738,9 @@ function loadSavedTips(){
 
   const data = JSON.parse(saved);
 
-  if(data.name) document.getElementById("playerName").value = data.name;
+  if(data.name){
+    document.getElementById("playerName").value = data.name;
+  }
 
   if(data.tips){
     data.tips.forEach(tip => {
@@ -808,19 +803,6 @@ async function submitTips(){
   const bestTotal = bestPlayer.reduce((sum,item) => sum + Number(item.points || 0),0);
   const scorerTotal = topScorer.reduce((sum,item) => sum + Number(item.points || 0),0);
 
-  const invalidBestPlayer = bestPlayer.find(item => Number(item.points) > 10 || Number(item.points) < 0);
-  const invalidTopScorer = topScorer.find(item => Number(item.points) > 10 || Number(item.points) < 0);
-
-  if(invalidBestPlayer){
-    alert(`${invalidBestPlayer.player} har ugyldig poengsum i Beste spiller. Bruk 0 til 10 poeng.`);
-    return;
-  }
-
-  if(invalidTopScorer){
-    alert(`${invalidTopScorer.player} har ugyldig poengsum i Toppscorer. Bruk 0 til 10 poeng.`);
-    return;
-  }
-
   if(bestTotal !== 10){
     alert(`Beste spiller må være nøyaktig 10 poeng. Nå har du brukt ${bestTotal}.`);
     return;
@@ -868,6 +850,12 @@ toggleRulesBtn.onclick = () => {
   }
 };
 
+function scrollToSection(id){
+  document.getElementById(id).scrollIntoView({
+    behavior:"smooth"
+  });
+}
+
 async function init(){
   if(localStorage.getItem("vm2026_submitted") === "true"){
     setSubmittedButton();
@@ -879,11 +867,7 @@ async function init(){
   await loadMatches();
   await loadLeaderboard();
 }
-function scrollToSection(id){
-  document.getElementById(id).scrollIntoView({
-    behavior:"smooth"
-  });
-}
+
 init();
 </script>
 </body>
