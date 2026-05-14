@@ -241,11 +241,32 @@ body{
   text-align:center;
   padding:30px;
 }
-.teams{
-  display:grid;
-  grid-template-columns:1fr auto 1fr;
-  gap:12px;
+  .teams{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.team{
+  justify-content:space-between;
+}
+
+.team-left{
+  display:flex;
   align-items:center;
+  gap:14px;
+}
+
+.team-score{
+  width:62px;
+  height:56px;
+  border:none;
+  border-radius:14px;
+  font-size:24px;
+  text-align:center;
+  background:white;
+  color:#111;
+  font-weight:bold;
 }
   
 @media(max-width:700px){
@@ -263,35 +284,12 @@ body{
     gap:10px;
   }
 
-  .team{
-    min-height:auto;
-    justify-content:flex-start;
-    text-align:left;
-    padding:14px;
-  }
-  
-.team:first-child{
-  order:1;
+ .team{
+  min-height:auto;
+  justify-content:space-between;
+  text-align:left;
+  padding:14px;
 }
-
-.team.away{
-  order:3;
-}
-  .team.away{
-    flex-direction:row;
-  }
-
-  .score{
-    order:2;
-    margin:2px 0;
-  }
-
-  .score input{
-    width:58px;
-    height:52px;
-    font-size:24px;
-  }
-
   .match-header{
     align-items:flex-start;
   }
@@ -487,7 +485,8 @@ function renderMatches(){
           </div>
 
           <div class="teams">
-  <div class="team tier-${homeTier}">
+ <div class="team tier-${homeTier}">
+  <div class="team-left">
     <div class="team-flag">${getFlag(match.home)}</div>
     <div class="team-info">
       <div class="team-name">${match.home}</div>
@@ -495,18 +494,19 @@ function renderMatches(){
     </div>
   </div>
 
-  <div class="score">
-              <input type="number" min="0" inputmode="numeric" data-match-id="${match.id}" data-side="home" oninput="updateProgress(); saveTipsLocally()">
-              <span>-</span>
-              <input type="number" min="0" inputmode="numeric" data-match-id="${match.id}" data-side="away" oninput="updateProgress(); saveTipsLocally()">
-            </div>
+  <input class="team-score" type="number" min="0" inputmode="numeric" data-match-id="${match.id}" data-side="home" oninput="updateProgress(); saveTipsLocally()">
+</div>
 
            <div class="team away tier-${awayTier}">
-  <div class="team-flag">${getFlag(match.away)}</div>
-  <div class="team-info">
-    <div class="team-name">${match.away}</div>
-    <div class="tier-label">Tier ${awayTier}</div>
+  <div class="team-left">
+    <div class="team-flag">${getFlag(match.away)}</div>
+    <div class="team-info">
+      <div class="team-name">${match.away}</div>
+      <div class="tier-label">Tier ${awayTier}</div>
+    </div>
   </div>
+
+  <input class="team-score" type="number" min="0" inputmode="numeric" data-match-id="${match.id}" data-side="away" oninput="updateProgress(); saveTipsLocally()">
 </div>
           </div>
         </div>
