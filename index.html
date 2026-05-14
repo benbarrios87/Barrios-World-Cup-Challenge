@@ -241,24 +241,61 @@ body{
   text-align:center;
   padding:30px;
 }
-
-@media(max-width:700px){
-  .wrapper{ padding:12px; }
-  .hero h1{ font-size:28px; }
-  .teams{
-  grid-template-columns:1fr;
-  gap:10px;
+.teams{
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
+  gap:12px;
+  align-items:center;
 }
+  
+@media(max-width:700px){
 
-.score{
-  order:2;
+  .wrapper{
+    padding:12px;
+  }
+
+  .hero h1{
+    font-size:28px;
+  }
+
+  .teams{
+    grid-template-columns:1fr;
+    gap:10px;
+  }
+
+  .team{
+    min-height:auto;
+    justify-content:flex-start;
+    text-align:left;
+    padding:14px;
+  }
+  
+.team:first-child{
+  order:1;
 }
 
 .team.away{
-  flex-direction:row;
+  order:3;
 }
-  .team{ min-height:auto; }
-  .match-header{ align-items:flex-start; }
+  .team.away{
+    flex-direction:row;
+  }
+
+  .score{
+    order:2;
+    margin:2px 0;
+  }
+
+  .score input{
+    width:58px;
+    height:52px;
+    font-size:24px;
+  }
+
+  .match-header{
+    align-items:flex-start;
+  }
+
 }
 </style>
 </head>
