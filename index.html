@@ -441,9 +441,16 @@ async function loadResults(){
 }
 
 function getResultForMatch(matchId){
-  return results.find(result =>
-    String(result.id).trim() === String(matchId).trim()
-  );
+
+  const cleanMatchId = Number(String(matchId).trim());
+
+  return results.find(result => {
+
+    const cleanResultId =
+      Number(String(result.id).trim());
+
+    return cleanResultId === cleanMatchId;
+  });
 }
 async function loadLeaderboard(){
   const container = document.getElementById("leaderboardContainer");
