@@ -332,7 +332,9 @@ body::before{
     <div id="topScorerContainer"></div>
     <div id="topScorerStatus" style="margin-top:12px;color:rgba(255,255,255,0.7);font-size:14px;">0 / 10 poeng brukt</div>
   </div>
-
+  
+<div class="top-box">
+  <h2 style="margin-top:0;">Toppscorer</h2>
   <button class="submit-btn" onclick="submitTips()">Send inn tips</button>
 
 </div>
@@ -345,6 +347,8 @@ const PLAYERS_API_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_PLAYERS`;
 const OUTCOME_API_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_OUTCOME`;
 const DIFF_API_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_DIFF`;
 const EXACT_API_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_EXACT`;
+  const LEADERBOARD_API_URL =
+`https://opensheet.elk.sh/${SHEET_ID}/API_LEADERBOARD`;
 
 const SUBMIT_URL =
 "https://script.google.com/macros/s/AKfycbyJB5mugyonYlXClojolIGcInen7ClFl55j-c7xQw6Z0-fS5rKfQKgF9AVhLLe9UQgM4Q/exec";
