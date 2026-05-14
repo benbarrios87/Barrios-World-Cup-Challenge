@@ -282,7 +282,17 @@ body::before{
     <h1>🏆 Barrios World Cup Challenge 2026</h1>
     <p>Tipp VM. Treff outsiders. Vinn evig skryterett.</p>
   </div>
-
+<div id="topNav" style="
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-bottom:22px;
+">
+  <button class="nav-btn" onclick="scrollToSection('matchesSection')">Kamptips</button>
+  <button class="nav-btn" onclick="scrollToSection('bonusSection')">Bonus</button>
+  <button class="nav-btn" onclick="scrollToSection('leaderboardSection')">Leaderboard</button>
+  <button class="nav-btn" onclick="scrollToSection('rulesSection')">Regler</button>
+</div>
   <div class="top-box">
     <button id="toggleRulesBtn" style="width:100%;height:52px;border:none;border-radius:14px;background:rgba(255,255,255,0.08);color:white;font-size:16px;font-weight:bold;cursor:pointer;">
       ❓ Vis poengsystem
