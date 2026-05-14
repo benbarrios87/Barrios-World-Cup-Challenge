@@ -568,7 +568,7 @@ function loadSavedTips(){
   updateBonusStatus();
   
   updateProgress();
-}
+  }
 async function submitTips(){
   const name = document.getElementById("playerName").value.trim();
 
@@ -602,18 +602,16 @@ async function submitTips(){
       points: input.value || "0"
     }));
 
-  const payload = {
-    name,
-    tips,
-    bestPlayer,
-    topScorer
-  };
-
   try{
     await fetch(SUBMIT_URL, {
       method: "POST",
       mode: "no-cors",
-      body: JSON.stringify(payload)
+      body: JSON.stringify({
+        name,
+        tips,
+        bestPlayer,
+        topScorer
+      })
     });
 
     alert("Tips sendt inn! 🔥");
@@ -621,27 +619,6 @@ async function submitTips(){
     alert("Noe gikk feil ved innsending.");
     console.error(error);
   }
-}
-
-  const tips = allMatches.map(match => {
-    const homeInput = document.querySelector(`input[data-match-id="${match.id}"][data-side="home"]`);
-    const awayInput = document.querySelector(`input[data-match-id="${match.id}"][data-side="away"]`);
-
-    return {
-      id: match.id,
-      home: match.home,
-      away: match.away,
-      tips_home: homeInput ? homeInput.value : "",
-      tips_away: awayInput ? awayInput.value : ""
-    };
-  });
-
-  console.log({
-    name,
-    tips
-  });
-
-  alert("Foreløpig test: Tipsene ligger nå i console. Neste steg er å sende dem til Google Sheets.");
 }
   let players = [];
   async function loadPlayers(){
