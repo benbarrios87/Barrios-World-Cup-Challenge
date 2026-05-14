@@ -374,6 +374,7 @@ const PLAYERS_API_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_PLAYERS`;
 const OUTCOME_API_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_OUTCOME`;
 const DIFF_API_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_DIFF`;
 const EXACT_API_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_EXACT`;
+const RESULTS_API_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_RESULTS`;
 const LEADERBOARD_API_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_LEADERBOARD`;
 
 const SUBMIT_URL =
@@ -385,6 +386,7 @@ let players = [];
 let outcomeRules = [];
 let diffRules = [];
 let exactRules = [];
+let results = [];
 
 async function loadScoringRules(){
   outcomeRules = await (await fetch(OUTCOME_API_URL)).json();
@@ -419,7 +421,13 @@ async function loadMatches(){
     console.error(error);
   }
 }
+async function loadResults(){
+  results = await (await fetch(RESULTS_API_URL)).json();
+}
 
+function getResultForMatch(matchId){
+  return results.find(result => result.id === String(matchId));
+}
 async function loadLeaderboard(){
   const container = document.getElementById("leaderboardContainer");
 
@@ -787,10 +795,13 @@ toggleRulesBtn.onclick = () => {
 };
 
 async function init(){
-  if(localStorage.getItem("vm2026_submitted") === "true") setSubmittedButton();
+  if(localStorage.getItem("vm2026_submitted") === "true"){
+    setSubmittedButton();
+  }
 
   await loadScoringRules();
   await loadPlayers();
+  await loadResults();
   await loadMatches();
   await loadLeaderboard();
 }
