@@ -515,6 +515,7 @@ function renderMatches(){
       const homeTier = match.tier_home || "";
       const awayTier = match.tier_away || "";
       const scoring = getScoringPreview(match);
+      const result = getResultForMatch(match.id);
 
       container.innerHTML += `
         <div class="card">
@@ -540,7 +541,19 @@ function renderMatches(){
               <input class="team-score" type="number" min="0" inputmode="numeric" data-match-id="${match.id}" data-side="away" oninput="updateProgress(); saveTipsLocally()">
             </div>
           </div>
-
+${result && result.actual_home !== "" && result.actual_away !== "" ? `
+  <div style="
+    margin-top:14px;
+    padding:10px 12px;
+    border-radius:12px;
+    background:rgba(255,255,255,0.08);
+    font-weight:bold;
+    text-align:center;
+  ">
+    Sluttresultat:
+    ${result.actual_home} - ${result.actual_away}
+  </div>
+` : ""}
           <div class="scoring-preview">
             <div style="font-size:11px;opacity:0.65;margin-bottom:7px;">${match.home} / Uavgjort / ${match.away}</div>
             <div class="scoring-grid">
