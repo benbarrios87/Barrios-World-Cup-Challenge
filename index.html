@@ -159,18 +159,6 @@ body{
   opacity:0.85;
 }
 
-.team{
-  padding:11px 8px;
-  border-radius:13px;
-  text-align:center;
-  min-height:44px;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  gap:4px;
-  border:2px solid transparent;
-}
-
 /* Tier 1 */
 .team.tier-1{
   background:rgba(46,204,113,0.18);
@@ -195,16 +183,6 @@ body{
   border-color:#ff4757;
 }
 
-.team-name{
-  font-weight:bold;
-  font-size:14px;
-}
-
-.tier-label{
-  font-size:11px;
-  opacity:0.8;
-  margin-top:2px;
-}
 .score{
   display:flex;
   gap:7px;
@@ -472,16 +450,15 @@ function renderMatches(){
           </div>
 
           <div class="teams">
-            <div class="team">
-            <div class="team tier-${homeTier}">
-  <div class="team-flag">${getFlag(match.home)}</div>
-  <div class="team-info">
-    <div class="team-name">${match.home}</div>
-    <div class="tier-label">Tier ${homeTier}</div>
+  <div class="team tier-${homeTier}">
+    <div class="team-flag">${getFlag(match.home)}</div>
+    <div class="team-info">
+      <div class="team-name">${match.home}</div>
+      <div class="tier-label">Tier ${homeTier}</div>
+    </div>
   </div>
-</div>
 
-            <div class="score">
+  <div class="score">
               <input type="number" min="0" inputmode="numeric" data-match-id="${match.id}" data-side="home" oninput="updateProgress(); saveTipsLocally()">
               <span>-</span>
               <input type="number" min="0" inputmode="numeric" data-match-id="${match.id}" data-side="away" oninput="updateProgress(); saveTipsLocally()">
