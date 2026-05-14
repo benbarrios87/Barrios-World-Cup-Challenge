@@ -422,7 +422,22 @@ async function loadMatches(){
   }
 }
 async function loadResults(){
-  results = await (await fetch(RESULTS_API_URL)).json();
+
+  const data =
+  await (await fetch(RESULTS_API_URL)).json();
+
+  results = data.map(row => {
+
+    const clean = {};
+
+    Object.keys(row).forEach(key => {
+      clean[key.trim()] = row[key];
+    });
+
+    return clean;
+  });
+
+  console.log("RESULTS LOADED:", results);
 }
 
 function getResultForMatch(matchId){
