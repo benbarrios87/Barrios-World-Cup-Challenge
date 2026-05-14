@@ -512,9 +512,11 @@ function getRule(rules, tierDiff){
 }
 
 function getResultForMatch(matchId){
-  return results.find(result =>
-    String(result.id || "").trim() === String(matchId || "").trim()
-  );
+  const wantedId = String(matchId).trim();
+
+  return results.find(result => {
+    return String(result.id).trim() === wantedId;
+  });
 }
 
 function hasResult(result){
