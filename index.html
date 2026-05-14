@@ -526,67 +526,33 @@ function getScoringPreview(match){
 
   const homeTier = Number(match.tier_home);
   const awayTier = Number(match.tier_away);
-
   const tierDiff = Math.abs(homeTier - awayTier);
 
-  let type = "same";
+  const outcomeRow = outcomeRules.find(r => Number(r.tier_diff) === tierDiff);
+  const diffRow = diffRules.find(r => Number(r.tier_diff) === tierDiff);
+  const exactRow = exactRules.find(r => Number(r.tier_diff) === tierDiff);
 
-  if(homeTier < awayTier){
-    type = "favorite_home";
-  }
-
-  if(homeTier > awayTier){
-    type = "favorite_away";
-  }
-
-  const row =
-    outcomeRules.find(r =>
-      Number(r.tier_diff) === tierDiff
-    );
-
-  if(!row){
+  if(!outcomeRow || !diffRow || !exactRow){
     return null;
   }
 
-  let outcome = "";
-  let diff = "";
-  let exact = "";
+  function orderPoints(row){
+    if(homeTier < awayTier){
+      return `${row.favorite} / ${row.draw} / ${row.underdog}`;
+    }
 
-  if(type === "favorite_home"){
+    if(homeTier > awayTier){
+      return `${row.underdog} / ${row.draw} / ${row.favorite}`;
+    }
 
-    outcome =
-      `${row.favorite} / ${row.draw} / ${row.underdog}`;
-
-  }else if(type === "favorite_away"){
-
-    outcome =
-      `${row.underdog} / ${row.draw} / ${row.favorite}`;
-
-  }else{
-
-    outcome =
-      `${row.favorite} / ${row.draw} / ${row.underdog}`;
+    return `${row.favorite} / ${row.draw} / ${row.underdog}`;
   }
 
   return {
-    outcome
+    outcome: orderPoints(outcomeRow),
+    diff: orderPoints(diffRow),
+    exact: orderPoints(exactRow)
   };
-}
-  
-function getGroupedMatches(){
-  const grouped = {};
-
-  allMatches.forEach(match => {
-    const group = match.group || "?";
-
-    if(!grouped[group]){
-      grouped[group] = [];
-    }
-
-    grouped[group].push(match);
-  });
-
-  return grouped;
 }
 
 function renderMatches(){
