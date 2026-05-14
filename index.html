@@ -311,8 +311,12 @@ margin-bottom:20px;
 <script>
 const API_URL =
 "https://opensheet.elk.sh/1EvB5oqS4Bemr_W8VXYzWAVsr4nX0u3VTQMpgUlOM9-s/API_MATCHES";
+  
   const PLAYERS_API_URL =
 "https://opensheet.elk.sh/1EvB5oqS4Bemr_W8VXYzWAVsr4nX0u3VTQMpgUlOM9-s/API_PLAYERS";
+  
+  const SUBMIT_URL =
+"https://script.google.com/macros/s/AKfycbyJB5mugyonYlXClojolIGcInen7ClFl55j-c7xQw6Z0-fS5rKfQKgF9AVhLLe9UQgM4Q/exec";
 
 let allMatches = [];
 let currentGroup = "ALL";
@@ -565,13 +569,59 @@ function loadSavedTips(){
   
   updateProgress();
 }
-function submitTips(){
+async function submitTips(){
   const name = document.getElementById("playerName").value.trim();
 
   if(!name){
     alert("Skriv inn navn først.");
     return;
   }
+
+  const tips = allMatches.map(match => {
+    const homeInput = document.querySelector(`input[data-match-id="${match.id}"][data-side="home"]`);
+    const awayInput = document.querySelector(`input[data-match-id="${match.id}"][data-side="away"]`);
+
+    return {
+      id: match.id,
+      home: match.home,
+      away: match.away,
+      tips_home: homeInput ? homeInput.value : "",
+      tips_away: awayInput ? awayInput.value : ""
+    };
+  });
+
+  const bestPlayer = [...document.querySelectorAll(".best-player-input")]
+    .map((input, index) => ({
+      player: players[index],
+      points: input.value || "0"
+    }));
+
+  const topScorer = [...document.querySelectorAll(".top-scorer-input")]
+    .map((input, index) => ({
+      player: players[index],
+      points: input.value || "0"
+    }));
+
+  const payload = {
+    name,
+    tips,
+    bestPlayer,
+    topScorer
+  };
+
+  try{
+    await fetch(SUBMIT_URL, {
+      method: "POST",
+      mode: "no-cors",
+      body: JSON.stringify(payload)
+    });
+
+    alert("Tips sendt inn! 🔥");
+  }catch(error){
+    alert("Noe gikk feil ved innsending.");
+    console.error(error);
+  }
+}
 
   const tips = allMatches.map(match => {
     const homeInput = document.querySelector(`input[data-match-id="${match.id}"][data-side="home"]`);
