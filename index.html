@@ -492,9 +492,23 @@ function saveTipsLocally(){
     };
   });
 
+   const bestPlayer = [...document.querySelectorAll(".best-player-input")]
+    .map((input, index) => ({
+      player: players[index],
+      points: input.value || "0"
+    }));
+
+  const topScorer = [...document.querySelectorAll(".top-scorer-input")]
+    .map((input, index) => ({
+      player: players[index],
+      points: input.value || "0"
+    }));
+
   localStorage.setItem("vm2026_tips", JSON.stringify({
     name,
-    tips
+    tips,
+    bestPlayer,
+    topScorer
   }));
 }
 
@@ -525,7 +539,28 @@ function loadSavedTips(){
       }
     });
   }
+  if(data.bestPlayer){
+    data.bestPlayer.forEach((item, index) => {
+      const input = document.querySelectorAll(".best-player-input")[index];
 
+      if(input){
+        input.value = item.points;
+      }
+    });
+  }
+
+  if(data.topScorer){
+    data.topScorer.forEach((item, index) => {
+      const input = document.querySelectorAll(".top-scorer-input")[index];
+
+      if(input){
+        input.value = item.points;
+      }
+    });
+  }
+
+  updateBonusStatus();
+  
   updateProgress();
 }
 function submitTips(){
@@ -603,7 +638,7 @@ function renderBonusSection(){
             text-align:center;
             font-size:16px;
           "
-          oninput="updateBonusStatus()"
+          oninput="updateBonusStatus(); saveTipsLocally()"
         >
       </div>
     `;
@@ -632,7 +667,7 @@ function renderBonusSection(){
             text-align:center;
             font-size:16px;
           "
-          oninput="updateBonusStatus()"
+          oninput="updateBonusStatus(); saveTipsLocally()"
         >
       </div>
     `;
