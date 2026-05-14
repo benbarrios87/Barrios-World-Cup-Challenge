@@ -335,8 +335,11 @@ body::before{
   </div>
   
 <div class="top-box">
-  <h2 style="margin-top:0;">Toppscorer</h2>
-  <button class="submit-btn" onclick="submitTips()">Send inn tips</button>
+  <h2 style="margin-top:0;">Leaderboard</h2>
+  <div id="leaderboardContainer">Laster leaderboard...</div>
+</div>
+
+<button class="submit-btn" onclick="submitTips()">Send inn tips</button>
 
 </div>
 
@@ -764,6 +767,39 @@ async function loadLeaderboard(){
     console.error(error);
   }
 }
+  async function loadLeaderboard(){
+  const container = document.getElementById("leaderboardContainer");
+
+  try{
+    const data = await (await fetch(LEADERBOARD_API_URL)).json();
+
+    const rows = data
+      .filter(row => row.name)
+      .sort((a,b) => Number(b.points || 0) - Number(a.points || 0));
+
+    container.innerHTML = "";
+
+    rows.forEach((row,index) => {
+      container.innerHTML += `
+        <div style="
+          display:grid;
+          grid-template-columns:40px 1fr auto;
+          gap:10px;
+          align-items:center;
+          padding:10px 0;
+          border-bottom:1px solid rgba(255,255,255,0.08);
+        ">
+          <strong>${index + 1}.</strong>
+          <span>${row.name}</span>
+          <strong>${row.points || 0} p</strong>
+        </div>
+      `;
+    });
+
+  }catch(error){
+    container.innerHTML = "Klarte ikke å laste leaderboard.";
+    console.error(error);
+  }
 async function init(){
   if(localStorage.getItem("vm2026_submitted") === "true") setSubmittedButton();
 
