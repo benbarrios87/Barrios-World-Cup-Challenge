@@ -376,14 +376,7 @@ function renderMatches(){
                 inputmode="numeric"
                 data-match-id="${match.id}"
                 data-side="home"
-               <input 
-  type="number"
-  min="0"
-  inputmode="numeric"
-  data-match-id="${match.id}"
-  data-side="away"
-  oninput="updateProgress()"
->
+                oninput="updateProgress(); saveTipsLocally()"
               >
               <span>-</span>
               <input 
@@ -392,10 +385,9 @@ function renderMatches(){
                 inputmode="numeric"
                 data-match-id="${match.id}"
                 data-side="away"
-                oninput="updateProgress()"
+                oninput="updateProgress(); saveTipsLocally()"
               >
             </div>
-
             <div class="team">
               <div class="team-name">${match.away}</div>
               <div class="tier tier-${awayTier}">T${awayTier}</div>
