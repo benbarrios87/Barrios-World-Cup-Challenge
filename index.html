@@ -121,11 +121,42 @@ body{
   font-size:15px;
 }
 
-.teams{
-  display:grid;
-  grid-template-columns:1fr 120px 1fr;
-  gap:8px;
+.team{
+  padding:18px 16px;
+  border-radius:18px;
+  text-align:center;
+  min-height:86px;
+  display:flex;
   align-items:center;
+  justify-content:center;
+  gap:14px;
+  border:2px solid transparent;
+  box-sizing:border-box;
+}
+
+.team.away{
+  flex-direction:row-reverse;
+}
+
+.team-info{
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+}
+
+.team-flag{
+  font-size:34px;
+  line-height:1;
+}
+
+.team-name{
+  font-weight:bold;
+  font-size:18px;
+}
+
+.tier-label{
+  font-size:14px;
+  opacity:0.85;
 }
 
 .team{
@@ -236,8 +267,18 @@ body{
 @media(max-width:700px){
   .wrapper{ padding:12px; }
   .hero h1{ font-size:28px; }
-  .teams{ grid-template-columns:1fr; }
-  .score{ order:2; }
+  .teams{
+  grid-template-columns:1fr;
+  gap:10px;
+}
+
+.score{
+  order:2;
+}
+
+.team.away{
+  flex-direction:row;
+}
   .team{ min-height:auto; }
   .match-header{ align-items:flex-start; }
 }
@@ -309,6 +350,46 @@ const SUBMIT_URL =
 let allMatches = [];
 let currentGroup = "ALL";
 let players = [];
+  const flagMap = {
+  "Mexico":"🇲🇽",
+  "Sør Afrika":"🇿🇦",
+  "Sør-Korea":"🇰🇷",
+  "Sør Korea":"🇰🇷",
+  "Tsjekkia":"🇨🇿",
+  "Canada":"🇨🇦",
+  "Bosnia & Herzegovina":"🇧🇦",
+  "Qatar":"🇶🇦",
+  "Sveits":"🇨🇭",
+  "Brasil":"🇧🇷",
+  "Marokko":"🇲🇦",
+  "USA":"🇺🇸",
+  "Paraguay":"🇵🇾",
+  "Australia":"🇦🇺",
+  "Tyrkia":"🇹🇷",
+  "England":"🏴",
+  "Norge":"🇳🇴",
+  "Argentina":"🇦🇷",
+  "Frankrike":"🇫🇷",
+  "Spania":"🇪🇸",
+  "Tyskland":"🇩🇪",
+  "Portugal":"🇵🇹",
+  "Italia":"🇮🇹",
+  "Nederland":"🇳🇱",
+  "Belgia":"🇧🇪",
+  "Danmark":"🇩🇰",
+  "Sverige":"🇸🇪",
+  "Japan":"🇯🇵",
+  "Uruguay":"🇺🇾",
+  "Colombia":"🇨🇴",
+  "Chile":"🇨🇱",
+  "Kroatia":"🇭🇷",
+  "Polen":"🇵🇱",
+  "Ukraina":"🇺🇦"
+};
+
+function getFlag(team){
+  return flagMap[team] || "⚽";
+}
 
 async function loadMatches(){
   const container = document.getElementById("matches");
@@ -392,10 +473,13 @@ function renderMatches(){
 
           <div class="teams">
             <div class="team">
-              <div class="team-name">${match.home}</div>
-              <div class="tier-label">Tier ${homeTier}</div>
-  <div class="team tier-${homeTier}">
+            <div class="team tier-${homeTier}">
+  <div class="team-flag">${getFlag(match.home)}</div>
+  <div class="team-info">
+    <div class="team-name">${match.home}</div>
+    <div class="tier-label">Tier ${homeTier}</div>
   </div>
+</div>
 
             <div class="score">
               <input type="number" min="0" inputmode="numeric" data-match-id="${match.id}" data-side="home" oninput="updateProgress(); saveTipsLocally()">
@@ -403,10 +487,13 @@ function renderMatches(){
               <input type="number" min="0" inputmode="numeric" data-match-id="${match.id}" data-side="away" oninput="updateProgress(); saveTipsLocally()">
             </div>
 
-            <div class="team tier-${awayTier}">
-              <div class="team-name">${match.away}</div>
-              <div class="tier tier-${awayTier}">T${awayTier}</div>
-            </div>
+           <div class="team away tier-${awayTier}">
+  <div class="team-flag">${getFlag(match.away)}</div>
+  <div class="team-info">
+    <div class="team-name">${match.away}</div>
+    <div class="tier-label">Tier ${awayTier}</div>
+  </div>
+</div>
           </div>
         </div>
       `;
