@@ -588,29 +588,34 @@ getScoringPreview(match);
             </div>
           </div>
 
-          <div class="teams">
- <div class="team tier-${homeTier}">
-  <div class="team-left">
-    <div class="team-flag">${getFlag(match.home)}</div>
-    <div class="team-info">
-      <div class="team-name">${match.home}</div>
-      <div class="tier-label">Tier ${homeTier}</div>
+      <div class="teams">
+
+  <div class="team tier-${homeTier}">
+    <div class="team-left">
+      <div class="team-flag">${getFlag(match.home)}</div>
+      <div class="team-info">
+        <div class="team-name">${match.home}</div>
+        <div class="tier-label">Tier ${homeTier}</div>
+      </div>
     </div>
+
+    <input class="team-score" type="number" min="0" inputmode="numeric" data-match-id="${match.id}" data-side="home" oninput="updateProgress(); saveTipsLocally()">
   </div>
 
-  <input class="team-score" type="number" min="0" inputmode="numeric" data-match-id="${match.id}" data-side="home" oninput="updateProgress(); saveTipsLocally()">
+  <div class="team away tier-${awayTier}">
+    <div class="team-left">
+      <div class="team-flag">${getFlag(match.away)}</div>
+      <div class="team-info">
+        <div class="team-name">${match.away}</div>
+        <div class="tier-label">Tier ${awayTier}</div>
+      </div>
+    </div>
+
+    <input class="team-score" type="number" min="0" inputmode="numeric" data-match-id="${match.id}" data-side="away" oninput="updateProgress(); saveTipsLocally()">
+  </div>
+
 </div>
 
-           <div class="team away tier-${awayTier}">
-  <div class="team-left">
-    <div class="team-flag">${getFlag(match.away)}</div>
-    <div class="team-info">
-      <div class="team-name">${match.away}</div>
-      <div class="tier-label">Tier ${awayTier}</div>
-    </div>
-  </div>
-
-  <input class="team-score" type="number" min="0" inputmode="numeric" data-match-id="${match.id}" data-side="away" oninput="updateProgress(); saveTipsLocally()">
 <div style="
   margin-top:14px;
   padding-top:12px;
@@ -619,21 +624,15 @@ getScoringPreview(match);
   color:rgba(255,255,255,0.82);
 ">
 
-  <div style="margin-bottom:4px;">
-    ⚡ Riktig utfall:
-    <strong>${scoring ? scoring.outcome : "-"}</strong>
-  </div>
-
-  <div style="
-    font-size:11px;
-    opacity:0.65;
-  ">
+  <div style="font-size:11px;opacity:0.65;margin-bottom:6px;">
     Hjemmelag / Uavgjort / Bortelag
   </div>
 
+  <div>Utfall: <strong>${scoring ? scoring.outcome : "-"}</strong></div>
+  <div>Målforskjell: <strong>${scoring ? scoring.diff : "-"}</strong></div>
+  <div>Eksakt resultat: <strong>${scoring ? scoring.exact : "-"}</strong></div>
+
 </div>
-</div>
-          </div>
         </div>
       `;
     });
