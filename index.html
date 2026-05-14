@@ -522,6 +522,61 @@ function hasResult(result){
     result.actual_away !== undefined &&
     result.actual_away !== "";
 }
+  function getOutcome(home, away){
+  if(home > away) return "home";
+  if(home < away) return "away";
+  return "draw";
+}
+
+function calculateMatchPoints(match, tipHome, tipAway, result){
+  if(!hasResult(result)) return null;
+
+  const actualHome = Number(result.actual_home);
+  const actualAway = Number(result.actual_away);
+  const predictedHome = Number(tipHome);
+  const predictedAway = Number(tipAway);
+
+  if(tipHome === "" || tipAway === "") return null;
+
+  const actualOutcome = getOutcome(actualHome, actualAway);
+  const predictedOutcome = getOutcome(predictedHome, predictedAway);
+
+  if(actualOutcome !== predictedOutcome) return 0;
+
+  const homeTier = Number(match.tier_home);
+  const awayTier = Number(match.tier_away);
+  const tierDiff = Math.abs(homeTier - awayTier);
+
+  let ruleSet = outcomeRules;
+
+  const actualDiff = actualHome - actualAway;
+  const predictedDiff = predictedHome - predictedAway;
+
+  if(actualHome === predictedHome && actualAway === predictedAway){
+    ruleSet = exactRules;
+  }else if(actualDiff === predictedDiff){
+    ruleSet = diffRules;
+  }
+
+  const row = getRule(ruleSet, tierDiff);
+  if(!row) return 0;
+
+  if(actualOutcome === "draw"){
+    return Number(row.draw || 0);
+  }
+
+  const favoriteWon =
+    (actualOutcome === "home" && homeTier < awayTier) ||
+    (actualOutcome === "away" && awayTier < homeTier);
+
+  if(homeTier === awayTier){
+    return Number(row.favorite || 0);
+  }
+
+  return favoriteWon
+    ? Number(row.favorite || 0)
+    : Number(row.underdog || 0);
+}
 
 function getScoringPreview(match){
   const homeTier = Number(match.tier_home);
@@ -565,6 +620,9 @@ function renderMatches(){
       const awayTier = match.tier_away || "";
       const scoring = getScoringPreview(match);
       const result = resultsById[String(match.id)];
+      const homeInputValue = document.querySelector(`input[data-match-id="${match.id}"][data-side="home"]`)?.value || "";
+const awayInputValue = document.querySelector(`input[data-match-id="${match.id}"][data-side="away"]`)?.value || "";
+const points = calculateMatchPoints(match, homeInputValue, awayInputValue, result);
 
       container.innerHTML += `
         <div class="card">
