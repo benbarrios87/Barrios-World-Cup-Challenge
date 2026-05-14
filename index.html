@@ -7,8 +7,7 @@
 
 <style>
 :root{
-  --bg:#07111f;
-  --card:rgba(7,14,28,0.78);
+  --card:rgba(7,14,28,0.82);
   --line:rgba(255,255,255,0.13);
   --text:#fff;
   --muted:rgba(255,255,255,0.72);
@@ -27,13 +26,7 @@ body{
     radial-gradient(circle at top left, rgba(46,204,113,0.18), transparent 28%),
     radial-gradient(circle at top right, rgba(255,255,255,0.08), transparent 24%),
     linear-gradient(rgba(0,0,0,0.62), rgba(0,0,0,0.78)),
-    repeating-linear-gradient(
-      90deg,
-      #0b3d24 0px,
-      #0b3d24 80px,
-      #0e4a2c 80px,
-      #0e4a2c 160px
-    );
+    repeating-linear-gradient(90deg,#0b3d24 0px,#0b3d24 80px,#0e4a2c 80px,#0e4a2c 160px);
 }
 
 body::before{
@@ -163,19 +156,22 @@ body::before{
 }
 
 .team.tier-1{
-  background:linear-gradient(135deg, rgba(46,204,113,0.32), rgba(46,204,113,0.12));
+  background:linear-gradient(135deg, rgba(46,204,113,0.34), rgba(46,204,113,0.12));
   border-color:var(--green);
 }
+
 .team.tier-2{
-  background:linear-gradient(135deg, rgba(200,230,60,0.30), rgba(200,230,60,0.11));
+  background:linear-gradient(135deg, rgba(200,230,60,0.32), rgba(200,230,60,0.11));
   border-color:var(--lime);
 }
+
 .team.tier-3{
-  background:linear-gradient(135deg, rgba(255,179,71,0.32), rgba(255,179,71,0.11));
+  background:linear-gradient(135deg, rgba(255,179,71,0.34), rgba(255,179,71,0.11));
   border-color:var(--orange);
 }
+
 .team.tier-4{
-  background:linear-gradient(135deg, rgba(255,71,87,0.34), rgba(255,71,87,0.12));
+  background:linear-gradient(135deg, rgba(255,71,87,0.36), rgba(255,71,87,0.12));
   border-color:var(--red);
 }
 
@@ -210,13 +206,17 @@ body::before{
   color:rgba(255,255,255,0.72);
 }
 
-.bonus-row{
+.bonus-row,.leaderboard-row{
   display:grid;
   grid-template-columns:1fr auto auto;
   gap:10px;
   align-items:center;
-  padding:8px 0;
+  padding:9px 0;
   border-bottom:1px solid rgba(255,255,255,0.08);
+}
+
+.leaderboard-row{
+  grid-template-columns:44px 1fr auto;
 }
 
 .multiplier{
@@ -314,7 +314,6 @@ body::before{
   </div>
 
   <h2 class="section-title">Kamptips</h2>
-
   <div id="groupFilters" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;"></div>
 
   <div id="matches">
@@ -322,24 +321,23 @@ body::before{
   </div>
 
   <div class="top-box">
-  <h2 style="margin-top:0;">Leaderboard</h2>
-  <div id="leaderboardContainer">Laster leaderboard...</div>
-</div>
-
-<button class="submit-btn" onclick="submitTips()">Send inn tips</button>
+    <h2 style="margin-top:0;">Beste spiller</h2>
+    <div id="bestPlayerContainer"></div>
+    <div id="bestPlayerStatus" style="margin-top:12px;color:rgba(255,255,255,0.7);font-size:14px;">0 / 10 poeng brukt</div>
+  </div>
 
   <div class="top-box">
     <h2 style="margin-top:0;">Toppscorer</h2>
     <div id="topScorerContainer"></div>
     <div id="topScorerStatus" style="margin-top:12px;color:rgba(255,255,255,0.7);font-size:14px;">0 / 10 poeng brukt</div>
   </div>
-  
-<div class="top-box">
-  <h2 style="margin-top:0;">Leaderboard</h2>
-  <div id="leaderboardContainer">Laster leaderboard...</div>
-</div>
 
-<button class="submit-btn" onclick="submitTips()">Send inn tips</button>
+  <div class="top-box">
+    <h2 style="margin-top:0;">Leaderboard</h2>
+    <div id="leaderboardContainer">Laster leaderboard...</div>
+  </div>
+
+  <button class="submit-btn" onclick="submitTips()">Send inn tips</button>
 
 </div>
 
@@ -351,8 +349,7 @@ const PLAYERS_API_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_PLAYERS`;
 const OUTCOME_API_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_OUTCOME`;
 const DIFF_API_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_DIFF`;
 const EXACT_API_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_EXACT`;
-  const LEADERBOARD_API_URL =
-`https://opensheet.elk.sh/${SHEET_ID}/API_LEADERBOARD`;
+const LEADERBOARD_API_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_LEADERBOARD`;
 
 const SUBMIT_URL =
 "https://script.google.com/macros/s/AKfycbyJB5mugyonYlXClojolIGcInen7ClFl55j-c7xQw6Z0-fS5rKfQKgF9AVhLLe9UQgM4Q/exec";
@@ -394,6 +391,38 @@ async function loadMatches(){
     updateProgress();
   }catch(error){
     container.innerHTML = `<div class="card">Klarte ikke å laste kampene.</div>`;
+    console.error(error);
+  }
+}
+
+async function loadLeaderboard(){
+  const container = document.getElementById("leaderboardContainer");
+
+  try{
+    const data = await (await fetch(LEADERBOARD_API_URL)).json();
+
+    const rows = data
+      .filter(row => row.name)
+      .sort((a,b) => Number(b.points || 0) - Number(a.points || 0));
+
+    if(rows.length === 0){
+      container.innerHTML = `<div style="color:rgba(255,255,255,0.7);">Ingen poeng ennå.</div>`;
+      return;
+    }
+
+    container.innerHTML = "";
+
+    rows.forEach((row,index) => {
+      container.innerHTML += `
+        <div class="leaderboard-row">
+          <strong>${index + 1}.</strong>
+          <span>${row.name}</span>
+          <strong>${row.points || 0} p</strong>
+        </div>
+      `;
+    });
+  }catch(error){
+    container.innerHTML = "Klarte ikke å laste leaderboard.";
     console.error(error);
   }
 }
@@ -456,11 +485,9 @@ function renderMatches(){
 
       container.innerHTML += `
         <div class="card">
-          <div class="match-header">
-            <div>
-              <div class="match-title">${match.home} vs ${match.away}</div>
-              <div class="match-date">${match.date || ""}</div>
-            </div>
+          <div>
+            <div class="match-title">${match.home} vs ${match.away}</div>
+            <div class="match-date">${match.date || ""}</div>
           </div>
 
           <div class="teams">
@@ -482,7 +509,7 @@ function renderMatches(){
           </div>
 
           <div class="scoring-preview">
-            <div style="font-size:11px;opacity:0.65;margin-bottom:7px;">Hjemmelag / Uavgjort / Bortelag</div>
+            <div style="font-size:11px;opacity:0.65;margin-bottom:7px;">${match.home} / Uavgjort / ${match.away}</div>
             <div class="scoring-grid">
               <div class="scoring-label">Utfall</div>
               <strong>${scoring ? scoring.outcome : "-"}</strong>
@@ -733,73 +760,7 @@ toggleRulesBtn.onclick = () => {
     toggleRulesBtn.textContent = "❓ Vis poengsystem";
   }
 };
-async function loadLeaderboard(){
-  const container = document.getElementById("leaderboardContainer");
 
-  try{
-    const data = await (await fetch(LEADERBOARD_API_URL)).json();
-
-    const rows = data
-      .filter(row => row.name)
-      .sort((a,b) => Number(b.points || 0) - Number(a.points || 0));
-
-    container.innerHTML = "";
-
-    rows.forEach((row,index) => {
-      container.innerHTML += `
-        <div style="
-          display:grid;
-          grid-template-columns:40px 1fr auto;
-          gap:10px;
-          align-items:center;
-          padding:10px 0;
-          border-bottom:1px solid rgba(255,255,255,0.08);
-        ">
-          <strong>${index + 1}.</strong>
-          <span>${row.name}</span>
-          <strong>${row.points || 0} p</strong>
-        </div>
-      `;
-    });
-
-  }catch(error){
-    container.innerHTML = "Klarte ikke å laste leaderboard.";
-    console.error(error);
-  }
-}
-  async function loadLeaderboard(){
-  const container = document.getElementById("leaderboardContainer");
-
-  try{
-    const data = await (await fetch(LEADERBOARD_API_URL)).json();
-
-    const rows = data
-      .filter(row => row.name)
-      .sort((a,b) => Number(b.points || 0) - Number(a.points || 0));
-
-    container.innerHTML = "";
-
-    rows.forEach((row,index) => {
-      container.innerHTML += `
-        <div style="
-          display:grid;
-          grid-template-columns:40px 1fr auto;
-          gap:10px;
-          align-items:center;
-          padding:10px 0;
-          border-bottom:1px solid rgba(255,255,255,0.08);
-        ">
-          <strong>${index + 1}.</strong>
-          <span>${row.name}</span>
-          <strong>${row.points || 0} p</strong>
-        </div>
-      `;
-    });
-
-  }catch(error){
-    container.innerHTML = "Klarte ikke å laste leaderboard.";
-    console.error(error);
-  }
 async function init(){
   if(localStorage.getItem("vm2026_submitted") === "true") setSubmittedButton();
 
