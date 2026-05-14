@@ -426,7 +426,9 @@ async function loadResults(){
 }
 
 function getResultForMatch(matchId){
-  return results.find(result => result.id === String(matchId));
+  return results.find(result =>
+    String(result.id).trim() === String(matchId).trim()
+  );
 }
 async function loadLeaderboard(){
   const container = document.getElementById("leaderboardContainer");
