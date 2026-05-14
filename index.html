@@ -423,19 +423,58 @@ async function loadMatches(){
 }
 async function loadResults(){
 
-  const data =
-  await (await fetch(RESULTS_API_URL)).json();
+  try{
+    const data =
+    await (await fetch(RESULTS_API_URL)).json();
 
-  results = data.map(row => {
+    results = data.map(row => {
+      const clean = {};
 
-    const clean = {};
+      Object.keys(row).forEach(key => {
+        clean[key.trim()] = row[key];
+      });
 
-    Object.keys(row).forEach(key => {
-      clean[key.trim()] = row[key];
+      return clean;
     });
 
-    return clean;
-  });
+    document.body.insertAdjacentHTML("afterbegin", `
+      <div style="
+        position:fixed;
+        bottom:10px;
+        left:10px;
+        right:10px;
+        z-index:9999;
+        background:#111;
+        color:#fff;
+        padding:12px;
+        border:2px solid lime;
+        border-radius:10px;
+        font-size:12px;
+      ">
+        RESULT TEST:
+        ${JSON.stringify(results[0])}
+      </div>
+    `);
+
+  }catch(error){
+    document.body.insertAdjacentHTML("afterbegin", `
+      <div style="
+        position:fixed;
+        bottom:10px;
+        left:10px;
+        right:10px;
+        z-index:9999;
+        background:#400;
+        color:#fff;
+        padding:12px;
+        border:2px solid red;
+        border-radius:10px;
+      ">
+        RESULTS FEIL: ${error.message}
+      </div>
+    `);
+  }
+}
 
   console.log("RESULTS LOADED:", results);
 }
