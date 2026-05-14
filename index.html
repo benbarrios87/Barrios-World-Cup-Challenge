@@ -861,13 +861,6 @@ async function submitTips(){
     };
   });
 
-  const missingTips = tips.filter(tip => tip.tips_home === "" || tip.tips_away === "");
-
-  if(missingTips.length > 0){
-    alert(`Du mangler tips på ${missingTips.length} kamper.`);
-    return;
-  }
-
   const bestPlayer = getBonusData(".best-player-input");
   const topScorer = getBonusData(".top-scorer-input");
 
