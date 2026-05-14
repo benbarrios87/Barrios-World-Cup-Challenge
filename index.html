@@ -3,34 +3,56 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Barrios World Cup Challenge 2026</title>
 
 <style>
 :root{
   --bg:#07111f;
-  --card:rgba(255,255,255,0.08);
-  --line:rgba(255,255,255,0.12);
-  --text:#ffffff;
-  --muted:rgba(255,255,255,0.7);
+  --card:rgba(7,14,28,0.78);
+  --line:rgba(255,255,255,0.13);
+  --text:#fff;
+  --muted:rgba(255,255,255,0.72);
   --green:#2ecc71;
+  --lime:#c8e63c;
+  --orange:#ffb347;
   --red:#ff4757;
-  --gold:#ffd166;
-  --blue:#4dabf7;
 }
 
 body{
   margin:0;
   font-family:Arial,sans-serif;
-  background:radial-gradient(circle at top left,#123,#07111f 60%);
   color:var(--text);
   min-height:100vh;
+  background:
+    radial-gradient(circle at top left, rgba(46,204,113,0.18), transparent 28%),
+    radial-gradient(circle at top right, rgba(255,255,255,0.08), transparent 24%),
+    linear-gradient(rgba(0,0,0,0.62), rgba(0,0,0,0.78)),
+    repeating-linear-gradient(
+      90deg,
+      #0b3d24 0px,
+      #0b3d24 80px,
+      #0e4a2c 80px,
+      #0e4a2c 160px
+    );
+}
+
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  background:
+    radial-gradient(circle at center, transparent 0 130px, rgba(255,255,255,0.05) 131px 133px, transparent 134px),
+    linear-gradient(90deg, transparent 49.8%, rgba(255,255,255,0.08) 50%, transparent 50.2%);
+  opacity:0.45;
 }
 
 .wrapper{
-  max-width:1200px;
+  max-width:1100px;
   margin:auto;
   padding:18px;
+  position:relative;
+  z-index:1;
 }
 
 .hero{
@@ -48,13 +70,14 @@ body{
   margin:0;
 }
 
-.top-box{
+.top-box,.card{
   background:var(--card);
   border:1px solid var(--line);
   border-radius:20px;
   padding:16px;
   margin-bottom:18px;
   backdrop-filter:blur(10px);
+  box-shadow:0 12px 35px rgba(0,0,0,0.28);
 }
 
 .name-field{
@@ -68,9 +91,7 @@ body{
   margin-top:8px;
 }
 
-.progress{
-  margin-top:16px;
-}
+.progress{ margin-top:16px; }
 
 .progress-row{
   display:flex;
@@ -82,7 +103,7 @@ body{
 
 .progress-bar{
   height:12px;
-  background:rgba(255,255,255,0.08);
+  background:rgba(255,255,255,0.1);
   border-radius:999px;
   overflow:hidden;
 }
@@ -95,119 +116,115 @@ body{
 }
 
 .section-title{
-  margin:26px 0 12px;
-  font-size:22px;
-}
-
-.card{
-  background:var(--card);
-  border:1px solid var(--line);
-  border-radius:18px;
-  padding:14px;
-  margin-bottom:12px;
-  backdrop-filter:blur(10px);
-}
-
-.match-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:10px;
-  margin-bottom:12px;
+  margin:28px 0 12px;
+  font-size:24px;
 }
 
 .match-title{
   font-weight:bold;
-  font-size:15px;
-}
-
-.team{
-  padding:18px 16px;
-  border-radius:18px;
-  text-align:center;
-  min-height:86px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:14px;
-  border:2px solid transparent;
-  box-sizing:border-box;
-}
-
-.team.away{
-  flex-direction:row;
-}
-
-.team-info{
-  display:flex;
-  flex-direction:column;
-  gap:5px;
-}
-
-.team-flag{
-  font-size:34px;
-  line-height:1;
-}
-
-.team-name{
-  font-weight:bold;
   font-size:18px;
 }
 
-.tier-label{
-  font-size:14px;
-  opacity:0.85;
+.match-date{
+  font-size:12px;
+  color:rgba(255,255,255,0.62);
+  margin-top:4px;
 }
 
-/* Tier 1 */
-.team.tier-1{
-  background:rgba(46,204,113,0.18);
-  border-color:#2ecc71;
+.teams{
+  display:grid;
+  gap:10px;
+  margin-top:12px;
 }
 
-/* Tier 2 */
-.team.tier-2{
-  background:rgba(190,220,60,0.18);
-  border-color:#c8e63c;
-}
-
-/* Tier 3 */
-.team.tier-3{
-  background:rgba(255,165,0,0.18);
-  border-color:#ffb347;
-}
-
-/* Tier 4 */
-.team.tier-4{
-  background:rgba(255,71,87,0.18);
-  border-color:#ff4757;
-}
-
-.score{
-  display:flex;
-  gap:7px;
-  justify-content:center;
+.team{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:12px;
   align-items:center;
+  border-radius:18px;
+  padding:14px;
+  border:2px solid transparent;
 }
 
-.score input{
-  width:48px;
-  height:42px;
-  border:none;
-  border-radius:12px;
+.team-name{
   font-size:20px;
+  font-weight:bold;
+}
+
+.tier-label{
+  display:inline-block;
+  margin-top:5px;
+  padding:4px 9px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:bold;
+  background:rgba(0,0,0,0.25);
+}
+
+.team.tier-1{
+  background:linear-gradient(135deg, rgba(46,204,113,0.32), rgba(46,204,113,0.12));
+  border-color:var(--green);
+}
+.team.tier-2{
+  background:linear-gradient(135deg, rgba(200,230,60,0.30), rgba(200,230,60,0.11));
+  border-color:var(--lime);
+}
+.team.tier-3{
+  background:linear-gradient(135deg, rgba(255,179,71,0.32), rgba(255,179,71,0.11));
+  border-color:var(--orange);
+}
+.team.tier-4{
+  background:linear-gradient(135deg, rgba(255,71,87,0.34), rgba(255,71,87,0.12));
+  border-color:var(--red);
+}
+
+.team-score{
+  width:64px;
+  height:54px;
+  border:none;
+  border-radius:14px;
+  font-size:24px;
   text-align:center;
   background:white;
   color:#111;
   font-weight:bold;
 }
 
+.scoring-preview{
+  margin-top:14px;
+  padding:12px;
+  border-radius:14px;
+  background:rgba(255,255,255,0.07);
+  border:1px solid rgba(255,255,255,0.10);
+  font-size:13px;
+}
+
+.scoring-grid{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:6px 12px;
+}
+
+.scoring-label{
+  color:rgba(255,255,255,0.72);
+}
+
 .bonus-row{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:10px;
+  display:grid;
+  grid-template-columns:1fr auto auto;
   gap:10px;
+  align-items:center;
+  padding:8px 0;
+  border-bottom:1px solid rgba(255,255,255,0.08);
+}
+
+.multiplier{
+  font-size:13px;
+  font-weight:bold;
+  padding:5px 9px;
+  border-radius:999px;
+  background:rgba(255,255,255,0.1);
 }
 
 .bonus-row input{
@@ -232,8 +249,13 @@ body{
   margin:24px 0 30px;
 }
 
-.submit-btn:hover{
-  opacity:0.9;
+.filter-btn{
+  border:none;
+  border-radius:999px;
+  padding:10px 14px;
+  color:white;
+  cursor:pointer;
+  font-weight:bold;
 }
 
 .loading{
@@ -241,134 +263,40 @@ body{
   text-align:center;
   padding:30px;
 }
-  .teams{
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-}
 
-.team{
-  justify-content:space-between;
-}
-
-.team-left{
-  display:flex;
-  align-items:center;
-  gap:14px;
-}
-
-.team-score{
-  width:62px;
-  height:56px;
-  border:none;
-  border-radius:14px;
-  font-size:24px;
-  text-align:center;
-  background:white;
-  color:#111;
-  font-weight:bold;
-}
-  
 @media(max-width:700px){
-
-  .wrapper{
-    padding:12px;
-  }
-
-  .hero h1{
-    font-size:28px;
-  }
-
-  .teams{
-    grid-template-columns:1fr;
-    gap:10px;
-  }
-
- .team{
-  min-height:auto;
-  justify-content:space-between;
-  text-align:left;
-  padding:14px;
-}
-  .match-header{
-    align-items:flex-start;
-  }
-
+  .wrapper{ padding:12px; }
+  .hero h1{ font-size:28px; }
+  .team-name{ font-size:17px; }
+  .team-score{ width:58px; height:50px; }
+  .bonus-row{ grid-template-columns:1fr auto; }
+  .multiplier{ grid-column:1; width:max-content; }
 }
 </style>
 </head>
 
 <body>
-
 <div class="wrapper">
 
   <div class="hero">
     <h1>🏆 Barrios World Cup Challenge 2026</h1>
     <p>Tipp VM. Treff outsiders. Vinn evig skryterett.</p>
   </div>
+
   <div class="top-box">
+    <button id="toggleRulesBtn" style="width:100%;height:52px;border:none;border-radius:14px;background:rgba(255,255,255,0.08);color:white;font-size:16px;font-weight:bold;cursor:pointer;">
+      ❓ Vis poengsystem
+    </button>
 
-  <button id="toggleRulesBtn" style="
-    width:100%;
-    height:52px;
-    border:none;
-    border-radius:14px;
-    background:rgba(255,255,255,0.08);
-    color:white;
-    font-size:16px;
-    font-weight:bold;
-    cursor:pointer;
-  ">
-    ❓ Vis poengsystem
-  </button>
-
-  <div id="rulesBox" style="
-    display:none;
-    margin-top:16px;
-    line-height:1.7;
-    color:rgba(255,255,255,0.88);
-  ">
-
-    <h3 style="margin-top:0;">Hvordan scoring fungerer</h3>
-
-    <p>
-      Hver kamp kan gi ulik poengsum basert på:
-    </p>
-
-    <ul style="padding-left:18px;">
-      <li>Favoritt / uavgjort / underdog</li>
-      <li>Tierforskjell mellom lagene</li>
-      <li>Gruppespill eller sluttspill</li>
-    </ul>
-
-    <h3>Tre nivåer av treff</h3>
-
-    <p>
-      <strong>1. Riktig utfall</strong><br>
-      Du tipper riktig vinner eller uavgjort.
-    </p>
-
-    <p>
-      <strong>2. Riktig målforskjell</strong><br>
-      Eksempel: du tipper 2-1 og kampen ender 1-0.
-    </p>
-
-    <p>
-      <strong>3. Helt riktig resultat</strong><br>
-      Eksempel: du tipper 2-1 og kampen ender 2-1.
-    </p>
-
-    <h3>Tier-system</h3>
-
-    <p>
-      Grønne lag er favoritter.<br>
-      Røde lag er underdogs.<br>
-      Jo større overraskelse du treffer, jo flere poeng kan du få.
-    </p>
-
+    <div id="rulesBox" style="display:none;margin-top:16px;line-height:1.7;color:rgba(255,255,255,0.88);">
+      <h3 style="margin-top:0;">Hvordan scoring fungerer</h3>
+      <p>Du får poeng på ett av tre nivåer:</p>
+      <p><strong>1. Riktig utfall</strong><br>Riktig vinner eller uavgjort.</p>
+      <p><strong>2. Riktig målforskjell</strong><br>Du treffer differansen, for eksempel 2-1 når kampen ender 1-0.</p>
+      <p><strong>3. Eksakt resultat</strong><br>Du treffer helt riktig resultat.</p>
+      <p>Tier-systemet gjør at underdogs gir mer poeng. Grønne lag er favoritter, røde lag er underdogs.</p>
+    </div>
   </div>
-
-</div>
 
   <div class="top-box">
     <label for="playerName"><strong>Navn / brukernavn</strong></label>
@@ -396,17 +324,13 @@ body{
   <div class="top-box">
     <h2 style="margin-top:0;">Beste spiller</h2>
     <div id="bestPlayerContainer"></div>
-    <div id="bestPlayerStatus" style="margin-top:12px;color:rgba(255,255,255,0.7);font-size:14px;">
-      0 / 10 poeng brukt
-    </div>
+    <div id="bestPlayerStatus" style="margin-top:12px;color:rgba(255,255,255,0.7);font-size:14px;">0 / 10 poeng brukt</div>
   </div>
 
   <div class="top-box">
     <h2 style="margin-top:0;">Toppscorer</h2>
     <div id="topScorerContainer"></div>
-    <div id="topScorerStatus" style="margin-top:12px;color:rgba(255,255,255,0.7);font-size:14px;">
-      0 / 10 poeng brukt
-    </div>
+    <div id="topScorerStatus" style="margin-top:12px;color:rgba(255,255,255,0.7);font-size:14px;">0 / 10 poeng brukt</div>
   </div>
 
   <button class="submit-btn" onclick="submitTips()">Send inn tips</button>
@@ -414,20 +338,13 @@ body{
 </div>
 
 <script>
-const API_URL =
-"https://opensheet.elk.sh/1EvB5oqS4Bemr_W8VXYzWAVsr4nX0u3VTQMpgUlOM9-s/API_MATCHES";
+const SHEET_ID = "1EvB5oqS4Bemr_W8VXYzWAVsr4nX0u3VTQMpgUlOM9-s";
 
-const PLAYERS_API_URL =
-"https://opensheet.elk.sh/1EvB5oqS4Bemr_W8VXYzWAVsr4nX0u3VTQMpgUlOM9-s/API_PLAYERS";
-  
-const OUTCOME_API_URL =
-"https://opensheet.elk.sh/1EvB5oqS4Bemr_W8VXYzWAVsr4nX0u3VTQMpgUlOM9-s/API_OUTCOME";
-
-const DIFF_API_URL =
-"https://opensheet.elk.sh/1EvB5oqS4Bemr_W8VXYzWAVsr4nX0u3VTQMpgUlOM9-s/API_DIFF";
-
-const EXACT_API_URL =
-"https://opensheet.elk.sh/1EvB5oqS4Bemr_W8VXYzWAVsr4nX0u3VTQMpgUlOM9-s/API_EXACT";  
+const API_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_MATCHES`;
+const PLAYERS_API_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_PLAYERS`;
+const OUTCOME_API_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_OUTCOME`;
+const DIFF_API_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_DIFF`;
+const EXACT_API_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_EXACT`;
 
 const SUBMIT_URL =
 "https://script.google.com/macros/s/AKfycbyJB5mugyonYlXClojolIGcInen7ClFl55j-c7xQw6Z0-fS5rKfQKgF9AVhLLe9UQgM4Q/exec";
@@ -435,123 +352,79 @@ const SUBMIT_URL =
 let allMatches = [];
 let currentGroup = "ALL";
 let players = [];
-  let outcomeRules = [];
+let outcomeRules = [];
 let diffRules = [];
 let exactRules = [];
-  const flagMap = {
-  "Mexico":"🇲🇽",
-  "Sør Afrika":"🇿🇦",
-  "Sør-Korea":"🇰🇷",
-  "Sør Korea":"🇰🇷",
-  "Tsjekkia":"🇨🇿",
-  "Canada":"🇨🇦",
-  "Bosnia & Herzegovina":"🇧🇦",
-  "Qatar":"🇶🇦",
-  "Sveits":"🇨🇭",
-  "Brasil":"🇧🇷",
-  "Marokko":"🇲🇦",
-  "USA":"🇺🇸",
-  "Paraguay":"🇵🇾",
-  "Australia":"🇦🇺",
-  "Tyrkia":"🇹🇷",
-  "England":"🏴",
-  "Norge":"🇳🇴",
-  "Argentina":"🇦🇷",
-  "Frankrike":"🇫🇷",
-  "Spania":"🇪🇸",
-  "Tyskland":"🇩🇪",
-  "Portugal":"🇵🇹",
-  "Italia":"🇮🇹",
-  "Nederland":"🇳🇱",
-  "Belgia":"🇧🇪",
-  "Danmark":"🇩🇰",
-  "Sverige":"🇸🇪",
-  "Japan":"🇯🇵",
-  "Uruguay":"🇺🇾",
-  "Colombia":"🇨🇴",
-  "Chile":"🇨🇱",
-  "Kroatia":"🇭🇷",
-  "Polen":"🇵🇱",
-  "Ukraina":"🇺🇦"
-};
 
-function getFlag(team){
-  return flagMap[team] || "⚽";
+async function loadScoringRules(){
+  outcomeRules = await (await fetch(OUTCOME_API_URL)).json();
+  diffRules = await (await fetch(DIFF_API_URL)).json();
+  exactRules = await (await fetch(EXACT_API_URL)).json();
+}
+
+async function loadPlayers(){
+  const data = await (await fetch(PLAYERS_API_URL)).json();
+
+  players = data
+    .map(row => ({
+      name: row.name,
+      multiplier: Number(row.multiplier || row.Multiplier || 1)
+    }))
+    .filter(player => player.name);
+
+  renderBonusSection();
+  loadSavedTips();
 }
 
 async function loadMatches(){
   const container = document.getElementById("matches");
 
   try{
-    const res = await fetch(API_URL);
-    allMatches = await res.json();
-
+    allMatches = await (await fetch(API_URL)).json();
     renderMatches();
     loadSavedTips();
     updateProgress();
-
   }catch(error){
-    container.innerHTML = `
-      <div class="card">
-        Klarte ikke å laste kampene. Sjekk at Google Sheet er delt som "Alle med linken kan se".
-      </div>
-    `;
+    container.innerHTML = `<div class="card">Klarte ikke å laste kampene.</div>`;
     console.error(error);
   }
 }
 
-async function loadPlayers(){
-  const res = await fetch(PLAYERS_API_URL);
-  const data = await res.json();
-
-  players = data
-    .map(row => row.name)
-    .filter(Boolean);
-
-  renderBonusSection();
-  loadSavedTips();
+function getGroupedMatches(){
+  const grouped = {};
+  allMatches.forEach(match => {
+    const group = match.group || "?";
+    if(!grouped[group]) grouped[group] = [];
+    grouped[group].push(match);
+  });
+  return grouped;
 }
-  async function loadScoringRules(){
 
-  const outcomeRes = await fetch(OUTCOME_API_URL);
-  outcomeRules = await outcomeRes.json();
-
-  const diffRes = await fetch(DIFF_API_URL);
-  diffRules = await diffRes.json();
-
-  const exactRes = await fetch(EXACT_API_URL);
-  exactRules = await exactRes.json();
+function getRule(rules, tierDiff){
+  return rules.find(r => Number(r.tier_diff) === Number(tierDiff));
 }
+
 function getScoringPreview(match){
-
   const homeTier = Number(match.tier_home);
   const awayTier = Number(match.tier_away);
   const tierDiff = Math.abs(homeTier - awayTier);
 
-  const outcomeRow = outcomeRules.find(r => Number(r.tier_diff) === tierDiff);
-  const diffRow = diffRules.find(r => Number(r.tier_diff) === tierDiff);
-  const exactRow = exactRules.find(r => Number(r.tier_diff) === tierDiff);
+  const outcomeRow = getRule(outcomeRules, tierDiff);
+  const diffRow = getRule(diffRules, tierDiff);
+  const exactRow = getRule(exactRules, tierDiff);
 
-  if(!outcomeRow || !diffRow || !exactRow){
-    return null;
-  }
+  if(!outcomeRow || !diffRow || !exactRow) return null;
 
-  function orderPoints(row){
-    if(homeTier < awayTier){
-      return `${row.favorite} / ${row.draw} / ${row.underdog}`;
-    }
-
-    if(homeTier > awayTier){
-      return `${row.underdog} / ${row.draw} / ${row.favorite}`;
-    }
-
+  function ordered(row){
+    if(homeTier < awayTier) return `${row.favorite} / ${row.draw} / ${row.underdog}`;
+    if(homeTier > awayTier) return `${row.underdog} / ${row.draw} / ${row.favorite}`;
     return `${row.favorite} / ${row.draw} / ${row.underdog}`;
   }
 
   return {
-    outcome: orderPoints(outcomeRow),
-    diff: orderPoints(diffRow),
-    exact: orderPoints(exactRow)
+    outcome: ordered(outcomeRow),
+    diff: ordered(diffRow),
+    exact: ordered(exactRow)
   };
 }
 
@@ -561,76 +434,56 @@ function renderMatches(){
   const groups = Object.keys(grouped);
 
   renderFilters(groups);
-
   container.innerHTML = "";
 
   groups.forEach(group => {
-    if(currentGroup !== "ALL" && currentGroup !== group){
-      return;
-    }
+    if(currentGroup !== "ALL" && currentGroup !== group) return;
 
     container.innerHTML += `<h2 class="section-title">Gruppe ${group}</h2>`;
 
     grouped[group].forEach(match => {
       const homeTier = match.tier_home || "";
       const awayTier = match.tier_away || "";
-      const scoring =
-getScoringPreview(match);
+      const scoring = getScoringPreview(match);
 
       container.innerHTML += `
         <div class="card">
           <div class="match-header">
             <div>
               <div class="match-title">${match.home} vs ${match.away}</div>
-              <div style="font-size:12px;color:rgba(255,255,255,0.6);margin-top:4px;">
-                ${match.date || ""}
-              </div>
+              <div class="match-date">${match.date || ""}</div>
             </div>
           </div>
 
-      <div class="teams">
+          <div class="teams">
+            <div class="team tier-${homeTier}">
+              <div>
+                <div class="team-name">${match.home}</div>
+                <div class="tier-label">Tier ${homeTier}</div>
+              </div>
+              <input class="team-score" type="number" min="0" inputmode="numeric" data-match-id="${match.id}" data-side="home" oninput="updateProgress(); saveTipsLocally()">
+            </div>
 
-  <div class="team tier-${homeTier}">
-    <div class="team-left">
-      <div class="team-flag">${getFlag(match.home)}</div>
-      <div class="team-info">
-        <div class="team-name">${match.home}</div>
-        <div class="tier-label">Tier ${homeTier}</div>
-      </div>
-    </div>
+            <div class="team tier-${awayTier}">
+              <div>
+                <div class="team-name">${match.away}</div>
+                <div class="tier-label">Tier ${awayTier}</div>
+              </div>
+              <input class="team-score" type="number" min="0" inputmode="numeric" data-match-id="${match.id}" data-side="away" oninput="updateProgress(); saveTipsLocally()">
+            </div>
+          </div>
 
-    <input class="team-score" type="number" min="0" inputmode="numeric" data-match-id="${match.id}" data-side="home" oninput="updateProgress(); saveTipsLocally()">
-  </div>
-
-  <div class="team away tier-${awayTier}">
-    <div class="team-left">
-      <div class="team-flag">${getFlag(match.away)}</div>
-      <div class="team-info">
-        <div class="team-name">${match.away}</div>
-        <div class="tier-label">Tier ${awayTier}</div>
-      </div>
-    </div>
-
-      <input class="team-score" type="number" min="0" inputmode="numeric" data-match-id="${match.id}" data-side="away" oninput="updateProgress(); saveTipsLocally()">
-</div>
-
-<div style="
-  margin-top:14px;
-  padding-top:12px;
-  border-top:1px solid rgba(255,255,255,0.08);
-  font-size:13px;
-  color:rgba(255,255,255,0.82);
-">
-
-  <div style="font-size:11px;opacity:0.65;margin-bottom:6px;">
-    Hjemmelag / Uavgjort / Bortelag
-  </div>
-
-  <div>Utfall: <strong>${scoring ? scoring.outcome : "-"}</strong></div>
-  <div>Målforskjell: <strong>${scoring ? scoring.diff : "-"}</strong></div>
-  <div>Eksakt resultat: <strong>${scoring ? scoring.exact : "-"}</strong></div>
-
-</div>
+          <div class="scoring-preview">
+            <div style="font-size:11px;opacity:0.65;margin-bottom:7px;">Hjemmelag / Uavgjort / Bortelag</div>
+            <div class="scoring-grid">
+              <div class="scoring-label">Utfall</div>
+              <strong>${scoring ? scoring.outcome : "-"}</strong>
+              <div class="scoring-label">Målforskjell</div>
+              <strong>${scoring ? scoring.diff : "-"}</strong>
+              <div class="scoring-label">Eksakt resultat</div>
+              <strong>${scoring ? scoring.exact : "-"}</strong>
+            </div>
+          </div>
         </div>
       `;
     });
@@ -645,26 +498,15 @@ function renderFilters(groups){
 
   allGroups.forEach(group => {
     const btn = document.createElement("button");
-
+    btn.className = "filter-btn";
     btn.textContent = group === "ALL" ? "Alle" : group;
-
-    btn.style.cssText = `
-      border:none;
-      border-radius:999px;
-      padding:10px 14px;
-      background:${currentGroup === group ? "#2ecc71" : "rgba(255,255,255,0.08)"};
-      color:white;
-      cursor:pointer;
-      font-weight:bold;
-    `;
-
+    btn.style.background = currentGroup === group ? "#2ecc71" : "rgba(255,255,255,0.08)";
     btn.onclick = () => {
       currentGroup = group;
       renderMatches();
       loadSavedTips();
       updateProgress();
     };
-
     filterContainer.appendChild(btn);
   });
 }
@@ -679,14 +521,16 @@ function renderBonusSection(){
   players.forEach(player => {
     bestContainer.innerHTML += `
       <div class="bonus-row">
-        <div>${player}</div>
+        <div>${player.name}</div>
+        <div class="multiplier">x${player.multiplier}</div>
         <input type="number" min="0" max="10" value="0" class="best-player-input" oninput="updateBonusStatus(); saveTipsLocally()">
       </div>
     `;
 
     scorerContainer.innerHTML += `
       <div class="bonus-row">
-        <div>${player}</div>
+        <div>${player.name}</div>
+        <div class="multiplier">x${player.multiplier}</div>
         <input type="number" min="0" max="10" value="0" class="top-scorer-input" oninput="updateBonusStatus(); saveTipsLocally()">
       </div>
     `;
@@ -702,10 +546,7 @@ function updateProgress(){
   allMatches.forEach(match => {
     const homeInput = document.querySelector(`input[data-match-id="${match.id}"][data-side="home"]`);
     const awayInput = document.querySelector(`input[data-match-id="${match.id}"][data-side="away"]`);
-
-    if(homeInput && awayInput && homeInput.value !== "" && awayInput.value !== ""){
-      completed++;
-    }
+    if(homeInput && awayInput && homeInput.value !== "" && awayInput.value !== "") completed++;
   });
 
   const percent = total ? Math.round((completed / total) * 100) : 0;
@@ -719,16 +560,20 @@ function updateBonusStatus(){
   let bestTotal = 0;
   let scorerTotal = 0;
 
-  document.querySelectorAll(".best-player-input").forEach(input => {
-    bestTotal += Number(input.value || 0);
-  });
-
-  document.querySelectorAll(".top-scorer-input").forEach(input => {
-    scorerTotal += Number(input.value || 0);
-  });
+  document.querySelectorAll(".best-player-input").forEach(input => bestTotal += Number(input.value || 0));
+  document.querySelectorAll(".top-scorer-input").forEach(input => scorerTotal += Number(input.value || 0));
 
   document.getElementById("bestPlayerStatus").textContent = `${bestTotal} / 10 poeng brukt`;
   document.getElementById("topScorerStatus").textContent = `${scorerTotal} / 10 poeng brukt`;
+}
+
+function getBonusData(selector){
+  return [...document.querySelectorAll(selector)].map((input,index) => ({
+    player: players[index]?.name,
+    multiplier: players[index]?.multiplier || 1,
+    points: input.value || "0",
+    score: Number(input.value || 0) * Number(players[index]?.multiplier || 1)
+  }));
 }
 
 function saveTipsLocally(){
@@ -737,7 +582,6 @@ function saveTipsLocally(){
   const tips = allMatches.map(match => {
     const homeInput = document.querySelector(`input[data-match-id="${match.id}"][data-side="home"]`);
     const awayInput = document.querySelector(`input[data-match-id="${match.id}"][data-side="away"]`);
-
     return {
       id: match.id,
       tips_home: homeInput ? homeInput.value : "",
@@ -745,60 +589,42 @@ function saveTipsLocally(){
     };
   });
 
-  const bestPlayer = [...document.querySelectorAll(".best-player-input")]
-    .map((input, index) => ({
-      player: players[index],
-      points: input.value || "0"
-    }));
-
-  const topScorer = [...document.querySelectorAll(".top-scorer-input")]
-    .map((input, index) => ({
-      player: players[index],
-      points: input.value || "0"
-    }));
-
   localStorage.setItem("vm2026_tips", JSON.stringify({
     name,
     tips,
-    bestPlayer,
-    topScorer
+    bestPlayer: getBonusData(".best-player-input"),
+    topScorer: getBonusData(".top-scorer-input")
   }));
 }
 
 function loadSavedTips(){
   const saved = localStorage.getItem("vm2026_tips");
-
-  if(!saved){
-    return;
-  }
+  if(!saved) return;
 
   const data = JSON.parse(saved);
 
-  if(data.name){
-    document.getElementById("playerName").value = data.name;
-  }
+  if(data.name) document.getElementById("playerName").value = data.name;
 
   if(data.tips){
     data.tips.forEach(tip => {
       const homeInput = document.querySelector(`input[data-match-id="${tip.id}"][data-side="home"]`);
       const awayInput = document.querySelector(`input[data-match-id="${tip.id}"][data-side="away"]`);
-
-      if(homeInput){ homeInput.value = tip.tips_home; }
-      if(awayInput){ awayInput.value = tip.tips_away; }
+      if(homeInput) homeInput.value = tip.tips_home;
+      if(awayInput) awayInput.value = tip.tips_away;
     });
   }
 
   if(data.bestPlayer){
-    data.bestPlayer.forEach((item, index) => {
+    data.bestPlayer.forEach((item,index) => {
       const input = document.querySelectorAll(".best-player-input")[index];
-      if(input){ input.value = item.points; }
+      if(input) input.value = item.points;
     });
   }
 
   if(data.topScorer){
-    data.topScorer.forEach((item, index) => {
+    data.topScorer.forEach((item,index) => {
       const input = document.querySelectorAll(".top-scorer-input")[index];
-      if(input){ input.value = item.points; }
+      if(input) input.value = item.points;
     });
   }
 
@@ -834,20 +660,11 @@ async function submitTips(){
     return;
   }
 
-  const bestPlayer = [...document.querySelectorAll(".best-player-input")]
-    .map((input, index) => ({
-      player: players[index],
-      points: input.value || "0"
-    }));
+  const bestPlayer = getBonusData(".best-player-input");
+  const topScorer = getBonusData(".top-scorer-input");
 
-  const topScorer = [...document.querySelectorAll(".top-scorer-input")]
-    .map((input, index) => ({
-      player: players[index],
-      points: input.value || "0"
-    }));
-
-  const bestTotal = bestPlayer.reduce((sum, item) => sum + Number(item.points || 0), 0);
-  const scorerTotal = topScorer.reduce((sum, item) => sum + Number(item.points || 0), 0);
+  const bestTotal = bestPlayer.reduce((sum,item) => sum + Number(item.points || 0),0);
+  const scorerTotal = topScorer.reduce((sum,item) => sum + Number(item.points || 0),0);
 
   const invalidBestPlayer = bestPlayer.find(item => Number(item.points) > 10 || Number(item.points) < 0);
   const invalidTopScorer = topScorer.find(item => Number(item.points) > 10 || Number(item.points) < 0);
@@ -874,62 +691,43 @@ async function submitTips(){
 
   try{
     await fetch(SUBMIT_URL, {
-      method: "POST",
-      mode: "no-cors",
-      body: JSON.stringify({
-        name,
-        tips,
-        bestPlayer,
-        topScorer
-      })
+      method:"POST",
+      mode:"no-cors",
+      body:JSON.stringify({ name, tips, bestPlayer, topScorer })
     });
 
-    localStorage.setItem("vm2026_submitted", "true");
-
-const btn = document.querySelector(".submit-btn");
-
-btn.textContent = "Tips sendt inn ✅";
-btn.style.background = "#666";
-btn.style.cursor = "not-allowed";
-btn.disabled = true;
-
-alert("Tips sendt inn! 🔥");
+    localStorage.setItem("vm2026_submitted","true");
+    setSubmittedButton();
+    alert("Tips sendt inn! 🔥");
   }catch(error){
     alert("Noe gikk feil ved innsending.");
     console.error(error);
   }
 }
-  
-if(localStorage.getItem("vm2026_submitted") === "true"){
 
+function setSubmittedButton(){
   const btn = document.querySelector(".submit-btn");
-
   btn.textContent = "Tips sendt inn ✅";
   btn.style.background = "#666";
-btn.style.cursor = "not-allowed";
+  btn.style.cursor = "not-allowed";
   btn.disabled = true;
 }
-  const toggleRulesBtn =
-document.getElementById("toggleRulesBtn");
 
-const rulesBox =
-document.getElementById("rulesBox");
+const toggleRulesBtn = document.getElementById("toggleRulesBtn");
+const rulesBox = document.getElementById("rulesBox");
 
 toggleRulesBtn.onclick = () => {
-
   if(rulesBox.style.display === "none"){
-
     rulesBox.style.display = "block";
     toggleRulesBtn.textContent = "❌ Skjul poengsystem";
-
   }else{
-
     rulesBox.style.display = "none";
     toggleRulesBtn.textContent = "❓ Vis poengsystem";
   }
 };
-  
+
 async function init(){
+  if(localStorage.getItem("vm2026_submitted") === "true") setSubmittedButton();
 
   await loadScoringRules();
   await loadPlayers();
@@ -938,6 +736,5 @@ async function init(){
 
 init();
 </script>
-
 </body>
 </html>
