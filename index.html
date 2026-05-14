@@ -596,6 +596,604 @@ async function submitTips(){
       points: input.value || "0"
     }));
 
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Barrios World Cup Challenge 2026</title>
+
+<style>
+:root{
+  --bg:#07111f;
+  --card:rgba(255,255,255,0.08);
+  --line:rgba(255,255,255,0.12);
+  --text:#ffffff;
+  --muted:rgba(255,255,255,0.7);
+  --green:#2ecc71;
+  --red:#ff4757;
+  --gold:#ffd166;
+  --blue:#4dabf7;
+}
+
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:
+    radial-gradient(circle at top left,#123,#07111f 60%);
+  color:var(--text);
+  min-height:100vh;
+}
+
+.wrapper{
+ max-width:1200px;
+  margin:auto;
+  padding:18px;
+}
+
+.hero{
+  text-align:center;
+  margin-bottom:22px;
+}
+
+.hero h1{
+  font-size:38px;
+  margin-bottom:8px;
+}
+
+.hero p{
+  color:var(--muted);
+  margin:0;
+}
+
+.top-box{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:16px;
+  margin-bottom:18px;
+  backdrop-filter:blur(10px);
+}
+
+.name-field{
+  width:100%;
+  box-sizing:border-box;
+  height:48px;
+  border:none;
+  border-radius:14px;
+  padding:0 14px;
+  font-size:18px;
+  margin-top:8px;
+}
+
+.progress{
+  margin-top:16px;
+}
+
+.progress-row{
+  display:flex;
+  justify-content:space-between;
+  color:var(--muted);
+  font-size:14px;
+  margin-bottom:8px;
+}
+
+.progress-bar{
+  height:12px;
+  background:rgba(255,255,255,0.08);
+  border-radius:999px;
+  overflow:hidden;
+}
+
+.progress-fill{
+  width:0%;
+  height:100%;
+  background:var(--green);
+  transition:0.25s;
+}
+
+.section-title{
+  margin:26px 0 12px;
+  font-size:22px;
+}
+
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:14px;
+  margin-bottom:12px;
+  backdrop-filter:blur(10px);
+}
+
+.match-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  margin-bottom:12px;
+}
+
+.match-title{
+  font-weight:bold;
+  font-size:15px;
+}
+
+.group{
+  background:rgba(255,255,255,0.08);
+  padding:5px 9px;
+  border-radius:999px;
+  font-size:12px;
+  white-space:nowrap;
+}
+
+.teams{
+  display:grid;
+grid-template-columns:1fr 120px 1fr;
+  gap:8px;
+  align-items:center;
+}
+
+.team{
+  background:rgba(255,255,255,0.05);
+  padding:11px 8px;
+  border-radius:13px;
+  text-align:center;
+  min-height:44px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  gap:4px;
+}
+
+.team-name{
+  font-weight:bold;
+  font-size:14px;
+}
+
+.tier{
+  display:inline-block;
+  margin:auto;
+  padding:3px 7px;
+  border-radius:999px;
+  font-size:11px;
+  font-weight:bold;
+  background:rgba(255,255,255,0.12);
+  color:white;
+}
+
+.tier-1{ background:rgba(255,209,102,0.25); color:var(--gold); }
+.tier-2{ background:rgba(77,171,247,0.22); color:var(--blue); }
+.tier-3{ background:rgba(46,204,113,0.22); color:var(--green); }
+.tier-4{ background:rgba(255,71,87,0.22); color:#ff9aa8; }
+
+.score{
+  display:flex;
+  gap:7px;
+  justify-content:center;
+  align-items:center;
+}
+
+.score input{
+  width:48px;
+  height:42px;
+  border:none;
+  border-radius:12px;
+  font-size:20px;
+  text-align:center;
+  background:white;
+  color:#111;
+  font-weight:bold;
+}
+
+.submit-btn{
+  width:100%;
+  height:58px;
+  border:none;
+  border-radius:16px;
+  background:var(--green);
+  color:white;
+  font-size:20px;
+  font-weight:bold;
+  cursor:pointer;
+  margin:24px 0 30px;
+}
+
+.submit-btn:hover{
+  opacity:0.9;
+}
+
+.loading{
+  color:var(--muted);
+  text-align:center;
+  padding:30px;
+}
+
+@media(max-width:700px){
+  .wrapper{
+    padding:12px;
+  }
+
+  .hero h1{
+    font-size:28px;
+  }
+
+  .teams{
+    grid-template-columns:1fr;
+  }
+
+  .score{
+    order:2;
+  }
+
+  .team{
+    min-height:auto;
+  }
+
+  .match-header{
+    align-items:flex-start;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="wrapper">
+
+  <div class="hero">
+    <h1>🏆 Barrios World Cup Challenge 2026</h1>
+    <p>Tipp VM. Treff outsiders. Vinn evig skryterett.</p>
+  </div>
+
+  <div class="top-box">
+    <label for="playerName"><strong>Navn / brukernavn</strong></label>
+   <input id="playerName" class="name-field" type="text" placeholder="Skriv navnet ditt her" oninput="saveTipsLocally()">
+
+    <div class="progress">
+      <div class="progress-row">
+        <span id="progressText">0 / 0 kamper fylt ut</span>
+        <span id="progressPercent">0%</span>
+      </div>
+      <div class="progress-bar">
+        <div id="progressFill" class="progress-fill"></div>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="section-title">Kamptips</h2>
+  
+<div id="groupFilters" style="
+display:flex;
+gap:8px;
+flex-wrap:wrap;
+margin-bottom:20px;
+"></div>
+  
+  <div id="matches">
+    <div class="loading">Laster kamper fra Google Sheets...</div>
+  </div>
+<div class="top-box">
+
+  <h2 style="margin-top:0;">Beste spiller</h2>
+
+  <div id="bestPlayerContainer"></div>
+
+  <div id="bestPlayerStatus"
+       style="margin-top:12px;color:rgba(255,255,255,0.7);font-size:14px;">
+    0 / 10 poeng brukt
+  </div>
+
+</div>
+
+<div class="top-box">
+
+  <h2 style="margin-top:0;">Toppscorer</h2>
+
+  <div id="topScorerContainer"></div>
+
+  <div id="topScorerStatus"
+       style="margin-top:12px;color:rgba(255,255,255,0.7);font-size:14px;">
+    0 / 10 poeng brukt
+  </div>
+
+</div>
+  
+  <button class="submit-btn" onclick="submitTips()">
+    Send inn tips
+  </button>
+
+</div>
+
+<script>
+const API_URL =
+"https://opensheet.elk.sh/1EvB5oqS4Bemr_W8VXYzWAVsr4nX0u3VTQMpgUlOM9-s/API_MATCHES";
+  
+  const PLAYERS_API_URL =
+"https://opensheet.elk.sh/1EvB5oqS4Bemr_W8VXYzWAVsr4nX0u3VTQMpgUlOM9-s/API_PLAYERS";
+  
+  const SUBMIT_URL =
+"https://script.google.com/macros/s/AKfycbyJB5mugyonYlXClojolIGcInen7ClFl55j-c7xQw6Z0-fS5rKfQKgF9AVhLLe9UQgM4Q/exec";
+
+let allMatches = [];
+let currentGroup = "ALL";
+
+async function loadMatches(){
+  const container = document.getElementById("matches");
+
+  try{
+    const res = await fetch(API_URL);
+    allMatches = await res.json();
+
+    renderMatches();
+    loadSavedTips();
+    updateProgress();
+
+  }catch(error){
+    container.innerHTML = `
+      <div class="card">
+        Klarte ikke å laste kampene. Sjekk at Google Sheet er delt som "Alle med linken kan se".
+      </div>
+    `;
+    console.error(error);
+  }
+}
+
+function getGroupedMatches(){
+  const grouped = {};
+
+  allMatches.forEach(match => {
+    const group = match.group || "?";
+
+    if(!grouped[group]){
+      grouped[group] = [];
+    }
+
+    grouped[group].push(match);
+  });
+
+  return grouped;
+}
+
+function renderMatches(){
+  const container = document.getElementById("matches");
+  const grouped = getGroupedMatches();
+  const groups = Object.keys(grouped);
+
+  renderFilters(groups);
+
+  container.innerHTML = "";
+
+  groups.forEach(group => {
+    if(currentGroup !== "ALL" && currentGroup !== group){
+      return;
+    }
+
+    container.innerHTML += `
+      <h2 class="section-title">Gruppe ${group}</h2>
+    `;
+
+    grouped[group].forEach(match => {
+      const homeTier = match.tier_home || "";
+      const awayTier = match.tier_away || "";
+
+      container.innerHTML += `
+        <div class="card">
+          <div class="match-header">
+            <div>
+              <div class="match-title">
+                ${match.home} vs ${match.away}
+              </div>
+
+              <div style="font-size:12px;color:rgba(255,255,255,0.6);margin-top:4px;">
+                ${match.date || ""}
+              </div>
+            </div>
+          </div>
+
+          <div class="teams">
+            <div class="team">
+              <div class="team-name">${match.home}</div>
+              <div class="tier tier-${homeTier}">T${homeTier}</div>
+            </div>
+
+            <div class="score">
+              <input 
+                type="number"
+                min="0"
+                inputmode="numeric"
+                data-match-id="${match.id}"
+                data-side="home"
+                oninput="updateProgress(); saveTipsLocally()"
+              >
+              <span>-</span>
+              <input 
+                type="number"
+                min="0"
+                inputmode="numeric"
+                data-match-id="${match.id}"
+                data-side="away"
+                oninput="updateProgress(); saveTipsLocally()"
+              >
+            </div>
+            <div class="team">
+              <div class="team-name">${match.away}</div>
+              <div class="tier tier-${awayTier}">T${awayTier}</div>
+            </div>
+          </div>
+        </div>
+      `;
+    });
+  });
+}
+
+function renderFilters(groups){
+  const filterContainer = document.getElementById("groupFilters");
+  const allGroups = ["ALL", ...groups];
+
+  filterContainer.innerHTML = "";
+
+  allGroups.forEach(group => {
+    const btn = document.createElement("button");
+
+    btn.textContent = group === "ALL" ? "Alle" : group;
+
+    btn.style.cssText = `
+      border:none;
+      border-radius:999px;
+      padding:10px 14px;
+      background:${
+        currentGroup === group
+        ? "#2ecc71"
+        : "rgba(255,255,255,0.08)"
+      };
+      color:white;
+      cursor:pointer;
+      font-weight:bold;
+    `;
+
+    btn.onclick = () => {
+      currentGroup = group;
+      renderMatches();
+      updateProgress();
+    };
+
+    filterContainer.appendChild(btn);
+  });
+}
+
+function updateProgress(){
+  const total = allMatches.length;
+  let completed = 0;
+
+  allMatches.forEach(match => {
+    const homeInput = document.querySelector(`input[data-match-id="${match.id}"][data-side="home"]`);
+    const awayInput = document.querySelector(`input[data-match-id="${match.id}"][data-side="away"]`);
+
+    if(homeInput && awayInput && homeInput.value !== "" && awayInput.value !== ""){
+      completed++;
+    }
+  });
+
+  const percent = total ? Math.round((completed / total) * 100) : 0;
+
+  document.getElementById("progressText").textContent = `${completed} / ${total} kamper fylt ut`;
+  document.getElementById("progressPercent").textContent = `${percent}%`;
+  document.getElementById("progressFill").style.width = `${percent}%`;
+}
+function saveTipsLocally(){
+  const name = document.getElementById("playerName").value.trim();
+
+  const tips = allMatches.map(match => {
+    const homeInput = document.querySelector(`input[data-match-id="${match.id}"][data-side="home"]`);
+    const awayInput = document.querySelector(`input[data-match-id="${match.id}"][data-side="away"]`);
+
+    return {
+      id: match.id,
+      tips_home: homeInput ? homeInput.value : "",
+      tips_away: awayInput ? awayInput.value : ""
+    };
+  });
+
+   const bestPlayer = [...document.querySelectorAll(".best-player-input")]
+    .map((input, index) => ({
+      player: players[index],
+      points: input.value || "0"
+    }));
+
+  const topScorer = [...document.querySelectorAll(".top-scorer-input")]
+    .map((input, index) => ({
+      player: players[index],
+      points: input.value || "0"
+    }));
+
+  localStorage.setItem("vm2026_tips", JSON.stringify({
+    name,
+    tips,
+    bestPlayer,
+    topScorer
+  }));
+}
+
+function loadSavedTips(){
+  const saved = localStorage.getItem("vm2026_tips");
+
+  if(!saved){
+    return;
+  }
+
+  const data = JSON.parse(saved);
+
+  if(data.name){
+    document.getElementById("playerName").value = data.name;
+  }
+
+  if(data.tips){
+    data.tips.forEach(tip => {
+      const homeInput = document.querySelector(`input[data-match-id="${tip.id}"][data-side="home"]`);
+      const awayInput = document.querySelector(`input[data-match-id="${tip.id}"][data-side="away"]`);
+
+      if(homeInput){
+        homeInput.value = tip.tips_home;
+      }
+
+      if(awayInput){
+        awayInput.value = tip.tips_away;
+      }
+    });
+  }
+  if(data.bestPlayer){
+    data.bestPlayer.forEach((item, index) => {
+      const input = document.querySelectorAll(".best-player-input")[index];
+
+      if(input){
+        input.value = item.points;
+      }
+    });
+  }
+
+  if(data.topScorer){
+    data.topScorer.forEach((item, index) => {
+      const input = document.querySelectorAll(".top-scorer-input")[index];
+
+      if(input){
+        input.value = item.points;
+      }
+    });
+  }
+
+  updateBonusStatus();
+  
+  updateProgress();
+  }
+async function submitTips(){
+  const name = document.getElementById("playerName").value.trim();
+
+  if(!name){
+    alert("Skriv inn navn først.");
+    return;
+  }
+
+  const tips = allMatches.map(match => {
+    const homeInput = document.querySelector(`input[data-match-id="${match.id}"][data-side="home"]`);
+    const awayInput = document.querySelector(`input[data-match-id="${match.id}"][data-side="away"]`);
+
+    return {
+      id: match.id,
+      home: match.home,
+      away: match.away,
+      tips_home: homeInput ? homeInput.value : "",
+      tips_away: awayInput ? awayInput.value : ""
+    };
+  });
+
+  const bestPlayer = [...document.querySelectorAll(".best-player-input")]
+    .map((input, index) => ({
+      player: players[index],
+      points: input.value || "0"
+    }));
+
   const topScorer = [...document.querySelectorAll(".top-scorer-input")]
     .map((input, index) => ({
       player: players[index],
@@ -603,6 +1201,142 @@ async function submitTips(){
     }));
 
   try{
+    await fetch(SUBMIT_URL, {
+      method: "POST",
+      mode: "no-cors",
+      body: JSON.stringify({
+        name,
+        tips,
+        bestPlayer,
+        topScorer
+      })
+    });
+
+    alert("Tips sendt inn! 🔥");
+  }catch(error){
+    alert("Noe gikk feil ved innsending.");
+    console.error(error);
+  }
+}
+  let players = [];
+  async function loadPlayers(){
+  const res = await fetch(PLAYERS_API_URL);
+  const data = await res.json();
+
+  players = data
+    .map(row => row.name)
+    .filter(Boolean);
+
+  renderBonusSection();
+  loadSavedTips();
+}
+function renderBonusSection(){
+
+  const bestContainer =
+  document.getElementById("bestPlayerContainer");
+
+  const scorerContainer =
+  document.getElementById("topScorerContainer");
+
+  players.forEach(player => {
+
+    bestContainer.innerHTML += `
+      <div style="
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        margin-bottom:10px;
+        gap:10px;
+      ">
+        <div>${player}</div>
+
+        <input
+          type="number"
+          min="0"
+          max="10"
+          value="0"
+          class="best-player-input"
+          style="
+            width:70px;
+            height:38px;
+            border:none;
+            border-radius:10px;
+            text-align:center;
+            font-size:16px;
+          "
+          oninput="updateBonusStatus(); saveTipsLocally()"
+        >
+      </div>
+    `;
+
+    scorerContainer.innerHTML += `
+      <div style="
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        margin-bottom:10px;
+        gap:10px;
+      ">
+        <div>${player}</div>
+
+        <input
+          type="number"
+          min="0"
+          max="10"
+          value="0"
+          class="top-scorer-input"
+          style="
+            width:70px;
+            height:38px;
+            border:none;
+            border-radius:10px;
+            text-align:center;
+            font-size:16px;
+          "
+          oninput="updateBonusStatus(); saveTipsLocally()"
+        >
+      </div>
+    `;
+
+  });
+
+}
+
+function updateBonusStatus(){
+
+  let bestTotal = 0;
+  let scorerTotal = 0;
+
+  document
+    .querySelectorAll(".best-player-input")
+    .forEach(input => {
+      bestTotal += Number(input.value || 0);
+    });
+
+  document
+    .querySelectorAll(".top-scorer-input")
+    .forEach(input => {
+      scorerTotal += Number(input.value || 0);
+    });
+
+  document.getElementById("bestPlayerStatus")
+    .textContent =
+    `${bestTotal} / 10 poeng brukt`;
+
+  document.getElementById("topScorerStatus")
+    .textContent =
+    `${scorerTotal} / 10 poeng brukt`;
+
+}
+  
+loadPlayers();
+loadMatches();
+</script>
+
+  
+</body>
+</html>
+
     await fetch(SUBMIT_URL, {
       method: "POST",
       mode: "no-cors",
