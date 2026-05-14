@@ -7,14 +7,12 @@
 
 <style>
 :root{
-  --card:rgba(7,14,28,0.82);
-  --line:rgba(255,255,255,0.13);
+  --card:rgba(7,14,28,0.84);
+  --line:rgba(255,255,255,0.14);
   --text:#fff;
   --muted:rgba(255,255,255,0.72);
   --green:#2ecc71;
-  --lime:#c8e63c;
-  --orange:#ffb347;
-  --red:#ff4757;
+  --gold:#ffd166;
 }
 
 body{
@@ -23,10 +21,16 @@ body{
   color:var(--text);
   min-height:100vh;
   background:
-    radial-gradient(circle at top left, rgba(46,204,113,0.18), transparent 28%),
-    radial-gradient(circle at top right, rgba(255,255,255,0.08), transparent 24%),
-    linear-gradient(rgba(0,0,0,0.62), rgba(0,0,0,0.78)),
-    repeating-linear-gradient(90deg,#0b3d24 0px,#0b3d24 80px,#0e4a2c 80px,#0e4a2c 160px);
+    radial-gradient(circle at top left, rgba(46,204,113,0.24), transparent 30%),
+    radial-gradient(circle at bottom right, rgba(255,209,102,0.14), transparent 28%),
+    linear-gradient(rgba(0,0,0,0.68), rgba(0,0,0,0.84)),
+    repeating-linear-gradient(
+      90deg,
+      #0b3d24 0px,
+      #0b3d24 90px,
+      #0e4a2c 90px,
+      #0e4a2c 180px
+    );
 }
 
 body::before{
@@ -35,903 +39,175 @@ body::before{
   inset:0;
   pointer-events:none;
   background:
-    radial-gradient(circle at center, transparent 0 130px, rgba(255,255,255,0.05) 131px 133px, transparent 134px),
-    linear-gradient(90deg, transparent 49.8%, rgba(255,255,255,0.08) 50%, transparent 50.2%);
+    radial-gradient(circle at center, transparent 0 135px, rgba(255,255,255,0.06) 136px 138px, transparent 139px),
+    linear-gradient(90deg, transparent 49.8%, rgba(255,255,255,0.09) 50%, transparent 50.2%);
   opacity:0.45;
 }
 
 .wrapper{
-  max-width:1100px;
+  max-width:1000px;
   margin:auto;
-  padding:18px;
+  padding:22px;
   position:relative;
   z-index:1;
 }
 
 .hero{
-  text-align:center;
-  margin-bottom:22px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:22px;
+  text-align:left;
+  margin:28px 0 28px;
+}
+
+.hero-img{
+  width:130px;
+  max-width:34vw;
+  filter:drop-shadow(0 12px 24px rgba(0,0,0,0.45));
 }
 
 .hero h1{
-  font-size:38px;
-  margin-bottom:8px;
+  font-size:42px;
+  margin:0 0 8px;
+  line-height:1.05;
 }
 
 .hero p{
   color:var(--muted);
   margin:0;
+  font-size:17px;
 }
 
-.top-box,.card{
+.card{
   background:var(--card);
   border:1px solid var(--line);
-  border-radius:20px;
-  padding:16px;
+  border-radius:24px;
+  padding:22px;
   margin-bottom:18px;
   backdrop-filter:blur(10px);
-  box-shadow:0 12px 35px rgba(0,0,0,0.28);
+  box-shadow:0 16px 40px rgba(0,0,0,0.32);
 }
 
-.nav{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-  margin-bottom:22px;
+.menu-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:16px;
 }
 
-.nav-btn,.filter-btn{
-  border:none;
-  border-radius:999px;
-  padding:11px 16px;
-  background:rgba(255,255,255,0.08);
+.menu-link{
+  display:block;
+  text-decoration:none;
   color:white;
-  font-weight:bold;
-  cursor:pointer;
+  padding:22px;
+  border-radius:20px;
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.12);
+  transition:0.2s;
 }
 
-.nav-btn:hover,.filter-btn:hover{
-  background:rgba(255,255,255,0.18);
+.menu-link:hover{
+  transform:translateY(-2px);
+  background:rgba(255,255,255,0.14);
 }
 
-.name-field{
-  width:100%;
-  box-sizing:border-box;
-  height:48px;
-  border:none;
-  border-radius:14px;
-  padding:0 14px;
-  font-size:18px;
-  margin-top:8px;
+.menu-link strong{
+  display:block;
+  font-size:22px;
+  margin-bottom:7px;
 }
 
-.progress{ margin-top:16px; }
-
-.progress-row{
-  display:flex;
-  justify-content:space-between;
+.menu-link span{
+  display:block;
   color:var(--muted);
   font-size:14px;
-  margin-bottom:8px;
+  line-height:1.45;
 }
 
-.progress-bar{
-  height:12px;
-  background:rgba(255,255,255,0.1);
-  border-radius:999px;
-  overflow:hidden;
-}
-
-.progress-fill{
-  width:0%;
-  height:100%;
-  background:var(--green);
-  transition:0.25s;
-}
-
-.section-title{
-  margin:28px 0 12px;
-  font-size:24px;
-}
-
-.match-title{
-  font-weight:bold;
-  font-size:18px;
-}
-
-.match-date{
-  font-size:12px;
-  color:rgba(255,255,255,0.62);
-  margin-top:4px;
-}
-
-.teams{
-  display:grid;
-  gap:10px;
-  margin-top:12px;
-}
-
-.team{
-  display:grid;
-  grid-template-columns:1fr auto;
-  gap:12px;
-  align-items:center;
-  border-radius:18px;
-  padding:14px;
-  border:2px solid transparent;
-}
-
-.team-name{
-  font-size:20px;
-  font-weight:bold;
-}
-
-.tier-label{
+.badge{
   display:inline-block;
-  margin-top:5px;
-  padding:4px 9px;
+  margin-bottom:12px;
+  padding:6px 11px;
   border-radius:999px;
-  font-size:12px;
-  font-weight:bold;
-  background:rgba(0,0,0,0.25);
-}
-
-.team.tier-1{
-  background:linear-gradient(135deg, rgba(46,204,113,0.34), rgba(46,204,113,0.12));
-  border-color:var(--green);
-}
-
-.team.tier-2{
-  background:linear-gradient(135deg, rgba(200,230,60,0.32), rgba(200,230,60,0.11));
-  border-color:var(--lime);
-}
-
-.team.tier-3{
-  background:linear-gradient(135deg, rgba(255,179,71,0.34), rgba(255,179,71,0.11));
-  border-color:var(--orange);
-}
-
-.team.tier-4{
-  background:linear-gradient(135deg, rgba(255,71,87,0.36), rgba(255,71,87,0.12));
-  border-color:var(--red);
-}
-
-.team-score{
-  width:64px;
-  height:54px;
-  border:none;
-  border-radius:14px;
-  font-size:24px;
-  text-align:center;
-  background:white;
-  color:#111;
-  font-weight:bold;
-}
-
-.result-box{
-  margin-top:14px;
-  padding:10px 12px;
-  border-radius:12px;
-  background:rgba(46,204,113,0.16);
-  border:1px solid rgba(46,204,113,0.35);
-  font-weight:bold;
-  text-align:center;
-}
-
-.scoring-preview{
-  margin-top:14px;
-  padding:12px;
-  border-radius:14px;
-  background:rgba(255,255,255,0.07);
-  border:1px solid rgba(255,255,255,0.10);
-  font-size:13px;
-}
-
-.scoring-grid{
-  display:grid;
-  grid-template-columns:1fr auto;
-  gap:6px 12px;
-}
-
-.scoring-label{
-  color:rgba(255,255,255,0.72);
-}
-
-.bonus-row,.leaderboard-row{
-  display:grid;
-  grid-template-columns:1fr auto auto;
-  gap:10px;
-  align-items:center;
-  padding:9px 0;
-  border-bottom:1px solid rgba(255,255,255,0.08);
-}
-
-.leaderboard-row{
-  grid-template-columns:44px 1fr auto;
-}
-
-.multiplier{
+  background:rgba(46,204,113,0.18);
+  color:#9dffc7;
   font-size:13px;
   font-weight:bold;
-  padding:5px 9px;
-  border-radius:999px;
-  background:rgba(255,255,255,0.1);
 }
 
-.bonus-row input{
-  width:70px;
-  height:38px;
-  border:none;
-  border-radius:10px;
-  text-align:center;
-  font-size:16px;
-}
-
-.submit-btn{
-  width:100%;
-  height:58px;
-  border:none;
-  border-radius:16px;
-  background:var(--green);
-  color:white;
-  font-size:20px;
-  font-weight:bold;
-  cursor:pointer;
-  margin:24px 0 30px;
-}
-
-.loading{
+.footer-note{
   color:var(--muted);
   text-align:center;
-  padding:30px;
+  font-size:13px;
+  margin-top:20px;
 }
 
 @media(max-width:700px){
-  .wrapper{ padding:12px; }
-  .hero h1{ font-size:28px; }
-  .team-name{ font-size:17px; }
-  .team-score{ width:58px; height:50px; }
-  .bonus-row{ grid-template-columns:1fr auto; }
-  .multiplier{ grid-column:1; width:max-content; }
+  .hero{
+    flex-direction:column;
+    text-align:center;
+  }
+
+  .hero h1{
+    font-size:32px;
+  }
+
+  .menu-grid{
+    grid-template-columns:1fr;
+  }
 }
 </style>
 </head>
 
 <body>
+
 <div class="wrapper">
 
   <div class="hero">
-    <h1>🏆 Barrios World Cup Challenge 2026</h1>
-    <p>Tipp VM. Treff outsiders. Vinn evig skryterett.</p>
-  </div>
+    <img
+      class="hero-img"
+      src="72328471_10158131489134068_6113053903316582400_n-removebg-preview.png"
+      alt="Barrios World Cup Challenge"
+    >
 
-  <div class="nav">
-    <button class="nav-btn" onclick="scrollToSection('matchesSection')">Kamptips</button>
-    <button class="nav-btn" onclick="scrollToSection('bonusSection')">Bonus</button>
-    <button class="nav-btn" onclick="scrollToSection('leaderboardSection')">Leaderboard</button>
-    <button class="nav-btn" onclick="scrollToSection('rulesSection')">Regler</button>
-  </div>
-
-  <div class="top-box" id="rulesSection">
-    <button id="toggleRulesBtn" style="width:100%;height:52px;border:none;border-radius:14px;background:rgba(255,255,255,0.08);color:white;font-size:16px;font-weight:bold;cursor:pointer;">
-      ❓ Vis poengsystem
-    </button>
-
-    <div id="rulesBox" style="display:none;margin-top:16px;line-height:1.7;color:rgba(255,255,255,0.88);">
-      <h3 style="margin-top:0;">Hvordan scoring fungerer</h3>
-      <p>Du får poeng på ett av tre nivåer:</p>
-      <p><strong>1. Riktig utfall</strong><br>Riktig vinner eller uavgjort.</p>
-      <p><strong>2. Riktig målforskjell</strong><br>Du treffer differansen, for eksempel 2-1 når kampen ender 1-0.</p>
-      <p><strong>3. Eksakt resultat</strong><br>Du treffer helt riktig resultat.</p>
-      <p>Tier-systemet gjør at underdogs gir mer poeng. Grønne lag er favoritter, røde lag er underdogs.</p>
+    <div>
+      <div class="badge">VM 2026</div>
+      <h1>Barrios World Cup Challenge</h1>
+      <p>Tipp VM. Treff outsiders. Vinn evig skryterett.</p>
     </div>
   </div>
 
-  <div class="top-box">
-    <label for="playerName"><strong>Navn / brukernavn</strong></label>
-    <input id="playerName" class="name-field" type="text" placeholder="Skriv navnet ditt her" oninput="saveTipsLocally()">
+  <div class="card">
+    <div class="menu-grid">
 
-    <div class="progress">
-      <div class="progress-row">
-        <span id="progressText">0 / 0 kamper fylt ut</span>
-        <span id="progressPercent">0%</span>
-      </div>
-      <div class="progress-bar">
-        <div id="progressFill" class="progress-fill"></div>
-      </div>
+      <a class="menu-link" href="tips.html">
+        <strong>⚽ Kamptips</strong>
+        <span>Fyll inn resultatene dine for kampene. Se tier, poengmuligheter og sluttresultater.</span>
+      </a>
+
+      <a class="menu-link" href="bonus.html">
+        <strong>⭐ Bonus</strong>
+        <span>Lever tips på toppscorer og beste spiller med multiplikatorer.</span>
+      </a>
+
+      <a class="menu-link" href="leaderboard.html">
+        <strong>🏆 Leaderboard</strong>
+        <span>Se hvem som leder, hvem som jager, og hvem som har fått VM-mareritt.</span>
+      </a>
+
+      <a class="menu-link" href="stats.html">
+        <strong>📊 Stats</strong>
+        <span>Et fremtidig statsrom for treffprosent, underdog-konger og eksakte resultater.</span>
+      </a>
+
     </div>
   </div>
 
-  <div id="matchesSection">
-    <h2 class="section-title">Kamptips</h2>
-    <div id="groupFilters" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;"></div>
-    <div id="matches">
-      <div class="loading">Laster kamper fra Google Sheets...</div>
-    </div>
+  <div class="footer-note">
+    Barrios World Cup Challenge 2026
   </div>
-
-  <div id="bonusSection">
-    <div class="top-box">
-      <h2 style="margin-top:0;">Beste spiller</h2>
-      <div id="bestPlayerContainer"></div>
-      <div id="bestPlayerStatus" style="margin-top:12px;color:rgba(255,255,255,0.7);font-size:14px;">0 / 10 poeng brukt</div>
-    </div>
-
-    <div class="top-box">
-      <h2 style="margin-top:0;">Toppscorer</h2>
-      <div id="topScorerContainer"></div>
-      <div id="topScorerStatus" style="margin-top:12px;color:rgba(255,255,255,0.7);font-size:14px;">0 / 10 poeng brukt</div>
-    </div>
-  </div>
-
-  <div class="top-box" id="leaderboardSection">
-    <h2 style="margin-top:0;">Leaderboard</h2>
-    <div id="leaderboardContainer">Laster leaderboard...</div>
-  </div>
-
-  <button class="submit-btn" onclick="submitTips()">Send inn tips</button>
 
 </div>
 
-<script>
-const SHEET_ID = "1EvB5oqS4Bemr_W8VXYzWAVsr4nX0u3VTQMpgUlOM9-s";
-
-const API_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_MATCHES`;
-const PLAYERS_API_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_PLAYERS`;
-const OUTCOME_API_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_OUTCOME`;
-const DIFF_API_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_DIFF`;
-const EXACT_API_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_EXACT`;
-const RESULTS_API_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_RESULTS`;
-const LEADERBOARD_API_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_LEADERBOARD`;
-
-const SUBMIT_URL =
-"https://script.google.com/macros/s/AKfycbyJB5mugyonYlXClojolIGcInen7ClFl55j-c7xQw6Z0-fS5rKfQKgF9AVhLLe9UQgM4Q/exec";
-
-let allMatches = [];
-let currentGroup = "ALL";
-let players = [];
-let outcomeRules = [];
-let diffRules = [];
-let exactRules = [];
-let results = [];
-let resultsById = {};
-
-function normalizeRow(row){
-  const clean = {};
-
-  Object.keys(row).forEach(key => {
-    const cleanKey = key
-      .trim()
-      .toLowerCase()
-      .replace(/\s+/g,"_")
-      .replace(/-/g,"_");
-
-    clean[cleanKey] = typeof row[key] === "string"
-      ? row[key].trim()
-      : row[key];
-  });
-
-  return clean;
-}
-
-async function fetchSheet(url){
-  const data = await (await fetch(url)).json();
-  return data.map(normalizeRow);
-}
-
-async function loadScoringRules(){
-  outcomeRules = await fetchSheet(OUTCOME_API_URL);
-  diffRules = await fetchSheet(DIFF_API_URL);
-  exactRules = await fetchSheet(EXACT_API_URL);
-}
-
-async function loadPlayers(){
-  const data = await fetchSheet(PLAYERS_API_URL);
-
-  players = data
-    .map(row => ({
-      name: row.name,
-      multiplier: Number(row.multiplier || 1)
-    }))
-    .filter(player => player.name);
-
-  renderBonusSection();
-  loadSavedTips();
-}
-async function loadResults(){
-
-  const data = await fetchSheet(RESULTS_API_URL);
-
-  results = data;
-
-  resultsById = {};
-
-  results.forEach(result => {
-    resultsById[String(result.id)] = result;
-  });
-}
-async function loadMatches(){
-  const container = document.getElementById("matches");
-
-  try{
-   allMatches = await fetchSheet(API_URL);
-renderMatches();
-loadSavedTips();
-renderMatches();
-loadSavedTips();
-updateProgress();
-  }catch(error){
-    container.innerHTML = `<div class="card">Klarte ikke å laste kampene.</div>`;
-    console.error(error);
-  }
-}
-
-async function loadLeaderboard(){
-  const container = document.getElementById("leaderboardContainer");
-
-  try{
-    const data = await fetchSheet(LEADERBOARD_API_URL);
-
-    const rows = data
-      .filter(row => row.name)
-      .sort((a,b) => Number(b.points || 0) - Number(a.points || 0));
-
-    if(rows.length === 0){
-      container.innerHTML = `<div style="color:rgba(255,255,255,0.7);">Ingen poeng ennå.</div>`;
-      return;
-    }
-
-    container.innerHTML = "";
-
-    rows.forEach((row,index) => {
-      const medal = index === 0 ? "🥇" : index === 1 ? "🥈" : index === 2 ? "🥉" : `${index + 1}.`;
-
-      container.innerHTML += `
-        <div class="leaderboard-row">
-          <strong>${medal}</strong>
-          <span>${row.name}</span>
-          <strong>${row.points || 0} p</strong>
-        </div>
-      `;
-    });
-  }catch(error){
-    container.innerHTML = "Klarte ikke å laste leaderboard.";
-    console.error(error);
-  }
-}
-
-function getGroupedMatches(){
-  const grouped = {};
-
-  allMatches.forEach(match => {
-    const group = match.group || "?";
-    if(!grouped[group]) grouped[group] = [];
-    grouped[group].push(match);
-  });
-
-  return grouped;
-}
-
-function getRule(rules, tierDiff){
-  return rules.find(r => Number(r.tier_diff) === Number(tierDiff));
-}
-
-
-function hasResult(result){
-  return result &&
-    result.actual_home !== undefined &&
-    result.actual_home !== "" &&
-    result.actual_away !== undefined &&
-    result.actual_away !== "";
-}
-  function getOutcome(home, away){
-  if(home > away) return "home";
-  if(home < away) return "away";
-  return "draw";
-}
-
-function calculateMatchPoints(match, tipHome, tipAway, result){
-  if(!hasResult(result)) return null;
-
-  const actualHome = Number(result.actual_home);
-  const actualAway = Number(result.actual_away);
-  const predictedHome = Number(tipHome);
-  const predictedAway = Number(tipAway);
-
-  if(tipHome === "" || tipAway === "") return null;
-
-  const actualOutcome = getOutcome(actualHome, actualAway);
-  const predictedOutcome = getOutcome(predictedHome, predictedAway);
-
-  if(actualOutcome !== predictedOutcome) return 0;
-
-  const homeTier = Number(match.tier_home);
-  const awayTier = Number(match.tier_away);
-  const tierDiff = Math.abs(homeTier - awayTier);
-
-  let ruleSet = outcomeRules;
-
-  const actualDiff = actualHome - actualAway;
-  const predictedDiff = predictedHome - predictedAway;
-
-  if(actualHome === predictedHome && actualAway === predictedAway){
-    ruleSet = exactRules;
-  }else if(actualDiff === predictedDiff){
-    ruleSet = diffRules;
-  }
-
-  const row = getRule(ruleSet, tierDiff);
-  if(!row) return 0;
-
-  if(actualOutcome === "draw"){
-    return Number(row.draw || 0);
-  }
-
-  const favoriteWon =
-    (actualOutcome === "home" && homeTier < awayTier) ||
-    (actualOutcome === "away" && awayTier < homeTier);
-
-  if(homeTier === awayTier){
-    return Number(row.favorite || 0);
-  }
-
-  return favoriteWon
-    ? Number(row.favorite || 0)
-    : Number(row.underdog || 0);
-}
-
-function getScoringPreview(match){
-  const homeTier = Number(match.tier_home);
-  const awayTier = Number(match.tier_away);
-  const tierDiff = Math.abs(homeTier - awayTier);
-
-  const outcomeRow = getRule(outcomeRules, tierDiff);
-  const diffRow = getRule(diffRules, tierDiff);
-  const exactRow = getRule(exactRules, tierDiff);
-
-  if(!outcomeRow || !diffRow || !exactRow) return null;
-
-  function ordered(row){
-    if(homeTier < awayTier) return `${row.favorite} / ${row.draw} / ${row.underdog}`;
-    if(homeTier > awayTier) return `${row.underdog} / ${row.draw} / ${row.favorite}`;
-    return `${row.favorite} / ${row.draw} / ${row.underdog}`;
-  }
-
-  return {
-    outcome: ordered(outcomeRow),
-    diff: ordered(diffRow),
-    exact: ordered(exactRow)
-  };
-}
-
-function renderMatches(){
-  const container = document.getElementById("matches");
-  const grouped = getGroupedMatches();
-  const groups = Object.keys(grouped);
-
-  renderFilters(groups);
-  container.innerHTML = "";
-
-  groups.forEach(group => {
-    if(currentGroup !== "ALL" && currentGroup !== group) return;
-
-    container.innerHTML += `<h2 class="section-title">Gruppe ${group}</h2>`;
-
-    grouped[group].forEach(match => {
-      const homeTier = match.tier_home || "";
-      const awayTier = match.tier_away || "";
-      const scoring = getScoringPreview(match);
-      const result = resultsById[String(match.id)];
-      const homeInputValue = document.querySelector(`input[data-match-id="${match.id}"][data-side="home"]`)?.value || "";
-const awayInputValue = document.querySelector(`input[data-match-id="${match.id}"][data-side="away"]`)?.value || "";
-const points = calculateMatchPoints(match, homeInputValue, awayInputValue, result);
-
-      container.innerHTML += `
-        <div class="card">
-          <div>
-            <div class="match-title">${match.home} vs ${match.away}</div>
-            <div class="match-date">${match.date || ""}</div>
-          </div>
-
-          <div class="teams">
-            <div class="team tier-${homeTier}">
-              <div>
-                <div class="team-name">${match.home}</div>
-                <div class="tier-label">Tier ${homeTier}</div>
-              </div>
-              <input class="team-score" type="number" min="0" inputmode="numeric" data-match-id="${match.id}" data-side="home" oninput="updateProgress(); saveTipsLocally(); renderMatches(); loadSavedTips(); updateProgress()"
-
-            <div class="team tier-${awayTier}">
-              <div>
-                <div class="team-name">${match.away}</div>
-                <div class="tier-label">Tier ${awayTier}</div>
-              </div>
-              <input class="team-score" type="number" min="0" inputmode="numeric" data-match-id="${match.id}" data-side="away" oninput="updateProgress(); saveTipsLocally(); renderMatches(); loadSavedTips(); updateProgress()"
-            </div>
-          </div>
-
-          ${hasResult(result) ? `
-            <div class="result-box">
-              Sluttresultat: ${result.actual_home} - ${result.actual_away}
-            </div>
-          ` : ""}
-          
-${points !== null ? `
-  <div style="
-    margin-top:10px;
-    padding:10px 12px;
-    border-radius:12px;
-    background:rgba(255,255,255,0.09);
-    border:1px solid rgba(255,255,255,0.12);
-    font-weight:bold;
-    text-align:center;
-  ">
-    Dine poeng: ${points}
-  </div>
-` : ""}
-          <div class="scoring-preview">
-            <div style="font-size:11px;opacity:0.65;margin-bottom:7px;">${match.home} / Uavgjort / ${match.away}</div>
-            <div class="scoring-grid">
-              <div class="scoring-label">Utfall</div>
-              <strong>${scoring ? scoring.outcome : "-"}</strong>
-              <div class="scoring-label">Målforskjell</div>
-              <strong>${scoring ? scoring.diff : "-"}</strong>
-              <div class="scoring-label">Eksakt resultat</div>
-              <strong>${scoring ? scoring.exact : "-"}</strong>
-            </div>
-          </div>
-        </div>
-      `;
-    });
-  });
-}
-
-function renderFilters(groups){
-  const filterContainer = document.getElementById("groupFilters");
-  const allGroups = ["ALL", ...groups];
-
-  filterContainer.innerHTML = "";
-
-  allGroups.forEach(group => {
-    const btn = document.createElement("button");
-    btn.className = "filter-btn";
-    btn.textContent = group === "ALL" ? "Alle" : group;
-    btn.style.background = currentGroup === group ? "#2ecc71" : "rgba(255,255,255,0.08)";
-    btn.onclick = () => {
-      currentGroup = group;
-      renderMatches();
-      loadSavedTips();
-      updateProgress();
-    };
-    filterContainer.appendChild(btn);
-  });
-}
-
-function renderBonusSection(){
-  const bestContainer = document.getElementById("bestPlayerContainer");
-  const scorerContainer = document.getElementById("topScorerContainer");
-
-  bestContainer.innerHTML = "";
-  scorerContainer.innerHTML = "";
-
-  players.forEach(player => {
-    bestContainer.innerHTML += `
-      <div class="bonus-row">
-        <div>${player.name}</div>
-        <div class="multiplier">x${player.multiplier}</div>
-        <input type="number" min="0" max="10" value="0" class="best-player-input" oninput="updateBonusStatus(); saveTipsLocally()">
-      </div>
-    `;
-
-    scorerContainer.innerHTML += `
-      <div class="bonus-row">
-        <div>${player.name}</div>
-        <div class="multiplier">x${player.multiplier}</div>
-        <input type="number" min="0" max="10" value="0" class="top-scorer-input" oninput="updateBonusStatus(); saveTipsLocally()">
-      </div>
-    `;
-  });
-
-  updateBonusStatus();
-}
-
-function updateProgress(){
-  const total = allMatches.length;
-  let completed = 0;
-
-  allMatches.forEach(match => {
-    const homeInput = document.querySelector(`input[data-match-id="${match.id}"][data-side="home"]`);
-    const awayInput = document.querySelector(`input[data-match-id="${match.id}"][data-side="away"]`);
-
-    if(homeInput && awayInput && homeInput.value !== "" && awayInput.value !== ""){
-      completed++;
-    }
-  });
-
-  const percent = total ? Math.round((completed / total) * 100) : 0;
-
-  document.getElementById("progressText").textContent = `${completed} / ${total} kamper fylt ut`;
-  document.getElementById("progressPercent").textContent = `${percent}%`;
-  document.getElementById("progressFill").style.width = `${percent}%`;
-}
-
-function updateBonusStatus(){
-  let bestTotal = 0;
-  let scorerTotal = 0;
-
-  document.querySelectorAll(".best-player-input").forEach(input => {
-    bestTotal += Number(input.value || 0);
-  });
-
-  document.querySelectorAll(".top-scorer-input").forEach(input => {
-    scorerTotal += Number(input.value || 0);
-  });
-
-  document.getElementById("bestPlayerStatus").textContent = `${bestTotal} / 10 poeng brukt`;
-  document.getElementById("topScorerStatus").textContent = `${scorerTotal} / 10 poeng brukt`;
-}
-
-function getBonusData(selector){
-  return [...document.querySelectorAll(selector)].map((input,index) => ({
-    player: players[index]?.name,
-    multiplier: players[index]?.multiplier || 1,
-    points: input.value || "0",
-    score: Number(input.value || 0) * Number(players[index]?.multiplier || 1)
-  }));
-}
-
-function saveTipsLocally(){
-  const name = document.getElementById("playerName").value.trim();
-
-  const tips = allMatches.map(match => {
-    const homeInput = document.querySelector(`input[data-match-id="${match.id}"][data-side="home"]`);
-    const awayInput = document.querySelector(`input[data-match-id="${match.id}"][data-side="away"]`);
-
-    return {
-      id: match.id,
-      tips_home: homeInput ? homeInput.value : "",
-      tips_away: awayInput ? awayInput.value : ""
-    };
-  });
-
-  localStorage.setItem("vm2026_tips", JSON.stringify({
-    name,
-    tips,
-    bestPlayer: getBonusData(".best-player-input"),
-    topScorer: getBonusData(".top-scorer-input")
-  }));
-}
-
-function loadSavedTips(){
-  const saved = localStorage.getItem("vm2026_tips");
-  if(!saved) return;
-
-  const data = JSON.parse(saved);
-
-  if(data.name){
-    document.getElementById("playerName").value = data.name;
-  }
-
-  if(data.tips){
-    data.tips.forEach(tip => {
-      const homeInput = document.querySelector(`input[data-match-id="${tip.id}"][data-side="home"]`);
-      const awayInput = document.querySelector(`input[data-match-id="${tip.id}"][data-side="away"]`);
-      if(homeInput) homeInput.value = tip.tips_home;
-      if(awayInput) awayInput.value = tip.tips_away;
-    });
-  }
-
-  if(data.bestPlayer){
-    data.bestPlayer.forEach((item,index) => {
-      const input = document.querySelectorAll(".best-player-input")[index];
-      if(input) input.value = item.points;
-    });
-  }
-
-  if(data.topScorer){
-    data.topScorer.forEach((item,index) => {
-      const input = document.querySelectorAll(".top-scorer-input")[index];
-      if(input) input.value = item.points;
-    });
-  }
-
-  updateBonusStatus();
-  updateProgress();
-}
-
-async function submitTips(){
-  const name = document.getElementById("playerName").value.trim();
-
-  if(!name){
-    alert("Skriv inn navn først.");
-    return;
-  }
-
-  const tips = allMatches.map(match => {
-    const homeInput = document.querySelector(`input[data-match-id="${match.id}"][data-side="home"]`);
-    const awayInput = document.querySelector(`input[data-match-id="${match.id}"][data-side="away"]`);
-
-    return {
-      id: match.id,
-      home: match.home,
-      away: match.away,
-      tips_home: homeInput ? homeInput.value : "",
-      tips_away: awayInput ? awayInput.value : ""
-    };
-  });
-
-  const bestPlayer = getBonusData(".best-player-input");
-  const topScorer = getBonusData(".top-scorer-input");
-
-  const bestTotal = bestPlayer.reduce((sum,item) => sum + Number(item.points || 0),0);
-  const scorerTotal = topScorer.reduce((sum,item) => sum + Number(item.points || 0),0);
-
-  if(bestTotal !== 10){
-    alert(`Beste spiller må være nøyaktig 10 poeng. Nå har du brukt ${bestTotal}.`);
-    return;
-  }
-
-  if(scorerTotal !== 10){
-    alert(`Toppscorer må være nøyaktig 10 poeng. Nå har du brukt ${scorerTotal}.`);
-    return;
-  }
-
-  try{
-    await fetch(SUBMIT_URL, {
-      method:"POST",
-      mode:"no-cors",
-      body:JSON.stringify({ name, tips, bestPlayer, topScorer })
-    });
-
-    localStorage.setItem("vm2026_submitted","true");
-    setSubmittedButton();
-    alert("Tips sendt inn! 🔥");
-  }catch(error){
-    alert("Noe gikk feil ved innsending.");
-    console.error(error);
-  }
-}
-
-function setSubmittedButton(){
-  const btn = document.querySelector(".submit-btn");
-  btn.textContent = "Tips sendt inn ✅";
-  btn.style.background = "#666";
-  btn.style.cursor = "not-allowed";
-  btn.disabled = true;
-}
-
-const toggleRulesBtn = document.getElementById("toggleRulesBtn");
-const rulesBox = document.getElementById("rulesBox");
-
-toggleRulesBtn.onclick = () => {
-  if(rulesBox.style.display === "none"){
-    rulesBox.style.display = "block";
-    toggleRulesBtn.textContent = "❌ Skjul poengsystem";
-  }else{
-    rulesBox.style.display = "none";
-    toggleRulesBtn.textContent = "❓ Vis poengsystem";
-  }
-};
-
-function scrollToSection(id){
-  document.getElementById(id).scrollIntoView({
-    behavior:"smooth"
-  });
-}
-
-async function init(){
-  if(localStorage.getItem("vm2026_submitted") === "true"){
-    setSubmittedButton();
-  }
-
-  await loadScoringRules();
-  await loadPlayers();
-  await loadResults();
-  await loadMatches();
-  await loadLeaderboard();
-}
-
-init();
-</script>
 </body>
 </html>
