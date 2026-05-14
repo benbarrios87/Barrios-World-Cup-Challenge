@@ -311,6 +311,8 @@ margin-bottom:20px;
 <script>
 const API_URL =
 "https://opensheet.elk.sh/1EvB5oqS4Bemr_W8VXYzWAVsr4nX0u3VTQMpgUlOM9-s/API_MATCHES";
+  const PLAYERS_API_URL =
+"https://opensheet.elk.sh/1EvB5oqS4Bemr_W8VXYzWAVsr4nX0u3VTQMpgUlOM9-s/API_PLAYERS";
 
 let allMatches = [];
 let currentGroup = "ALL";
@@ -591,19 +593,18 @@ function submitTips(){
 
   alert("Foreløpig test: Tipsene ligger nå i console. Neste steg er å sende dem til Google Sheets.");
 }
-const players = [
-  "Mbappé",
-  "Haaland",
-  "Bellingham",
-  "Vinicius",
-  "Musiala",
-  "Yamal",
-  "Saka",
-  "Kane",
-  "Messi",
-  "Rodri"
-];
+  let players = [];
+  async function loadPlayers(){
+  const res = await fetch(PLAYERS_API_URL);
+  const data = await res.json();
 
+  players = data
+    .map(row => row.name)
+    .filter(Boolean);
+
+  renderBonusSection();
+  loadSavedTips();
+}
 function renderBonusSection(){
 
   const bestContainer =
@@ -703,7 +704,7 @@ function updateBonusStatus(){
 
 }
   
-renderBonusSection();
+loadPlayers();
 loadMatches();
 </script>
 
