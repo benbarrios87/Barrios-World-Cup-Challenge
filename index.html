@@ -558,7 +558,7 @@ function renderMatches(){
               <input class="team-score" type="number" min="0" inputmode="numeric" data-match-id="${match.id}" data-side="away" oninput="updateProgress(); saveTipsLocally()">
             </div>
           </div>
-${result && result.actual_home !== "" && result.actual_away !== "" ? `
+${result && result.actual_home != null && result.actual_home !== "" && result.actual_away != null && result.actual_away !== "" ? `
   <div style="
     margin-top:14px;
     padding:10px 12px;
