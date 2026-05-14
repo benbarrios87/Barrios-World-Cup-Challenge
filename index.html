@@ -251,7 +251,7 @@ grid-template-columns:1fr 120px 1fr;
 
   <div class="top-box">
     <label for="playerName"><strong>Navn / brukernavn</strong></label>
-    <input id="playerName" class="name-field" type="text" placeholder="Skriv navnet ditt her">
+   <input id="playerName" class="name-field" type="text" placeholder="Skriv navnet ditt her" oninput="saveTipsLocally()">
 
     <div class="progress">
       <div class="progress-row">
@@ -298,6 +298,7 @@ async function loadMatches(){
     allMatches = await res.json();
 
     renderMatches();
+    loadSavedTips();
     updateProgress();
 
   }catch(error){
@@ -375,7 +376,14 @@ function renderMatches(){
                 inputmode="numeric"
                 data-match-id="${match.id}"
                 data-side="home"
-                oninput="updateProgress()"
+               <input 
+  type="number"
+  min="0"
+  inputmode="numeric"
+  data-match-id="${match.id}"
+  data-side="away"
+  oninput="updateProgress()"
+>
               >
               <span>-</span>
               <input 
@@ -453,7 +461,56 @@ function updateProgress(){
   document.getElementById("progressPercent").textContent = `${percent}%`;
   document.getElementById("progressFill").style.width = `${percent}%`;
 }
+function saveTipsLocally(){
+  const name = document.getElementById("playerName").value.trim();
 
+  const tips = allMatches.map(match => {
+    const homeInput = document.querySelector(`input[data-match-id="${match.id}"][data-side="home"]`);
+    const awayInput = document.querySelector(`input[data-match-id="${match.id}"][data-side="away"]`);
+
+    return {
+      id: match.id,
+      tips_home: homeInput ? homeInput.value : "",
+      tips_away: awayInput ? awayInput.value : ""
+    };
+  });
+
+  localStorage.setItem("vm2026_tips", JSON.stringify({
+    name,
+    tips
+  }));
+}
+
+function loadSavedTips(){
+  const saved = localStorage.getItem("vm2026_tips");
+
+  if(!saved){
+    return;
+  }
+
+  const data = JSON.parse(saved);
+
+  if(data.name){
+    document.getElementById("playerName").value = data.name;
+  }
+
+  if(data.tips){
+    data.tips.forEach(tip => {
+      const homeInput = document.querySelector(`input[data-match-id="${tip.id}"][data-side="home"]`);
+      const awayInput = document.querySelector(`input[data-match-id="${tip.id}"][data-side="away"]`);
+
+      if(homeInput){
+        homeInput.value = tip.tips_home;
+      }
+
+      if(awayInput){
+        awayInput.value = tip.tips_away;
+      }
+    });
+  }
+
+  updateProgress();
+}
 function submitTips(){
   const name = document.getElementById("playerName").value.trim();
 
