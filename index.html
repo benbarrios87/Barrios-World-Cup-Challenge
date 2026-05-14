@@ -652,7 +652,8 @@ async function submitTips(){
 const btn = document.querySelector(".submit-btn");
 
 btn.textContent = "Tips sendt inn ✅";
-btn.style.opacity = "0.7";
+btn.style.background = "#666";
+btn.style.cursor = "not-allowed";
 btn.disabled = true;
 
 alert("Tips sendt inn! 🔥");
@@ -667,7 +668,8 @@ if(localStorage.getItem("vm2026_submitted") === "true"){
   const btn = document.querySelector(".submit-btn");
 
   btn.textContent = "Tips sendt inn ✅";
-  btn.style.opacity = "0.7";
+  btn.style.background = "#666";
+btn.style.cursor = "not-allowed";
   btn.disabled = true;
 }
   
