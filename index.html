@@ -540,6 +540,7 @@ function renderMatches(){
       const awayTier = match.tier_away || "";
       const scoring = getScoringPreview(match);
       const result = getResultForMatch(match.id);
+      console.log("MATCH ID:", match.id, "RESULT:", result, "ALL RESULTS:", results);
 
       container.innerHTML += `
         <div class="card">
