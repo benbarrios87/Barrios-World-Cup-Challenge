@@ -276,7 +276,32 @@ margin-bottom:20px;
   <div id="matches">
     <div class="loading">Laster kamper fra Google Sheets...</div>
   </div>
+<div class="top-box">
 
+  <h2 style="margin-top:0;">Beste spiller</h2>
+
+  <div id="bestPlayerContainer"></div>
+
+  <div id="bestPlayerStatus"
+       style="margin-top:12px;color:rgba(255,255,255,0.7);font-size:14px;">
+    0 / 10 poeng brukt
+  </div>
+
+</div>
+
+<div class="top-box">
+
+  <h2 style="margin-top:0;">Toppscorer</h2>
+
+  <div id="topScorerContainer"></div>
+
+  <div id="topScorerStatus"
+       style="margin-top:12px;color:rgba(255,255,255,0.7);font-size:14px;">
+    0 / 10 poeng brukt
+  </div>
+
+</div>
+  
   <button class="submit-btn" onclick="submitTips()">
     Send inn tips
   </button>
@@ -531,7 +556,119 @@ function submitTips(){
 
   alert("Foreløpig test: Tipsene ligger nå i console. Neste steg er å sende dem til Google Sheets.");
 }
+const players = [
+  "Mbappé",
+  "Haaland",
+  "Bellingham",
+  "Vinicius",
+  "Musiala",
+  "Yamal",
+  "Saka",
+  "Kane",
+  "Messi",
+  "Rodri"
+];
 
+function renderBonusSection(){
+
+  const bestContainer =
+  document.getElementById("bestPlayerContainer");
+
+  const scorerContainer =
+  document.getElementById("topScorerContainer");
+
+  players.forEach(player => {
+
+    bestContainer.innerHTML += `
+      <div style="
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        margin-bottom:10px;
+        gap:10px;
+      ">
+        <div>${player}</div>
+
+        <input
+          type="number"
+          min="0"
+          max="10"
+          value="0"
+          class="best-player-input"
+          style="
+            width:70px;
+            height:38px;
+            border:none;
+            border-radius:10px;
+            text-align:center;
+            font-size:16px;
+          "
+          oninput="updateBonusStatus()"
+        >
+      </div>
+    `;
+
+    scorerContainer.innerHTML += `
+      <div style="
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        margin-bottom:10px;
+        gap:10px;
+      ">
+        <div>${player}</div>
+
+        <input
+          type="number"
+          min="0"
+          max="10"
+          value="0"
+          class="top-scorer-input"
+          style="
+            width:70px;
+            height:38px;
+            border:none;
+            border-radius:10px;
+            text-align:center;
+            font-size:16px;
+          "
+          oninput="updateBonusStatus()"
+        >
+      </div>
+    `;
+
+  });
+
+}
+
+function updateBonusStatus(){
+
+  let bestTotal = 0;
+  let scorerTotal = 0;
+
+  document
+    .querySelectorAll(".best-player-input")
+    .forEach(input => {
+      bestTotal += Number(input.value || 0);
+    });
+
+  document
+    .querySelectorAll(".top-scorer-input")
+    .forEach(input => {
+      scorerTotal += Number(input.value || 0);
+    });
+
+  document.getElementById("bestPlayerStatus")
+    .textContent =
+    `${bestTotal} / 10 poeng brukt`;
+
+  document.getElementById("topScorerStatus")
+    .textContent =
+    `${scorerTotal} / 10 poeng brukt`;
+
+}
+  
+renderBonusSection();
 loadMatches();
 </script>
 
