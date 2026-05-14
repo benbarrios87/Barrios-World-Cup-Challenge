@@ -394,6 +394,7 @@ let outcomeRules = [];
 let diffRules = [];
 let exactRules = [];
 let results = [];
+let resultsById = {};
 
 function normalizeRow(row){
   const clean = {};
@@ -437,16 +438,18 @@ async function loadPlayers(){
   renderBonusSection();
   loadSavedTips();
 }
-
 async function loadResults(){
-  try{
-    results = await fetchSheet(RESULTS_API_URL);
-  }catch(error){
-    results = [];
-    console.error(error);
-  }
-}
 
+  const data = await fetchSheet(RESULTS_API_URL);
+
+  results = data;
+
+  resultsById = {};
+
+  results.forEach(result => {
+    resultsById[String(result.id)] = result;
+  });
+}
 async function loadMatches(){
   const container = document.getElementById("matches");
 
@@ -511,13 +514,6 @@ function getRule(rules, tierDiff){
   return rules.find(r => Number(r.tier_diff) === Number(tierDiff));
 }
 
-function getResultForMatch(matchId){
-  const wantedId = String(matchId).trim();
-
-  return results.find(result => {
-    return String(result.id).trim() === wantedId;
-  });
-}
 
 function hasResult(result){
   return result &&
@@ -568,7 +564,7 @@ function renderMatches(){
       const homeTier = match.tier_home || "";
       const awayTier = match.tier_away || "";
       const scoring = getScoringPreview(match);
-      const result = getResultForMatch(match.id);
+      const result = resultsById[String(match.id)];
 
       container.innerHTML += `
         <div class="card">
