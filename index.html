@@ -454,10 +454,12 @@ async function loadMatches(){
   const container = document.getElementById("matches");
 
   try{
-    allMatches = await fetchSheet(API_URL);
-    renderMatches();
-    loadSavedTips();
-    updateProgress();
+   allMatches = await fetchSheet(API_URL);
+renderMatches();
+loadSavedTips();
+renderMatches();
+loadSavedTips();
+updateProgress();
   }catch(error){
     container.innerHTML = `<div class="card">Klarte ikke å laste kampene.</div>`;
     console.error(error);
