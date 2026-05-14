@@ -306,6 +306,69 @@ body{
     <h1>🏆 Barrios World Cup Challenge 2026</h1>
     <p>Tipp VM. Treff outsiders. Vinn evig skryterett.</p>
   </div>
+  <div class="top-box">
+
+  <button id="toggleRulesBtn" style="
+    width:100%;
+    height:52px;
+    border:none;
+    border-radius:14px;
+    background:rgba(255,255,255,0.08);
+    color:white;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+  ">
+    ❓ Vis poengsystem
+  </button>
+
+  <div id="rulesBox" style="
+    display:none;
+    margin-top:16px;
+    line-height:1.7;
+    color:rgba(255,255,255,0.88);
+  ">
+
+    <h3 style="margin-top:0;">Hvordan scoring fungerer</h3>
+
+    <p>
+      Hver kamp kan gi ulik poengsum basert på:
+    </p>
+
+    <ul style="padding-left:18px;">
+      <li>Favoritt / uavgjort / underdog</li>
+      <li>Tierforskjell mellom lagene</li>
+      <li>Gruppespill eller sluttspill</li>
+    </ul>
+
+    <h3>Tre nivåer av treff</h3>
+
+    <p>
+      <strong>1. Riktig utfall</strong><br>
+      Du tipper riktig vinner eller uavgjort.
+    </p>
+
+    <p>
+      <strong>2. Riktig målforskjell</strong><br>
+      Eksempel: du tipper 2-1 og kampen ender 1-0.
+    </p>
+
+    <p>
+      <strong>3. Helt riktig resultat</strong><br>
+      Eksempel: du tipper 2-1 og kampen ender 2-1.
+    </p>
+
+    <h3>Tier-system</h3>
+
+    <p>
+      Grønne lag er favoritter.<br>
+      Røde lag er underdogs.<br>
+      Jo større overraskelse du treffer, jo flere poeng kan du få.
+    </p>
+
+  </div>
+
+</div>
 
   <div class="top-box">
     <label for="playerName"><strong>Navn / brukernavn</strong></label>
@@ -787,6 +850,25 @@ if(localStorage.getItem("vm2026_submitted") === "true"){
 btn.style.cursor = "not-allowed";
   btn.disabled = true;
 }
+  const toggleRulesBtn =
+document.getElementById("toggleRulesBtn");
+
+const rulesBox =
+document.getElementById("rulesBox");
+
+toggleRulesBtn.onclick = () => {
+
+  if(rulesBox.style.display === "none"){
+
+    rulesBox.style.display = "block";
+    toggleRulesBtn.textContent = "❌ Skjul poengsystem";
+
+  }else{
+
+    rulesBox.style.display = "none";
+    toggleRulesBtn.textContent = "❓ Vis poengsystem";
+  }
+};
   
 loadPlayers();
 loadMatches();
