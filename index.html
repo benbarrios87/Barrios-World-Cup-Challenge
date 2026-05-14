@@ -419,6 +419,15 @@ const API_URL =
 
 const PLAYERS_API_URL =
 "https://opensheet.elk.sh/1EvB5oqS4Bemr_W8VXYzWAVsr4nX0u3VTQMpgUlOM9-s/API_PLAYERS";
+  
+const OUTCOME_API_URL =
+"https://opensheet.elk.sh/1EvB5oqS4Bemr_W8VXYzWAVsr4nX0u3VTQMpgUlOM9-s/API_OUTCOME";
+
+const DIFF_API_URL =
+"https://opensheet.elk.sh/1EvB5oqS4Bemr_W8VXYzWAVsr4nX0u3VTQMpgUlOM9-s/API_DIFF";
+
+const EXACT_API_URL =
+"https://opensheet.elk.sh/1EvB5oqS4Bemr_W8VXYzWAVsr4nX0u3VTQMpgUlOM9-s/API_EXACT";  
 
 const SUBMIT_URL =
 "https://script.google.com/macros/s/AKfycbyJB5mugyonYlXClojolIGcInen7ClFl55j-c7xQw6Z0-fS5rKfQKgF9AVhLLe9UQgM4Q/exec";
@@ -426,6 +435,9 @@ const SUBMIT_URL =
 let allMatches = [];
 let currentGroup = "ALL";
 let players = [];
+  let outcomeRules = [];
+let diffRules = [];
+let exactRules = [];
   const flagMap = {
   "Mexico":"🇲🇽",
   "Sør Afrika":"🇿🇦",
@@ -499,7 +511,68 @@ async function loadPlayers(){
   renderBonusSection();
   loadSavedTips();
 }
+  async function loadScoringRules(){
 
+  const outcomeRes = await fetch(OUTCOME_API_URL);
+  outcomeRules = await outcomeRes.json();
+
+  const diffRes = await fetch(DIFF_API_URL);
+  diffRules = await diffRes.json();
+
+  const exactRes = await fetch(EXACT_API_URL);
+  exactRules = await exactRes.json();
+}
+function getScoringPreview(match){
+
+  const homeTier = Number(match.tier_home);
+  const awayTier = Number(match.tier_away);
+
+  const tierDiff = Math.abs(homeTier - awayTier);
+
+  let type = "same";
+
+  if(homeTier < awayTier){
+    type = "favorite_home";
+  }
+
+  if(homeTier > awayTier){
+    type = "favorite_away";
+  }
+
+  const row =
+    outcomeRules.find(r =>
+      Number(r.tier_diff) === tierDiff
+    );
+
+  if(!row){
+    return null;
+  }
+
+  let outcome = "";
+  let diff = "";
+  let exact = "";
+
+  if(type === "favorite_home"){
+
+    outcome =
+      `${row.favorite} / ${row.draw} / ${row.underdog}`;
+
+  }else if(type === "favorite_away"){
+
+    outcome =
+      `${row.underdog} / ${row.draw} / ${row.favorite}`;
+
+  }else{
+
+    outcome =
+      `${row.favorite} / ${row.draw} / ${row.underdog}`;
+  }
+
+  return {
+    outcome
+  };
+}
+  
 function getGroupedMatches(){
   const grouped = {};
 
@@ -535,6 +608,8 @@ function renderMatches(){
     grouped[group].forEach(match => {
       const homeTier = match.tier_home || "";
       const awayTier = match.tier_away || "";
+      const scoring =
+getScoringPreview(match);
 
       container.innerHTML += `
         <div class="card">
@@ -570,6 +645,27 @@ function renderMatches(){
   </div>
 
   <input class="team-score" type="number" min="0" inputmode="numeric" data-match-id="${match.id}" data-side="away" oninput="updateProgress(); saveTipsLocally()">
+<div style="
+  margin-top:14px;
+  padding-top:12px;
+  border-top:1px solid rgba(255,255,255,0.08);
+  font-size:13px;
+  color:rgba(255,255,255,0.82);
+">
+
+  <div style="margin-bottom:4px;">
+    ⚡ Riktig utfall:
+    <strong>${scoring ? scoring.outcome : "-"}</strong>
+  </div>
+
+  <div style="
+    font-size:11px;
+    opacity:0.65;
+  ">
+    Hjemmelag / Uavgjort / Bortelag
+  </div>
+
+</div>
 </div>
           </div>
         </div>
@@ -870,8 +966,14 @@ toggleRulesBtn.onclick = () => {
   }
 };
   
-loadPlayers();
-loadMatches();
+async function init(){
+
+  await loadScoringRules();
+  await loadPlayers();
+  await loadMatches();
+}
+
+init();
 </script>
 
 </body>
