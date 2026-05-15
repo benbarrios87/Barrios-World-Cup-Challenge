@@ -225,6 +225,7 @@ const SHEET_ID = "1EvB5oqS4Bemr_W8VXYzWAVsr4nX0u3VTQMpgUlOM9-s";
 const LEADERBOARD_API_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_LEADERBOARD`;
 
 const BUY_IN = 500;
+const FREE_ENTRIES = 1;
 
 async function fetchSheet(url){
   const response = await fetch(url);
@@ -265,12 +266,14 @@ async function loadPrizes(){
     const players = data.filter(row => row.name);
 
     const playerCount = players.length;
-    const totalPot = playerCount * BUY_IN;
+const paidCount = Math.max(0, playerCount - FREE_ENTRIES);
+const totalPot = paidCount * BUY_IN;
     const prizeCount = Math.max(1, Math.round(playerCount * 0.3));
     const percents = getPrizePercents(prizeCount);
 
     document.getElementById("playerCount").textContent = playerCount;
-    document.getElementById("totalPot").textContent = formatMoney(totalPot);
+document.getElementById("paidCount").textContent = paidCount;
+document.getElementById("totalPot").textContent = formatMoney(totalPot);
 
     if(playerCount === 0){
       container.innerHTML = `
@@ -292,6 +295,11 @@ async function loadPrizes(){
             <div class="prize-title">${index + 1}. plass</div>
             <div class="prize-percent">${Math.round(percent * 100)}% av potten</div>
           </div>
+          
+          <div class="summary-box">
+  <span>Betalte plasser</span>
+  <strong id="paidCount">0</strong>
+</div>
 
           <div class="prize-money">
             ${formatMoney(totalPot * percent)}
