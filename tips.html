@@ -888,9 +888,16 @@ async function submitTips(){
       })
     });
 
-    const text = await response.text();
+   const result = await response.json();
 
-    alert("Svar fra Apps Script: " + text);
+if(!result.success){
+  alert(result.message || "Innsendingen ble avvist.");
+  return;
+}
+
+localStorage.setItem("vm2026_submitted","true");
+setSubmittedButton();
+alert("Tips sendt inn! 🔥");
 
   }catch(error){
     alert("Feil ved innsending: " + error.message);
