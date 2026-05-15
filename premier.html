@@ -1,5 +1,4 @@
-
-<!DOCTYPE html>contain
+<!DOCTYPE html>
 <html lang="no">
 <head>
 <meta charset="UTF-8">
@@ -78,7 +77,7 @@ body{
 
 .summary-grid{
   display:grid;
-  grid-template-columns:repeat(3,1fr);
+  grid-template-columns:repeat(4,1fr);
   gap:14px;
   margin-bottom:18px;
 }
@@ -99,7 +98,7 @@ body{
 }
 
 .summary-box strong{
-  font-size:28px;
+  font-size:26px;
 }
 
 .prize-row{
@@ -137,6 +136,15 @@ body{
   text-align:right;
 }
 
+.player-row{
+  padding:12px 14px;
+  border-radius:14px;
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.08);
+  margin-bottom:10px;
+  font-weight:bold;
+}
+
 .note{
   color:var(--muted);
   line-height:1.5;
@@ -153,7 +161,7 @@ body{
   }
 
   .summary-grid{
-    grid-template-columns:1fr;
+    grid-template-columns:1fr 1fr;
   }
 
   .prize-row{
@@ -185,6 +193,7 @@ body{
 
   <div class="card">
     <div class="summary-grid">
+
       <div class="summary-box">
         <span>Deltakere</span>
         <strong id="playerCount">0</strong>
@@ -196,26 +205,32 @@ body{
       </div>
 
       <div class="summary-box">
+        <span>Betalte plasser</span>
+        <strong id="paidCount">0</strong>
+      </div>
+
+      <div class="summary-box">
         <span>Total pott</span>
         <strong id="totalPot">0 kr</strong>
       </div>
+
     </div>
 
     <div id="prizeContainer">
       Laster premieoversikt...
     </div>
   </div>
-  
-<div class="card">
-  <h2 style="margin-top:0;">Registrerte deltakere</h2>
 
-  <div id="playersContainer">
-    Laster spillere...
+  <div class="card">
+    <h2 style="margin-top:0;">Registrerte deltakere</h2>
+
+    <div id="playersContainer">
+      Laster spillere...
+    </div>
   </div>
-</div>
-  
+
   <div class="card note">
-    Premieplasser beregnes som omtrent 30% av deltakerne. Fordelingen justeres automatisk etter hvor mange som har levert tips.
+    Premieplasser beregnes som omtrent 30% av deltakerne. Én gratisplass trekkes fra potten. Innsending av tips teller som påmelding.
   </div>
 
 </div>
@@ -259,35 +274,36 @@ function getMedal(index){
 }
 
 async function loadPrizes(){
-  const container = document.getElementById("prizeContainer");
+  const prizeContainer = document.getElementById("prizeContainer");
+  const playersContainer = document.getElementById("playersContainer");
 
   try{
     const data = await fetchSheet(LEADERBOARD_API_URL);
-    const players = data.filter(row => row.name);
+
+    const players = data
+      .filter(row => row.name)
+      .sort((a,b) => a.name.localeCompare(b.name,"no"));
 
     const playerCount = players.length;
-const paidCount = Math.max(0, playerCount - FREE_ENTRIES);
-const totalPot = paidCount * BUY_IN;
-    const prizeCount = Math.max(1, Math.round(playerCount * 0.3));
+    const paidCount = Math.max(0, playerCount - FREE_ENTRIES);
+    const totalPot = paidCount * BUY_IN;
+    const prizeCount = playerCount === 0 ? 0 : Math.max(1, Math.round(playerCount * 0.3));
     const percents = getPrizePercents(prizeCount);
 
     document.getElementById("playerCount").textContent = playerCount;
-document.getElementById("paidCount").textContent = paidCount;
-document.getElementById("totalPot").textContent = formatMoney(totalPot);
+    document.getElementById("paidCount").textContent = paidCount;
+    document.getElementById("totalPot").textContent = formatMoney(totalPot);
 
     if(playerCount === 0){
-      container.innerHTML = `
-        <div class="note">
-          Ingen deltakere registrert ennå.
-        </div>
-      `;
+      prizeContainer.innerHTML = `<div class="note">Ingen deltakere registrert ennå.</div>`;
+      playersContainer.innerHTML = `<div class="note">Ingen deltakere registrert ennå.</div>`;
       return;
     }
 
-    container.innerHTML = "";
+    prizeContainer.innerHTML = "";
 
     percents.forEach((percent,index) => {
-      container.innerHTML += `
+      prizeContainer.innerHTML += `
         <div class="prize-row">
           <div class="place">${getMedal(index)}</div>
 
@@ -295,11 +311,6 @@ document.getElementById("totalPot").textContent = formatMoney(totalPot);
             <div class="prize-title">${index + 1}. plass</div>
             <div class="prize-percent">${Math.round(percent * 100)}% av potten</div>
           </div>
-          
-          <div class="summary-box">
-  <span>Betalte plasser</span>
-  <strong id="paidCount">0</strong>
-</div>
 
           <div class="prize-money">
             ${formatMoney(totalPot * percent)}
@@ -308,37 +319,19 @@ document.getElementById("totalPot").textContent = formatMoney(totalPot);
       `;
     });
 
-    const playersContainer =
-  document.getElementById("playersContainer");
+    playersContainer.innerHTML = "";
 
-playersContainer.innerHTML = "";
+    players.forEach(player => {
+      playersContainer.innerHTML += `
+        <div class="player-row">
+          ⚽ ${player.name}
+        </div>
+      `;
+    });
 
-players
-  .sort((a,b) =>
-    a.name.localeCompare(b.name,"no")
-  )
-  .forEach(player => {
-
-    playersContainer.innerHTML += `
-      <div style="
-        padding:12px 14px;
-        border-radius:14px;
-        background:rgba(255,255,255,0.06);
-        border:1px solid rgba(255,255,255,0.08);
-        margin-bottom:10px;
-        font-weight:bold;
-      ">
-        ⚽ ${player.name}
-      </div>
-    `;
-  });
-    
   }catch(error){
-    container.innerHTML = `
-      <div style="color:#ff8080;">
-        Klarte ikke å laste premiepott.
-      </div>
-    `;
+    prizeContainer.innerHTML = `<div style="color:#ff8080;">Klarte ikke å laste premiepott.</div>`;
+    playersContainer.innerHTML = `<div style="color:#ff8080;">Klarte ikke å laste deltakere.</div>`;
     console.error(error);
   }
 }
