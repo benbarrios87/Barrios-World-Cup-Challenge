@@ -1,361 +1,153 @@
-<!DOCTYPE html>
-<html lang="no">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Leaderboard | Barrios World Cup Challenge 2026</title>
-
-<style>
-:root{
-  --card:rgba(7,14,28,0.84);
-  --line:rgba(255,255,255,0.14);
-  --text:#fff;
-  --muted:rgba(255,255,255,0.72);
-  --green:#2ecc71;
-  --gold:#ffd166;
-  --silver:#d9e2ec;
-  --bronze:#d99058;
-}
-
-body{
-  margin:0;
-  font-family:Arial,sans-serif;
-  color:var(--text);
-  min-height:100vh;
-  background:
-    radial-gradient(circle at top left, rgba(46,204,113,0.22), transparent 30%),
-    radial-gradient(circle at bottom right, rgba(255,209,102,0.15), transparent 28%),
-    linear-gradient(rgba(0,0,0,0.68), rgba(0,0,0,0.84)),
-    repeating-linear-gradient(90deg,#0b3d24 0px,#0b3d24 90px,#0e4a2c 90px,#0e4a2c 180px);
-}
-
-body::before{
-  content:"";
-  position:fixed;
-  inset:0;
-  pointer-events:none;
-  background:
-    radial-gradient(circle at center, transparent 0 135px, rgba(255,255,255,0.06) 136px 138px, transparent 139px),
-    linear-gradient(90deg, transparent 49.8%, rgba(255,255,255,0.09) 50%, transparent 50.2%);
-  opacity:0.45;
-}
-
-.wrapper{
-  max-width:1000px;
-  margin:auto;
-  padding:22px;
-  position:relative;
-  z-index:1;
-}
-
-.hero{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:22px;
-  margin:28px 0;
-  text-align:left;
-}
-
-.hero-img{
-  width:110px;
-  max-width:32vw;
-  filter:drop-shadow(0 12px 24px rgba(0,0,0,0.45));
-}
-
-.hero h1{
-  font-size:40px;
-  margin:0 0 8px;
-}
-
-.hero p{
-  color:var(--muted);
-  margin:0;
-}
-
-.nav{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-  margin-bottom:20px;
-}
-
-.nav a{
-  text-decoration:none;
-  color:white;
-  font-weight:bold;
-  padding:11px 16px;
-  border-radius:999px;
-  background:rgba(255,255,255,0.08);
-  border:1px solid rgba(255,255,255,0.1);
-}
-
-.nav a:hover{
-  background:rgba(255,255,255,0.16);
-}
-
-.card{
-  background:var(--card);
-  border:1px solid var(--line);
-  border-radius:24px;
-  padding:20px;
-  margin-bottom:18px;
-  backdrop-filter:blur(10px);
-  box-shadow:0 16px 40px rgba(0,0,0,0.32);
-}
-
-.summary-grid{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:12px;
-  margin-bottom:18px;
-}
-
-.summary-box{
-  background:rgba(255,255,255,0.08);
-  border:1px solid rgba(255,255,255,0.12);
-  border-radius:18px;
-  padding:16px;
-  text-align:center;
-}
-
-.summary-box strong{
-  display:block;
-  font-size:26px;
-  margin-bottom:4px;
-}
-
-.summary-box span{
-  color:var(--muted);
-  font-size:13px;
-}
-
-.leaderboard{
-  display:grid;
-  gap:10px;
-}
-
-.row{
-  display:grid;
-  grid-template-columns:54px 1fr auto;
-  align-items:center;
-  gap:12px;
-  padding:15px;
-  border-radius:18px;
-  background:rgba(255,255,255,0.07);
-  border:1px solid rgba(255,255,255,0.1);
-}
-
-.row.top1{
-  background:linear-gradient(135deg, rgba(255,209,102,0.24), rgba(255,255,255,0.07));
-  border-color:rgba(255,209,102,0.5);
-}
-
-.row.top2{
-  background:linear-gradient(135deg, rgba(217,226,236,0.20), rgba(255,255,255,0.07));
-  border-color:rgba(217,226,236,0.42);
-}
-
-.row.top3{
-  background:linear-gradient(135deg, rgba(217,144,88,0.22), rgba(255,255,255,0.07));
-  border-color:rgba(217,144,88,0.42);
-}
-
-.rank{
-  font-size:24px;
-  font-weight:bold;
-  text-align:center;
-}
-
-.name{
-  font-weight:bold;
-  font-size:18px;
-}
-
-.sub{
-  color:var(--muted);
-  font-size:12px;
-  margin-top:4px;
-}
-
-.points{
-  font-size:22px;
-  font-weight:bold;
-  color:#9dffc7;
-}
-
-.loading,.empty{
-  color:var(--muted);
-  text-align:center;
-  padding:28px;
-}
-
-@media(max-width:700px){
-  .wrapper{ padding:14px; }
-
-  .hero{
-    flex-direction:column;
-    text-align:center;
-  }
-
-  .hero h1{
-    font-size:30px;
-  }
-
-  .summary-grid{
-    grid-template-columns:1fr;
-  }
-
-  .row{
-    grid-template-columns:42px 1fr auto;
-    padding:13px;
-  }
-
-  .name{ font-size:16px; }
-  .points{ font-size:18px; }
-}
-</style>
-</head>
-
-<body>
-
-<div class="wrapper">
-
-  <div class="hero">
-    <img class="hero-img" src="72328471_10158131489134068_6113053903316582400_n-removebg-preview.png" alt="">
-    <div>
-      <h1>Leaderboard</h1>
-      <p>Her avgjøres ære, skam og evig VM-skryterett.</p>
-    </div>
-  </div>
-
-  <div class="nav">
-    <a href="index.html">Forside</a>
-    <a href="tips.html">Innlevering av tips</a>
-    <a href="bonus.html">Bonus</a>
-    <a href="stats.html">Stats</a>
-  </div>
-
-  <div class="card">
-    <div class="summary-grid">
-      <div class="summary-box">
-        <strong id="leaderName">-</strong>
-        <span>Leder akkurat nå</span>
-      </div>
-      <div class="summary-box">
-        <strong id="playerCount">0</strong>
-        <span>Deltakere</span>
-      </div>
-      <div class="summary-box">
-        <strong id="topPoints">0</strong>
-        <span>Poeng på topp</span>
-      </div>
-    </div>
-
-    <div id="leaderboard" class="leaderboard">
-      <div class="loading">Laster leaderboard...</div>
-    </div>
-  </div>
-
-</div>
-
 <script>
-const SHEET_ID = "1EvB5oqS4Bemr_W8VXYzWAVsr4nX0u3VTQMpgUlOM9-s";
-const LEADERBOARD_API_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_LEADERBOARD`;
 
-function normalizeRow(row){
-  const clean = {};
-
-  Object.keys(row).forEach(key => {
-    const cleanKey = key
-      .trim()
-      .toLowerCase()
-      .replace(/\s+/g,"_")
-      .replace(/-/g,"_");
-
-    clean[cleanKey] = typeof row[key] === "string"
-      ? row[key].trim()
-      : row[key];
-  });
-
-  return clean;
-}
-
-async function fetchSheet(url){
-  const data = await (await fetch(url)).json();
-  return data.map(normalizeRow);
-}
-
-function getMedal(index){
-  if(index === 0) return "🥇";
-  if(index === 1) return "🥈";
-  if(index === 2) return "🥉";
-  return `${index + 1}.`;
-}
-
-function getRowClass(index){
-  if(index === 0) return "row top1";
-  if(index === 1) return "row top2";
-  if(index === 2) return "row top3";
-  return "row";
+function cleanNumber(value){
+  return Number(
+    String(value || "0")
+      .replace(/\s/g, "")
+      .replace(",", ".")
+  ) || 0;
 }
 
 async function loadLeaderboard(){
-  const container = document.getElementById("leaderboard");
+
+  const container = document.getElementById("leaderboardContainer");
 
   try{
+
     const data = await fetchSheet(LEADERBOARD_API_URL);
 
     const rows = data
       .filter(row => row.name)
-      .map(row => ({
-        name: row.name,
-        points: Number(row.points || 0),
-        exact: Number(row.exact || row.exact_hits || 0),
-        outcome: Number(row.outcome || row.correct_outcome || 0),
-        underdog: Number(row.underdog || row.underdog_points || 0)
-      }))
-      .sort((a,b) => b.points - a.points);
-
-    document.getElementById("playerCount").textContent = rows.length;
+      .sort((a,b) => cleanNumber(b.points) - cleanNumber(a.points));
 
     if(rows.length === 0){
-      document.getElementById("leaderName").textContent = "-";
-      document.getElementById("topPoints").textContent = "0";
-      container.innerHTML = `<div class="empty">Ingen poeng ennå.</div>`;
+      container.innerHTML = `
+        <div style="color:rgba(255,255,255,0.7);">
+          Ingen poeng ennå.
+        </div>
+      `;
       return;
     }
 
-    document.getElementById("leaderName").textContent = rows[0].name;
-    document.getElementById("topPoints").textContent = rows[0].points;
-
-    container.innerHTML = "";
+    container.innerHTML = `
+      <div style="
+        display:grid;
+        grid-template-columns:50px 1fr 80px;
+        gap:10px;
+        padding:0 0 10px;
+        font-weight:bold;
+        color:rgba(255,255,255,0.65);
+        border-bottom:1px solid rgba(255,255,255,0.1);
+        margin-bottom:10px;
+      ">
+        <div>#</div>
+        <div>Spiller</div>
+        <div style="text-align:right;">Poeng</div>
+      </div>
+    `;
 
     rows.forEach((row,index) => {
-      container.innerHTML += `
-        <div class="${getRowClass(index)}">
-          <div class="rank">${getMedal(index)}</div>
 
-          <div>
-            <div class="name">${row.name}</div>
-            <div class="sub">
-              Eksakte: ${row.exact} · Utfall: ${row.outcome} · Underdog: ${row.underdog}
+      const medal =
+        index === 0 ? "🥇" :
+        index === 1 ? "🥈" :
+        index === 2 ? "🥉" :
+        `${index + 1}`;
+
+      container.innerHTML += `
+        <div style="
+          padding:14px;
+          border-radius:16px;
+          background:rgba(255,255,255,0.06);
+          border:1px solid rgba(255,255,255,0.08);
+          margin-bottom:12px;
+        ">
+
+          <div style="
+            display:grid;
+            grid-template-columns:50px 1fr 80px;
+            gap:10px;
+            align-items:center;
+          ">
+
+            <div style="
+              font-size:22px;
+              font-weight:bold;
+            ">
+              ${medal}
             </div>
+
+            <div>
+
+              <div style="
+                font-size:18px;
+                font-weight:bold;
+              ">
+                ${row.name}
+              </div>
+
+              <div style="
+                margin-top:5px;
+                display:flex;
+                flex-wrap:wrap;
+                gap:6px;
+              ">
+
+                <div style="
+                  padding:5px 9px;
+                  border-radius:999px;
+                  background:rgba(255,255,255,0.08);
+                  font-size:12px;
+                ">
+                  🎯 ${cleanNumber(row.exact)} eksakte
+                </div>
+
+                <div style="
+                  padding:5px 9px;
+                  border-radius:999px;
+                  background:rgba(255,255,255,0.08);
+                  font-size:12px;
+                ">
+                  ⚽ ${cleanNumber(row.outcome)} riktige
+                </div>
+
+                <div style="
+                  padding:5px 9px;
+                  border-radius:999px;
+                  background:rgba(255,255,255,0.08);
+                  font-size:12px;
+                ">
+                  🔥 ${cleanNumber(row.underdog)} outsiderpoeng
+                </div>
+
+              </div>
+            </div>
+
+            <div style="
+              text-align:right;
+              font-size:28px;
+              font-weight:bold;
+              color:#2ecc71;
+            ">
+              ${cleanNumber(row.points)}
+            </div>
+
           </div>
 
-          <div class="points">${row.points} p</div>
         </div>
       `;
     });
 
   }catch(error){
-    container.innerHTML = `<div class="empty">Klarte ikke å laste leaderboard.</div>`;
+
+    container.innerHTML = `
+      <div style="color:#ff8080;">
+        Klarte ikke å laste leaderboard.
+      </div>
+    `;
+
     console.error(error);
   }
 }
 
-loadLeaderboard();
 </script>
-
-</body>
-</html>
