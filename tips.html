@@ -895,9 +895,7 @@ if(!result.success){
   return;
 }
 
-localStorage.setItem("vm2026_submitted","true");
-setSubmittedButton();
-alert("Tips sendt inn! 🔥");
+alert(result.message || "Tips lagret! 🔥");
 
   }catch(error){
     alert("Feil ved innsending: " + error.message);
