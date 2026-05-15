@@ -931,9 +931,6 @@ function scrollToSection(id){
 }
 
 async function init(){
-  if(localStorage.getItem("vm2026_submitted") === "true"){
-    setSubmittedButton();
-  }
 
   await loadScoringRules();
   await loadPlayers();
