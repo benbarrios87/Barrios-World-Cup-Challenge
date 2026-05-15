@@ -1,12 +1,111 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>VM Leaderboard</title>
+
+<style>
+
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:
+    radial-gradient(circle at top left, rgba(46,204,113,0.18), transparent 28%),
+    linear-gradient(rgba(0,0,0,0.72), rgba(0,0,0,0.88)),
+    repeating-linear-gradient(
+      90deg,
+      #0b3d24 0px,
+      #0b3d24 80px,
+      #0e4a2c 80px,
+      #0e4a2c 160px
+    );
+  color:white;
+  min-height:100vh;
+}
+
+.wrapper{
+  max-width:900px;
+  margin:auto;
+  padding:22px;
+}
+
+.hero{
+  text-align:center;
+  margin-bottom:26px;
+}
+
+.hero h1{
+  margin:0 0 10px;
+  font-size:40px;
+}
+
+.hero p{
+  margin:0;
+  color:rgba(255,255,255,0.7);
+}
+
+.top-box{
+  background:rgba(7,14,28,0.82);
+  border:1px solid rgba(255,255,255,0.12);
+  border-radius:24px;
+  padding:20px;
+  backdrop-filter:blur(10px);
+  box-shadow:0 14px 40px rgba(0,0,0,0.35);
+}
+
+.loading{
+  color:rgba(255,255,255,0.7);
+  padding:12px;
+}
+
+@media(max-width:700px){
+
+  .wrapper{
+    padding:14px;
+  }
+
+  .hero h1{
+    font-size:30px;
+  }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="wrapper">
+
+  <div class="hero">
+    <h1>🏆 VM Leaderboard</h1>
+    <p>Stillingen i Barrios World Cup Challenge 2026</p>
+  </div>
+
+  <div class="top-box">
+
+    <div id="leaderboardContainer" class="loading">
+      Laster leaderboard...
+    </div>
+
+  </div>
+
+</div>
+
 <script>
 
-const SHEET_ID = "1EvB5oqS4Bemr_W8VXYzWAVsr4nX0u3VTQMpgUlOM9-s";
+const SHEET_ID =
+"1EvB5oqS4Bemr_W8VXYzWAVsr4nX0u3VTQMpgUlOM9-s";
 
 const LEADERBOARD_API_URL =
 `https://opensheet.elk.sh/${SHEET_ID}/API_LEADERBOARD`;
 
 async function fetchSheet(url){
+
   const response = await fetch(url);
+
   return await response.json();
 }
 
@@ -28,8 +127,6 @@ async function loadLeaderboard(){
   const container =
     document.getElementById("leaderboardContainer");
 
-  if(!container) return;
-
   try{
 
     const data = await fetchSheet(LEADERBOARD_API_URL);
@@ -45,7 +142,6 @@ async function loadLeaderboard(){
       container.innerHTML = `
         <div style="
           color:rgba(255,255,255,0.7);
-          padding:12px;
         ">
           Ingen poeng ennå.
         </div>
@@ -157,16 +253,14 @@ async function loadLeaderboard(){
           </div>
 
         </div>
+
       `;
     });
 
   }catch(error){
 
     container.innerHTML = `
-      <div style="
-        color:#ff8080;
-        padding:12px;
-      ">
+      <div style="color:#ff8080;">
         Klarte ikke å laste leaderboard.
       </div>
     `;
@@ -178,3 +272,6 @@ async function loadLeaderboard(){
 loadLeaderboard();
 
 </script>
+
+</body>
+</html>
