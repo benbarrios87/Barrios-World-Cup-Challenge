@@ -1,1 +1,309 @@
 
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>VM Premiepott</title>
+
+<style>
+:root{
+  --green:#2ecc71;
+  --gold:#ffd166;
+  --card:rgba(7,14,28,0.84);
+  --line:rgba(255,255,255,0.13);
+  --muted:rgba(255,255,255,0.7);
+}
+
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  color:white;
+  min-height:100vh;
+  background:
+    radial-gradient(circle at top left, rgba(46,204,113,0.20), transparent 28%),
+    radial-gradient(circle at bottom right, rgba(255,209,102,0.15), transparent 28%),
+    linear-gradient(rgba(0,0,0,0.68), rgba(0,0,0,0.88)),
+    repeating-linear-gradient(90deg,#0b3d24 0px,#0b3d24 80px,#0e4a2c 80px,#0e4a2c 160px);
+}
+
+.wrapper{
+  max-width:900px;
+  margin:auto;
+  padding:22px;
+}
+
+.hero{
+  text-align:center;
+  margin-bottom:24px;
+}
+
+.hero h1{
+  font-size:40px;
+  margin:0 0 8px;
+}
+
+.hero p{
+  color:var(--muted);
+  margin:0;
+}
+
+.nav{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-bottom:20px;
+  justify-content:center;
+}
+
+.nav a{
+  color:white;
+  text-decoration:none;
+  padding:10px 15px;
+  border-radius:999px;
+  background:rgba(255,255,255,0.08);
+  font-weight:bold;
+}
+
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:24px;
+  padding:20px;
+  margin-bottom:18px;
+  box-shadow:0 14px 40px rgba(0,0,0,0.35);
+  backdrop-filter:blur(10px);
+}
+
+.summary-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:14px;
+  margin-bottom:18px;
+}
+
+.summary-box{
+  background:rgba(255,255,255,0.07);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:18px;
+  padding:16px;
+  text-align:center;
+}
+
+.summary-box span{
+  display:block;
+  color:var(--muted);
+  font-size:13px;
+  margin-bottom:6px;
+}
+
+.summary-box strong{
+  font-size:28px;
+}
+
+.prize-row{
+  display:grid;
+  grid-template-columns:60px 1fr auto;
+  gap:12px;
+  align-items:center;
+  padding:15px;
+  margin-bottom:12px;
+  border-radius:18px;
+  background:rgba(255,255,255,0.07);
+  border:1px solid rgba(255,255,255,0.10);
+}
+
+.place{
+  font-size:26px;
+  font-weight:bold;
+}
+
+.prize-title{
+  font-weight:bold;
+  font-size:18px;
+}
+
+.prize-percent{
+  color:var(--muted);
+  font-size:13px;
+  margin-top:4px;
+}
+
+.prize-money{
+  font-size:24px;
+  font-weight:bold;
+  color:var(--gold);
+  text-align:right;
+}
+
+.note{
+  color:var(--muted);
+  line-height:1.5;
+  font-size:14px;
+}
+
+@media(max-width:700px){
+  .wrapper{
+    padding:14px;
+  }
+
+  .hero h1{
+    font-size:30px;
+  }
+
+  .summary-grid{
+    grid-template-columns:1fr;
+  }
+
+  .prize-row{
+    grid-template-columns:48px 1fr;
+  }
+
+  .prize-money{
+    grid-column:2;
+    text-align:left;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="wrapper">
+
+  <div class="hero">
+    <h1>💰 Premiepott</h1>
+    <p>Dynamisk premiefordeling basert på antall deltakere</p>
+  </div>
+
+  <div class="nav">
+    <a href="index.html">Forside</a>
+    <a href="tips.html">Innlevering</a>
+    <a href="leaderboard.html">Leaderboard</a>
+  </div>
+
+  <div class="card">
+    <div class="summary-grid">
+      <div class="summary-box">
+        <span>Deltakere</span>
+        <strong id="playerCount">0</strong>
+      </div>
+
+      <div class="summary-box">
+        <span>Buy in</span>
+        <strong>500 kr</strong>
+      </div>
+
+      <div class="summary-box">
+        <span>Total pott</span>
+        <strong id="totalPot">0 kr</strong>
+      </div>
+    </div>
+
+    <div id="prizeContainer">
+      Laster premieoversikt...
+    </div>
+  </div>
+
+  <div class="card note">
+    Premieplasser beregnes som omtrent 30% av deltakerne. Fordelingen justeres automatisk etter hvor mange som har levert tips.
+  </div>
+
+</div>
+
+<script>
+const SHEET_ID = "1EvB5oqS4Bemr_W8VXYzWAVsr4nX0u3VTQMpgUlOM9-s";
+const LEADERBOARD_API_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_LEADERBOARD`;
+
+const BUY_IN = 500;
+
+async function fetchSheet(url){
+  const response = await fetch(url);
+  return await response.json();
+}
+
+function formatMoney(amount){
+  return `${Math.round(amount).toLocaleString("no-NO")} kr`;
+}
+
+function getPrizePercents(prizeCount){
+  if(prizeCount === 1) return [1];
+  if(prizeCount === 2) return [0.65, 0.35];
+  if(prizeCount === 3) return [0.50, 0.30, 0.20];
+  if(prizeCount === 4) return [0.45, 0.25, 0.18, 0.12];
+  if(prizeCount === 5) return [0.40, 0.24, 0.16, 0.12, 0.08];
+
+  const firstFive = [0.36, 0.22, 0.16, 0.11, 0.08];
+  const restCount = prizeCount - 5;
+  const restTotal = 0.07;
+  const rest = Array(restCount).fill(restTotal / restCount);
+
+  return [...firstFive, ...rest];
+}
+
+function getMedal(index){
+  if(index === 0) return "🥇";
+  if(index === 1) return "🥈";
+  if(index === 2) return "🥉";
+  return `${index + 1}.`;
+}
+
+async function loadPrizes(){
+  const container = document.getElementById("prizeContainer");
+
+  try{
+    const data = await fetchSheet(LEADERBOARD_API_URL);
+    const players = data.filter(row => row.name);
+
+    const playerCount = players.length;
+    const totalPot = playerCount * BUY_IN;
+    const prizeCount = Math.max(1, Math.round(playerCount * 0.3));
+    const percents = getPrizePercents(prizeCount);
+
+    document.getElementById("playerCount").textContent = playerCount;
+    document.getElementById("totalPot").textContent = formatMoney(totalPot);
+
+    if(playerCount === 0){
+      container.innerHTML = `
+        <div class="note">
+          Ingen deltakere registrert ennå.
+        </div>
+      `;
+      return;
+    }
+
+    container.innerHTML = "";
+
+    percents.forEach((percent,index) => {
+      container.innerHTML += `
+        <div class="prize-row">
+          <div class="place">${getMedal(index)}</div>
+
+          <div>
+            <div class="prize-title">${index + 1}. plass</div>
+            <div class="prize-percent">${Math.round(percent * 100)}% av potten</div>
+          </div>
+
+          <div class="prize-money">
+            ${formatMoney(totalPot * percent)}
+          </div>
+        </div>
+      `;
+    });
+
+  }catch(error){
+    container.innerHTML = `
+      <div style="color:#ff8080;">
+        Klarte ikke å laste premiepott.
+      </div>
+    `;
+    console.error(error);
+  }
+}
+
+loadPrizes();
+</script>
+
+</body>
+</html>
