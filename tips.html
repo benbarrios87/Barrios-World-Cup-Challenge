@@ -898,38 +898,6 @@ async function submitTips(){
   }
 }
 
-  const bestPlayer = getBonusData(".best-player-input");
-  const topScorer = getBonusData(".top-scorer-input");
-
-  const bestTotal = bestPlayer.reduce((sum,item) => sum + Number(item.points || 0),0);
-  const scorerTotal = topScorer.reduce((sum,item) => sum + Number(item.points || 0),0);
-
-  if(bestTotal !== 10){
-    alert(`Beste spiller må være nøyaktig 10 poeng. Nå har du brukt ${bestTotal}.`);
-    return;
-  }
-
-  if(scorerTotal !== 10){
-    alert(`Toppscorer må være nøyaktig 10 poeng. Nå har du brukt ${scorerTotal}.`);
-    return;
-  }
-
-  try{
-    await fetch(SUBMIT_URL, {
-      method:"POST",
-      mode:"no-cors",
-      body:JSON.stringify({ name, tips, bestPlayer, topScorer })
-    });
-
-    localStorage.setItem("vm2026_submitted","true");
-    setSubmittedButton();
-    alert("Tips sendt inn! 🔥");
-  }catch(error){
-    alert("Noe gikk feil ved innsending.");
-    console.error(error);
-  }
-}
-
 function setSubmittedButton(){
   const btn = document.querySelector(".submit-btn");
   btn.textContent = "Tips sendt inn ✅";
