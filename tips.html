@@ -878,6 +878,43 @@ async function submitTips(){
   }
 
   try{
+    const response = await fetch(SUBMIT_URL, {
+      method:"POST",
+      body:JSON.stringify({
+        name,
+        tips,
+        bestPlayer,
+        topScorer
+      })
+    });
+
+    const text = await response.text();
+
+    alert("Svar fra Apps Script: " + text);
+
+  }catch(error){
+    alert("Feil ved innsending: " + error.message);
+    console.error(error);
+  }
+}
+
+  const bestPlayer = getBonusData(".best-player-input");
+  const topScorer = getBonusData(".top-scorer-input");
+
+  const bestTotal = bestPlayer.reduce((sum,item) => sum + Number(item.points || 0),0);
+  const scorerTotal = topScorer.reduce((sum,item) => sum + Number(item.points || 0),0);
+
+  if(bestTotal !== 10){
+    alert(`Beste spiller må være nøyaktig 10 poeng. Nå har du brukt ${bestTotal}.`);
+    return;
+  }
+
+  if(scorerTotal !== 10){
+    alert(`Toppscorer må være nøyaktig 10 poeng. Nå har du brukt ${scorerTotal}.`);
+    return;
+  }
+
+  try{
     await fetch(SUBMIT_URL, {
       method:"POST",
       mode:"no-cors",
