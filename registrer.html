@@ -1,1 +1,336 @@
 
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Registrering | Barrios World Cup Challenge 2026</title>
+
+<style>
+:root{
+  --card:rgba(7,14,28,0.84);
+  --line:rgba(255,255,255,0.14);
+  --text:#fff;
+  --muted:rgba(255,255,255,0.72);
+  --green:#2ecc71;
+  --gold:#ffd166;
+  --red:#ff5e5e;
+}
+
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  color:var(--text);
+  min-height:100vh;
+  background:
+    radial-gradient(circle at top left, rgba(46,204,113,0.24), transparent 30%),
+    radial-gradient(circle at bottom right, rgba(255,209,102,0.14), transparent 28%),
+    linear-gradient(rgba(0,0,0,0.68), rgba(0,0,0,0.84)),
+    repeating-linear-gradient(
+      90deg,
+      #0b3d24 0px,
+      #0b3d24 90px,
+      #0e4a2c 90px,
+      #0e4a2c 180px
+    );
+}
+
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  background:
+    radial-gradient(circle at center, transparent 0 135px, rgba(255,255,255,0.06) 136px 138px, transparent 139px),
+    linear-gradient(90deg, transparent 49.8%, rgba(255,255,255,0.09) 50%, transparent 50.2%);
+  opacity:0.45;
+}
+
+.wrapper{
+  max-width:720px;
+  margin:auto;
+  padding:24px;
+  position:relative;
+  z-index:1;
+}
+
+.back-link{
+  display:inline-block;
+  margin-bottom:18px;
+  color:white;
+  text-decoration:none;
+  opacity:0.8;
+}
+
+.back-link:hover{
+  opacity:1;
+}
+
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:26px;
+  padding:28px;
+  backdrop-filter:blur(10px);
+  box-shadow:0 16px 40px rgba(0,0,0,0.32);
+}
+
+.badge{
+  display:inline-block;
+  margin-bottom:14px;
+  padding:6px 11px;
+  border-radius:999px;
+  background:rgba(46,204,113,0.18);
+  color:#9dffc7;
+  font-size:13px;
+  font-weight:bold;
+}
+
+h1{
+  margin:0 0 10px;
+  font-size:38px;
+  line-height:1.05;
+}
+
+.lead{
+  margin:0 0 28px;
+  color:var(--muted);
+  line-height:1.6;
+  font-size:16px;
+}
+
+.info-box{
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:18px;
+  padding:18px;
+  margin-bottom:26px;
+}
+
+.info-box strong{
+  color:var(--gold);
+}
+
+.form-group{
+  margin-bottom:18px;
+}
+
+label{
+  display:block;
+  margin-bottom:8px;
+  font-size:14px;
+  color:var(--muted);
+}
+
+input{
+  width:100%;
+  box-sizing:border-box;
+  padding:16px;
+  border-radius:16px;
+  border:1px solid rgba(255,255,255,0.12);
+  background:rgba(255,255,255,0.08);
+  color:white;
+  font-size:16px;
+  outline:none;
+}
+
+input:focus{
+  border-color:rgba(46,204,113,0.7);
+}
+
+.submit-btn{
+  width:100%;
+  border:none;
+  cursor:pointer;
+  padding:18px;
+  border-radius:18px;
+  font-size:18px;
+  font-weight:bold;
+  color:#07111f;
+  background:linear-gradient(135deg,var(--green),#7dffba);
+  transition:0.2s;
+}
+
+.submit-btn:hover{
+  transform:translateY(-2px);
+}
+
+.submit-btn:disabled{
+  opacity:0.6;
+  cursor:not-allowed;
+}
+
+.message{
+  margin-top:20px;
+  padding:16px;
+  border-radius:16px;
+  display:none;
+  line-height:1.5;
+}
+
+.success{
+  background:rgba(46,204,113,0.16);
+  border:1px solid rgba(46,204,113,0.32);
+  color:#b8ffd3;
+}
+
+.error{
+  background:rgba(255,94,94,0.12);
+  border:1px solid rgba(255,94,94,0.26);
+  color:#ffc2c2;
+}
+
+.footer-note{
+  color:var(--muted);
+  text-align:center;
+  font-size:13px;
+  margin-top:20px;
+}
+
+@media(max-width:700px){
+
+  h1{
+    font-size:30px;
+  }
+
+  .card{
+    padding:22px;
+  }
+
+}
+</style>
+</head>
+
+<body>
+
+<div class="wrapper">
+
+  <a class="back-link" href="index.html">← Til forsiden</a>
+
+  <div class="card">
+
+    <div class="badge">VM 2026</div>
+
+    <h1>Registrering</h1>
+
+    <p class="lead">
+      Meld deg på Barrios World Cup Challenge 2026.
+      Buy in er 500 kr og påmelding er bindende.
+    </p>
+
+    <div class="info-box">
+      <strong>Hva skjer etter registrering?</strong><br><br>
+      Du blir automatisk lagt inn i deltakerlisten og premiepotten.
+      Selve tipsene kan leveres senere før deadline.
+    </div>
+
+    <form id="registerForm">
+
+      <div class="form-group">
+        <label>Navn</label>
+        <input
+          type="text"
+          id="name"
+          placeholder="F.eks. Benjamin"
+          required
+        >
+      </div>
+
+      <div class="form-group">
+        <label>Telefonnummer</label>
+        <input
+          type="tel"
+          id="phone"
+          placeholder="F.eks. 90000000"
+          required
+        >
+      </div>
+
+      <button class="submit-btn" type="submit">
+        Registrer meg
+      </button>
+
+    </form>
+
+    <div id="successMessage" class="message success"></div>
+    <div id="errorMessage" class="message error"></div>
+
+  </div>
+
+  <div class="footer-note">
+    Barrios World Cup Challenge 2026
+  </div>
+
+</div>
+
+<script>
+
+const SCRIPT_URL = "DIN_APPS_SCRIPT_WEBAPP_URL";
+
+const form = document.getElementById("registerForm");
+const successMessage = document.getElementById("successMessage");
+const errorMessage = document.getElementById("errorMessage");
+
+form.addEventListener("submit", async (e) => {
+
+  e.preventDefault();
+
+  successMessage.style.display = "none";
+  errorMessage.style.display = "none";
+
+  const button = form.querySelector("button");
+
+  const name = document.getElementById("name").value.trim();
+  const phone = document.getElementById("phone").value.trim();
+
+  if(!name || !phone){
+    showError("Fyll inn navn og telefonnummer.");
+    return;
+  }
+
+  button.disabled = true;
+  button.textContent = "Registrerer...";
+
+  try{
+
+    const response = await fetch(SCRIPT_URL,{
+      method:"POST",
+      body:JSON.stringify({
+        action:"register",
+        name,
+        phone
+      })
+    });
+
+    const result = await response.text();
+
+    successMessage.innerHTML = `
+      <strong>Registrering fullført!</strong><br><br>
+      Du er nå med i Barrios World Cup Challenge 2026.
+    `;
+
+    successMessage.style.display = "block";
+
+    form.reset();
+
+  }catch(err){
+
+    showError("Noe gikk galt. Prøv igjen.");
+
+  }
+
+  button.disabled = false;
+  button.textContent = "Registrer meg";
+
+});
+
+function showError(message){
+  errorMessage.textContent = message;
+  errorMessage.style.display = "block";
+}
+
+</script>
+
+</body>
+</html>
