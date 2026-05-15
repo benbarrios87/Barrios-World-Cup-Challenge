@@ -639,7 +639,7 @@ const points = calculateMatchPoints(match, homeInputValue, awayInputValue, resul
       <div class="team-name">${match.home}</div>
       <div class="tier-label">Tier ${homeTier}</div>
     </div>
-    <input class="team-score" type="number" min="0" inputmode="numeric" data-match-id="${match.id}" data-side="home" oninput="saveTipsLocally(); renderMatches(); loadSavedTips(); updateProgress()">
+    <input class="team-score" type="number" min="0" inputmode="numeric" data-match-id="${match.id}" data-side="home" oninput="saveTipsLocally(); updateProgress()"
   </div>
 
   <div class="team tier-${awayTier}">
@@ -647,7 +647,7 @@ const points = calculateMatchPoints(match, homeInputValue, awayInputValue, resul
       <div class="team-name">${match.away}</div>
       <div class="tier-label">Tier ${awayTier}</div>
     </div>
-    <input class="team-score" type="number" min="0" inputmode="numeric" data-match-id="${match.id}" data-side="away" oninput="saveTipsLocally(); renderMatches(); loadSavedTips(); updateProgress()">
+    <input class="team-score" type="number" min="0" inputmode="numeric" data-match-id="${match.id}" data-side="away" oninput="saveTipsLocally(); updateProgress()"
   </div>
 </div>
 
