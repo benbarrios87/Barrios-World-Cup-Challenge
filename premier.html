@@ -1,5 +1,5 @@
 
-<!DOCTYPE html>
+<!DOCTYPE html>contain
 <html lang="no">
 <head>
 <meta charset="UTF-8">
@@ -205,7 +205,15 @@ body{
       Laster premieoversikt...
     </div>
   </div>
+  
+<div class="card">
+  <h2 style="margin-top:0;">Registrerte deltakere</h2>
 
+  <div id="playersContainer">
+    Laster spillere...
+  </div>
+</div>
+  
   <div class="card note">
     Premieplasser beregnes som omtrent 30% av deltakerne. Fordelingen justeres automatisk etter hvor mange som har levert tips.
   </div>
@@ -292,6 +300,31 @@ async function loadPrizes(){
       `;
     });
 
+    const playersContainer =
+  document.getElementById("playersContainer");
+
+playersContainer.innerHTML = "";
+
+players
+  .sort((a,b) =>
+    a.name.localeCompare(b.name,"no")
+  )
+  .forEach(player => {
+
+    playersContainer.innerHTML += `
+      <div style="
+        padding:12px 14px;
+        border-radius:14px;
+        background:rgba(255,255,255,0.06);
+        border:1px solid rgba(255,255,255,0.08);
+        margin-bottom:10px;
+        font-weight:bold;
+      ">
+        ⚽ ${player.name}
+      </div>
+    `;
+  });
+    
   }catch(error){
     container.innerHTML = `
       <div style="color:#ff8080;">
