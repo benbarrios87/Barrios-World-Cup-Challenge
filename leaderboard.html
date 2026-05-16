@@ -84,9 +84,16 @@ body{
     <p>Stillingen i Barrios World Cup Challenge 2026</p>
   </div>
 
-  <div class="top-box">
+ <div class="top-box">
 
-    <div id="leaderboardContainer" class="loading">
+  <div id="statusBox" style="
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:12px;
+    margin-bottom:18px;
+  "></div>
+
+  <div id="leaderboardContainer" class="loading">
       Laster leaderboard...
     </div>
 
@@ -101,6 +108,8 @@ const SHEET_ID =
 
 const LEADERBOARD_API_URL =
 `https://opensheet.elk.sh/${SHEET_ID}/API_LEADERBOARD`;
+  const SUBMISSIONS_API_URL =
+`https://opensheet.elk.sh/${SHEET_ID}/SUBMISSIONS`;
 
 async function fetchSheet(url){
 
@@ -121,7 +130,45 @@ function cleanNumber(value){
       .replace(",",".")
   ) || 0;
 }
+function isSubmissionComplete(sub){
 
+  try{
+
+    const tips =
+      JSON.parse(sub.tips_json || "[]");
+
+    const bestPlayer =
+      JSON.parse(sub.best_player_json || "[]");
+
+    const topScorer =
+      JSON.parse(sub.top_scorer_json || "[]");
+
+    if(!tips.length) return false;
+
+    const missingTips = tips.some(t =>
+      t.tips_home === "" ||
+      t.tips_home === null ||
+      t.tips_home === undefined ||
+      t.tips_away === "" ||
+      t.tips_away === null ||
+      t.tips_away === undefined
+    );
+
+    if(missingTips) return false;
+
+    if(!bestPlayer.length) return false;
+    if(!topScorer.length) return false;
+
+    return true;
+
+  }catch(err){
+
+    return false;
+
+  }
+
+}
+  
 async function loadLeaderboard(){
 
   const container =
@@ -131,12 +178,97 @@ async function loadLeaderboard(){
 
     const data = await fetchSheet(LEADERBOARD_API_URL);
 
+const submissions =
+  await fetchSheet(SUBMISSIONS_API_URL);
+
     const rows = data
       .filter(row => row.name)
       .sort((a,b) =>
         cleanNumber(b.points) - cleanNumber(a.points)
       );
+const registeredCount = rows.length;
 
+const completedCount =
+  submissions.filter(isSubmissionComplete).length;
+
+const missingCount =
+  registeredCount - completedCount;
+
+document.getElementById("statusBox").innerHTML = `
+
+  <div style="
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.1);
+    border-radius:18px;
+    padding:16px;
+    text-align:center;
+  ">
+    <div style="
+      font-size:28px;
+      font-weight:bold;
+    ">
+      ${registeredCount}
+    </div>
+
+    <div style="
+      color:rgba(255,255,255,0.7);
+      font-size:13px;
+      margin-top:4px;
+    ">
+      Registrerte
+    </div>
+  </div>
+
+  <div style="
+    background:rgba(46,204,113,0.14);
+    border:1px solid rgba(46,204,113,0.25);
+    border-radius:18px;
+    padding:16px;
+    text-align:center;
+  ">
+    <div style="
+      font-size:28px;
+      font-weight:bold;
+      color:#9dffc7;
+    ">
+      ${completedCount}
+    </div>
+
+    <div style="
+      color:rgba(255,255,255,0.7);
+      font-size:13px;
+      margin-top:4px;
+    ">
+      Fullført tips
+    </div>
+  </div>
+
+  <div style="
+    background:rgba(255,94,94,0.12);
+    border:1px solid rgba(255,94,94,0.22);
+    border-radius:18px;
+    padding:16px;
+    text-align:center;
+  ">
+    <div style="
+      font-size:28px;
+      font-weight:bold;
+      color:#ffb4b4;
+    ">
+      ${missingCount}
+    </div>
+
+    <div style="
+      color:rgba(255,255,255,0.7);
+      font-size:13px;
+      margin-top:4px;
+    ">
+      Mangler tips
+    </div>
+  </div>
+
+`;
+    
     if(rows.length === 0){
 
       container.innerHTML = `
