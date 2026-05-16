@@ -188,11 +188,18 @@ const submissions =
       );
 const registeredCount = rows.length;
 
-const completedCount =
-  submissions.filter(isSubmissionComplete).length;
+const completedNames = new Set(
+  submissions
+    .filter(isSubmissionComplete)
+    .map(sub => String(sub.name || "").trim().toLowerCase())
+);
+
+const completedCount = rows.filter(row =>
+  completedNames.has(String(row.name || "").trim().toLowerCase())
+).length;
 
 const missingCount =
-  registeredCount - completedCount;
+  Math.max(0, registeredCount - completedCount);
 
 document.getElementById("statusBox").innerHTML = `
 
