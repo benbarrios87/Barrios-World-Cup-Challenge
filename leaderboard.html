@@ -356,7 +356,10 @@ statusBox.innerHTML = `
             <div class="medal">${medal}</div>
 
             <div>
-              <div class="name">${row.name}</div>
+             <a class="profile-link"
+   href="profil.html?name=${encodeURIComponent(row.name)}">
+  ${row.name}
+</a>
 
               <div class="tags">
                 <div class="tag">🎯 ${cleanNumber(row.exact)} eksakte</div>
