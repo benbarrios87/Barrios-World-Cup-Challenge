@@ -271,41 +271,9 @@ document.getElementById("statusBox").innerHTML = `
       font-weight:bold;
       color:#ffb4b4;
     ">
-      ${missingCount}
-      const missingNames = rows
-  .filter(row =>
-    !completedNames.has(String(row.name || "").trim().toLowerCase())
-  )
-  .map(row => row.name);
-
-const missingBox = document.getElementById("missingBox");
-
-if(missingNames.length > 0){
-  missingBox.style.display = "block";
-  missingBox.innerHTML = `
-    <strong style="color:#ffb4b4;">Mangler fullført tips:</strong>
-    <div style="
-      margin-top:10px;
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
-    ">
-      ${missingNames.map(name => `
-        <span style="
-          background:rgba(255,255,255,0.08);
-          border:1px solid rgba(255,255,255,0.10);
-          border-radius:999px;
-          padding:6px 10px;
-          font-size:13px;
-        ">
-          ${name}
-        </span>
-      `).join("")}
-    </div>
-  `;
-}else{
-  missingBox.style.display = "none";
-}
+     document.getElementById("statusBox").innerHTML = `
+...
+`;
     </div>
 
     <div style="
