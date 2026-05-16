@@ -1,1 +1,446 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<title>Sluttspill | FC Barrios World Cup Challenge</title>
+
+<style>
+:root{
+  --card:rgba(7,14,28,0.82);
+  --soft:rgba(255,255,255,0.08);
+  --line:rgba(255,255,255,0.14);
+  --text:#fff;
+  --muted:rgba(255,255,255,0.70);
+  --green:#2ecc71;
+  --gold:#ffd166;
+  --gold2:#ffb703;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  color:var(--text);
+  min-height:100vh;
+  background:
+    radial-gradient(circle at top left, rgba(46,204,113,0.22), transparent 30%),
+    radial-gradient(circle at top right, rgba(255,209,102,0.12), transparent 28%),
+    linear-gradient(rgba(0,0,0,0.72), rgba(0,0,0,0.90)),
+    repeating-linear-gradient(
+      90deg,
+      #0b3d24 0px,
+      #0b3d24 90px,
+      #0e4a2c 90px,
+      #0e4a2c 180px
+    );
+}
+
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  background:
+    radial-gradient(circle at center, transparent 0 135px, rgba(255,255,255,0.05) 136px 138px, transparent 139px),
+    linear-gradient(90deg, transparent 49.8%, rgba(255,255,255,0.08) 50%, transparent 50.2%);
+  opacity:0.45;
+}
+
+.wrapper{
+  max-width:1500px;
+  margin:auto;
+  padding:20px;
+  position:relative;
+  z-index:1;
+}
+
+.nav{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  justify-content:center;
+  margin-bottom:24px;
+}
+
+.nav a{
+  color:white;
+  text-decoration:none;
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.12);
+  border-radius:999px;
+  padding:11px 16px;
+  font-weight:bold;
+}
+
+.nav a.active{
+  background:rgba(46,204,113,0.20);
+  border-color:rgba(46,204,113,0.35);
+  color:#9dffc7;
+}
+
+.hero{
+  text-align:center;
+  margin:20px 0 30px;
+}
+
+.badge{
+  display:inline-block;
+  margin-bottom:12px;
+  padding:6px 11px;
+  border-radius:999px;
+  background:rgba(46,204,113,0.18);
+  color:#9dffc7;
+  font-size:13px;
+  font-weight:bold;
+}
+
+.hero h1{
+  margin:0 0 8px;
+  font-size:44px;
+  letter-spacing:1px;
+}
+
+.hero p{
+  margin:0;
+  color:var(--muted);
+  font-size:17px;
+}
+
+.bracket-scroll{
+  overflow-x:auto;
+  padding-bottom:16px;
+}
+
+.bracket{
+  min-width:1320px;
+  display:grid;
+  grid-template-columns:300px 300px 300px 300px;
+  gap:65px;
+  align-items:center;
+  position:relative;
+}
+
+.round{
+  display:flex;
+  flex-direction:column;
+  gap:22px;
+}
+
+.round h2{
+  text-align:center;
+  color:var(--gold);
+  margin:0 0 6px;
+  font-size:22px;
+  letter-spacing:1px;
+}
+
+.round-sub{
+  display:block;
+  color:var(--muted);
+  font-size:14px;
+  margin-top:4px;
+  font-weight:normal;
+}
+
+.match{
+  position:relative;
+  background:var(--card);
+  border:1px solid rgba(255,255,255,0.14);
+  border-radius:16px;
+  overflow:hidden;
+  box-shadow:0 12px 32px rgba(0,0,0,0.28);
+}
+
+.match.gold{
+  border-color:rgba(255,209,102,0.75);
+  box-shadow:0 0 28px rgba(255,209,102,0.16);
+}
+
+.team-row{
+  display:grid;
+  grid-template-columns:1fr 42px 42px;
+  align-items:center;
+  min-height:42px;
+  border-bottom:1px solid rgba(255,255,255,0.10);
+}
+
+.team-row:last-child{
+  border-bottom:none;
+}
+
+.team-name{
+  padding:10px 12px;
+  font-weight:bold;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.score{
+  height:42px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-left:1px solid rgba(255,255,255,0.10);
+  color:var(--gold);
+  font-weight:bold;
+}
+
+.match-label{
+  position:absolute;
+  top:-11px;
+  left:14px;
+  background:#07111f;
+  border:1px solid rgba(255,255,255,0.14);
+  color:var(--muted);
+  border-radius:999px;
+  padding:3px 8px;
+  font-size:11px;
+}
+
+.round-of-16 .match::after,
+.quarters .match::after,
+.semis .match::after{
+  content:"";
+  position:absolute;
+  right:-66px;
+  top:50%;
+  width:66px;
+  height:2px;
+  background:linear-gradient(90deg,var(--gold),transparent);
+}
+
+.quarters{
+  gap:74px;
+}
+
+.semis{
+  gap:168px;
+}
+
+.final-round{
+  gap:34px;
+}
+
+.final-icon{
+  text-align:center;
+  font-size:54px;
+  color:var(--gold);
+  margin-bottom:4px;
+}
+
+.info{
+  max-width:620px;
+  margin:24px auto 0;
+  text-align:center;
+  color:var(--muted);
+  background:rgba(7,14,28,0.76);
+  border:1px solid rgba(255,255,255,0.13);
+  border-radius:18px;
+  padding:16px;
+  line-height:1.5;
+}
+
+.footer-note{
+  text-align:center;
+  color:var(--muted);
+  font-size:13px;
+  margin-top:22px;
+}
+
+@media(max-width:800px){
+  .wrapper{
+    padding:14px;
+  }
+
+  .hero h1{
+    font-size:32px;
+  }
+
+  .hero p{
+    font-size:15px;
+  }
+
+  .bracket{
+    min-width:1120px;
+    grid-template-columns:260px 260px 260px 260px;
+    gap:38px;
+  }
+
+  .round-of-16 .match::after,
+  .quarters .match::after,
+  .semis .match::after{
+    right:-39px;
+    width:39px;
+  }
+
+  .team-row{
+    grid-template-columns:1fr 38px 38px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="wrapper">
+
+  <div class="nav">
+    <a href="index.html">Hjem</a>
+    <a href="tips.html">Tips</a>
+    <a href="leaderboard.html">Leaderboard</a>
+    <a href="minetips.html">Mine tips</a>
+    <a href="stats.html">Stats</a>
+    <a class="active" href="sluttspill.html">Sluttspill</a>
+  </div>
+
+  <div class="hero">
+    <div class="badge">FC BARRIOS • VM 2026</div>
+    <h1>🏆 Sluttspillplan</h1>
+    <p>Veien til finalen. Lag og resultater fylles inn manuelt når gruppespillet er ferdig.</p>
+  </div>
+
+  <div class="bracket-scroll">
+
+    <div class="bracket">
+
+      <div class="round round-of-16">
+        <h2>ÅTTENDELSFINALE <span class="round-sub">16 lag</span></h2>
+
+        <div class="match">
+          <div class="match-label">Kamp 57</div>
+          <div class="team-row"><div class="team-name">Lag 1</div><div class="score">–</div><div class="score">–</div></div>
+          <div class="team-row"><div class="team-name">Lag 2</div><div class="score">–</div><div class="score">–</div></div>
+        </div>
+
+        <div class="match">
+          <div class="match-label">Kamp 58</div>
+          <div class="team-row"><div class="team-name">Lag 3</div><div class="score">–</div><div class="score">–</div></div>
+          <div class="team-row"><div class="team-name">Lag 4</div><div class="score">–</div><div class="score">–</div></div>
+        </div>
+
+        <div class="match">
+          <div class="match-label">Kamp 59</div>
+          <div class="team-row"><div class="team-name">Lag 5</div><div class="score">–</div><div class="score">–</div></div>
+          <div class="team-row"><div class="team-name">Lag 6</div><div class="score">–</div><div class="score">–</div></div>
+        </div>
+
+        <div class="match">
+          <div class="match-label">Kamp 60</div>
+          <div class="team-row"><div class="team-name">Lag 7</div><div class="score">–</div><div class="score">–</div></div>
+          <div class="team-row"><div class="team-name">Lag 8</div><div class="score">–</div><div class="score">–</div></div>
+        </div>
+
+        <div class="match">
+          <div class="match-label">Kamp 61</div>
+          <div class="team-row"><div class="team-name">Lag 9</div><div class="score">–</div><div class="score">–</div></div>
+          <div class="team-row"><div class="team-name">Lag 10</div><div class="score">–</div><div class="score">–</div></div>
+        </div>
+
+        <div class="match">
+          <div class="match-label">Kamp 62</div>
+          <div class="team-row"><div class="team-name">Lag 11</div><div class="score">–</div><div class="score">–</div></div>
+          <div class="team-row"><div class="team-name">Lag 12</div><div class="score">–</div><div class="score">–</div></div>
+        </div>
+
+        <div class="match">
+          <div class="match-label">Kamp 63</div>
+          <div class="team-row"><div class="team-name">Lag 13</div><div class="score">–</div><div class="score">–</div></div>
+          <div class="team-row"><div class="team-name">Lag 14</div><div class="score">–</div><div class="score">–</div></div>
+        </div>
+
+        <div class="match">
+          <div class="match-label">Kamp 64</div>
+          <div class="team-row"><div class="team-name">Lag 15</div><div class="score">–</div><div class="score">–</div></div>
+          <div class="team-row"><div class="team-name">Lag 16</div><div class="score">–</div><div class="score">–</div></div>
+        </div>
+      </div>
+
+      <div class="round quarters">
+        <h2>KVARTFINALE <span class="round-sub">8 lag</span></h2>
+
+        <div class="match">
+          <div class="match-label">Kamp 65</div>
+          <div class="team-row"><div class="team-name">Vinner kamp 57</div><div class="score">–</div><div class="score">–</div></div>
+          <div class="team-row"><div class="team-name">Vinner kamp 58</div><div class="score">–</div><div class="score">–</div></div>
+        </div>
+
+        <div class="match">
+          <div class="match-label">Kamp 66</div>
+          <div class="team-row"><div class="team-name">Vinner kamp 59</div><div class="score">–</div><div class="score">–</div></div>
+          <div class="team-row"><div class="team-name">Vinner kamp 60</div><div class="score">–</div><div class="score">–</div></div>
+        </div>
+
+        <div class="match">
+          <div class="match-label">Kamp 67</div>
+          <div class="team-row"><div class="team-name">Vinner kamp 61</div><div class="score">–</div><div class="score">–</div></div>
+          <div class="team-row"><div class="team-name">Vinner kamp 62</div><div class="score">–</div><div class="score">–</div></div>
+        </div>
+
+        <div class="match">
+          <div class="match-label">Kamp 68</div>
+          <div class="team-row"><div class="team-name">Vinner kamp 63</div><div class="score">–</div><div class="score">–</div></div>
+          <div class="team-row"><div class="team-name">Vinner kamp 64</div><div class="score">–</div><div class="score">–</div></div>
+        </div>
+      </div>
+
+      <div class="round semis">
+        <h2>SEMIFINALE <span class="round-sub">4 lag</span></h2>
+
+        <div class="match">
+          <div class="match-label">Kamp 69</div>
+          <div class="team-row"><div class="team-name">Vinner kamp 65</div><div class="score">–</div><div class="score">–</div></div>
+          <div class="team-row"><div class="team-name">Vinner kamp 66</div><div class="score">–</div><div class="score">–</div></div>
+        </div>
+
+        <div class="match">
+          <div class="match-label">Kamp 70</div>
+          <div class="team-row"><div class="team-name">Vinner kamp 67</div><div class="score">–</div><div class="score">–</div></div>
+          <div class="team-row"><div class="team-name">Vinner kamp 68</div><div class="score">–</div><div class="score">–</div></div>
+        </div>
+      </div>
+
+      <div class="round final-round">
+        <h2>FINALE <span class="round-sub">2 lag</span></h2>
+
+        <div class="final-icon">👑</div>
+
+        <div class="match gold">
+          <div class="match-label">Kamp 72</div>
+          <div class="team-row"><div class="team-name">Vinner kamp 69</div><div class="score">–</div><div class="score">–</div></div>
+          <div class="team-row"><div class="team-name">Vinner kamp 70</div><div class="score">–</div><div class="score">–</div></div>
+        </div>
+
+        <div style="height:38px;"></div>
+
+        <h2 style="font-size:18px;color:#9dffc7;">KAMP OM 3. PLASS</h2>
+
+        <div class="match">
+          <div class="match-label">Kamp 71</div>
+          <div class="team-row"><div class="team-name">Taper kamp 69</div><div class="score">–</div><div class="score">–</div></div>
+          <div class="team-row"><div class="team-name">Taper kamp 70</div><div class="score">–</div><div class="score">–</div></div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="info">
+    Resultater og lag fylles inn manuelt når sluttspillet er klart. Neste steg senere er å koble dette mot
+    <strong>API_MATCHES</strong> og <strong>API_RESULTS</strong>, så bracketen kan oppdateres automatisk.
+  </div>
+
+  <div class="footer-note">
+    FC Barrios World Cup Challenge 2026
+  </div>
+
+</div>
+
+</body>
+</html>
