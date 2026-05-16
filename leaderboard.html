@@ -357,8 +357,12 @@ statusBox.innerHTML = `
 
             <div>
              <a class="profile-link"
-   href="profil.html?name=${encodeURIComponent(row.name)}">
+ <a
+  class="profile-link"
+  href="profil.html?name=${encodeURIComponent(row.name)}"
+>
   ${row.name}
+</a>
 </a>
 
               <div class="tags">
