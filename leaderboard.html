@@ -92,6 +92,15 @@ body{
     gap:12px;
     margin-bottom:18px;
   "></div>
+   
+   <div id="missingBox" style="
+  display:none;
+  background:rgba(255,94,94,0.10);
+  border:1px solid rgba(255,94,94,0.22);
+  border-radius:18px;
+  padding:16px;
+  margin-bottom:18px;
+"></div>
 
   <div id="leaderboardContainer" class="loading">
       Laster leaderboard...
@@ -263,6 +272,40 @@ document.getElementById("statusBox").innerHTML = `
       color:#ffb4b4;
     ">
       ${missingCount}
+      const missingNames = rows
+  .filter(row =>
+    !completedNames.has(String(row.name || "").trim().toLowerCase())
+  )
+  .map(row => row.name);
+
+const missingBox = document.getElementById("missingBox");
+
+if(missingNames.length > 0){
+  missingBox.style.display = "block";
+  missingBox.innerHTML = `
+    <strong style="color:#ffb4b4;">Mangler fullført tips:</strong>
+    <div style="
+      margin-top:10px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    ">
+      ${missingNames.map(name => `
+        <span style="
+          background:rgba(255,255,255,0.08);
+          border:1px solid rgba(255,255,255,0.10);
+          border-radius:999px;
+          padding:6px 10px;
+          font-size:13px;
+        ">
+          ${name}
+        </span>
+      `).join("")}
+    </div>
+  `;
+}else{
+  missingBox.style.display = "none";
+}
     </div>
 
     <div style="
