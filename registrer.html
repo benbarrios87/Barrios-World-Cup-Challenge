@@ -1,11 +1,10 @@
-
 <!DOCTYPE html>
 <html lang="no">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Registrering | Barrios World Cup Challenge 2026</title>
+<title>Bli med i FC Barrios | VM 2026</title>
 
 <style>
 :root{
@@ -48,7 +47,7 @@ body::before{
 }
 
 .wrapper{
-  max-width:720px;
+  max-width:760px;
   margin:auto;
   padding:24px;
   position:relative;
@@ -61,6 +60,7 @@ body::before{
   color:white;
   text-decoration:none;
   opacity:0.8;
+  transition:0.2s;
 }
 
 .back-link:hover{
@@ -71,7 +71,7 @@ body::before{
   background:var(--card);
   border:1px solid var(--line);
   border-radius:26px;
-  padding:28px;
+  padding:30px;
   backdrop-filter:blur(10px);
   box-shadow:0 16px 40px rgba(0,0,0,0.32);
 }
@@ -88,27 +88,55 @@ body::before{
 }
 
 h1{
-  margin:0 0 10px;
-  font-size:38px;
+  margin:0 0 12px;
+  font-size:42px;
   line-height:1.05;
 }
 
 .lead{
   margin:0 0 28px;
   color:var(--muted);
-  line-height:1.6;
+  line-height:1.7;
   font-size:16px;
 }
 
-.info-box{
+.info-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+  margin-bottom:26px;
+}
+
+.info-card{
   background:rgba(255,255,255,0.06);
   border:1px solid rgba(255,255,255,0.08);
+  border-radius:18px;
+  padding:16px;
+}
+
+.info-card strong{
+  display:block;
+  margin-bottom:6px;
+  color:var(--gold);
+  font-size:15px;
+}
+
+.info-card span{
+  display:block;
+  color:var(--muted);
+  line-height:1.5;
+  font-size:14px;
+}
+
+.deadline-box{
+  background:rgba(255,209,102,0.10);
+  border:1px solid rgba(255,209,102,0.18);
   border-radius:18px;
   padding:18px;
   margin-bottom:26px;
 }
 
-.info-box strong{
+.deadline-box strong{
   color:var(--gold);
 }
 
@@ -133,10 +161,12 @@ input{
   color:white;
   font-size:16px;
   outline:none;
+  transition:0.2s;
 }
 
 input:focus{
   border-color:rgba(46,204,113,0.7);
+  background:rgba(255,255,255,0.11);
 }
 
 .submit-btn{
@@ -166,7 +196,7 @@ input:focus{
   padding:16px;
   border-radius:16px;
   display:none;
-  line-height:1.5;
+  line-height:1.6;
 }
 
 .success{
@@ -181,6 +211,14 @@ input:focus{
   color:#ffc2c2;
 }
 
+.small-note{
+  margin-top:14px;
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.5;
+  text-align:center;
+}
+
 .footer-note{
   color:var(--muted);
   text-align:center;
@@ -190,12 +228,20 @@ input:focus{
 
 @media(max-width:700px){
 
-  h1{
-    font-size:30px;
+  .wrapper{
+    padding:16px;
   }
 
   .card{
     padding:22px;
+  }
+
+  h1{
+    font-size:32px;
+  }
+
+  .info-grid{
+    grid-template-columns:1fr;
   }
 
 }
@@ -210,39 +256,71 @@ input:focus{
 
   <div class="card">
 
-    <div class="badge">VM 2026</div>
+    <div class="badge">FC BARRIOS • VM 2026</div>
 
-    <h1>Registrering</h1>
+    <h1>Bli med i FC Barrios</h1>
 
     <p class="lead">
-      Meld deg på Barrios World Cup Challenge 2026.
-      Buy in er 600 kr og påmelding er bindende.
+      Registrer deg til Barrios World Cup Challenge 2026 og bli en del av årets VM-kaos,
+      outsider-tips, leaderboard-drama og sannsynligvis minst én total kollaps.
     </p>
 
-    <div class="info-box">
-      <strong>Hva skjer etter registrering?</strong><br><br>
-      Du blir automatisk lagt inn i deltakerlisten og premiepotten.
-      Selve tipsene kan leveres senere før deadline.
+    <div class="info-grid">
+
+      <div class="info-card">
+        <strong>600 kr buy in</strong>
+        <span>
+          Premiepotten vokser automatisk med antall deltakere.
+        </span>
+      </div>
+
+      <div class="info-card">
+        <strong>Ikke vanlig tipping</strong>
+        <span>
+          Fire lagnivåer gjør at outsider-tips faktisk lønner seg.
+        </span>
+      </div>
+
+      <div class="info-card">
+        <strong>Tips senere</strong>
+        <span>
+          Registrer deg nå. Selve tipsene kan leveres før deadline.
+        </span>
+      </div>
+
+    </div>
+
+    <div class="deadline-box">
+      <strong>Tipsfrist:</strong><br><br>
+      11. juni 2026 kl. 18:00.<br>
+      Påmelding er bindende.
     </div>
 
     <form id="registerForm">
 
       <div class="form-group">
-        <label>Navn</label>
+        <label>Fornavn og etternavn</label>
+
         <input
           type="text"
           id="name"
-          placeholder="F.eks. Benjamin"
+          placeholder="F.eks. Benjamin Barrios"
+          autocomplete="name"
           required
         >
       </div>
 
       <div class="form-group">
         <label>Telefonnummer</label>
+
         <input
           type="tel"
           id="phone"
           placeholder="F.eks. 90000000"
+          inputmode="numeric"
+          pattern="[0-9]{8}"
+          maxlength="8"
+          autocomplete="tel"
           required
         >
       </div>
@@ -256,21 +334,30 @@ input:focus{
     <div id="successMessage" class="message success"></div>
     <div id="errorMessage" class="message error"></div>
 
+    <div class="small-note">
+      Du blir automatisk lagt inn i deltakerlisten, leaderboardet og premiepotten.
+    </div>
+
   </div>
 
   <div class="footer-note">
-    Barrios World Cup Challenge 2026
+    FC Barrios World Cup Challenge 2026
   </div>
 
 </div>
 
 <script>
 
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyJB5mugyonYlXClojolIGcInen7ClFl55j-c7xQw6Z0-fS5rKfQKgF9AVhLLe9UQgM4Q/exec";
+const SCRIPT_URL =
+"https://script.google.com/macros/s/AKfycbyJB5mugyonYlXClojolIGcInen7ClFl55j-c7xQw6Z0-fS5rKfQKgF9AVhLLe9UQgM4Q/exec";
 
 const form = document.getElementById("registerForm");
-const successMessage = document.getElementById("successMessage");
-const errorMessage = document.getElementById("errorMessage");
+
+const successMessage =
+  document.getElementById("successMessage");
+
+const errorMessage =
+  document.getElementById("errorMessage");
 
 form.addEventListener("submit", async (e) => {
 
@@ -281,12 +368,31 @@ form.addEventListener("submit", async (e) => {
 
   const button = form.querySelector("button");
 
-  const name = document.getElementById("name").value.trim();
-  const phone = document.getElementById("phone").value.trim();
+  const name =
+    document.getElementById("name").value.trim();
+
+  const phone =
+    document.getElementById("phone").value.trim();
 
   if(!name || !phone){
+
     showError("Fyll inn navn og telefonnummer.");
     return;
+
+  }
+
+  if(name.split(" ").length < 2){
+
+    showError("Skriv både fornavn og etternavn.");
+    return;
+
+  }
+
+  if(!/^[0-9]{8}$/.test(phone)){
+
+    showError("Telefonnummer må være 8 siffer.");
+    return;
+
   }
 
   button.disabled = true;
@@ -295,21 +401,21 @@ form.addEventListener("submit", async (e) => {
   try{
 
     await fetch(SCRIPT_URL,{
-  method:"POST",
-  mode:"no-cors",
-  headers:{
-    "Content-Type":"text/plain;charset=utf-8"
-  },
-  body:JSON.stringify({
-    action:"register",
-    name,
-    phone
-  })
-});
+      method:"POST",
+      mode:"no-cors",
+      headers:{
+        "Content-Type":"text/plain;charset=utf-8"
+      },
+      body:JSON.stringify({
+        action:"register",
+        name,
+        phone
+      })
+    });
 
     successMessage.innerHTML = `
       <strong>Registrering fullført!</strong><br><br>
-      Du er nå med i Barrios World Cup Challenge 2026.
+      Du er nå med i FC Barrios World Cup Challenge 2026.
     `;
 
     successMessage.style.display = "block";
@@ -328,8 +434,10 @@ form.addEventListener("submit", async (e) => {
 });
 
 function showError(message){
+
   errorMessage.textContent = message;
   errorMessage.style.display = "block";
+
 }
 
 </script>
