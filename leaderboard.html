@@ -50,7 +50,7 @@ body{
 
 .status-grid{
   display:grid;
-  grid-template-columns:repeat(3,1fr);
+  grid-template-columns:repeat(5,1fr);
   gap:12px;
   margin-bottom:18px;
 }
@@ -138,7 +138,9 @@ body{
 @media(max-width:700px){
   .wrapper{ padding:14px; }
   .hero h1{ font-size:30px; }
-  .status-grid{ grid-template-columns:1fr; }
+  .status-grid{
+  grid-template-columns:repeat(2,1fr);
+}
   .player-grid{ grid-template-columns:40px 1fr; }
   .points{
     grid-column:1 / -1;
@@ -257,23 +259,56 @@ async function loadLeaderboard(){
 
     const missingCount = Math.max(0, registeredCount - completedCount);
 
-    statusBox.innerHTML = `
-      <div class="status-card">
-        <strong>${registeredCount}</strong>
-        <span>Registrerte</span>
-      </div>
+   const BUY_IN = 600;
+const FREE_ENTRIES = 1;
 
-      <div class="status-card" style="background:rgba(46,204,113,0.14); border-color:rgba(46,204,113,0.25);">
-        <strong style="color:#9dffc7;">${completedCount}</strong>
-        <span>Fullført tips</span>
-      </div>
+const paidPlayers =
+  Math.max(0, registeredCount - FREE_ENTRIES);
 
-      <div class="status-card" style="background:rgba(255,94,94,0.12); border-color:rgba(255,94,94,0.22);">
-        <strong style="color:#ffb4b4;">${missingCount}</strong>
-        <span>Mangler tips</span>
-      </div>
-    `;
+const prizePool =
+  paidPlayers * BUY_IN;
 
+statusBox.innerHTML = `
+  <div class="status-card">
+    <strong>${registeredCount}</strong>
+    <span>Registrerte</span>
+  </div>
+
+  <div class="status-card">
+    <strong>${paidPlayers}</strong>
+    <span>Betalte plasser</span>
+  </div>
+
+  <div class="status-card" style="
+    background:rgba(255,209,102,0.12);
+    border-color:rgba(255,209,102,0.25);
+  ">
+    <strong style="color:#ffd166;">
+      ${prizePool.toLocaleString("no-NO")} kr
+    </strong>
+    <span>Premiepott</span>
+  </div>
+
+  <div class="status-card" style="
+    background:rgba(46,204,113,0.14);
+    border-color:rgba(46,204,113,0.25);
+  ">
+    <strong style="color:#9dffc7;">
+      ${completedCount}
+    </strong>
+    <span>Fullført tips</span>
+  </div>
+
+  <div class="status-card" style="
+    background:rgba(255,94,94,0.12);
+    border-color:rgba(255,94,94,0.22);
+  ">
+    <strong style="color:#ffb4b4;">
+      ${missingCount}
+    </strong>
+    <span>Mangler tips</span>
+  </div>
+`;
     if(missingNames.length > 0){
       missingBox.style.display = "block";
       missingBox.innerHTML = `
