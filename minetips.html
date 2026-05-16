@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Mine tips | FC Barrios World Cup Challenge</title>
+
+<style>
+:root{
+  --card:rgba(7,14,28,0.84);
+  --line:rgba(255,255,255,0.14);
+  --text:#fff;
+  --muted:rgba(255,255,255,0.72);
+  --green:#2ecc71;
+  --gold:#ffd166;
+  --red:#ff5e5e;
+}
+
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  color:var(--text);
+  min-height:100vh;
+  background:
+    radial-gradient(circle at top left, rgba(46,204,113,0.24), transparent 30%),
+    radial-gradient(circle at bottom right, rgba(255,209,102,0.14), transparent 28%),
+    linear-gradient(rgba(0,0,0,0.72), rgba(0,0,0,0.88)),
+    repeating-linear-gradient(
+      90deg,
+      #0b3d24 0px,
+      #0b3d24 90px,
+      #0e4a2c 90px,
+      #0e4a2c 180px
+    );
+}
+
+.wrapper{
+  max-width:980px;
+  margin:auto;
+  padding:22px;
+}
+
+.back-link{
+  display:inline-block;
+  margin-bottom:18px;
+  color:white;
+  text-decoration:none;
+  opacity:0.8;
+}
+
+.back-link:hover{
+  opacity:1;
+}
+
+.hero{
+  text-align:center;
+  margin-bottom:22px;
+}
+
+.badge{
+  display:inline-block;
+  margin-bottom:12px;
+  padding:6px 11px;
+  border-radius:999px;
+  background:rgba(46,204,113,0.18);
+  color:#9dffc7;
+  font-size:13px;
+  font-weight:bold;
+}
+
+h1{
+  margin:0 0 10px;
+  font-size:40px;
+}
+
+.hero p{
+  margin:0;
+  color:var(--muted);
+  line-height:1.5;
+}
+
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:24px;
+  padding:22px;
+  margin-bottom:18px;
+  backdrop-filter:blur(10px);
+  box-shadow:0 16px 40px rgba(0,0,0,0.32);
+}
+
+.search-row{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:12px;
+}
+
+input{
+  width:100%;
+  box-sizing:border-box;
+  padding:16px;
+  border-radius:16px;
+  border:1px solid rgba(255,255,255,0.12);
+  background:rgba(255,255,255,0.08);
+  color:white;
+  font-size:16px;
+  outline:none;
+}
+
+input:focus{
+  border-color:rgba(46,204,113,0.7);
+}
+
+button{
+  border:none;
+  cursor:pointer;
+  padding:16px 20px;
+  border-radius:16px;
+  font-size:16px;
+  font-weight:bold;
+  color:#07111f;
+  background:linear-gradient(135deg,var(--green),#7dffba);
+}
+
+.status-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+  margin-top:18px;
+}
+
+.status-card{
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:18px;
+  padding:16px;
+  text-align:center;
+}
+
+.status-card strong{
+  display:block;
+  font-size:26px;
+  margin-bottom:4px;
+}
+
+.status-card span{
+  color:var(--muted);
+  font-size:13px;
+}
+
+.section-title{
+  font-size:22px;
+  margin:0 0 14px;
+}
+
+.match-card{
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:18px;
+  padding:16px;
+  margin-bottom:12px;
+}
+
+.match-top{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:12px;
+  align-items:center;
+}
+
+.match-name{
+  font-weight:bold;
+  font-size:17px;
+}
+
+.match-id{
+  color:var(--muted);
+  font-size:12px;
+  margin-top:4px;
+}
+
+.tip-score{
+  font-size:22px;
+  font-weight:bold;
+  color:var(--gold);
+  white-space:nowrap;
+}
+
+.extra-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+}
+
+.extra-card{
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:18px;
+  padding:16px;
+}
+
+.extra-card strong{
+  display:block;
+  color:var(--gold);
+  margin-bottom:8px;
+}
+
+.extra-card span{
+  color:var(--muted);
+  line-height:1.5;
+}
+
+.message{
+  color:var(--muted);
+  line-height:1.6;
+}
+
+.error{
+  color:#ffb4b4;
+}
+
+.actions{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-top:16px;
+}
+
+.action-link{
+  display:inline-block;
+  text-decoration:none;
+  color:white;
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.12);
+  border-radius:16px;
+  padding:13px 16px;
+  font-weight:bold;
+}
+
+.action-link.primary{
+  color:#07111f;
+  background:linear-gradient(135deg,var(--green),#7dffba);
+}
+
+.footer-note{
+  color:var(--muted);
+  text-align:center;
+  font-size:13px;
+  margin-top:20px;
+}
+
+@media(max-width:700px){
+  .wrapper{
+    padding:14px;
+  }
+
+  h1{
+    font-size:30px;
+  }
+
+  .search-row{
+    grid-template-columns:1fr;
+  }
+
+  .status-grid{
+    grid-template-columns:1fr;
+  }
+
+  .extra-grid{
+    grid-template-columns:1fr;
+  }
+
+  .match-top{
+    grid-template-columns:1fr;
+  }
+
+  .tip-score{
+    font-size:20px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="wrapper">
+
+  <a class="back-link" href="index.html">← Til forsiden</a>
+
+  <div class="hero">
+    <div class="badge">FC BARRIOS • VM 2026</div>
+    <h1>Mine tips</h1>
+    <p>Søk opp navnet ditt og se hva du har levert inn.</p>
+  </div>
+
+  <div class="card">
+    <div class="search-row">
+      <input
+        id="nameInput"
+        type="text"
+        placeholder="Skriv navnet ditt, f.eks. Benjamin Barrios"
+      >
+
+      <button onclick="findTips()">Hent mine tips</button>
+    </div>
+
+    <div class="actions">
+      <a class="action-link primary" href="tips.html">Lever eller endre tips</a>
+      <a class="action-link" href="leaderboard.html">Se leaderboard</a>
+    </div>
+  </div>
+
+  <div id="result"></div>
+
+  <div class="footer-note">
+    FC Barrios World Cup Challenge 2026
+  </div>
+
+</div>
+
+<script>
+const SHEET_ID =
+  "1EvB5oqS4Bemr_W8VXYzWAVsr4nX0u3VTQMpgUlOM9-s";
+
+const SUBMISSIONS_URL =
+  `https://opensheet.elk.sh/${SHEET_ID}/SUBMISSIONS`;
+
+const MATCHES_URL =
+  `https://opensheet.elk.sh/${SHEET_ID}/API_MATCHES`;
+
+async function fetchSheet(url){
+  const response = await fetch(url);
+  return await response.json();
+}
+
+function normalizeName(name){
+  return String(name || "")
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g," ");
+}
+
+function isBlank(value){
+  return value === "" || value === null || value === undefined;
+}
+
+function safeJson(value){
+  try{
+    return JSON.parse(value || "[]");
+  }catch(err){
+    return [];
+  }
+}
+
+function getMatchLabel(match){
+  if(!match) return "Ukjent kamp";
+
+  const home =
+    match.home || match.home_team || match.hjemme || "";
+
+  const away =
+    match.away || match.away_team || match.borte || "";
+
+  if(home || away){
+    return `${home} - ${away}`;
+  }
+
+  return `Kamp ${match.id}`;
+}
+
+function getTipHome(tip){
+  return tip.tips_home ?? tip.home ?? tip.homeTip ?? tip.hjemme ?? "";
+}
+
+function getTipAway(tip){
+  return tip.tips_away ?? tip.away ?? tip.awayTip ?? tip.borte ?? "";
+}
+
+function isSubmissionComplete(tips,bestPlayer,topScorer){
+  if(!tips.length) return false;
+
+  const missingTips = tips.some(tip =>
+    isBlank(getTipHome(tip)) || isBlank(getTipAway(tip))
+  );
+
+  if(missingTips) return false;
+  if(!bestPlayer.length) return false;
+  if(!topScorer.length) return false;
+
+  return true;
+}
+
+async function findTips(){
+  const result = document.getElementById("result");
+  const inputName = document.getElementById("nameInput").value;
+
+  result.innerHTML = `
+    <div class="card message">
+      Laster tips...
+    </div>
+  `;
+
+  if(!inputName.trim()){
+    result.innerHTML = `
+      <div class="card message error">
+        Skriv inn navnet ditt først.
+      </div>
+    `;
+    return;
+  }
+
+  try{
+    const submissions = await fetchSheet(SUBMISSIONS_URL);
+    const matches = await fetchSheet(MATCHES_URL);
+
+    const matchMap = {};
+    matches.forEach(match => {
+      matchMap[String(match.id).trim()] = match;
+    });
+
+    const submission = submissions.find(row =>
+      normalizeName(row.name) === normalizeName(inputName)
+    );
+
+    if(!submission){
+      result.innerHTML = `
+        <div class="card message error">
+          Fant ingen innsending på dette navnet.
+          <br><br>
+          Sjekk at du har skrevet navnet likt som da du leverte.
+        </div>
+      `;
+      return;
+    }
+
+    const tips = safeJson(submission.tips_json);
+    const bestPlayer = safeJson(submission.best_player_json);
+    const topScorer = safeJson(submission.top_scorer_json);
+
+    const totalTips = tips.length;
+
+    const completedTips = tips.filter(tip =>
+      !isBlank(getTipHome(tip)) && !isBlank(getTipAway(tip))
+    ).length;
+
+    const complete =
+      isSubmissionComplete(tips,bestPlayer,topScorer);
+
+    const statusText =
+      complete ? "Fullført" : "Ikke fullført";
+
+    const statusColor =
+      complete ? "#9dffc7" : "#ffb4b4";
+
+    result.innerHTML = `
+      <div class="card">
+        <h2 class="section-title">${submission.name}</h2>
+
+        <div class="status-grid">
+          <div class="status-card">
+            <strong style="color:${statusColor};">${statusText}</strong>
+            <span>Status</span>
+          </div>
+
+          <div class="status-card">
+            <strong>${completedTips}/${totalTips}</strong>
+            <span>Kamptips fylt ut</span>
+          </div>
+
+          <div class="status-card">
+            <strong>${bestPlayer.length + topScorer.length}</strong>
+            <span>Bonusvalg</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 class="section-title">Bonusvalg</h2>
+
+        <div class="extra-grid">
+          <div class="extra-card">
+            <strong>Beste spiller</strong>
+            <span>${bestPlayer.length ? bestPlayer.map(x => Object.values(x).join(" ")).join("<br>") : "Ikke fylt ut"}</span>
+          </div>
+
+          <div class="extra-card">
+            <strong>Toppscorer</strong>
+            <span>${topScorer.length ? topScorer.map(x => Object.values(x).join(" ")).join("<br>") : "Ikke fylt ut"}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 class="section-title">Kamptips</h2>
+
+        ${tips.map(tip => {
+          const match =
+            matchMap[String(tip.id).trim()];
+
+          const homeScore = getTipHome(tip);
+          const awayScore = getTipAway(tip);
+
+          return `
+            <div class="match-card">
+              <div class="match-top">
+                <div>
+                  <div class="match-name">${getMatchLabel(match)}</div>
+                  <div class="match-id">Kamp ${tip.id}</div>
+                </div>
+
+                <div class="tip-score">
+                  ${isBlank(homeScore) || isBlank(awayScore)
+                    ? "Mangler"
+                    : `${homeScore} - ${awayScore}`
+                  }
+                </div>
+              </div>
+            </div>
+          `;
+        }).join("")}
+      </div>
+    `;
+
+  }catch(err){
+    console.error(err);
+
+    result.innerHTML = `
+      <div class="card message error">
+        Klarte ikke å hente tips akkurat nå.
+      </div>
+    `;
+  }
+}
+
+document.getElementById("nameInput").addEventListener("keydown", e => {
+  if(e.key === "Enter"){
+    findTips();
+  }
+});
+</script>
+
+</body>
+</html>
