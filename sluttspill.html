@@ -9,18 +9,14 @@
 <style>
 :root{
   --card:rgba(7,14,28,0.82);
-  --soft:rgba(255,255,255,0.08);
   --line:rgba(255,255,255,0.14);
   --text:#fff;
   --muted:rgba(255,255,255,0.70);
   --green:#2ecc71;
   --gold:#ffd166;
-  --gold2:#ffb703;
 }
 
-*{
-  box-sizing:border-box;
-}
+*{ box-sizing:border-box; }
 
 body{
   margin:0;
@@ -31,32 +27,13 @@ body{
     radial-gradient(circle at top left, rgba(46,204,113,0.22), transparent 30%),
     radial-gradient(circle at top right, rgba(255,209,102,0.12), transparent 28%),
     linear-gradient(rgba(0,0,0,0.72), rgba(0,0,0,0.90)),
-    repeating-linear-gradient(
-      90deg,
-      #0b3d24 0px,
-      #0b3d24 90px,
-      #0e4a2c 90px,
-      #0e4a2c 180px
-    );
-}
-
-body::before{
-  content:"";
-  position:fixed;
-  inset:0;
-  pointer-events:none;
-  background:
-    radial-gradient(circle at center, transparent 0 135px, rgba(255,255,255,0.05) 136px 138px, transparent 139px),
-    linear-gradient(90deg, transparent 49.8%, rgba(255,255,255,0.08) 50%, transparent 50.2%);
-  opacity:0.45;
+    repeating-linear-gradient(90deg,#0b3d24 0px,#0b3d24 90px,#0e4a2c 90px,#0e4a2c 180px);
 }
 
 .wrapper{
-  max-width:1500px;
+  max-width:1700px;
   margin:auto;
   padding:20px;
-  position:relative;
-  z-index:1;
 }
 
 .nav{
@@ -102,7 +79,6 @@ body::before{
 .hero h1{
   margin:0 0 8px;
   font-size:44px;
-  letter-spacing:1px;
 }
 
 .hero p{
@@ -113,39 +89,43 @@ body::before{
 
 .bracket-scroll{
   overflow-x:auto;
-  padding-bottom:16px;
+  padding:18px 0 18px;
 }
 
 .bracket{
-  min-width:1320px;
+  min-width:1580px;
   display:grid;
-  grid-template-columns:300px 300px 300px 300px;
-  gap:65px;
+  grid-template-columns:280px 280px 280px 280px 280px;
+  gap:40px;
   align-items:center;
-  position:relative;
 }
 
 .round{
   display:flex;
   flex-direction:column;
-  gap:22px;
 }
 
 .round h2{
   text-align:center;
   color:var(--gold);
-  margin:0 0 6px;
-  font-size:22px;
+  margin:0 0 20px;
+  font-size:20px;
   letter-spacing:1px;
 }
 
 .round-sub{
   display:block;
   color:var(--muted);
-  font-size:14px;
+  font-size:13px;
   margin-top:4px;
   font-weight:normal;
 }
+
+.round-32{ gap:18px; }
+.round-16{ gap:58px; }
+.quarters{ gap:136px; }
+.semis{ gap:310px; }
+.final-round{ gap:28px; }
 
 .match{
   position:relative;
@@ -153,8 +133,8 @@ body::before{
   border:1px solid rgba(255,255,255,0.14);
   border-radius:16px;
   overflow:visible;
+  padding-top:12px;
   box-shadow:0 12px 32px rgba(0,0,0,0.28);
-  padding-top:10px;
 }
 
 .match.gold{
@@ -162,9 +142,22 @@ body::before{
   box-shadow:0 0 28px rgba(255,209,102,0.16);
 }
 
+.match-label{
+  position:absolute;
+  top:-13px;
+  left:14px;
+  background:#07111f;
+  border:1px solid rgba(255,255,255,0.14);
+  color:var(--muted);
+  border-radius:999px;
+  padding:4px 9px;
+  font-size:11px;
+  white-space:nowrap;
+}
+
 .team-row{
   display:grid;
-  grid-template-columns:1fr 42px 42px;
+  grid-template-columns:1fr 42px;
   align-items:center;
   min-height:42px;
   border-bottom:1px solid rgba(255,255,255,0.10);
@@ -192,43 +185,6 @@ body::before{
   font-weight:bold;
 }
 
-.match-label{
-  position:absolute;
-  top:-12px;
-  left:14px;
-  background:#07111f;
-  border:1px solid rgba(255,255,255,0.14);
-  color:var(--muted);
-  border-radius:999px;
-  padding:4px 9px;
-  font-size:11px;
-  white-space:nowrap;
-}
-
-.round-of-16 .match::after,
-.quarters .match::after,
-.semis .match::after{
-  content:"";
-  position:absolute;
-  right:-66px;
-  top:50%;
-  width:66px;
-  height:2px;
-  background:linear-gradient(90deg,var(--gold),transparent);
-}
-
-.quarters{
-  gap:74px;
-}
-
-.semis{
-  gap:168px;
-}
-
-.final-round{
-  gap:34px;
-}
-
 .final-icon{
   text-align:center;
   font-size:54px;
@@ -237,7 +193,7 @@ body::before{
 }
 
 .info{
-  max-width:620px;
+  max-width:700px;
   margin:24px auto 0;
   text-align:center;
   color:var(--muted);
@@ -256,33 +212,13 @@ body::before{
 }
 
 @media(max-width:800px){
-  .wrapper{
-    padding:14px;
-  }
-
-  .hero h1{
-    font-size:32px;
-  }
-
-  .hero p{
-    font-size:15px;
-  }
+  .wrapper{ padding:14px; }
+  .hero h1{ font-size:32px; }
 
   .bracket{
-    min-width:1120px;
-    grid-template-columns:260px 260px 260px 260px;
-    gap:38px;
-  }
-
-  .round-of-16 .match::after,
-  .quarters .match::after,
-  .semis .match::after{
-    right:-39px;
-    width:39px;
-  }
-
-  .team-row{
-    grid-template-columns:1fr 38px 38px;
+    min-width:1450px;
+    grid-template-columns:250px 250px 250px 250px 250px;
+    gap:32px;
   }
 }
 </style>
@@ -304,138 +240,88 @@ body::before{
   <div class="hero">
     <div class="badge">FC BARRIOS • VM 2026</div>
     <h1>🏆 Sluttspillplan</h1>
-    <p>Veien til finalen. Lag og resultater fylles inn manuelt når gruppespillet er ferdig.</p>
+    <p>32 lag. 31 kamper. Én verdensmester. Og sikkert noen brutale tippekollapser.</p>
   </div>
 
   <div class="bracket-scroll">
-
     <div class="bracket">
 
-      <div class="round round-of-16">
-        <h2>ÅTTENDELSFINALE <span class="round-sub">16 lag</span></h2>
+      <div class="round round-32">
+        <h2>ROUND OF 32 <span class="round-sub">Kamp 73–88</span></h2>
 
-        <div class="match">
-          <div class="match-label">Kamp 57</div>
-          <div class="team-row"><div class="team-name">Lag 1</div><div class="score">–</div><div class="score">–</div></div>
-          <div class="team-row"><div class="team-name">Lag 2</div><div class="score">–</div><div class="score">–</div></div>
-        </div>
+        <div class="match"><div class="match-label">Kamp 73</div><div class="team-row"><div class="team-name">Lag 1</div><div class="score">–</div></div><div class="team-row"><div class="team-name">Lag 2</div><div class="score">–</div></div></div>
+        <div class="match"><div class="match-label">Kamp 74</div><div class="team-row"><div class="team-name">Lag 3</div><div class="score">–</div></div><div class="team-row"><div class="team-name">Lag 4</div><div class="score">–</div></div></div>
+        <div class="match"><div class="match-label">Kamp 75</div><div class="team-row"><div class="team-name">Lag 5</div><div class="score">–</div></div><div class="team-row"><div class="team-name">Lag 6</div><div class="score">–</div></div></div>
+        <div class="match"><div class="match-label">Kamp 76</div><div class="team-row"><div class="team-name">Lag 7</div><div class="score">–</div></div><div class="team-row"><div class="team-name">Lag 8</div><div class="score">–</div></div></div>
+        <div class="match"><div class="match-label">Kamp 77</div><div class="team-row"><div class="team-name">Lag 9</div><div class="score">–</div></div><div class="team-row"><div class="team-name">Lag 10</div><div class="score">–</div></div></div>
+        <div class="match"><div class="match-label">Kamp 78</div><div class="team-row"><div class="team-name">Lag 11</div><div class="score">–</div></div><div class="team-row"><div class="team-name">Lag 12</div><div class="score">–</div></div></div>
+        <div class="match"><div class="match-label">Kamp 79</div><div class="team-row"><div class="team-name">Lag 13</div><div class="score">–</div></div><div class="team-row"><div class="team-name">Lag 14</div><div class="score">–</div></div></div>
+        <div class="match"><div class="match-label">Kamp 80</div><div class="team-row"><div class="team-name">Lag 15</div><div class="score">–</div></div><div class="team-row"><div class="team-name">Lag 16</div><div class="score">–</div></div></div>
+        <div class="match"><div class="match-label">Kamp 81</div><div class="team-row"><div class="team-name">Lag 17</div><div class="score">–</div></div><div class="team-row"><div class="team-name">Lag 18</div><div class="score">–</div></div></div>
+        <div class="match"><div class="match-label">Kamp 82</div><div class="team-row"><div class="team-name">Lag 19</div><div class="score">–</div></div><div class="team-row"><div class="team-name">Lag 20</div><div class="score">–</div></div></div>
+        <div class="match"><div class="match-label">Kamp 83</div><div class="team-row"><div class="team-name">Lag 21</div><div class="score">–</div></div><div class="team-row"><div class="team-name">Lag 22</div><div class="score">–</div></div></div>
+        <div class="match"><div class="match-label">Kamp 84</div><div class="team-row"><div class="team-name">Lag 23</div><div class="score">–</div></div><div class="team-row"><div class="team-name">Lag 24</div><div class="score">–</div></div></div>
+        <div class="match"><div class="match-label">Kamp 85</div><div class="team-row"><div class="team-name">Lag 25</div><div class="score">–</div></div><div class="team-row"><div class="team-name">Lag 26</div><div class="score">–</div></div></div>
+        <div class="match"><div class="match-label">Kamp 86</div><div class="team-row"><div class="team-name">Lag 27</div><div class="score">–</div></div><div class="team-row"><div class="team-name">Lag 28</div><div class="score">–</div></div></div>
+        <div class="match"><div class="match-label">Kamp 87</div><div class="team-row"><div class="team-name">Lag 29</div><div class="score">–</div></div><div class="team-row"><div class="team-name">Lag 30</div><div class="score">–</div></div></div>
+        <div class="match"><div class="match-label">Kamp 88</div><div class="team-row"><div class="team-name">Lag 31</div><div class="score">–</div></div><div class="team-row"><div class="team-name">Lag 32</div><div class="score">–</div></div></div>
+      </div>
 
-        <div class="match">
-          <div class="match-label">Kamp 58</div>
-          <div class="team-row"><div class="team-name">Lag 3</div><div class="score">–</div><div class="score">–</div></div>
-          <div class="team-row"><div class="team-name">Lag 4</div><div class="score">–</div><div class="score">–</div></div>
-        </div>
+      <div class="round round-16">
+        <h2>ROUND OF 16 <span class="round-sub">Kamp 89–96</span></h2>
 
-        <div class="match">
-          <div class="match-label">Kamp 59</div>
-          <div class="team-row"><div class="team-name">Lag 5</div><div class="score">–</div><div class="score">–</div></div>
-          <div class="team-row"><div class="team-name">Lag 6</div><div class="score">–</div><div class="score">–</div></div>
-        </div>
-
-        <div class="match">
-          <div class="match-label">Kamp 60</div>
-          <div class="team-row"><div class="team-name">Lag 7</div><div class="score">–</div><div class="score">–</div></div>
-          <div class="team-row"><div class="team-name">Lag 8</div><div class="score">–</div><div class="score">–</div></div>
-        </div>
-
-        <div class="match">
-          <div class="match-label">Kamp 61</div>
-          <div class="team-row"><div class="team-name">Lag 9</div><div class="score">–</div><div class="score">–</div></div>
-          <div class="team-row"><div class="team-name">Lag 10</div><div class="score">–</div><div class="score">–</div></div>
-        </div>
-
-        <div class="match">
-          <div class="match-label">Kamp 62</div>
-          <div class="team-row"><div class="team-name">Lag 11</div><div class="score">–</div><div class="score">–</div></div>
-          <div class="team-row"><div class="team-name">Lag 12</div><div class="score">–</div><div class="score">–</div></div>
-        </div>
-
-        <div class="match">
-          <div class="match-label">Kamp 63</div>
-          <div class="team-row"><div class="team-name">Lag 13</div><div class="score">–</div><div class="score">–</div></div>
-          <div class="team-row"><div class="team-name">Lag 14</div><div class="score">–</div><div class="score">–</div></div>
-        </div>
-
-        <div class="match">
-          <div class="match-label">Kamp 64</div>
-          <div class="team-row"><div class="team-name">Lag 15</div><div class="score">–</div><div class="score">–</div></div>
-          <div class="team-row"><div class="team-name">Lag 16</div><div class="score">–</div><div class="score">–</div></div>
-        </div>
+        <div class="match"><div class="match-label">Kamp 89</div><div class="team-row"><div class="team-name">Vinner kamp 73</div><div class="score">–</div></div><div class="team-row"><div class="team-name">Vinner kamp 74</div><div class="score">–</div></div></div>
+        <div class="match"><div class="match-label">Kamp 90</div><div class="team-row"><div class="team-name">Vinner kamp 75</div><div class="score">–</div></div><div class="team-row"><div class="team-name">Vinner kamp 76</div><div class="score">–</div></div></div>
+        <div class="match"><div class="match-label">Kamp 91</div><div class="team-row"><div class="team-name">Vinner kamp 77</div><div class="score">–</div></div><div class="team-row"><div class="team-name">Vinner kamp 78</div><div class="score">–</div></div></div>
+        <div class="match"><div class="match-label">Kamp 92</div><div class="team-row"><div class="team-name">Vinner kamp 79</div><div class="score">–</div></div><div class="team-row"><div class="team-name">Vinner kamp 80</div><div class="score">–</div></div></div>
+        <div class="match"><div class="match-label">Kamp 93</div><div class="team-row"><div class="team-name">Vinner kamp 81</div><div class="score">–</div></div><div class="team-row"><div class="team-name">Vinner kamp 82</div><div class="score">–</div></div></div>
+        <div class="match"><div class="match-label">Kamp 94</div><div class="team-row"><div class="team-name">Vinner kamp 83</div><div class="score">–</div></div><div class="team-row"><div class="team-name">Vinner kamp 84</div><div class="score">–</div></div></div>
+        <div class="match"><div class="match-label">Kamp 95</div><div class="team-row"><div class="team-name">Vinner kamp 85</div><div class="score">–</div></div><div class="team-row"><div class="team-name">Vinner kamp 86</div><div class="score">–</div></div></div>
+        <div class="match"><div class="match-label">Kamp 96</div><div class="team-row"><div class="team-name">Vinner kamp 87</div><div class="score">–</div></div><div class="team-row"><div class="team-name">Vinner kamp 88</div><div class="score">–</div></div></div>
       </div>
 
       <div class="round quarters">
-        <h2>KVARTFINALE <span class="round-sub">8 lag</span></h2>
+        <h2>QUARTERFINALS <span class="round-sub">Kamp 97–100</span></h2>
 
-        <div class="match">
-          <div class="match-label">Kamp 65</div>
-          <div class="team-row"><div class="team-name">Vinner kamp 57</div><div class="score">–</div><div class="score">–</div></div>
-          <div class="team-row"><div class="team-name">Vinner kamp 58</div><div class="score">–</div><div class="score">–</div></div>
-        </div>
-
-        <div class="match">
-          <div class="match-label">Kamp 66</div>
-          <div class="team-row"><div class="team-name">Vinner kamp 59</div><div class="score">–</div><div class="score">–</div></div>
-          <div class="team-row"><div class="team-name">Vinner kamp 60</div><div class="score">–</div><div class="score">–</div></div>
-        </div>
-
-        <div class="match">
-          <div class="match-label">Kamp 67</div>
-          <div class="team-row"><div class="team-name">Vinner kamp 61</div><div class="score">–</div><div class="score">–</div></div>
-          <div class="team-row"><div class="team-name">Vinner kamp 62</div><div class="score">–</div><div class="score">–</div></div>
-        </div>
-
-        <div class="match">
-          <div class="match-label">Kamp 68</div>
-          <div class="team-row"><div class="team-name">Vinner kamp 63</div><div class="score">–</div><div class="score">–</div></div>
-          <div class="team-row"><div class="team-name">Vinner kamp 64</div><div class="score">–</div><div class="score">–</div></div>
-        </div>
+        <div class="match"><div class="match-label">Kamp 97</div><div class="team-row"><div class="team-name">Vinner kamp 89</div><div class="score">–</div></div><div class="team-row"><div class="team-name">Vinner kamp 90</div><div class="score">–</div></div></div>
+        <div class="match"><div class="match-label">Kamp 98</div><div class="team-row"><div class="team-name">Vinner kamp 91</div><div class="score">–</div></div><div class="team-row"><div class="team-name">Vinner kamp 92</div><div class="score">–</div></div></div>
+        <div class="match"><div class="match-label">Kamp 99</div><div class="team-row"><div class="team-name">Vinner kamp 93</div><div class="score">–</div></div><div class="team-row"><div class="team-name">Vinner kamp 94</div><div class="score">–</div></div></div>
+        <div class="match"><div class="match-label">Kamp 100</div><div class="team-row"><div class="team-name">Vinner kamp 95</div><div class="score">–</div></div><div class="team-row"><div class="team-name">Vinner kamp 96</div><div class="score">–</div></div></div>
       </div>
 
       <div class="round semis">
-        <h2>SEMIFINALE <span class="round-sub">4 lag</span></h2>
+        <h2>SEMIFINALS <span class="round-sub">Kamp 101–102</span></h2>
 
-        <div class="match">
-          <div class="match-label">Kamp 69</div>
-          <div class="team-row"><div class="team-name">Vinner kamp 65</div><div class="score">–</div><div class="score">–</div></div>
-          <div class="team-row"><div class="team-name">Vinner kamp 66</div><div class="score">–</div><div class="score">–</div></div>
-        </div>
-
-        <div class="match">
-          <div class="match-label">Kamp 70</div>
-          <div class="team-row"><div class="team-name">Vinner kamp 67</div><div class="score">–</div><div class="score">–</div></div>
-          <div class="team-row"><div class="team-name">Vinner kamp 68</div><div class="score">–</div><div class="score">–</div></div>
-        </div>
+        <div class="match"><div class="match-label">Kamp 101</div><div class="team-row"><div class="team-name">Vinner kamp 97</div><div class="score">–</div></div><div class="team-row"><div class="team-name">Vinner kamp 98</div><div class="score">–</div></div></div>
+        <div class="match"><div class="match-label">Kamp 102</div><div class="team-row"><div class="team-name">Vinner kamp 99</div><div class="score">–</div></div><div class="team-row"><div class="team-name">Vinner kamp 100</div><div class="score">–</div></div></div>
       </div>
 
       <div class="round final-round">
-        <h2>FINALE <span class="round-sub">2 lag</span></h2>
+        <h2>FINAL <span class="round-sub">Kamp 104</span></h2>
 
         <div class="final-icon">👑</div>
 
         <div class="match gold">
-          <div class="match-label">Kamp 72</div>
-          <div class="team-row"><div class="team-name">Vinner kamp 69</div><div class="score">–</div><div class="score">–</div></div>
-          <div class="team-row"><div class="team-name">Vinner kamp 70</div><div class="score">–</div><div class="score">–</div></div>
+          <div class="match-label">Kamp 104</div>
+          <div class="team-row"><div class="team-name">Vinner kamp 101</div><div class="score">–</div></div>
+          <div class="team-row"><div class="team-name">Vinner kamp 102</div><div class="score">–</div></div>
         </div>
 
-        <div style="height:38px;"></div>
-
-        <h2 style="font-size:18px;color:#9dffc7;">KAMP OM 3. PLASS</h2>
+        <h2 style="font-size:18px;color:#9dffc7;margin-top:45px;">BRONSEFINALE</h2>
 
         <div class="match">
-          <div class="match-label">Kamp 71</div>
-          <div class="team-row"><div class="team-name">Taper kamp 69</div><div class="score">–</div><div class="score">–</div></div>
-          <div class="team-row"><div class="team-name">Taper kamp 70</div><div class="score">–</div><div class="score">–</div></div>
+          <div class="match-label">Kamp 103</div>
+          <div class="team-row"><div class="team-name">Taper kamp 101</div><div class="score">–</div></div>
+          <div class="team-row"><div class="team-name">Taper kamp 102</div><div class="score">–</div></div>
         </div>
       </div>
 
     </div>
-
   </div>
 
   <div class="info">
-    Resultater og lag fylles inn manuelt når sluttspillet er klart. Neste steg senere er å koble dette mot
-    <strong>API_MATCHES</strong> og <strong>API_RESULTS</strong>, så bracketen kan oppdateres automatisk.
+    Sluttspillet starter etter 72 gruppespillkamper. Kamp 73–104 fylles inn manuelt når lagene er klare.
+    Senere kan dette kobles mot Google Sheets slik at lag og resultater oppdateres automatisk.
   </div>
 
   <div class="footer-note">
