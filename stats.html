@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Stats | FC Barrios World Cup Challenge 2026</title>
+
+<style>
+:root{
+  --card:rgba(7,14,28,0.84);
+  --soft:rgba(255,255,255,0.08);
+  --line:rgba(255,255,255,0.14);
+  --text:#fff;
+  --muted:rgba(255,255,255,0.72);
+  --green:#2ecc71;
+  --gold:#ffd166;
+  --red:#ff5e5e;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  color:var(--text);
+  min-height:100vh;
+  background:
+    radial-gradient(circle at top left, rgba(46,204,113,0.24), transparent 30%),
+    radial-gradient(circle at bottom right, rgba(255,209,102,0.14), transparent 28%),
+    linear-gradient(rgba(0,0,0,0.72), rgba(0,0,0,0.88)),
+    repeating-linear-gradient(
+      90deg,
+      #0b3d24 0px,
+      #0b3d24 90px,
+      #0e4a2c 90px,
+      #0e4a2c 180px
+    );
+}
+
+.wrapper{
+  max-width:1100px;
+  margin:auto;
+  padding:22px;
+  position:relative;
+  z-index:1;
+}
+
+.back-link{
+  display:inline-block;
+  margin-bottom:18px;
+  color:white;
+  text-decoration:none;
+  opacity:0.8;
+}
+
+.back-link:hover{
+  opacity:1;
+}
+
+.hero{
+  text-align:center;
+  margin-bottom:24px;
+}
+
+.badge{
+  display:inline-block;
+  margin-bottom:12px;
+  padding:6px 11px;
+  border-radius:999px;
+  background:rgba(46,204,113,0.18);
+  color:#9dffc7;
+  font-size:13px;
+  font-weight:bold;
+}
+
+h1{
+  margin:0 0 10px;
+  font-size:42px;
+  line-height:1.05;
+}
+
+.hero p{
+  margin:0;
+  color:var(--muted);
+  line-height:1.5;
+}
+
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:24px;
+  padding:22px;
+  margin-bottom:18px;
+  backdrop-filter:blur(10px);
+  box-shadow:0 16px 40px rgba(0,0,0,0.32);
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:14px;
+}
+
+.stat-box{
+  background:var(--soft);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:18px;
+  padding:18px;
+  text-align:center;
+}
+
+.stat-box strong{
+  display:block;
+  font-size:30px;
+  color:var(--gold);
+  margin-bottom:5px;
+}
+
+.stat-box span{
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.4;
+}
+
+.section-title{
+  margin:0 0 16px;
+  font-size:24px;
+}
+
+.leader-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:14px;
+}
+
+.leader-card{
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:18px;
+  padding:16px;
+}
+
+.leader-card .label{
+  color:var(--muted);
+  font-size:13px;
+  margin-bottom:8px;
+}
+
+.leader-card .name{
+  font-size:20px;
+  font-weight:bold;
+  margin-bottom:7px;
+}
+
+.leader-card .value{
+  color:var(--gold);
+  font-weight:bold;
+}
+
+.list-row{
+  display:grid;
+  grid-template-columns:38px 1fr auto;
+  gap:10px;
+  align-items:center;
+  padding:11px 0;
+  border-bottom:1px solid rgba(255,255,255,0.08);
+}
+
+.list-row:last-child{
+  border-bottom:none;
+}
+
+.rank{
+  font-weight:bold;
+  color:var(--gold);
+}
+
+.name{
+  font-weight:bold;
+}
+
+.value{
+  color:var(--muted);
+}
+
+.split-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+}
+
+.pill-wrap{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+
+.pill{
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.10);
+  border-radius:999px;
+  padding:7px 11px;
+  font-size:13px;
+}
+
+.loading{
+  color:var(--muted);
+  text-align:center;
+  padding:30px;
+}
+
+.footer-note{
+  color:var(--muted);
+  text-align:center;
+  font-size:13px;
+  margin-top:20px;
+}
+
+@media(max-width:850px){
+  .grid{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .leader-grid,
+  .split-grid{
+    grid-template-columns:1fr;
+  }
+}
+
+@media(max-width:520px){
+  .wrapper{
+    padding:14px;
+  }
+
+  h1{
+    font-size:32px;
+  }
+
+  .grid{
+    grid-template-columns:1fr;
+  }
+
+  .card{
+    padding:17px;
+    border-radius:20px;
+  }
+
+  .list-row{
+    grid-template-columns:32px 1fr;
+  }
+
+  .list-row .value{
+    grid-column:2;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="wrapper">
+
+  <a class="back-link" href="index.html">← Til forsiden</a>
+
+  <div class="hero">
+    <div class="badge">FC BARRIOS • STATS</div>
+    <h1>Statscentralen</h1>
+    <p>Her samles tallene, heltene, outsider-kongene og de statistiske unnskyldningene.</p>
+  </div>
+
+  <div id="content">
+    <div class="card loading">
+      Laster stats...
+    </div>
+  </div>
+
+  <div class="footer-note">
+    FC Barrios World Cup Challenge 2026
+  </div>
+
+</div>
+
+<script>
+const SHEET_ID =
+  "1EvB5oqS4Bemr_W8VXYzWAVsr4nX0u3VTQMpgUlOM9-s";
+
+const LEADERBOARD_URL =
+  `https://opensheet.elk.sh/${SHEET_ID}/API_LEADERBOARD`;
+
+const SUBMISSIONS_URL =
+  `https://opensheet.elk.sh/${SHEET_ID}/SUBMISSIONS`;
+
+const MATCHES_URL =
+  `https://opensheet.elk.sh/${SHEET_ID}/API_MATCHES`;
+
+const BUY_IN = 600;
+const FREE_ENTRIES = 1;
+
+async function fetchSheet(url){
+  const response = await fetch(url);
+  return await response.json();
+}
+
+function cleanNumber(value){
+  if(value === undefined || value === null || value === "") return 0;
+
+  return Number(
+    String(value)
+      .replace(/\s/g,"")
+      .replace(",",".")
+  ) || 0;
+}
+
+function safeJson(value){
+  try{
+    return JSON.parse(value || "[]");
+  }catch(err){
+    return [];
+  }
+}
+
+function isBlank(value){
+  return value === "" || value === null || value === undefined;
+}
+
+function getTipHome(tip){
+  return tip.tips_home ?? tip.home ?? tip.homeTip ?? "";
+}
+
+function getTipAway(tip){
+  return tip.tips_away ?? tip.away ?? tip.awayTip ?? "";
+}
+
+function isSubmissionComplete(sub){
+  const tips = safeJson(sub.tips_json);
+  const bestPlayer = safeJson(sub.best_player_json);
+  const topScorer = safeJson(sub.top_scorer_json);
+
+  if(!tips.length) return false;
+
+  const missingTips = tips.some(tip =>
+    isBlank(getTipHome(tip)) || isBlank(getTipAway(tip))
+  );
+
+  if(missingTips) return false;
+  if(!bestPlayer.length) return false;
+  if(!topScorer.length) return false;
+
+  return true;
+}
+
+function topRows(rows,key,label,count = 5){
+  const sorted = [...rows]
+    .sort((a,b) => cleanNumber(b[key]) - cleanNumber(a[key]))
+    .slice(0,count);
+
+  if(!sorted.length){
+    return `<div style="color:rgba(255,255,255,0.7);">Ingen data ennå.</div>`;
+  }
+
+  return sorted.map((row,index) => `
+    <div class="list-row">
+      <div class="rank">${index + 1}.</div>
+      <div class="name">${row.name}</div>
+      <div class="value">${cleanNumber(row[key])} ${label}</div>
+    </div>
+  `).join("");
+}
+
+function getLeader(rows,key){
+  const sorted = [...rows]
+    .filter(row => cleanNumber(row[key]) > 0)
+    .sort((a,b) => cleanNumber(b[key]) - cleanNumber(a[key]));
+
+  return sorted[0] || null;
+}
+
+function formatKr(value){
+  return value.toLocaleString("no-NO") + " kr";
+}
+
+async function loadStats(){
+  const content = document.getElementById("content");
+
+  try{
+    const leaderboardRaw = await fetchSheet(LEADERBOARD_URL);
+    const submissions = await fetchSheet(SUBMISSIONS_URL);
+    const matches = await fetchSheet(MATCHES_URL);
+
+    const rows = leaderboardRaw
+      .filter(row => row.name)
+      .map(row => ({
+        name: row.name,
+        points: cleanNumber(row.points),
+        exact: cleanNumber(row.exact),
+        outcome: cleanNumber(row.outcome),
+        diff: cleanNumber(row.diff),
+        underdog: cleanNumber(row.underdog),
+        updated: row.updated
+      }))
+      .sort((a,b) => b.points - a.points);
+
+    const registeredCount = rows.length;
+    const completedCount = submissions.filter(isSubmissionComplete).length;
+    const missingCount = Math.max(0, registeredCount - completedCount);
+    const paidPlayers = Math.max(0, registeredCount - FREE_ENTRIES);
+    const pot = paidPlayers * BUY_IN;
+
+    const totalPoints = rows.reduce((sum,row) => sum + row.points,0);
+    const totalExact = rows.reduce((sum,row) => sum + row.exact,0);
+    const totalOutcome = rows.reduce((sum,row) => sum + row.outcome,0);
+    const totalUnderdog = rows.reduce((sum,row) => sum + row.underdog,0);
+
+    const pointsLeader = rows[0] || null;
+    const exactLeader = getLeader(rows,"exact");
+    const underdogLeader = getLeader(rows,"underdog");
+    const diffLeader = getLeader(rows,"diff");
+
+    const submittedNames = submissions
+      .filter(isSubmissionComplete)
+      .map(row => String(row.name || "").trim())
+      .filter(Boolean);
+
+    const registeredNames = rows.map(row => row.name);
+
+    const completedSet = new Set(
+      submittedNames.map(name => name.toLowerCase())
+    );
+
+    const missingNames = registeredNames.filter(name =>
+      !completedSet.has(String(name).trim().toLowerCase())
+    );
+
+    content.innerHTML = `
+      <div class="card">
+        <div class="grid">
+          <div class="stat-box">
+            <strong>${registeredCount}</strong>
+            <span>registrerte deltakere</span>
+          </div>
+
+          <div class="stat-box">
+            <strong>${completedCount}</strong>
+            <span>har fullført tips</span>
+          </div>
+
+          <div class="stat-box">
+            <strong>${missingCount}</strong>
+            <span>mangler fullført tips</span>
+          </div>
+
+          <div class="stat-box">
+            <strong>${formatKr(pot)}</strong>
+            <span>foreløpig premiepott</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 class="section-title">Konkurransen akkurat nå</h2>
+
+        <div class="grid">
+          <div class="stat-box">
+            <strong>${totalPoints}</strong>
+            <span>poeng delt ut</span>
+          </div>
+
+          <div class="stat-box">
+            <strong>${totalExact}</strong>
+            <span>eksakte treff totalt</span>
+          </div>
+
+          <div class="stat-box">
+            <strong>${totalOutcome}</strong>
+            <span>riktige utfall totalt</span>
+          </div>
+
+          <div class="stat-box">
+            <strong>${totalUnderdog}</strong>
+            <span>outsiderpoeng totalt</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 class="section-title">Foreløpige helter</h2>
+
+        <div class="leader-grid">
+          <div class="leader-card">
+            <div class="label">Leder sammenlagt</div>
+            <div class="name">${pointsLeader ? pointsLeader.name : "Ingen ennå"}</div>
+            <div class="value">${pointsLeader ? pointsLeader.points + " poeng" : "-"}</div>
+          </div>
+
+          <div class="leader-card">
+            <div class="label">Mest presis</div>
+            <div class="name">${exactLeader ? exactLeader.name : "Ingen ennå"}</div>
+            <div class="value">${exactLeader ? exactLeader.exact + " eksakte" : "-"}</div>
+          </div>
+
+          <div class="leader-card">
+            <div class="label">Outsider-kongen</div>
+            <div class="name">${underdogLeader ? underdogLeader.name : "Ingen ennå"}</div>
+            <div class="value">${underdogLeader ? underdogLeader.underdog + " outsiderpoeng" : "-"}</div>
+          </div>
+
+          <div class="leader-card">
+            <div class="label">Diff-sniken</div>
+            <div class="name">${diffLeader ? diffLeader.name : "Ingen ennå"}</div>
+            <div class="value">${diffLeader ? diffLeader.diff + " diff" : "-"}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="split-grid">
+        <div class="card">
+          <h2 class="section-title">Topp 5 sammenlagt</h2>
+          ${topRows(rows,"points","poeng")}
+        </div>
+
+        <div class="card">
+          <h2 class="section-title">Flest eksakte</h2>
+          ${topRows(rows,"exact","eksakte")}
+        </div>
+      </div>
+
+      <div class="split-grid">
+        <div class="card">
+          <h2 class="section-title">Mest outsiderpoeng</h2>
+          ${topRows(rows,"underdog","poeng")}
+        </div>
+
+        <div class="card">
+          <h2 class="section-title">Flest diff-treff</h2>
+          ${topRows(rows,"diff","diff")}
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 class="section-title">Mangler fullført tips</h2>
+
+        ${
+          missingNames.length
+          ? `<div class="pill-wrap">
+              ${missingNames.map(name => `
+                <span class="pill">${name}</span>
+              `).join("")}
+            </div>`
+          : `<div style="color:#9dffc7;font-weight:bold;">Alle har fullført tips. Urovekkende profesjonelt.</div>`
+        }
+      </div>
+
+      <div class="card">
+        <h2 class="section-title">Datagrunnlag</h2>
+
+        <div class="grid">
+          <div class="stat-box">
+            <strong>${matches.length}</strong>
+            <span>kamper i systemet</span>
+          </div>
+
+          <div class="stat-box">
+            <strong>${submissions.length}</strong>
+            <span>innsendinger totalt</span>
+          </div>
+
+          <div class="stat-box">
+            <strong>${BUY_IN}</strong>
+            <span>kroner buy in</span>
+          </div>
+
+          <div class="stat-box">
+            <strong>${FREE_ENTRIES}</strong>
+            <span>gratisplass</span>
+          </div>
+        </div>
+      </div>
+    `;
+
+  }catch(error){
+    console.error(error);
+
+    content.innerHTML = `
+      <div class="card" style="color:#ffb4b4;">
+        Klarte ikke å laste stats akkurat nå.
+      </div>
+    `;
+  }
+}
+
+loadStats();
+</script>
+
+</body>
+</html>
