@@ -7,20 +7,13 @@
 <title>VM Leaderboard</title>
 
 <style>
-
 body{
   margin:0;
   font-family:Arial,sans-serif;
   background:
     radial-gradient(circle at top left, rgba(46,204,113,0.18), transparent 28%),
     linear-gradient(rgba(0,0,0,0.72), rgba(0,0,0,0.88)),
-    repeating-linear-gradient(
-      90deg,
-      #0b3d24 0px,
-      #0b3d24 80px,
-      #0e4a2c 80px,
-      #0e4a2c 160px
-    );
+    repeating-linear-gradient(90deg,#0b3d24 0px,#0b3d24 80px,#0e4a2c 80px,#0e4a2c 160px);
   color:white;
   min-height:100vh;
 }
@@ -55,23 +48,104 @@ body{
   box-shadow:0 14px 40px rgba(0,0,0,0.35);
 }
 
+.status-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+  margin-bottom:18px;
+}
+
+.status-card{
+  border-radius:18px;
+  padding:16px;
+  text-align:center;
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.1);
+}
+
+.status-card strong{
+  display:block;
+  font-size:28px;
+  margin-bottom:4px;
+}
+
+.status-card span{
+  color:rgba(255,255,255,0.7);
+  font-size:13px;
+}
+
+.missing-box{
+  display:none;
+  background:rgba(255,94,94,0.10);
+  border:1px solid rgba(255,94,94,0.22);
+  border-radius:18px;
+  padding:16px;
+  margin-bottom:18px;
+}
+
 .loading{
   color:rgba(255,255,255,0.7);
   padding:12px;
 }
 
-@media(max-width:700px){
-
-  .wrapper{
-    padding:14px;
-  }
-
-  .hero h1{
-    font-size:30px;
-  }
-
+.player-card{
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:18px;
+  padding:16px;
+  margin-bottom:14px;
 }
 
+.player-grid{
+  display:grid;
+  grid-template-columns:48px 1fr auto;
+  gap:12px;
+  align-items:center;
+}
+
+.medal{
+  font-size:24px;
+  font-weight:bold;
+}
+
+.name{
+  font-size:18px;
+  font-weight:bold;
+  margin-bottom:8px;
+}
+
+.tags{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+
+.tag{
+  background:rgba(255,255,255,0.08);
+  padding:5px 10px;
+  border-radius:999px;
+  font-size:12px;
+}
+
+.points{
+  font-size:30px;
+  font-weight:bold;
+  color:#2ecc71;
+  text-align:right;
+  min-width:70px;
+}
+
+@media(max-width:700px){
+  .wrapper{ padding:14px; }
+  .hero h1{ font-size:30px; }
+  .status-grid{ grid-template-columns:1fr; }
+  .player-grid{ grid-template-columns:40px 1fr; }
+  .points{
+    grid-column:1 / -1;
+    text-align:left;
+    font-size:24px;
+  }
+}
 </style>
 </head>
 
@@ -81,28 +155,16 @@ body{
 
   <div class="hero">
     <h1>🏆 VM Leaderboard</h1>
-    <p>Stillingen i Barrios World Cup Challenge 2026</p>
+    <p>Stillingen i FC Barrios World Cup Challenge 2026</p>
   </div>
 
- <div class="top-box">
+  <div class="top-box">
 
-  <div id="statusBox" style="
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:12px;
-    margin-bottom:18px;
-  "></div>
-   
-   <div id="missingBox" style="
-  display:none;
-  background:rgba(255,94,94,0.10);
-  border:1px solid rgba(255,94,94,0.22);
-  border-radius:18px;
-  padding:16px;
-  margin-bottom:18px;
-"></div>
+    <div id="statusBox" class="status-grid"></div>
 
-  <div id="leaderboardContainer" class="loading">
+    <div id="missingBox" class="missing-box"></div>
+
+    <div id="leaderboardContainer" class="loading">
       Laster leaderboard...
     </div>
 
@@ -111,27 +173,21 @@ body{
 </div>
 
 <script>
-
-const SHEET_ID =
-"1EvB5oqS4Bemr_W8VXYzWAVsr4nX0u3VTQMpgUlOM9-s";
+const SHEET_ID = "1EvB5oqS4Bemr_W8VXYzWAVsr4nX0u3VTQMpgUlOM9-s";
 
 const LEADERBOARD_API_URL =
-`https://opensheet.elk.sh/${SHEET_ID}/API_LEADERBOARD`;
-  const SUBMISSIONS_API_URL =
-`https://opensheet.elk.sh/${SHEET_ID}/SUBMISSIONS`;
+  `https://opensheet.elk.sh/${SHEET_ID}/API_LEADERBOARD`;
+
+const SUBMISSIONS_API_URL =
+  `https://opensheet.elk.sh/${SHEET_ID}/SUBMISSIONS`;
 
 async function fetchSheet(url){
-
   const response = await fetch(url);
-
   return await response.json();
 }
 
 function cleanNumber(value){
-
-  if(value === undefined || value === null || value === ""){
-    return 0;
-  }
+  if(value === undefined || value === null || value === "") return 0;
 
   return Number(
     String(value)
@@ -139,18 +195,12 @@ function cleanNumber(value){
       .replace(",",".")
   ) || 0;
 }
+
 function isSubmissionComplete(sub){
-
   try{
-
-    const tips =
-      JSON.parse(sub.tips_json || "[]");
-
-    const bestPlayer =
-      JSON.parse(sub.best_player_json || "[]");
-
-    const topScorer =
-      JSON.parse(sub.top_scorer_json || "[]");
+    const tips = JSON.parse(sub.tips_json || "[]");
+    const bestPlayer = JSON.parse(sub.best_player_json || "[]");
+    const topScorer = JSON.parse(sub.top_scorer_json || "[]");
 
     if(!tips.length) return false;
 
@@ -164,146 +214,100 @@ function isSubmissionComplete(sub){
     );
 
     if(missingTips) return false;
-
     if(!bestPlayer.length) return false;
     if(!topScorer.length) return false;
 
     return true;
 
   }catch(err){
-
     return false;
-
   }
-
 }
-  
-async function loadLeaderboard(){
 
-  const container =
-    document.getElementById("leaderboardContainer");
+async function loadLeaderboard(){
+  const container = document.getElementById("leaderboardContainer");
+  const statusBox = document.getElementById("statusBox");
+  const missingBox = document.getElementById("missingBox");
 
   try{
-
     const data = await fetchSheet(LEADERBOARD_API_URL);
-
-const submissions =
-  await fetchSheet(SUBMISSIONS_API_URL);
+    const submissions = await fetchSheet(SUBMISSIONS_API_URL);
 
     const rows = data
       .filter(row => row.name)
-      .sort((a,b) =>
-        cleanNumber(b.points) - cleanNumber(a.points)
-      );
-const registeredCount = rows.length;
+      .sort((a,b) => cleanNumber(b.points) - cleanNumber(a.points));
 
-const completedNames = new Set(
-  submissions
-    .filter(isSubmissionComplete)
-    .map(sub => String(sub.name || "").trim().toLowerCase())
-);
+    const registeredCount = rows.length;
 
-const completedCount = rows.filter(row =>
-  completedNames.has(String(row.name || "").trim().toLowerCase())
-).length;
+    const completedNames = new Set(
+      submissions
+        .filter(isSubmissionComplete)
+        .map(sub => String(sub.name || "").trim().toLowerCase())
+    );
 
-const missingCount =
-  Math.max(0, registeredCount - completedCount);
+    const completedCount = rows.filter(row =>
+      completedNames.has(String(row.name || "").trim().toLowerCase())
+    ).length;
 
-document.getElementById("statusBox").innerHTML = `
+    const missingNames = rows
+      .filter(row =>
+        !completedNames.has(String(row.name || "").trim().toLowerCase())
+      )
+      .map(row => row.name);
 
-  <div style="
-    background:rgba(255,255,255,0.06);
-    border:1px solid rgba(255,255,255,0.1);
-    border-radius:18px;
-    padding:16px;
-    text-align:center;
-  ">
-    <div style="
-      font-size:28px;
-      font-weight:bold;
-    ">
-      ${registeredCount}
-    </div>
+    const missingCount = Math.max(0, registeredCount - completedCount);
 
-    <div style="
-      color:rgba(255,255,255,0.7);
-      font-size:13px;
-      margin-top:4px;
-    ">
-      Registrerte
-    </div>
-  </div>
+    statusBox.innerHTML = `
+      <div class="status-card">
+        <strong>${registeredCount}</strong>
+        <span>Registrerte</span>
+      </div>
 
-  <div style="
-    background:rgba(46,204,113,0.14);
-    border:1px solid rgba(46,204,113,0.25);
-    border-radius:18px;
-    padding:16px;
-    text-align:center;
-  ">
-    <div style="
-      font-size:28px;
-      font-weight:bold;
-      color:#9dffc7;
-    ">
-      ${completedCount}
-    </div>
+      <div class="status-card" style="background:rgba(46,204,113,0.14); border-color:rgba(46,204,113,0.25);">
+        <strong style="color:#9dffc7;">${completedCount}</strong>
+        <span>Fullført tips</span>
+      </div>
 
-    <div style="
-      color:rgba(255,255,255,0.7);
-      font-size:13px;
-      margin-top:4px;
-    ">
-      Fullført tips
-    </div>
-  </div>
+      <div class="status-card" style="background:rgba(255,94,94,0.12); border-color:rgba(255,94,94,0.22);">
+        <strong style="color:#ffb4b4;">${missingCount}</strong>
+        <span>Mangler tips</span>
+      </div>
+    `;
 
-  <div style="
-    background:rgba(255,94,94,0.12);
-    border:1px solid rgba(255,94,94,0.22);
-    border-radius:18px;
-    padding:16px;
-    text-align:center;
-  ">
-    <div style="
-      font-size:28px;
-      font-weight:bold;
-      color:#ffb4b4;
-    ">
-     document.getElementById("statusBox").innerHTML = `
-...
-`;
-    </div>
+    if(missingNames.length > 0){
+      missingBox.style.display = "block";
+      missingBox.innerHTML = `
+        <strong style="color:#ffb4b4;">Mangler fullført tips:</strong>
+        <div style="margin-top:10px; display:flex; flex-wrap:wrap; gap:8px;">
+          ${missingNames.map(name => `
+            <span style="
+              background:rgba(255,255,255,0.08);
+              border:1px solid rgba(255,255,255,0.10);
+              border-radius:999px;
+              padding:6px 10px;
+              font-size:13px;
+            ">
+              ${name}
+            </span>
+          `).join("")}
+        </div>
+      `;
+    }else{
+      missingBox.style.display = "none";
+    }
 
-    <div style="
-      color:rgba(255,255,255,0.7);
-      font-size:13px;
-      margin-top:4px;
-    ">
-      Mangler tips
-    </div>
-  </div>
-
-`;
-    
     if(rows.length === 0){
-
       container.innerHTML = `
-        <div style="
-          color:rgba(255,255,255,0.7);
-        ">
+        <div style="color:rgba(255,255,255,0.7);">
           Ingen poeng ennå.
         </div>
       `;
-
       return;
     }
 
     container.innerHTML = "";
 
     rows.forEach((row,index) => {
-
       const medal =
         index === 0 ? "🥇" :
         index === 1 ? "🥈" :
@@ -311,116 +315,40 @@ document.getElementById("statusBox").innerHTML = `
         `${index + 1}.`;
 
       container.innerHTML += `
+        <div class="player-card">
+          <div class="player-grid">
 
-        <div style="
-          background:rgba(255,255,255,0.06);
-          border:1px solid rgba(255,255,255,0.1);
-          border-radius:18px;
-          padding:16px;
-          margin-bottom:14px;
-        ">
-
-          <div style="
-            display:grid;
-            grid-template-columns:48px 1fr auto;
-            gap:12px;
-            align-items:center;
-          ">
-
-            <div style="
-              font-size:24px;
-              font-weight:bold;
-            ">
-              ${medal}
-            </div>
+            <div class="medal">${medal}</div>
 
             <div>
+              <div class="name">${row.name}</div>
 
-              <div style="
-                font-size:18px;
-                font-weight:bold;
-                margin-bottom:8px;
-              ">
-                ${row.name}
+              <div class="tags">
+                <div class="tag">🎯 ${cleanNumber(row.exact)} eksakte</div>
+                <div class="tag">⚽ ${cleanNumber(row.outcome)} riktige</div>
+                <div class="tag">📏 ${cleanNumber(row.diff)} diff</div>
+                <div class="tag">🔥 ${cleanNumber(row.underdog)} outsider</div>
               </div>
-
-              <div style="
-                display:flex;
-                flex-wrap:wrap;
-                gap:8px;
-              ">
-
-                <div style="
-                  background:rgba(255,255,255,0.08);
-                  padding:5px 10px;
-                  border-radius:999px;
-                  font-size:12px;
-                ">
-                  🎯 ${cleanNumber(row.exact)} eksakte
-                </div>
-
-                <div style="
-                  background:rgba(255,255,255,0.08);
-                  padding:5px 10px;
-                  border-radius:999px;
-                  font-size:12px;
-                ">
-                  ⚽ ${cleanNumber(row.outcome)} riktige
-                </div>
-
-                <div style="
-                  background:rgba(255,255,255,0.08);
-                  padding:5px 10px;
-                  border-radius:999px;
-                  font-size:12px;
-                ">
-                  📏 ${cleanNumber(row.diff)} diff
-                </div>
-
-                <div style="
-                  background:rgba(255,255,255,0.08);
-                  padding:5px 10px;
-                  border-radius:999px;
-                  font-size:12px;
-                ">
-                  🔥 ${cleanNumber(row.underdog)} outsider
-                </div>
-
-              </div>
-
             </div>
 
-            <div style="
-              font-size:30px;
-              font-weight:bold;
-              color:#2ecc71;
-              text-align:right;
-              min-width:70px;
-            ">
-              ${cleanNumber(row.points)}
-            </div>
+            <div class="points">${cleanNumber(row.points)}</div>
 
           </div>
-
         </div>
-
       `;
     });
 
   }catch(error){
-
     container.innerHTML = `
       <div style="color:#ff8080;">
         Klarte ikke å laste leaderboard.
       </div>
     `;
-
     console.error(error);
   }
 }
 
 loadLeaderboard();
-
 </script>
 
 </body>
