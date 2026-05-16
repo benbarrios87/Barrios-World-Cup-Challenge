@@ -272,7 +272,43 @@ body::before{
   font-size:14px;
   line-height:1.45;
 }
+.live-pool-card{
+  background:rgba(255,255,255,0.07);
+  border:1px solid rgba(255,255,255,0.12);
+  border-radius:22px;
+  padding:22px;
+  margin-top:18px;
+}
 
+.live-label{
+  font-size:12px;
+  font-weight:bold;
+  color:#9dffc7;
+  letter-spacing:1px;
+  margin-bottom:12px;
+}
+
+.live-pool-main{
+  font-size:32px;
+  font-weight:bold;
+  margin-bottom:8px;
+}
+
+.live-pool-pot{
+  font-size:20px;
+  color:var(--gold);
+  margin-bottom:8px;
+}
+
+.live-pool-pot strong{
+  color:var(--gold);
+}
+
+.live-pool-sub{
+  color:var(--muted);
+  font-size:13px;
+}
+  
 .footer-note{
   color:var(--muted);
   text-align:center;
@@ -395,7 +431,23 @@ body::before{
   </div>
 
 </div>
+<div class="live-pool-card">
+  <div class="live-label">LIVE STATUS</div>
 
+  <div class="live-pool-main">
+    <span id="livePlayers">--</span> deltakere
+  </div>
+
+  <div class="live-pool-pot">
+    Premiepott:
+    <strong id="livePot">-- kr</strong>
+  </div>
+
+  <div class="live-pool-sub">
+    Buy in: 600 kr • 1 gratisplass
+  </div>
+</div>
+    
     <div class="countdown-card">
       <div class="countdown-title">Tid igjen til tipsfristen</div>
 
@@ -521,6 +573,40 @@ function updateCountdown(){
 
 updateCountdown();
 setInterval(updateCountdown, 1000);
+
+  const LEADERBOARD_URL =
+  "https://opensheet.elk.sh/1EvB5oqS4Bemr_W8VXYzWAVsr4nX0u3VTQMpgUlOM9-s/API_LEADERBOARD";
+
+const BUY_IN = 600;
+const FREE_ENTRIES = 1;
+
+async function loadLivePool(){
+
+  try{
+
+    const res = await fetch(LEADERBOARD_URL);
+    const data = await res.json();
+
+    const players = data.filter(p => p.name && p.name.trim() !== "");
+
+    const totalPlayers = players.length;
+    const paidPlayers = Math.max(0, totalPlayers - FREE_ENTRIES);
+    const pot = paidPlayers * BUY_IN;
+
+    document.getElementById("livePlayers").textContent = totalPlayers;
+
+    document.getElementById("livePot").textContent =
+      pot.toLocaleString("no-NO") + " kr";
+
+  }catch(err){
+
+    console.log(err);
+
+  }
+
+}
+
+loadLivePool();
 </script>
 
 </body>
