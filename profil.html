@@ -1,1 +1,572 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<title>Profil | FC Barrios World Cup Challenge</title>
+
+<style>
+:root{
+  --card:rgba(7,14,28,0.84);
+  --soft:rgba(255,255,255,0.08);
+  --line:rgba(255,255,255,0.14);
+  --text:#fff;
+  --muted:rgba(255,255,255,0.72);
+  --green:#2ecc71;
+  --gold:#ffd166;
+  --red:#ff5e5e;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  color:var(--text);
+  min-height:100vh;
+  background:
+    radial-gradient(circle at top left, rgba(46,204,113,0.24), transparent 30%),
+    radial-gradient(circle at bottom right, rgba(255,209,102,0.14), transparent 28%),
+    linear-gradient(rgba(0,0,0,0.72), rgba(0,0,0,0.88)),
+    repeating-linear-gradient(
+      90deg,
+      #0b3d24 0px,
+      #0b3d24 90px,
+      #0e4a2c 90px,
+      #0e4a2c 180px
+    );
+}
+
+.wrapper{
+  max-width:1050px;
+  margin:auto;
+  padding:22px;
+}
+
+.back-link{
+  display:inline-block;
+  margin-bottom:18px;
+  color:white;
+  text-decoration:none;
+  opacity:0.8;
+}
+
+.back-link:hover{
+  opacity:1;
+}
+
+.hero{
+  text-align:center;
+  margin-bottom:22px;
+}
+
+.badge{
+  display:inline-block;
+  margin-bottom:12px;
+  padding:6px 11px;
+  border-radius:999px;
+  background:rgba(46,204,113,0.18);
+  color:#9dffc7;
+  font-size:13px;
+  font-weight:bold;
+}
+
+.hero h1{
+  font-size:42px;
+  margin:0 0 10px;
+}
+
+.hero p{
+  margin:0;
+  color:var(--muted);
+}
+
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:24px;
+  padding:22px;
+  margin-bottom:18px;
+  backdrop-filter:blur(10px);
+  box-shadow:0 16px 40px rgba(0,0,0,0.32);
+}
+
+.profile-top{
+  display:grid;
+  grid-template-columns:120px 1fr;
+  gap:20px;
+  align-items:center;
+}
+
+.avatar{
+  width:120px;
+  height:120px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:44px;
+  font-weight:bold;
+  background:
+    linear-gradient(135deg,
+      rgba(46,204,113,0.35),
+      rgba(255,209,102,0.24)
+    );
+  border:2px solid rgba(255,255,255,0.14);
+}
+
+.profile-name{
+  font-size:34px;
+  font-weight:bold;
+  margin-bottom:8px;
+}
+
+.profile-sub{
+  color:var(--muted);
+  line-height:1.5;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:14px;
+}
+
+.stat-box{
+  background:var(--soft);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:18px;
+  padding:18px;
+  text-align:center;
+}
+
+.stat-box strong{
+  display:block;
+  font-size:30px;
+  margin-bottom:5px;
+  color:var(--gold);
+}
+
+.stat-box span{
+  color:var(--muted);
+  font-size:13px;
+}
+
+.section-title{
+  margin:0 0 16px;
+  font-size:24px;
+}
+
+.tip-card{
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.10);
+  border-radius:18px;
+  padding:16px;
+  margin-bottom:12px;
+}
+
+.tip-top{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:12px;
+  align-items:center;
+}
+
+.tip-match{
+  font-weight:bold;
+  font-size:18px;
+}
+
+.tip-score{
+  font-size:24px;
+  font-weight:bold;
+  color:var(--gold);
+}
+
+.tip-id{
+  margin-top:5px;
+  color:var(--muted);
+  font-size:12px;
+}
+
+.bonus-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+}
+
+.bonus-card{
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.10);
+  border-radius:18px;
+  padding:18px;
+}
+
+.bonus-card h3{
+  margin-top:0;
+}
+
+.bonus-row{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  padding:10px 0;
+  border-bottom:1px solid rgba(255,255,255,0.08);
+}
+
+.bonus-row:last-child{
+  border-bottom:none;
+}
+
+.loading{
+  color:var(--muted);
+  text-align:center;
+  padding:30px;
+}
+
+.error{
+  color:#ffb4b4;
+}
+
+.footer-note{
+  color:var(--muted);
+  text-align:center;
+  font-size:13px;
+  margin-top:20px;
+}
+
+@media(max-width:850px){
+  .grid{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .bonus-grid{
+    grid-template-columns:1fr;
+  }
+}
+
+@media(max-width:650px){
+  .wrapper{
+    padding:14px;
+  }
+
+  .hero h1{
+    font-size:32px;
+  }
+
+  .profile-top{
+    grid-template-columns:1fr;
+    text-align:center;
+  }
+
+  .avatar{
+    margin:auto;
+  }
+
+  .grid{
+    grid-template-columns:1fr;
+  }
+
+  .tip-top{
+    grid-template-columns:1fr;
+  }
+
+  .tip-score{
+    font-size:20px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="wrapper">
+
+  <a class="back-link" href="leaderboard.html">← Til leaderboard</a>
+
+  <div id="content">
+    <div class="card loading">
+      Laster profil...
+    </div>
+  </div>
+
+  <div class="footer-note">
+    FC Barrios World Cup Challenge 2026
+  </div>
+
+</div>
+
+<script>
+const SHEET_ID =
+  "1EvB5oqS4Bemr_W8VXYzWAVsr4nX0u3VTQMpgUlOM9-s";
+
+const LEADERBOARD_URL =
+  `https://opensheet.elk.sh/${SHEET_ID}/API_LEADERBOARD`;
+
+const SUBMISSIONS_URL =
+  `https://opensheet.elk.sh/${SHEET_ID}/SUBMISSIONS`;
+
+const MATCHES_URL =
+  `https://opensheet.elk.sh/${SHEET_ID}/API_MATCHES`;
+
+async function fetchSheet(url){
+  const response = await fetch(url);
+  return await response.json();
+}
+
+function cleanNumber(value){
+  if(value === undefined || value === null || value === "") return 0;
+
+  return Number(
+    String(value)
+      .replace(/\s/g,"")
+      .replace(",",".")
+  ) || 0;
+}
+
+function safeJson(value){
+  try{
+    return JSON.parse(value || "[]");
+  }catch(err){
+    return [];
+  }
+}
+
+function getInitials(name){
+  return String(name || "")
+    .split(" ")
+    .map(part => part[0] || "")
+    .join("")
+    .slice(0,2)
+    .toUpperCase();
+}
+
+function getQueryName(){
+  const params = new URLSearchParams(window.location.search);
+  return params.get("name");
+}
+
+async function loadProfile(){
+  const content = document.getElementById("content");
+  const playerName = getQueryName();
+
+  if(!playerName){
+    content.innerHTML = `
+      <div class="card error">
+        Mangler navn i URL.
+      </div>
+    `;
+    return;
+  }
+
+  try{
+    const leaderboard = await fetchSheet(LEADERBOARD_URL);
+    const submissions = await fetchSheet(SUBMISSIONS_URL);
+    const matches = await fetchSheet(MATCHES_URL);
+
+    const sortedLeaderboard = leaderboard
+      .filter(row => row.name)
+      .sort((a,b) =>
+        cleanNumber(b.points) - cleanNumber(a.points)
+      );
+
+    const leaderboardRow = sortedLeaderboard.find(row =>
+      String(row.name).trim().toLowerCase() ===
+      playerName.trim().toLowerCase()
+    );
+
+    const submission = submissions.find(row =>
+      String(row.name).trim().toLowerCase() ===
+      playerName.trim().toLowerCase()
+    );
+
+    if(!leaderboardRow){
+      content.innerHTML = `
+        <div class="card error">
+          Fant ikke denne spilleren.
+        </div>
+      `;
+      return;
+    }
+
+    const position =
+      sortedLeaderboard.findIndex(row =>
+        String(row.name).trim().toLowerCase() ===
+        playerName.trim().toLowerCase()
+      ) + 1;
+
+    const tips = submission
+      ? safeJson(submission.tips_json)
+      : [];
+
+    const bestPlayer = submission
+      ? safeJson(submission.best_player_json)
+      : [];
+
+    const topScorer = submission
+      ? safeJson(submission.top_scorer_json)
+      : [];
+
+    const matchMap = {};
+
+    matches.forEach(match => {
+      matchMap[String(match.id)] = match;
+    });
+
+    content.innerHTML = `
+      <div class="hero">
+        <div class="badge">
+          FC BARRIOS • PROFIL
+        </div>
+
+        <h1>Spillerprofil</h1>
+
+        <p>
+          Full oversikt over tips, poeng og outsider-ambisjoner.
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="profile-top">
+
+          <div class="avatar">
+            ${getInitials(leaderboardRow.name)}
+          </div>
+
+          <div>
+            <div class="profile-name">
+              ${leaderboardRow.name}
+            </div>
+
+            <div class="profile-sub">
+              Plass #${position} i FC Barrios World Cup Challenge 2026
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="grid">
+
+          <div class="stat-box">
+            <strong>${cleanNumber(leaderboardRow.points)}</strong>
+            <span>Totalpoeng</span>
+          </div>
+
+          <div class="stat-box">
+            <strong>${cleanNumber(leaderboardRow.exact)}</strong>
+            <span>Eksakte treff</span>
+          </div>
+
+          <div class="stat-box">
+            <strong>${cleanNumber(leaderboardRow.diff)}</strong>
+            <span>Diff-treff</span>
+          </div>
+
+          <div class="stat-box">
+            <strong>${cleanNumber(leaderboardRow.underdog)}</strong>
+            <span>Outsiderpoeng</span>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="bonus-grid">
+
+        <div class="bonus-card">
+          <h3>Beste spiller</h3>
+
+          ${
+            bestPlayer.length
+            ? bestPlayer.map(player => `
+                <div class="bonus-row">
+                  <span>${player.player || "-"}</span>
+                  <strong>${player.points || 0}</strong>
+                </div>
+              `).join("")
+            : `<div style="color:rgba(255,255,255,0.7);">
+                Ingen valg ennå.
+              </div>`
+          }
+        </div>
+
+        <div class="bonus-card">
+          <h3>Toppscorer</h3>
+
+          ${
+            topScorer.length
+            ? topScorer.map(player => `
+                <div class="bonus-row">
+                  <span>${player.player || "-"}</span>
+                  <strong>${player.points || 0}</strong>
+                </div>
+              `).join("")
+            : `<div style="color:rgba(255,255,255,0.7);">
+                Ingen valg ennå.
+              </div>`
+          }
+        </div>
+
+      </div>
+
+      <div class="card">
+        <h2 class="section-title">Kamptips</h2>
+
+        ${
+          tips.length
+          ? tips.map(tip => {
+              const match =
+                matchMap[String(tip.id)];
+
+              return `
+                <div class="tip-card">
+                  <div class="tip-top">
+
+                    <div>
+                      <div class="tip-match">
+                        ${match
+                          ? `${match.home} vs ${match.away}`
+                          : `Kamp ${tip.id}`
+                        }
+                      </div>
+
+                      <div class="tip-id">
+                        Kamp ${tip.id}
+                      </div>
+                    </div>
+
+                    <div class="tip-score">
+                      ${tip.tips_home} - ${tip.tips_away}
+                    </div>
+
+                  </div>
+                </div>
+              `;
+            }).join("")
+          : `<div style="color:rgba(255,255,255,0.7);">
+              Ingen tips registrert.
+            </div>`
+        }
+      </div>
+    `;
+
+  }catch(error){
+    console.error(error);
+
+    content.innerHTML = `
+      <div class="card error">
+        Klarte ikke å laste profil.
+      </div>
+    `;
+  }
+}
+
+loadProfile();
+</script>
+
+</body>
+</html>
