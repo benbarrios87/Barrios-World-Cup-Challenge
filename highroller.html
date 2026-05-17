@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>High Roller | FC Barrios</title>
+
+<style>
+:root{
+  --card:rgba(7,14,28,0.84);
+  --line:rgba(255,255,255,0.14);
+  --text:#fff;
+  --muted:rgba(255,255,255,0.72);
+  --gold:#ffd166;
+  --green:#2ecc71;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  color:var(--text);
+  min-height:100vh;
+  background:
+    radial-gradient(circle at top left, rgba(255,209,102,0.14), transparent 28%),
+    radial-gradient(circle at bottom right, rgba(46,204,113,0.10), transparent 24%),
+    linear-gradient(rgba(0,0,0,0.76), rgba(0,0,0,0.92)),
+    repeating-linear-gradient(
+      90deg,
+      #111 0px,
+      #111 80px,
+      #181818 80px,
+      #181818 160px
+    );
+}
+
+.wrapper{
+  max-width:760px;
+  margin:auto;
+  padding:22px;
+}
+
+.back-link{
+  display:inline-block;
+  margin-bottom:18px;
+  color:white;
+  text-decoration:none;
+  opacity:0.8;
+}
+
+.back-link:hover{
+  opacity:1;
+}
+
+.hero{
+  text-align:center;
+  margin-bottom:24px;
+}
+
+.badge{
+  display:inline-block;
+  margin-bottom:12px;
+  padding:6px 11px;
+  border-radius:999px;
+  background:rgba(255,209,102,0.18);
+  color:#ffe29a;
+  font-size:13px;
+  font-weight:bold;
+}
+
+.hero h1{
+  margin:0 0 10px;
+  font-size:42px;
+  color:var(--gold);
+}
+
+.hero p{
+  margin:0;
+  color:var(--muted);
+  line-height:1.6;
+}
+
+.card{
+  background:var(--card);
+  border:1px solid rgba(255,209,102,0.18);
+  border-radius:24px;
+  padding:24px;
+  backdrop-filter:blur(10px);
+  box-shadow:0 18px 40px rgba(0,0,0,0.35);
+}
+
+.info-box{
+  background:rgba(255,209,102,0.08);
+  border:1px solid rgba(255,209,102,0.14);
+  border-radius:18px;
+  padding:16px;
+  margin-bottom:22px;
+  line-height:1.6;
+  color:rgba(255,255,255,0.82);
+}
+
+.info-box strong{
+  color:var(--gold);
+}
+
+.form-grid{
+  display:grid;
+  gap:16px;
+}
+
+.field label{
+  display:block;
+  margin-bottom:7px;
+  font-size:14px;
+  color:var(--muted);
+}
+
+.field input{
+  width:100%;
+  padding:14px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,0.12);
+  background:rgba(255,255,255,0.08);
+  color:white;
+  font-size:16px;
+}
+
+.field input:focus{
+  outline:none;
+  border-color:rgba(255,209,102,0.55);
+}
+
+.submit-btn{
+  width:100%;
+  border:none;
+  border-radius:16px;
+  padding:16px;
+  font-size:17px;
+  font-weight:bold;
+  cursor:pointer;
+  background:linear-gradient(
+    135deg,
+    #ffd166,
+    #ffb703
+  );
+  color:#111;
+  transition:0.2s;
+}
+
+.submit-btn:hover{
+  transform:translateY(-2px);
+}
+
+.status{
+  margin-top:18px;
+  text-align:center;
+  font-weight:bold;
+}
+
+.footer-note{
+  color:var(--muted);
+  text-align:center;
+  font-size:13px;
+  margin-top:20px;
+}
+
+@media(max-width:700px){
+  .wrapper{
+    padding:14px;
+  }
+
+  .hero h1{
+    font-size:32px;
+  }
+
+  .card{
+    padding:18px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="wrapper">
+
+  <a class="back-link" href="index.html">← Til forsiden</a>
+
+  <div class="hero">
+    <div class="badge">FC BARRIOS • HIGH ROLLER</div>
+
+    <h1>🥃 High Roller</h1>
+
+    <p>
+      Ikke for alle.<br>
+      Samme outsider-system. Samme kamper.<br>
+      Bare høyere innsats og enda større kollaps når Uzbekistan slår Brasil.
+    </p>
+  </div>
+
+  <div class="card">
+
+    <div class="info-box">
+      <strong>Foreløpig plan:</strong><br><br>
+
+      • Egen High Roller-liga<br>
+      • Samme VM og samme outsider-system<br>
+      • Egen premiepott<br>
+      • Minimum 5 spillere for aktivering<br>
+      • Buy in bestemmes basert på interesse
+    </div>
+
+    <div class="form-grid">
+
+      <div class="field">
+        <label>Fornavn og etternavn</label>
+        <input
+          id="name"
+          type="text"
+          placeholder="Lionel Messi"
+        >
+      </div>
+
+      <div class="field">
+        <label>Telefonnummer</label>
+        <input
+          id="phone"
+          type="tel"
+          maxlength="8"
+          placeholder="12345678"
+        >
+      </div>
+
+      <div class="field">
+        <label>
+  Hva ser du for deg i buy in?
+  <div style="
+    margin-top:4px;
+    font-size:12px;
+    color:rgba(255,255,255,0.55);
+    font-weight:normal;
+    line-height:1.4;
+  ">
+    Endelig buy in bestemmes basert på interesse og antall spillere.
+  </div>
+</label>
+        <input
+          id="buyin"
+          type="number"
+          placeholder="5000"
+        >
+      </div>
+
+      <button class="submit-btn" onclick="submitHighRoller()">
+        Send interesse
+      </button>
+
+      <div id="status" class="status"></div>
+
+    </div>
+
+  </div>
+
+  <div class="footer-note">
+    FC Barrios World Cup Challenge 2026
+  </div>
+
+</div>
+
+<script>
+const SCRIPT_URL =
+  "DIN_APPS_SCRIPT_URL";
+
+async function submitHighRoller(){
+
+  const status = document.getElementById("status");
+
+  const name =
+    document.getElementById("name").value.trim();
+
+  const phone =
+    document.getElementById("phone").value.trim();
+
+  const buyin =
+    document.getElementById("buyin").value.trim();
+
+  if(!name){
+    status.innerHTML =
+      "Skriv inn navn.";
+    status.style.color = "#ffb4b4";
+    return;
+  }
+
+  if(!/^\\d{8}$/.test(phone)){
+    status.innerHTML =
+      "Telefonnummer må være 8 siffer.";
+    status.style.color = "#ffb4b4";
+    return;
+  }
+
+  if(!buyin || Number(buyin) <= 0){
+    status.innerHTML =
+      "Legg inn buy in-forslag.";
+    status.style.color = "#ffb4b4";
+    return;
+  }
+
+  status.innerHTML = "Sender...";
+  status.style.color = "#ffd166";
+
+  try{
+
+    const response = await fetch(SCRIPT_URL,{
+      method:"POST",
+      body:JSON.stringify({
+        action:"highroller",
+        name,
+        phone,
+        buyin
+      })
+    });
+
+    const result = await response.json();
+
+    if(result.success){
+
+      status.innerHTML =
+        "High Roller-interesse registrert 🥃";
+
+      status.style.color = "#9dffc7";
+
+      document.getElementById("name").value = "";
+      document.getElementById("phone").value = "";
+      document.getElementById("buyin").value = "";
+
+    }else{
+
+      status.innerHTML =
+        result.message || "Noe gikk galt.";
+
+      status.style.color = "#ffb4b4";
+    }
+
+  }catch(err){
+
+    status.innerHTML =
+      "Noe gikk galt.";
+
+    status.style.color = "#ffb4b4";
+  }
+}
+</script>
+
+</body>
+</html>
