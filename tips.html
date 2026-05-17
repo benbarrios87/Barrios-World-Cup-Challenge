@@ -835,10 +835,8 @@ function normalizeRow(row){
 }
 
 async function fetchSheet(url){
-
   try{
-
-    const response = await fetch(url);
+    const response = await fetch(url, { cache:"no-store" });
 
     if(!response.ok){
       throw new Error(`HTTP ${response.status}`);
@@ -847,16 +845,14 @@ async function fetchSheet(url){
     const data = await response.json();
 
     if(!Array.isArray(data)){
-      console.error("Ikke array fra:", url, data);
+      console.error("OpenSheet returnerte ikke array fra:", url, data);
       return [];
     }
 
     return data.map(normalizeRow);
 
   }catch(error){
-
-    console.error("fetchSheet feil:", url, error);
-
+    console.error("fetchSheet-feil:", url, error);
     return [];
   }
 }
@@ -893,6 +889,15 @@ function safeNumber(value){
   }
 
   return num.toFixed(2).replace(/\.?0+$/,"");
+}
+
+function parseTier(value){
+  if(value === undefined || value === null) return NaN;
+
+  const text = String(value).trim();
+  const found = text.match(/[1-4]/);
+
+  return found ? Number(found[0]) : NaN;
 }
 
 async function loadScoringRules(){
@@ -933,6 +938,12 @@ async function loadMatches(){
 
   try{
     allMatches = await fetchSheet(API_URL);
+
+    if(allMatches.length === 0){
+      container.innerHTML = `<div class="card">Fant ingen kamper i API_MATCHES. Sjekk at fanen heter nøyaktig API_MATCHES og at arket er delt/offentlig.</div>`;
+      return;
+    }
+
     renderMatches();
     loadSavedTips();
     updateProgress();
@@ -1035,8 +1046,8 @@ function getPoint(row, key){
 }
 
 function getScoringPreview(match){
- const homeTier = parseTier(match.tier_home);
-const awayTier = parseTier(match.tier_away);
+  const homeTier = parseTier(match.tier_home);
+  const awayTier = parseTier(match.tier_away);
   const tierDiff = Math.abs(homeTier - awayTier);
 
   const outcomeRow = getRule(outcomeRules, tierDiff);
@@ -1071,14 +1082,6 @@ const awayTier = parseTier(match.tier_away);
     const favorite = prettyNumber(getPoint(row,"favorite"));
 const draw = prettyNumber(getPoint(row,"draw"));
 const underdog = prettyNumber(getPoint(row,"underdog"));
-    function parseTier(value){
-  if(value === undefined || value === null) return NaN;
-
-  const text = String(value).trim();
-
-  const match = text.match(/[1-4]/);
-  return match ? Number(match[0]) : NaN;
-}
 
     if(homeTier < awayTier){
       return `
@@ -1125,9 +1128,13 @@ function renderMatches(){
 
     grouped[group].forEach(match => {
       const homeTier = parseTier(match.tier_home);
-const awayTier = parseTier(match.tier_away);
+      const awayTier = parseTier(match.tier_away);
       const scoring = getScoringPreview(match);
       const result = resultsById[String(match.id)];
+
+      if(Number.isNaN(homeTier) || Number.isNaN(awayTier)){
+        console.error("Ugyldig tier på kamp:", match);
+      }
 
       container.innerHTML += `
         <div class="match-card">
