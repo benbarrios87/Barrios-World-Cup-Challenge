@@ -960,20 +960,29 @@ function getPoint(row, key){
 }
 
 function getScoringPreview(match){
-  const homeTier = parseInt(
-  String(match.tier_home).replace(/\D/g,"")
-);
-
-const awayTier = parseInt(
-  String(match.tier_away).replace(/\D/g,"")
-);
+  const homeTier = parseInt(String(match.tier_home).replace(/\D/g,""));
+  const awayTier = parseInt(String(match.tier_away).replace(/\D/g,""));
   const tierDiff = Math.abs(homeTier - awayTier);
 
   const outcomeRow = getRule(outcomeRules, tierDiff);
   const diffRow = getRule(diffRules, tierDiff);
   const exactRow = getRule(exactRules, tierDiff);
 
-  if(!outcomeRow || !diffRow || !exactRow) return null;
+  if(!outcomeRow || !diffRow || !exactRow){
+    console.log("MANGLER POENGREGEL", {
+      home: match.home,
+      away: match.away,
+      tier_home: match.tier_home,
+      tier_away: match.tier_away,
+      homeTier,
+      awayTier,
+      tierDiff,
+      outcomeRules,
+      diffRules,
+      exactRules
+    });
+    return null;
+  }
 
   function ordered(row){
     const favorite = getPoint(row,"favorite");
