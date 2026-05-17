@@ -785,10 +785,33 @@ body::before{
   </div>
 
   <div class="submit-panel">
-    <button class="submit-btn" onclick="submitTips()">Send inn tips</button>
-    <div class="submit-note">
-      Du kan endre og sende inn på nytt frem til fristen. Siste innsending gjelder.
-    </div>
+
+  <button
+    class="nav-btn"
+    style="
+      width:100%;
+      margin-bottom:10px;
+      height:52px;
+      border-radius:16px;
+      font-size:16px;
+    "
+    onclick="
+      saveTipsLocally();
+      alert('Kladd lagret.');
+    "
+  >
+    Lagre kladd
+  </button>
+
+  <button
+    class="submit-btn"
+    onclick="submitTips()"
+  >
+    Send inn tips
+  </button>
+
+  <div class="submit-note">
+    Du kan endre og sende inn på nytt frem til fristen. Siste innsending gjelder.
   </div>
 
 </div>
