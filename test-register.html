@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<body>
+<button onclick="test()">Send test</button>
+
+<script>
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzBtq_RURHeZJ7hq1ECkHt4Tn5hN3tdmPaa29MwRcbiJzsdzKyAggQgNf_OGKS1cFXfSg/exec";
+
+function test(){
+  fetch(SCRIPT_URL,{
+    method:"POST",
+    mode:"no-cors",
+    headers:{
+      "Content-Type":"text/plain;charset=utf-8"
+    },
+    body:JSON.stringify({
+      action:"register",
+      firstName:"Frontend",
+      lastName:"Test",
+      phone:"99999999"
+    })
+  });
+
+  alert("Sendt");
+}
+</script>
+</body>
+</html>
