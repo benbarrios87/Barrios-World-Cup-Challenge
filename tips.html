@@ -1104,10 +1104,26 @@ const awayTier = parseInt(
             </div>
           ` : ""}
 
-         <div class="scoring-preview">
-  <div class="scoring-title">
-    MULIGE POENG
+         <details class="scoring-preview">
+  <summary>Se mulige poeng</summary>
+
+  <div class="points-block">
+    <div class="points-heading">Riktig vinner/uavgjort</div>
+    <div class="points-grid">
+      ${scoring ? scoring.outcome : "-"}
+    </div>
+
+    <div class="points-heading">Riktig målforskjell</div>
+    <div class="points-grid">
+      ${scoring ? scoring.diff : "-"}
+    </div>
+
+    <div class="points-heading">Eksakt resultat</div>
+    <div class="points-grid">
+      ${scoring ? scoring.exact : "-"}
+    </div>
   </div>
+</details>
 
   <div class="points-block">
     <div class="points-heading">Riktig vinner/uavgjort</div>
