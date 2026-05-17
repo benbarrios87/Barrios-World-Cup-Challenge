@@ -1035,8 +1035,8 @@ function getPoint(row, key){
 }
 
 function getScoringPreview(match){
- const homeTier = parseInt(match.tier_home);
-const awayTier = parseInt(match.tier_away);
+ const homeTier = parseTier(match.tier_home);
+const awayTier = parseTier(match.tier_away);
   const tierDiff = Math.abs(homeTier - awayTier);
 
   const outcomeRow = getRule(outcomeRules, tierDiff);
@@ -1071,6 +1071,14 @@ const awayTier = parseInt(match.tier_away);
     const favorite = prettyNumber(getPoint(row,"favorite"));
 const draw = prettyNumber(getPoint(row,"draw"));
 const underdog = prettyNumber(getPoint(row,"underdog"));
+    function parseTier(value){
+  if(value === undefined || value === null) return NaN;
+
+  const text = String(value).trim();
+
+  const match = text.match(/[1-4]/);
+  return match ? Number(match[0]) : NaN;
+}
 
     if(homeTier < awayTier){
       return `
@@ -1116,8 +1124,8 @@ function renderMatches(){
     container.innerHTML += `<h2 class="group-title">Gruppe ${group}</h2>`;
 
     grouped[group].forEach(match => {
-      const homeTier = parseInt(match.tier_home);
-const awayTier = parseInt(match.tier_away);
+      const homeTier = parseTier(match.tier_home);
+const awayTier = parseTier(match.tier_away);
       const scoring = getScoringPreview(match);
       const result = resultsById[String(match.id)];
 
