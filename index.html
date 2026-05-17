@@ -412,23 +412,6 @@ body::before{
 </style>
 </head>
   <script>
-const bubble = document.querySelector(".highroller-bubble");
-
-window.addEventListener("scroll", () => {
-  const scrollPosition = window.innerHeight + window.scrollY;
-  const triggerPoint = document.body.offsetHeight - 500;
-
-  if(scrollPosition >= triggerPoint){
-    bubble.classList.add("visible");
-  }else{
-    bubble.classList.remove("visible");
-  }
-});
-</script>
-  
-<a class="highroller-bubble" href="highroller.html">
-  🥃 High Roller?
-</a>
   
 <body>
 
@@ -670,7 +653,23 @@ async function loadLivePool(){
   }
 
 }
+const bubble = document.querySelector(".highroller-bubble");
 
+window.addEventListener("scroll", () => {
+  const scrollPosition = window.innerHeight + window.scrollY;
+  const triggerPoint = document.body.offsetHeight - 500;
+
+  if(scrollPosition >= triggerPoint){
+    bubble.classList.add("visible");
+  }else{
+    bubble.classList.remove("visible");
+  }
+});
+</script>
+  
+<a class="highroller-bubble" href="highroller.html">
+  🥃 High Roller?
+</a>
 loadLivePool();
 </script>
 
