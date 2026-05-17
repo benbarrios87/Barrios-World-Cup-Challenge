@@ -630,6 +630,41 @@ body::before{
     font-size:17px;
   }
 }
+  .scoring-preview{
+  margin-top:12px;
+}
+
+.scoring-preview summary{
+  cursor:pointer;
+  list-style:none;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:8px 12px;
+  border-radius:999px;
+  background:rgba(255,209,102,0.12);
+  border:1px solid rgba(255,209,102,0.22);
+  color:var(--gold);
+  font-size:13px;
+  font-weight:bold;
+}
+
+.scoring-preview summary::-webkit-details-marker{
+  display:none;
+}
+
+.scoring-preview summary::after{
+  content:"▼";
+  font-size:10px;
+}
+
+.scoring-preview[open] summary::after{
+  content:"▲";
+}
+
+.scoring-preview .points-block{
+  margin-top:12px;
+}
 </style>
 </head>
 
