@@ -297,9 +297,9 @@ button{
   <div class="card">
     <div class="search-row">
       <input
-        id="phoneInput"
+  id="phoneInput"
         type="text"
-        placeholder="Skriv telefonnummeret ditt, f.eks. Benjamin Barrios"
+        placeholder="Skriv telefonnummeret ditt, 8 siffer."
       >
 
       <button onclick="findTips()">Hent mine tips</button>
@@ -321,7 +321,7 @@ button{
 
 <script>
 const SHEET_ID =
-  "1EvB5oqS4Bemr_W8VXYzWAVsr4nX0u3VTQMpgUlOM9-s";
+  "1Ud5i11MEUXwvKDDsfyxvNIdyJgMbY_pS50BkecyzhDo";
 
 const SUBMISSIONS_URL =
   `https://opensheet.elk.sh/${SHEET_ID}/SUBMISSIONS`;
@@ -402,14 +402,16 @@ const inputPhone =
     </div>
   `;
 
-  if(!/^\\d{8}$/.test(inputPhone))
-    result.innerHTML = `
-      <div class="card message error">
-       Skriv inn et gyldig telefonnummer.
-      </div>
-    `;
-    return;
-  }
+ if(!/^\\d{8}$/.test(inputPhone)){
+
+  result.innerHTML = `
+    <div class="card message error">
+      Skriv inn et gyldig telefonnummer.
+    </div>
+  `;
+
+  return;
+}
 
   try{
     const submissions = await fetchSheet(SUBMISSIONS_URL);
@@ -427,9 +429,9 @@ const inputPhone =
     if(!submission){
       result.innerHTML = `
         <div class="card message error">
-          Fant ingen innsending på dette navnet.
+          Fant ingen innsending på dette telefonnummeret.
           <br><br>
-          Sjekk at du har skrevet navnet likt som da du leverte.
+          Sjekk at telefonnummeret er riktig skrevet..
         </div>
       `;
       return;
@@ -534,7 +536,7 @@ const inputPhone =
   }
 }
 
-document.getElementById("nameInput").addEventListener("keydown", e => {
+document.getElementById("phoneInput").addEventListener("keydown", e => {
   if(e.key === "Enter"){
     findTips();
   }
