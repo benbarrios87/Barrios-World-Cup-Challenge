@@ -835,8 +835,30 @@ function normalizeRow(row){
 }
 
 async function fetchSheet(url){
-  const data = await (await fetch(url)).json();
-  return data.map(normalizeRow);
+
+  try{
+
+    const response = await fetch(url);
+
+    if(!response.ok){
+      throw new Error(`HTTP ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    if(!Array.isArray(data)){
+      console.error("Ikke array fra:", url, data);
+      return [];
+    }
+
+    return data.map(normalizeRow);
+
+  }catch(error){
+
+    console.error("fetchSheet feil:", url, error);
+
+    return [];
+  }
 }
 
 function safeNumber(value){
@@ -1013,8 +1035,8 @@ function getPoint(row, key){
 }
 
 function getScoringPreview(match){
-  const homeTier = parseInt(String(match.tier_home).replace(/\D/g,""));
-  const awayTier = parseInt(String(match.tier_away).replace(/\D/g,""));
+ const homeTier = parseInt(match.tier_home);
+const awayTier = parseInt(match.tier_away);
   const tierDiff = Math.abs(homeTier - awayTier);
 
   const outcomeRow = getRule(outcomeRules, tierDiff);
@@ -1094,13 +1116,8 @@ function renderMatches(){
     container.innerHTML += `<h2 class="group-title">Gruppe ${group}</h2>`;
 
     grouped[group].forEach(match => {
-      const homeTier = parseInt(
-  String(match.tier_home).replace(/\D/g,"")
-);
-
-const awayTier = parseInt(
-  String(match.tier_away).replace(/\D/g,"")
-);
+      const homeTier = parseInt(match.tier_home);
+const awayTier = parseInt(match.tier_away);
       const scoring = getScoringPreview(match);
       const result = resultsById[String(match.id)];
 
