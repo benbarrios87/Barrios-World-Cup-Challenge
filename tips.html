@@ -658,16 +658,19 @@ body::before{
     </div>
   </div>
 
-  <div class="top-box">
-    <label for="playerName"><strong>Fornavn og etternavn</strong></label>
-    <input
-      id="playerName"
-      class="name-field"
-      type="text"
-      placeholder="F.eks. Benjamin Barrios"
-      autocomplete="name"
-      oninput="saveTipsLocally()"
-    >
+ <label for="playerPhone">
+  <strong>Telefonnummer</strong>
+</label>
+
+<input
+  id="playerPhone"
+  class="name-field"
+  type="tel"
+  placeholder="F.eks. 90000000"
+  maxlength="8"
+  inputmode="numeric"
+  oninput="saveTipsLocally()"
+>
 
     <div class="progress">
       <div class="progress-row">
@@ -1146,7 +1149,10 @@ function getBonusData(selector){
 }
 
 function saveTipsLocally(){
-  const name = document.getElementById("playerName").value.trim();
+  const phone =
+  document.getElementById("playerPhone")
+  .value
+  .trim();
 
   const tips = allMatches.map(match => {
     const homeInput = document.querySelector(`input[data-match-id="${match.id}"][data-side="home"]`);
@@ -1160,7 +1166,7 @@ function saveTipsLocally(){
   });
 
   localStorage.setItem("vm2026_tips", JSON.stringify({
-    name,
+    phone,
     tips,
     bestPlayer:getBonusData(".best-player-input"),
     topScorer:getBonusData(".top-scorer-input")
@@ -1173,9 +1179,10 @@ function loadSavedTips(){
 
   const data = JSON.parse(saved);
 
-  if(data.name){
-    document.getElementById("playerName").value = data.name;
-  }
+  if(data.phone){
+  document.getElementById("playerPhone").value =
+    data.phone;
+}
 
   if(data.tips){
     data.tips.forEach(tip => {
@@ -1206,17 +1213,15 @@ function loadSavedTips(){
 }
 
 async function submitTips(){
-  const name = document.getElementById("playerName").value.trim();
+  const phone =
+  document.getElementById("playerPhone")
+  .value
+  .trim();
 
-  if(!name){
-    alert("Skriv inn navn først.");
-    return;
-  }
-
-  if(name.split(" ").length < 2){
-    alert("Skriv både fornavn og etternavn.");
-    return;
-  }
+  if(!/^\d{8}$/.test(phone)){
+  alert("Skriv inn et gyldig telefonnummer.");
+  return;
+}
 
   const tips = allMatches.map(match => {
     const homeInput = document.querySelector(`input[data-match-id="${match.id}"][data-side="home"]`);
@@ -1265,7 +1270,7 @@ async function submitTips(){
     const response = await fetch(SUBMIT_URL, {
       method:"POST",
       body:JSON.stringify({
-        name,
+        phone,
         tips,
         bestPlayer,
         topScorer
