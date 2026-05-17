@@ -917,19 +917,37 @@ function getScoringPreview(match){
 
   if(!outcomeRow || !diffRow || !exactRow) return null;
 
-  function ordered(row){
-    if(homeTier < awayTier) return `${row.favorite} / ${row.draw} / ${row.underdog}`;
-    if(homeTier > awayTier) return `${row.underdog} / ${row.draw} / ${row.favorite}`;
-    return `${row.favorite} / ${row.draw} / ${row.underdog}`;
+ function ordered(row){
+
+  if(homeTier < awayTier){
+    return `
+      <div>${match.home}</div><strong>${row.favorite}</strong>
+      <div>Uavgjort</div><strong>${row.draw}</strong>
+      <div>${match.away}</div><strong>${row.underdog}</strong>
+    `;
   }
 
+  if(homeTier > awayTier){
+    return `
+      <div>${match.home}</div><strong>${row.underdog}</strong>
+      <div>Uavgjort</div><strong>${row.draw}</strong>
+      <div>${match.away}</div><strong>${row.favorite}</strong>
+    `;
+  }
+
+  return `
+    <div>${match.home}</div><strong>${row.favorite}</strong>
+    <div>Uavgjort</div><strong>${row.draw}</strong>
+    <div>${match.away}</div><strong>${row.underdog}</strong>
+  `;
+}
   return {
     outcome: ordered(outcomeRow),
     diff: ordered(diffRow),
     exact: ordered(exactRow)
   };
 }
-
+  
 function renderMatches(){
   const container = document.getElementById("matches");
   const grouped = getGroupedMatches();
@@ -1003,17 +1021,25 @@ function renderMatches(){
           ` : ""}
 
           <div class="scoring-preview">
-            <div class="scoring-title">${match.home} / Uavgjort / ${match.away}</div>
+            <div class="scoring-title">
+  MULIGE POENG: ${match.home} / Uavgjort / ${match.away}
+</div>
 
             <div class="scoring-grid">
-              <div class="scoring-label">Utfall</div>
-              <strong>${scoring ? scoring.outcome : "-"}</strong>
+             <div class="scoring-label">Riktig vinner/uavgjort</div>
+<div class="scoring-grid">
+  ${scoring ? scoring.outcome : "-"}
+</div>
 
-              <div class="scoring-label">Målforskjell</div>
-              <strong>${scoring ? scoring.diff : "-"}</strong>
+<div class="scoring-label">Riktig målforskjell</div>
+<div class="scoring-grid">
+  ${scoring ? scoring.diff : "-"}
+</div>
 
-              <div class="scoring-label">Eksakt resultat</div>
-              <strong>${scoring ? scoring.exact : "-"}</strong>
+<div class="scoring-label">Eksakt resultat</div>
+<div class="scoring-grid">
+  ${scoring ? scoring.exact : "-"}
+</div>
             </div>
           </div>
         </div>
