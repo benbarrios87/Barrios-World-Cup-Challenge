@@ -297,9 +297,9 @@ button{
   <div class="card">
     <div class="search-row">
       <input
-        id="nameInput"
+        id="phoneInput"
         type="text"
-        placeholder="Skriv navnet ditt, f.eks. Benjamin Barrios"
+        placeholder="Skriv telefonnummeret ditt, f.eks. Benjamin Barrios"
       >
 
       <button onclick="findTips()">Hent mine tips</button>
@@ -393,7 +393,8 @@ function isSubmissionComplete(tips,bestPlayer,topScorer){
 
 async function findTips(){
   const result = document.getElementById("result");
-  const inputName = document.getElementById("nameInput").value;
+const inputPhone =
+  document.getElementById("phoneInput").value.trim();
 
   result.innerHTML = `
     <div class="card message">
@@ -401,10 +402,10 @@ async function findTips(){
     </div>
   `;
 
-  if(!inputName.trim()){
+  if(!/^\\d{8}$/.test(inputPhone))
     result.innerHTML = `
       <div class="card message error">
-        Skriv inn navnet ditt først.
+       Skriv inn et gyldig telefonnummer.
       </div>
     `;
     return;
@@ -420,7 +421,7 @@ async function findTips(){
     });
 
     const submission = submissions.find(row =>
-      normalizeName(row.name) === normalizeName(inputName)
+      String(row.phone || "").trim() === inputPhone
     );
 
     if(!submission){
