@@ -836,7 +836,8 @@ function normalizeRow(row){
 }
 
 async function fetchSheet(url){
-  const data = await (await fetch(url)).json();
+  const cacheBustUrl = `${url}?t=${Date.now()}`;
+  const data = await (await fetch(cacheBustUrl)).json();
   return data.map(normalizeRow);
 }
 
