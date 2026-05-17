@@ -298,18 +298,33 @@ input:focus{
 
     <form id="registerForm">
 
-      <div class="form-group">
-        <label>Fornavn og etternavn</label>
+     <div class="form-group">
+  <label>Fornavn og etternavn</label>
 
-        <input
-          type="text"
-          id="name"
-          placeholder="F.eks. Benjamin Barrios"
-          autocomplete="name"
-          required
-        >
-      </div>
+  <input
+    type="text"
+    id="name"
+    placeholder="F.eks. Benjamin Barrios"
+    autocomplete="name"
+    required
+  >
+</div>
 
+<div class="form-group">
+  <label>Telefonnummer</label>
+
+  <input
+    type="tel"
+    id="phone"
+    placeholder="F.eks. 90000000"
+    inputmode="numeric"
+    pattern="[0-9]{8}"
+    maxlength="8"
+    autocomplete="tel"
+    required
+  >
+</div>
+      
       <div class="form-group">
         <label>Telefonnummer</label>
 
@@ -407,10 +422,10 @@ form.addEventListener("submit", async (e) => {
         "Content-Type":"text/plain;charset=utf-8"
       },
       body:JSON.stringify({
-        action:"register",
-        name,
-        phone
-      })
+  action:"register",
+  name,
+  phone
+})
     });
 
     successMessage.innerHTML = `
