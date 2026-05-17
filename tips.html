@@ -824,6 +824,10 @@ async function loadScoringRules(){
   outcomeRules = await fetchSheet(OUTCOME_API_URL);
   diffRules = await fetchSheet(DIFF_API_URL);
   exactRules = await fetchSheet(EXACT_API_URL);
+
+  console.log("OUTCOME", outcomeRules);
+  console.log("DIFF", diffRules);
+  console.log("EXACT", exactRules);
 }
 
 async function loadPlayers(){
@@ -937,6 +941,24 @@ function hasResult(result){
     result.actual_away !== "";
 }
 
+function getPoint(row, key){
+  if(!row) return "";
+
+  if(key === "favorite"){
+    return row.favorite ?? row.favoritt ?? "";
+  }
+
+  if(key === "draw"){
+    return row.draw ?? row.uavgjort ?? "";
+  }
+
+  if(key === "underdog"){
+    return row.underdog ?? row.outsider ?? "";
+  }
+
+  return "";
+}
+
 function getScoringPreview(match){
   const homeTier = Number(match.tier_home);
   const awayTier = Number(match.tier_away);
@@ -948,30 +970,34 @@ function getScoringPreview(match){
 
   if(!outcomeRow || !diffRow || !exactRow) return null;
 
- function ordered(row){
+  function ordered(row){
+    const favorite = getPoint(row,"favorite");
+    const draw = getPoint(row,"draw");
+    const underdog = getPoint(row,"underdog");
 
-  if(homeTier < awayTier){
+    if(homeTier < awayTier){
+      return `
+        <div>${match.home}</div><strong>${favorite}</strong>
+        <div>Uavgjort</div><strong>${draw}</strong>
+        <div>${match.away}</div><strong>${underdog}</strong>
+      `;
+    }
+
+    if(homeTier > awayTier){
+      return `
+        <div>${match.home}</div><strong>${underdog}</strong>
+        <div>Uavgjort</div><strong>${draw}</strong>
+        <div>${match.away}</div><strong>${favorite}</strong>
+      `;
+    }
+
     return `
-      <div>${match.home}</div><strong>${row.favorite}</strong>
-      <div>Uavgjort</div><strong>${row.draw}</strong>
-      <div>${match.away}</div><strong>${row.underdog}</strong>
+      <div>${match.home}</div><strong>${favorite}</strong>
+      <div>Uavgjort</div><strong>${draw}</strong>
+      <div>${match.away}</div><strong>${underdog}</strong>
     `;
   }
 
-  if(homeTier > awayTier){
-    return `
-      <div>${match.home}</div><strong>${row.underdog}</strong>
-      <div>Uavgjort</div><strong>${row.draw}</strong>
-      <div>${match.away}</div><strong>${row.favorite}</strong>
-    `;
-  }
-
-  return `
-    <div>${match.home}</div><strong>${row.favorite}</strong>
-    <div>Uavgjort</div><strong>${row.draw}</strong>
-    <div>${match.away}</div><strong>${row.underdog}</strong>
-  `;
-}
   return {
     outcome: ordered(outcomeRow),
     diff: ordered(diffRow),
@@ -1074,23 +1100,7 @@ function renderMatches(){
   </div>
 </div>
 
-            <div class="scoring-grid">
-             <div class="scoring-label">Riktig vinner/uavgjort</div>
-<div class="scoring-grid">
-  ${scoring ? scoring.outcome : "-"}
-</div>
-
-<div class="scoring-label">Riktig målforskjell</div>
-<div class="scoring-grid">
-  ${scoring ? scoring.diff : "-"}
-</div>
-
-<div class="scoring-label">Eksakt resultat</div>
-<div class="scoring-grid">
-  ${scoring ? scoring.exact : "-"}
-</div>
-            </div>
-          </div>
+          
         </div>
       `;
     });
