@@ -400,6 +400,35 @@ body::before{
 .scoring-label{
   color:var(--muted);
 }
+  .points-block{
+  display:grid;
+  gap:12px;
+}
+
+.points-heading{
+  margin-top:6px;
+  color:var(--gold);
+  font-weight:bold;
+  font-size:13px;
+}
+
+.points-grid{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:6px 12px;
+  padding:10px;
+  border-radius:14px;
+  background:rgba(0,0,0,0.18);
+}
+
+.points-grid div{
+  color:var(--muted);
+}
+
+.points-grid strong{
+  color:white;
+  font-size:15px;
+}
 
 .bonus-grid{
   display:grid;
@@ -1020,9 +1049,27 @@ function renderMatches(){
             </div>
           ` : ""}
 
-          <div class="scoring-preview">
-            <div class="scoring-title">
-  MULIGE POENG: ${match.home} / Uavgjort / ${match.away}
+         <div class="scoring-preview">
+  <div class="scoring-title">
+    MULIGE POENG
+  </div>
+
+  <div class="points-block">
+    <div class="points-heading">Riktig vinner/uavgjort</div>
+    <div class="points-grid">
+      ${scoring ? scoring.outcome : "-"}
+    </div>
+
+    <div class="points-heading">Riktig målforskjell</div>
+    <div class="points-grid">
+      ${scoring ? scoring.diff : "-"}
+    </div>
+
+    <div class="points-heading">Eksakt resultat</div>
+    <div class="points-grid">
+      ${scoring ? scoring.exact : "-"}
+    </div>
+  </div>
 </div>
 
             <div class="scoring-grid">
