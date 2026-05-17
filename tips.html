@@ -928,9 +928,13 @@ function getGroupedMatches(){
 }
 
 function getRule(rules, tierDiff){
-  return rules.find(r =>
-    Number(String(r.tier_diff).trim()) === Number(tierDiff)
-  );
+  return rules.find(r => {
+    const value = parseInt(
+      String(r.tier_diff).replace(/\D/g,"")
+    );
+
+    return value === parseInt(tierDiff);
+  });
 }
 
 function hasResult(result){
