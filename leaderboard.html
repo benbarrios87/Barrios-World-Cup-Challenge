@@ -113,6 +113,16 @@ body{
   font-weight:bold;
   margin-bottom:8px;
 }
+  .profile-link{
+  color:white;
+  text-decoration:none;
+  font-size:18px;
+  font-weight:bold;
+}
+
+.profile-link:hover{
+  color:#ffd166;
+}
 
 .tags{
   display:flex;
@@ -175,7 +185,7 @@ body{
 </div>
 
 <script>
-const SHEET_ID = "1EvB5oqS4Bemr_W8VXYzWAVsr4nX0u3VTQMpgUlOM9-s";
+const SHEET_ID = "1Ud5i11MEUXwvKDDsfyxvNIdyJgMbY_pS50BkecyzhDo";
 
 const LEADERBOARD_API_URL =
   `https://opensheet.elk.sh/${SHEET_ID}/API_LEADERBOARD`;
@@ -362,7 +372,6 @@ statusBox.innerHTML = `
   href="profil.html?name=${encodeURIComponent(row.name)}"
 >
   ${row.name}
-</a>
 </a>
 
               <div class="tags">
