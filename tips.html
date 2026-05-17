@@ -1024,8 +1024,13 @@ function renderMatches(){
     container.innerHTML += `<h2 class="group-title">Gruppe ${group}</h2>`;
 
     grouped[group].forEach(match => {
-      const homeTier = match.tier_home || "";
-      const awayTier = match.tier_away || "";
+      const homeTier = parseInt(
+  String(match.tier_home).replace(/\D/g,"")
+);
+
+const awayTier = parseInt(
+  String(match.tier_away).replace(/\D/g,"")
+);
       const scoring = getScoringPreview(match);
       const result = resultsById[String(match.id)];
 
