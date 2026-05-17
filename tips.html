@@ -846,6 +846,15 @@ function safeNumber(value){
       .replace(",",".")
   ) || 0;
 }
+  function prettyNumber(value){
+  const num = parseFloat(value);
+
+  if(Number.isInteger(num)){
+    return num.toString();
+  }
+
+  return num.toFixed(2).replace(/\.?0+$/,"");
+}
 
 async function loadScoringRules(){
   outcomeRules = await fetchSheet(OUTCOME_API_URL);
@@ -1020,9 +1029,9 @@ function getScoringPreview(match){
   }
 
   function ordered(row){
-    const favorite = getPoint(row,"favorite");
-    const draw = getPoint(row,"draw");
-    const underdog = getPoint(row,"underdog");
+    const favorite = prettyNumber(getPoint(row,"favorite"));
+const draw = prettyNumber(getPoint(row,"draw"));
+const underdog = prettyNumber(getPoint(row,"underdog"));
 
     if(homeTier < awayTier){
       return `
