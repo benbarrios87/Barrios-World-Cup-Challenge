@@ -960,8 +960,13 @@ function getPoint(row, key){
 }
 
 function getScoringPreview(match){
-  const homeTier = Number(match.tier_home);
-  const awayTier = Number(match.tier_away);
+  const homeTier = parseInt(
+  String(match.tier_home).replace(/\D/g,"")
+);
+
+const awayTier = parseInt(
+  String(match.tier_away).replace(/\D/g,"")
+);
   const tierDiff = Math.abs(homeTier - awayTier);
 
   const outcomeRow = getRule(outcomeRules, tierDiff);
