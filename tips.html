@@ -924,7 +924,9 @@ function getGroupedMatches(){
 }
 
 function getRule(rules, tierDiff){
-  return rules.find(r => Number(r.tier_diff) === Number(tierDiff));
+  return rules.find(r =>
+    Number(String(r.tier_diff).trim()) === Number(tierDiff)
+  );
 }
 
 function hasResult(result){
