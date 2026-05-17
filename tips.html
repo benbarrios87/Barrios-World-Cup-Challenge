@@ -928,13 +928,9 @@ function getGroupedMatches(){
 }
 
 function getRule(rules, tierDiff){
-  return rules.find(r => {
-    const value = parseInt(
-      String(r.tier_diff).replace(/\D/g,"")
-    );
-
-    return value === parseInt(tierDiff);
-  });
+  return rules.find(r =>
+    parseInt(r.tier_diff) === parseInt(tierDiff)
+  );
 }
 
 function hasResult(result){
@@ -971,6 +967,14 @@ function getScoringPreview(match){
   const outcomeRow = getRule(outcomeRules, tierDiff);
   const diffRow = getRule(diffRules, tierDiff);
   const exactRow = getRule(exactRules, tierDiff);
+  console.log({
+  home: match.home,
+  away: match.away,
+  tierDiff,
+  outcomeRow,
+  diffRow,
+  exactRow
+});
 
   if(!outcomeRow || !diffRow || !exactRow){
     console.log("MANGLER POENGREGEL", {
