@@ -1546,7 +1546,26 @@ async function init(){
   await loadMatches();
   await loadLeaderboard();
 }
+document.addEventListener("keydown", e => {
+  if(e.key !== "Tab") return;
 
+  const active = document.activeElement;
+
+  if(!active.classList.contains("team-score")) return;
+
+  e.preventDefault();
+
+  const inputs = [...document.querySelectorAll(".team-score")];
+  const currentIndex = inputs.indexOf(active);
+
+  const next = inputs[currentIndex + 1];
+
+  if(next){
+    next.focus();
+    next.select();
+  }
+});
+  
 init();
 </script>
 
