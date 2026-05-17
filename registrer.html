@@ -349,8 +349,8 @@ input:focus{
 <script>
 
 const SCRIPT_URL =
-"https://script.google.com/macros/s/AKfycbyJB5mugyonYlXClojolIGcInen7ClFl55j-c7xQw6Z0-fS5rKfQKgF9AVhLLe9UQgM4Q/exec";
-
+https://script.google.com/macros/s/AKfycbzBtq_RURHeZJ7hq1ECkHt4Tn5hN3tdmPaa29MwRcbiJzsdzKyAggQgNf_OGKS1cFXfSg/exec
+  
 const form = document.getElementById("registerForm");
 
 const successMessage =
@@ -406,11 +406,23 @@ form.addEventListener("submit", async (e) => {
       headers:{
         "Content-Type":"text/plain;charset=utf-8"
       },
-      body:JSON.stringify({
-  action:"register",
-  name,
-  phone
-})
+     const nameParts = name.trim().split(/\s+/);
+const firstName = nameParts[0];
+const lastName = nameParts.slice(1).join(" ");
+
+await fetch(SCRIPT_URL,{
+  method:"POST",
+  mode:"no-cors",
+  headers:{
+    "Content-Type":"text/plain;charset=utf-8"
+  },
+  body:JSON.stringify({
+    action:"register",
+    firstName,
+    lastName,
+    phone
+  })
+});
     });
 
     successMessage.innerHTML = `
