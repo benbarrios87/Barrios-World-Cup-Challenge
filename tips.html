@@ -782,8 +782,7 @@ body::before{
       font-size:16px;
     "
     onclick="
-      saveTipsLocally();
-      alert('Kladd lagret.');
+      submitTips(true);
     "
   >
     Lagre kladd
@@ -1365,7 +1364,7 @@ function loadSavedTips(){
   updateProgress();
 }
 
-async function submitTips(){
+async function submitTips(isDraft = false){
   const phone =
   document.getElementById("playerPhone")
   .value
@@ -1417,7 +1416,9 @@ async function submitTips(){
   const button = document.querySelector(".submit-btn");
 
   button.disabled = true;
-  button.textContent = "Sender inn...";
+  button.textContent = isDraft
+  ? "Lagrer kladd..."
+  : "Sender inn...";
 
   try{
     const response = await fetch(SUBMIT_URL, {
@@ -1440,13 +1441,23 @@ async function submitTips(){
       return;
     }
 
-    button.textContent = "Tips sendt inn ✅";
+    button.textContent = isDraft
+  ? "Kladd lagret ✅"
+  : "Tips sendt inn ✅";
     button.style.background = "#2ecc71";
 
-    alert(
-      (result.message || "Tips lagret!") +
-      "\n\nDu kan nå se tipsene dine under Mine tips."
-    );
+   if(isDraft){
+
+  alert("Kladd lagret.");
+
+}else{
+
+  alert(
+    (result.message || "Tips lagret!") +
+    "\n\nDu kan nå se tipsene dine under Mine tips."
+  );
+
+}
 
   }catch(error){
     alert("Feil ved innsending: " + error.message);
