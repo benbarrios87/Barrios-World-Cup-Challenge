@@ -931,13 +931,13 @@ async function loadPlayers(){
 
   players = data
     .map(row => ({
-      name: row.name,
+      name: row.player || row.name,
+      type: row.type,
       multiplier: Number(row.multiplier || 1)
     }))
     .filter(player => player.name);
 
   renderBonusSection();
-  loadSavedTips();
 }
 
 async function loadResults(){
@@ -958,11 +958,8 @@ async function loadMatches(){
     if(allMatches.length === 0){
       container.innerHTML = `<div class="card">Fant ingen kamper i API_MATCHES. Sjekk at fanen heter nøyaktig API_MATCHES og at arket er delt/offentlig.</div>`;
       return;
-    }
-
-    renderMatches();
-    loadSavedTips();
-    updateProgress();
+      }
+    
   }catch(error){
     container.innerHTML = `<div class="card">Klarte ikke å laste kampene.</div>`;
     console.error(error);
@@ -1083,103 +1080,17 @@ const underdog = prettyNumber(getPoint(row,"underdog"));
   
 function renderMatches(){
   const container = document.getElementById("matches");
-  const grouped = getGroupedMatches();
-  const groups = Object.keys(grouped);
 
-  renderFilters(groups);
   container.innerHTML = "";
 
-  groups.forEach(group => {
-    if(currentGroup !== "ALL" && currentGroup !== group) return;
-
-    container.innerHTML += `<h2 class="group-title">Gruppe ${group}</h2>`;
-
-    grouped[group].forEach(match => {
-      const homeTier = parseTier(match.tier_home);
-      const awayTier = parseTier(match.tier_away);
-      const scoring = getScoringPreview(match);
-      const result = resultsById[String(match.id)];
-
-      if(Number.isNaN(homeTier) || Number.isNaN(awayTier)){
-        console.error("Ugyldig tier på kamp:", match);
-      }
-
-      container.innerHTML += `
-        <div class="match-card">
-          <div class="match-header">
-            <div>
-              <div class="match-title">${match.home} vs ${match.away}</div>
-              <div class="match-date">${match.date || ""}</div>
-            </div>
-
-            <div class="match-number">Kamp ${match.id}</div>
-          </div>
-
-          <div class="teams">
-            <div class="team tier-${homeTier}">
-              <div class="team-name">${match.home}</div>
-              <div class="tier-label">Tier ${homeTier}</div>
-            </div>
-
-            <div class="score-zone">
-              <input
-                class="team-score"
-                type="number"
-                min="0"
-                inputmode="numeric"
-                data-match-id="${match.id}"
-                data-side="home"
-                oninput="saveTipsLocally(); updateProgress();"
-              >
-
-              <div class="score-dash">–</div>
-
-              <input
-                class="team-score"
-                type="number"
-                min="0"
-                inputmode="numeric"
-                data-match-id="${match.id}"
-                data-side="away"
-                oninput="saveTipsLocally(); updateProgress();"
-              >
-            </div>
-
-            <div class="team tier-${awayTier}">
-              <div class="team-name">${match.away}</div>
-              <div class="tier-label">Tier ${awayTier}</div>
-            </div>
-          </div>
-
-          ${hasResult(result) ? `
-            <div class="result-box">
-              Sluttresultat: ${result.actual_home} - ${result.actual_away}
-            </div>
-          ` : ""}
-
-         <details class="scoring-preview">
-  <summary>Se mulige poeng</summary>
-
-  <div class="points-block">
-    <div class="points-heading">Riktig vinner/uavgjort</div>
-    <div class="points-grid">
-      ${scoring ? scoring.outcome : "-"}
-    </div>
-
-    <div class="points-heading">Riktig målforskjell</div>
-    <div class="points-grid">
-      ${scoring ? scoring.diff : "-"}
-    </div>
-
-    <div class="points-heading">Eksakt resultat</div>
-    <div class="points-grid">
-      ${scoring ? scoring.exact : "-"}
-    </div>
-  </div>
-</details>     
+  allMatches.forEach(match => {
+    container.innerHTML += `
+      <div class="match-card">
+        <div class="match-title">
+          ${match.home} vs ${match.away}
         </div>
-      `;
-    });
+      </div>
+    `;
   });
 }
 
@@ -1580,10 +1491,17 @@ function scrollToSection(id){
 }
 
 async function init(){
-  await loadScoringRules();
-  await loadResults();
-  await loadPlayers();
   await loadMatches();
+
+  await Promise.all([
+    loadScoringRules(),
+    loadResults(),
+    loadPlayers()
+  ]);
+
+  renderMatches();
+  loadSavedTips();
+  updateProgress();
 }
 document.addEventListener("keydown", e => {
   if(e.key !== "Tab") return;
