@@ -1198,25 +1198,26 @@ async function loadDraftFromSheet(){
     return;
   }
 
-  const latestTimestamp = userRows[userRows.length - 1].timestamp;
-
-  const latestRows = userRows.filter(row =>
-    row.timestamp === latestTimestamp
+  const matchRows = userRows.filter(row =>
+    normalizeType(row.type) === "match"
   );
 
-  latestRows
-    .filter(row => normalizeType(row.type) === "match")
-    .forEach(row => {
-      const matchId = String(row.match_id || row.id || "").trim();
+  matchRows.forEach(row => {
+    const matchId = String(row.match_id || row.id || "").trim();
 
-      const homeInput = document.querySelector(`input[data-match-id="${matchId}"][data-side="home"]`);
-      const awayInput = document.querySelector(`input[data-match-id="${matchId}"][data-side="away"]`);
+    const homeInput = document.querySelector(
+      `input[data-match-id="${matchId}"][data-side="home"]`
+    );
 
-      if(homeInput) homeInput.value = row.tips_home || "";
-      if(awayInput) awayInput.value = row.tips_away || "";
-    });
+    const awayInput = document.querySelector(
+      `input[data-match-id="${matchId}"][data-side="away"]`
+    );
 
-  latestRows
+    if(homeInput) homeInput.value = row.tips_home || "";
+    if(awayInput) awayInput.value = row.tips_away || "";
+  });
+
+  userRows
     .filter(row => normalizeType(row.type) === "bestplayer")
     .forEach(row => {
       const playerName = row.extra_name || row.player || "";
@@ -1227,7 +1228,7 @@ async function loadDraftFromSheet(){
       if(input) input.value = row.extra_points || row.points || "0";
     });
 
-  latestRows
+  userRows
     .filter(row => normalizeType(row.type) === "topscorer")
     .forEach(row => {
       const playerName = row.extra_name || row.player || "";
