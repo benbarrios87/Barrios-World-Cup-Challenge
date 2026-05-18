@@ -301,12 +301,6 @@ data.forEach(row => {
 const players = [...uniqueMap.values()]
   .filter(row => row.name)
   .sort((a,b) => a.name.localeCompare(b.name,"no"));
-.map(row => ({
-  name: row.full_name || row["full name"] || `${row.first_name || row["first name"] || ""} ${row.last_name || row["last name"] || ""}`.trim(),
-  phone: row.phone
-}))
-.filter(row => row.name)
-.sort((a,b) => a.name.localeCompare(b.name,"no"));
 
     const playerCount = players.length;
     const paidCount = Math.max(0, playerCount - FREE_ENTRIES);
