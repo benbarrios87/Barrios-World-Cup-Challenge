@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Lagtiers | FC Barrios World Cup Challenge 2026</title>
+
+<style>
+:root{
+  --card:rgba(7,14,28,0.84);
+  --line:rgba(255,255,255,0.14);
+  --muted:rgba(255,255,255,0.72);
+  --green:#2ecc71;
+  --lime:#c8e63c;
+  --orange:#ffb347;
+  --red:#ff4757;
+  --gold:#ffd166;
+}
+
+*{ box-sizing:border-box; }
+
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  color:white;
+  min-height:100vh;
+  background:
+    radial-gradient(circle at top left, rgba(46,204,113,0.22), transparent 30%),
+    radial-gradient(circle at bottom right, rgba(255,209,102,0.14), transparent 28%),
+    linear-gradient(rgba(0,0,0,0.72), rgba(0,0,0,0.88)),
+    repeating-linear-gradient(90deg,#0b3d24 0px,#0b3d24 90px,#0e4a2c 90px,#0e4a2c 180px);
+}
+
+.wrapper{
+  max-width:1100px;
+  margin:auto;
+  padding:22px;
+}
+
+.back-link{
+  display:inline-block;
+  margin-bottom:18px;
+  color:white;
+  text-decoration:none;
+  opacity:0.8;
+}
+
+.hero{
+  text-align:center;
+  margin:18px 0 24px;
+}
+
+.badge{
+  display:inline-block;
+  margin-bottom:12px;
+  padding:6px 11px;
+  border-radius:999px;
+  background:rgba(46,204,113,0.18);
+  color:#9dffc7;
+  font-size:13px;
+  font-weight:bold;
+}
+
+h1{
+  margin:0 0 10px;
+  font-size:42px;
+}
+
+.hero p{
+  margin:0;
+  color:var(--muted);
+  line-height:1.6;
+}
+
+.info-card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:24px;
+  padding:20px;
+  margin-bottom:20px;
+  line-height:1.6;
+  color:var(--muted);
+}
+
+.info-card strong{
+  color:var(--gold);
+}
+
+.tiers-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:16px;
+}
+
+.tier-card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:24px;
+  padding:18px;
+  box-shadow:0 16px 40px rgba(0,0,0,0.28);
+}
+
+.tier-card.tier-1{ border-color:rgba(46,204,113,0.55); }
+.tier-card.tier-2{ border-color:rgba(200,230,60,0.55); }
+.tier-card.tier-3{ border-color:rgba(255,179,71,0.55); }
+.tier-card.tier-4{ border-color:rgba(255,71,87,0.55); }
+
+.tier-head{
+  border-radius:18px;
+  padding:14px;
+  margin-bottom:14px;
+  text-align:center;
+}
+
+.tier-1 .tier-head{ background:rgba(46,204,113,0.18); color:#9dffc7; }
+.tier-2 .tier-head{ background:rgba(200,230,60,0.16); color:#ecff7d; }
+.tier-3 .tier-head{ background:rgba(255,179,71,0.16); color:#ffd099; }
+.tier-4 .tier-head{ background:rgba(255,71,87,0.16); color:#ffb4bd; }
+
+.tier-head h2{
+  margin:0;
+  font-size:24px;
+}
+
+.tier-head span{
+  display:block;
+  margin-top:4px;
+  font-size:13px;
+  opacity:0.8;
+}
+
+.team-list{
+  display:grid;
+  gap:8px;
+}
+
+.team-pill{
+  background:rgba(255,255,255,0.07);
+  border:1px solid rgba(255,255,255,0.10);
+  border-radius:14px;
+  padding:10px 12px;
+  font-weight:bold;
+}
+
+.loading{
+  text-align:center;
+  color:var(--muted);
+  padding:26px;
+}
+
+.footer-note{
+  color:var(--muted);
+  text-align:center;
+  font-size:13px;
+  margin-top:22px;
+}
+
+@media(max-width:900px){
+  .tiers-grid{
+    grid-template-columns:repeat(2,1fr);
+  }
+}
+
+@media(max-width:560px){
+  .wrapper{ padding:14px; }
+  h1{ font-size:32px; }
+  .tiers-grid{
+    grid-template-columns:1fr;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="wrapper">
+
+  <a class="back-link" href="index.html">← Til forsiden</a>
+
+  <div class="hero">
+    <div class="badge">FC BARRIOS • VM 2026</div>
+    <h1>🌍 Lagtiers</h1>
+    <p>Alle lag er delt inn i fire nivåer basert på FIFA-ranking og vurdert styrke.</p>
+  </div>
+
+  <div class="info-card">
+    <strong>Hvordan brukes dette?</strong><br>
+    Tierne avgjør hvor mye poeng du kan få. Det gir mindre uttelling å treffe en storfavoritt,
+    og mer uttelling hvis du treffer en outsider. Jo større nivåforskjell, jo mer kan du tjene på modige tips.
+  </div>
+
+  <div id="tiersContainer" class="loading">
+    Laster lagtiers...
+  </div>
+
+  <div class="footer-note">
+    FC Barrios World Cup Challenge 2026
+  </div>
+
+</div>
+
+<script>
+const SHEET_ID = "1Ud5i11MEUXwvKDDsfyxvNIdyJgMbY_pS50BkecyzhDo";
+const MATCHES_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_MATCHES`;
+
+async function fetchSheet(url){
+  try{
+    const response = await fetch(url, { cache:"no-store" });
+    const data = await response.json();
+
+    if(!Array.isArray(data)) return [];
+
+    return data.map(normalizeRow);
+  }catch(error){
+    console.error(error);
+    return [];
+  }
+}
+
+function normalizeRow(row){
+  const clean = {};
+
+  Object.keys(row || {}).forEach(key => {
+    const cleanKey = String(key)
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g,"_")
+      .replace(/-/g,"_");
+
+    clean[cleanKey] = typeof row[key] === "string"
+      ? row[key].trim()
+      : row[key];
+  });
+
+  return clean;
+}
+
+function parseTier(value){
+  if(value === undefined || value === null || value === "") return "";
+  const found = String(value).match(/[1-4]/);
+  return found ? found[0] : "";
+}
+
+function addTeam(map, name, tier){
+  name = String(name || "").trim();
+  tier = parseTier(tier);
+
+  if(!name || !tier) return;
+
+  if(!map.has(name)){
+    map.set(name, tier);
+  }
+}
+
+function tierSubtitle(tier){
+  if(tier === 1) return "Favorittene";
+  if(tier === 2) return "Sterke utfordrere";
+  if(tier === 3) return "Lure outsiderlag";
+  if(tier === 4) return "Kaos, håp og mirakler";
+  return "";
+}
+
+async function loadTiers(){
+  const container = document.getElementById("tiersContainer");
+
+  const matches = await fetchSheet(MATCHES_URL);
+
+  const teamMap = new Map();
+
+  matches.forEach(match => {
+    addTeam(teamMap, match.home, match.tier_home);
+    addTeam(teamMap, match.away, match.tier_away);
+  });
+
+  const tiers = {
+    1: [],
+    2: [],
+    3: [],
+    4: []
+  };
+
+  [...teamMap.entries()].forEach(([team,tier]) => {
+    if(tiers[tier]){
+      tiers[tier].push(team);
+    }
+  });
+
+  Object.keys(tiers).forEach(tier => {
+    tiers[tier].sort((a,b) => a.localeCompare(b,"no"));
+  });
+
+  container.className = "tiers-grid";
+  container.innerHTML = [1,2,3,4].map(tier => `
+    <div class="tier-card tier-${tier}">
+      <div class="tier-head">
+        <h2>Tier ${tier}</h2>
+        <span>${tierSubtitle(tier)}</span>
+      </div>
+
+      <div class="team-list">
+        ${
+          tiers[tier].length
+          ? tiers[tier].map(team => `
+              <div class="team-pill">${team}</div>
+            `).join("")
+          : `<div style="color:rgba(255,255,255,0.65);">Ingen lag funnet.</div>`
+        }
+      </div>
+    </div>
+  `).join("");
+}
+
+loadTiers();
+</script>
+
+</body>
+</html>
