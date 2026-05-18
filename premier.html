@@ -237,7 +237,7 @@ body{
 
 <script>
 const SHEET_ID = "1Ud5i11MEUXwvKDDsfyxvNIdyJgMbY_pS50BkecyzhDo";
-const LEADERBOARD_API_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_LEADERBOARD`;
+const REGISTRATIONS_API_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_REGISTRATIONS`;
 
 const BUY_IN = 600;
 const FREE_ENTRIES = 1;
@@ -278,11 +278,16 @@ async function loadPrizes(){
   const playersContainer = document.getElementById("playersContainer");
 
   try{
-    const data = await fetchSheet(LEADERBOARD_API_URL);
+    const data = await fetchSheet(REGISTRATIONS_API_URL);
 
     const players = data
-      .filter(row => row.name)
-      .sort((a,b) => a.name.localeCompare(b.name,"no"));
+      .filter(row => row.phone)
+.map(row => ({
+  name: row.full_name || row["full name"] || `${row.first_name || row["first name"] || ""} ${row.last_name || row["last name"] || ""}`.trim(),
+  phone: row.phone
+}))
+.filter(row => row.name)
+.sort((a,b) => a.name.localeCompare(b.name,"no"));
 
     const playerCount = players.length;
     const paidCount = Math.max(0, playerCount - FREE_ENTRIES);
@@ -337,6 +342,7 @@ async function loadPrizes(){
 }
 
 loadPrizes();
+setInterval(loadPrizes, 30000);
 </script>
 
 </body>
