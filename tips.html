@@ -1213,7 +1213,10 @@ async function loadDraftFromSheet(){
       const awayInput = document.querySelector(
         `input[data-match-id="${matchId}"][data-side="away"]`
       );
-
+console.log("MATCH ID", matchId);
+console.log("HOME INPUT", homeInput);
+console.log("AWAY INPUT", awayInput);
+      
       if(homeInput) homeInput.value = row.tips_home || "";
       if(awayInput) awayInput.value = row.tips_away || "";
     });
@@ -1246,35 +1249,6 @@ async function loadDraftFromSheet(){
 
     alert("Lagrede tips hentet.");
   }, 300);
-}
-  userRows
-    .filter(row => normalizeType(row.type) === "bestplayer")
-    .forEach(row => {
-      const playerName = row.extra_name || row.player || "";
-
-      const input = [...document.querySelectorAll(".best-player-input")]
-        .find(el => el.dataset.player === playerName);
-
-      if(input) input.value = row.extra_points || row.points || "0";
-    });
-
-  userRows
-    .filter(row => normalizeType(row.type) === "topscorer")
-    .forEach(row => {
-      const playerName = row.extra_name || row.player || "";
-
-      const input = [...document.querySelectorAll(".top-scorer-input")]
-        .find(el => el.dataset.player === playerName);
-
-      if(input) input.value = row.extra_points || row.points || "0";
-    });
-
-  updateBonusStatus();
-  updateProgress();
-  saveTipsLocally();
-
-  alert("Lagrede tips hentet.");
-}
 
 async function submitTips(isDraft = false){
   const phone = document.getElementById("playerPhone").value.trim();
