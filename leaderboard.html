@@ -187,11 +187,11 @@ body{
 <script>
 const SHEET_ID = "1Ud5i11MEUXwvKDDsfyxvNIdyJgMbY_pS50BkecyzhDo";
 
-const LEADERBOARD_API_URL =
-  `https://opensheet.elk.sh/${SHEET_ID}/API_LEADERBOARD`;
+const REGISTRATIONS_API_URL =
+  `https://opensheet.elk.sh/${SHEET_ID}/API_REGISTRATIONS`;
 
 const SUBMISSIONS_API_URL =
-  `https://opensheet.elk.sh/${SHEET_ID}/SUBMISSIONS`;
+  `https://opensheet.elk.sh/${SHEET_ID}/API_SUBMISSIONS`;
 
 async function fetchSheet(url){
   const response = await fetch(url);
@@ -243,7 +243,7 @@ async function loadLeaderboard(){
 
   try{
     const data = await fetchSheet(LEADERBOARD_API_URL);
-    const submissions = await fetchSheet(SUBMISSIONS_API_URL);
+const submissions = await fetchSheet(SUBMISSIONS_API_URL);
 
     const rows = data
       .filter(row => row.name)
