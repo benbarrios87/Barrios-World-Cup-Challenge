@@ -1255,13 +1255,25 @@ function updateProgress(){
   let completed = 0;
 
   allMatches.forEach(match => {
-    const homeInput = document.querySelector(``input[data-match-id="${String(row.match_id).trim()}"][data-side="home"]`
-    const awayInput = document.querySelector(``input[data-match-id="${String(row.match_id).trim()}"][data-side="away"]`
+    const homeInput = document.querySelector(`input[data-match-id="${match.id}"][data-side="home"]`);
+    const awayInput = document.querySelector(`input[data-match-id="${match.id}"][data-side="away"]`);
 
     if(homeInput && awayInput && homeInput.value !== "" && awayInput.value !== ""){
       completed++;
     }
   });
+
+  const percent = total ? Math.round((completed / total) * 100) : 0;
+
+  document.getElementById("progressText").textContent =
+    `${completed} / ${total} kamper fylt ut`;
+
+  document.getElementById("progressPercent").textContent =
+    `${percent}%`;
+
+  document.getElementById("progressFill").style.width =
+    `${percent}%`;
+}
 
   const percent = total ? Math.round((completed / total) * 100) : 0;
 
@@ -1468,24 +1480,17 @@ async function loadDraftFromSheet(){
 }
   
 async function submitTips(isDraft = false){
-  const phone =
-  document.getElementById("playerPhone")
-  .value
-  .trim();
+  const phone = document.getElementById("playerPhone").value.trim();
 
   if(!/^\d{8}$/.test(phone)){
-  alert("Skriv inn et gyldig telefonnummer.");
-  return;
-}
+    alert("Skriv inn et gyldig telefonnummer.");
+    return;
+  }
 
- const homeInput = document.querySelector(
-  `input[data-match-id="${String(row.match_id).trim()}"][data-side="home"]`
-);
+  const tips = allMatches.map(match => {
+    const homeInput = document.querySelector(`input[data-match-id="${match.id}"][data-side="home"]`);
+    const awayInput = document.querySelector(`input[data-match-id="${match.id}"][data-side="away"]`);
 
-const awayInput = document.querySelector(
-  `input[data-match-id="${String(row.match_id).trim()}"][data-side="away"]`
-);
-  
     return {
       id: match.id,
       home: match.home,
@@ -1500,9 +1505,9 @@ const awayInput = document.querySelector(
   );
 
   if(!isDraft && missingMatches.length > 0){
-  alert(`Du mangler tips på ${missingMatches.length} kamper.`);
-  return;
-}
+    alert(`Du mangler tips på ${missingMatches.length} kamper.`);
+    return;
+  }
 
   const bestPlayer = getBonusData(".best-player-input");
   const topScorer = getBonusData(".top-scorer-input");
@@ -1523,66 +1528,39 @@ const awayInput = document.querySelector(
   const button = document.querySelector(".submit-btn");
 
   button.disabled = true;
-  button.textContent = isDraft
-  ? "Lagrer kladd..."
-  : "Sender inn...";
+  button.textContent = isDraft ? "Lagrer kladd..." : "Sender inn...";
 
   try{
     const hiddenFrame = document.createElement("iframe");
-hiddenFrame.name = "hiddenTipsFrame";
-hiddenFrame.style.display = "none";
-document.body.appendChild(hiddenFrame);
+    hiddenFrame.name = "hiddenTipsFrame";
+    hiddenFrame.style.display = "none";
+    document.body.appendChild(hiddenFrame);
 
-const hiddenForm = document.createElement("form");
-hiddenForm.method = "POST";
-hiddenForm.action = SUBMIT_URL;
-hiddenForm.target = "hiddenTipsFrame";
-hiddenForm.style.display = "none";
+    const hiddenForm = document.createElement("form");
+    hiddenForm.method = "POST";
+    hiddenForm.action = SUBMIT_URL;
+    hiddenForm.target = "hiddenTipsFrame";
+    hiddenForm.style.display = "none";
 
-const input = document.createElement("input");
-input.type = "hidden";
-input.name = "payload";
-input.value = JSON.stringify({
-  action:"submitTips",
-  phone,
-  tips,
-  bestPlayer,
-  topScorer
-});
+    const input = document.createElement("input");
+    input.type = "hidden";
+    input.name = "payload";
+    input.value = JSON.stringify({
+      action:"submitTips",
+      phone,
+      tips,
+      bestPlayer,
+      topScorer
+    });
 
-hiddenForm.appendChild(input);
-document.body.appendChild(hiddenForm);
-hiddenForm.submit();
+    hiddenForm.appendChild(input);
+    document.body.appendChild(hiddenForm);
+    hiddenForm.submit();
 
-button.textContent = isDraft ? "Kladd lagret ✅" : "Tips sendt inn ✅";
-button.style.background = "#2ecc71";
-
-alert(isDraft ? "Kladd lagret." : "Tips sendt inn!");
-
-    if(!result.success){
-      alert(result.message || "Innsendingen ble avvist.");
-      button.disabled = false;
-      button.textContent = "Send inn tips";
-      return;
-    }
-
-    button.textContent = isDraft
-  ? "Kladd lagret ✅"
-  : "Tips sendt inn ✅";
+    button.textContent = isDraft ? "Kladd lagret ✅" : "Tips sendt inn ✅";
     button.style.background = "#2ecc71";
 
-   if(isDraft){
-
-  alert("Kladd lagret.");
-
-}else{
-
-  alert(
-    (result.message || "Tips lagret!") +
-    "\n\nDu kan nå se tipsene dine under Mine tips."
-  );
-
-}
+    alert(isDraft ? "Kladd lagret." : "Tips sendt inn!");
 
   }catch(error){
     alert("Feil ved innsending: " + error.message);
