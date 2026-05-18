@@ -1275,18 +1275,6 @@ function updateProgress(){
     `${percent}%`;
 }
 
-  const percent = total ? Math.round((completed / total) * 100) : 0;
-
-  document.getElementById("progressText").textContent =
-    `${completed} / ${total} kamper fylt ut`;
-
-  document.getElementById("progressPercent").textContent =
-    `${percent}%`;
-
-  document.getElementById("progressFill").style.width =
-    `${percent}%`;
-}
-
 function updateBonusStatus(){
   let bestTotal = 0;
   let scorerTotal = 0;
