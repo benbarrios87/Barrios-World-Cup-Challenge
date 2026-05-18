@@ -369,7 +369,16 @@ function calculateScore(rows, matchesById, resultsById, outcomeRules, diffRules,
 
     if(!match || !result) return;
 
-    if(result.actual_home === "" || result.actual_away === "") return;
+    if(
+  result.actual_home === undefined ||
+  result.actual_home === null ||
+  result.actual_home === "" ||
+  result.actual_away === undefined ||
+  result.actual_away === null ||
+  result.actual_away === ""
+){
+  return;
+}
 
     const tipHome = cleanNumber(tip.tips_home);
     const tipAway = cleanNumber(tip.tips_away);
