@@ -440,7 +440,7 @@ body::before{
 
   <p>
     FC Barrios World Cup Challenge er bygget for å gjøre absolutt alle VM-kamper spennende,
-    også de du vanligvis aldri hadde brydd deg om. (Ja. Til og med Uzbekistan-DR Congo)
+    også de du vanligvis aldri hadde brydd deg om. (Ja. Til og med Uzbekistan-DR Congo 🤭)
   </p>
 
   <p>
@@ -638,11 +638,10 @@ async function loadLivePool(){
 
 data.forEach(p => {
   const phone = String(p.phone || "").trim();
-  const name = String(p["full name"] || p.full_name || "").trim();
 
-  if(phone && name && !uniqueMap.has(phone)){
-    uniqueMap.set(phone, p);
-  }
+if(phone && !uniqueMap.has(phone)){
+  uniqueMap.set(phone, p);
+}
 });
 
 const players = [...uniqueMap.values()];
