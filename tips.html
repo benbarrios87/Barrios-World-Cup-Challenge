@@ -1255,8 +1255,8 @@ function updateProgress(){
   let completed = 0;
 
   allMatches.forEach(match => {
-    const homeInput = document.querySelector(`input[data-match-id="${match.id}"][data-side="home"]`);
-    const awayInput = document.querySelector(`input[data-match-id="${match.id}"][data-side="away"]`);
+    const homeInput = document.querySelector(``input[data-match-id="${String(row.match_id).trim()}"][data-side="home"]`
+    const awayInput = document.querySelector(``input[data-match-id="${String(row.match_id).trim()}"][data-side="away"]`
 
     if(homeInput && awayInput && homeInput.value !== "" && awayInput.value !== ""){
       completed++;
@@ -1462,6 +1462,8 @@ async function loadDraftFromSheet(){
   updateProgress();
   saveTipsLocally();
 
+  console.log("LATEST ROWS", latestRows);
+  
   alert("Lagrede tips hentet.");
 }
   
@@ -1476,10 +1478,14 @@ async function submitTips(isDraft = false){
   return;
 }
 
-  const tips = allMatches.map(match => {
-    const homeInput = document.querySelector(`input[data-match-id="${match.id}"][data-side="home"]`);
-    const awayInput = document.querySelector(`input[data-match-id="${match.id}"][data-side="away"]`);
+ const homeInput = document.querySelector(
+  `input[data-match-id="${String(row.match_id).trim()}"][data-side="home"]`
+);
 
+const awayInput = document.querySelector(
+  `input[data-match-id="${String(row.match_id).trim()}"][data-side="away"]`
+);
+  
     return {
       id: match.id,
       home: match.home,
