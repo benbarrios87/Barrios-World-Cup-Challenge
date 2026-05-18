@@ -4,40 +4,30 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Profil | FC Barrios World Cup Challenge</title>
+<title>Profil | FC Barrios World Cup Challenge 2026</title>
 
 <style>
 :root{
   --card:rgba(7,14,28,0.84);
-  --soft:rgba(255,255,255,0.08);
   --line:rgba(255,255,255,0.14);
-  --text:#fff;
   --muted:rgba(255,255,255,0.72);
   --green:#2ecc71;
   --gold:#ffd166;
   --red:#ff5e5e;
 }
 
-*{
-  box-sizing:border-box;
-}
+*{ box-sizing:border-box; }
 
 body{
   margin:0;
   font-family:Arial,sans-serif;
-  color:var(--text);
+  color:white;
   min-height:100vh;
   background:
     radial-gradient(circle at top left, rgba(46,204,113,0.24), transparent 30%),
     radial-gradient(circle at bottom right, rgba(255,209,102,0.14), transparent 28%),
     linear-gradient(rgba(0,0,0,0.72), rgba(0,0,0,0.88)),
-    repeating-linear-gradient(
-      90deg,
-      #0b3d24 0px,
-      #0b3d24 90px,
-      #0e4a2c 90px,
-      #0e4a2c 180px
-    );
+    repeating-linear-gradient(90deg,#0b3d24 0px,#0b3d24 90px,#0e4a2c 90px,#0e4a2c 180px);
 }
 
 .wrapper{
@@ -52,10 +42,6 @@ body{
   color:white;
   text-decoration:none;
   opacity:0.8;
-}
-
-.back-link:hover{
-  opacity:1;
 }
 
 .hero{
@@ -110,11 +96,7 @@ body{
   justify-content:center;
   font-size:44px;
   font-weight:bold;
-  background:
-    linear-gradient(135deg,
-      rgba(46,204,113,0.35),
-      rgba(255,209,102,0.24)
-    );
+  background:linear-gradient(135deg, rgba(46,204,113,0.35), rgba(255,209,102,0.24));
   border:2px solid rgba(255,255,255,0.14);
 }
 
@@ -136,7 +118,7 @@ body{
 }
 
 .stat-box{
-  background:var(--soft);
+  background:rgba(255,255,255,0.08);
   border:1px solid rgba(255,255,255,0.1);
   border-radius:18px;
   padding:18px;
@@ -184,12 +166,46 @@ body{
   font-size:24px;
   font-weight:bold;
   color:var(--gold);
+  text-align:right;
 }
 
 .tip-id{
   margin-top:5px;
   color:var(--muted);
   font-size:12px;
+}
+
+.match-meta{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:12px;
+}
+
+.pill{
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:999px;
+  padding:6px 10px;
+  font-size:13px;
+}
+
+.pill.good{
+  background:rgba(46,204,113,0.14);
+  border-color:rgba(46,204,113,0.25);
+  color:#9dffc7;
+}
+
+.pill.bad{
+  background:rgba(255,94,94,0.12);
+  border-color:rgba(255,94,94,0.25);
+  color:#ffb4b4;
+}
+
+.pill.gold{
+  background:rgba(255,209,102,0.13);
+  border-color:rgba(255,209,102,0.25);
+  color:var(--gold);
 }
 
 .bonus-grid{
@@ -239,43 +255,23 @@ body{
 }
 
 @media(max-width:850px){
-  .grid{
-    grid-template-columns:repeat(2,1fr);
-  }
-
-  .bonus-grid{
-    grid-template-columns:1fr;
-  }
+  .grid{ grid-template-columns:repeat(2,1fr); }
+  .bonus-grid{ grid-template-columns:1fr; }
 }
 
 @media(max-width:650px){
-  .wrapper{
-    padding:14px;
-  }
-
-  .hero h1{
-    font-size:32px;
-  }
-
+  .wrapper{ padding:14px; }
+  .hero h1{ font-size:32px; }
   .profile-top{
     grid-template-columns:1fr;
     text-align:center;
   }
-
-  .avatar{
-    margin:auto;
-  }
-
-  .grid{
-    grid-template-columns:1fr;
-  }
-
-  .tip-top{
-    grid-template-columns:1fr;
-  }
-
+  .avatar{ margin:auto; }
+  .grid{ grid-template-columns:1fr; }
+  .tip-top{ grid-template-columns:1fr; }
   .tip-score{
     font-size:20px;
+    text-align:left;
   }
 }
 </style>
@@ -288,9 +284,7 @@ body{
   <a class="back-link" href="leaderboard.html">← Til leaderboard</a>
 
   <div id="content">
-    <div class="card loading">
-      Laster profil...
-    </div>
+    <div class="card loading">Laster profil...</div>
   </div>
 
   <div class="footer-note">
@@ -300,39 +294,57 @@ body{
 </div>
 
 <script>
-const SHEET_ID =
-  "1Ud5i11MEUXwvKDDsfyxvNIdyJgMbY_pS50BkecyzhDo";
+const SHEET_ID = "1Ud5i11MEUXwvKDDsfyxvNIdyJgMbY_pS50BkecyzhDo";
 
-const LEADERBOARD_URL =
-  `https://opensheet.elk.sh/${SHEET_ID}/API_LEADERBOARD`;
-
-const SUBMISSIONS_URL =
-  `https://opensheet.elk.sh/${SHEET_ID}/SUBMISSIONS`;
-
-const MATCHES_URL =
-  `https://opensheet.elk.sh/${SHEET_ID}/API_MATCHES`;
+const REGISTRATIONS_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_REGISTRATIONS`;
+const SUBMISSIONS_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_SUBMISSIONS`;
+const MATCHES_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_MATCHES`;
+const RESULTS_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_RESULTS`;
+const OUTCOME_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_OUTCOME`;
+const DIFF_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_DIFF`;
+const EXACT_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_EXACT`;
 
 async function fetchSheet(url){
-  const response = await fetch(url);
-  return await response.json();
+  try{
+    const response = await fetch(url, { cache:"no-store" });
+    const data = await response.json();
+    if(!Array.isArray(data)) return [];
+    return data.map(normalizeRow);
+  }catch(error){
+    console.error(error);
+    return [];
+  }
+}
+
+function normalizeRow(row){
+  const clean = {};
+  Object.keys(row || {}).forEach(key => {
+    const cleanKey = String(key)
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g,"_")
+      .replace(/-/g,"_");
+
+    clean[cleanKey] = typeof row[key] === "string"
+      ? row[key].trim()
+      : row[key];
+  });
+  return clean;
+}
+
+function isBlank(value){
+  return value === "" || value === null || value === undefined;
 }
 
 function cleanNumber(value){
-  if(value === undefined || value === null || value === "") return 0;
-
-  return Number(
-    String(value)
-      .replace(/\s/g,"")
-      .replace(",",".")
-  ) || 0;
+  if(isBlank(value)) return 0;
+  return Number(String(value).replace(/\s/g,"").replace(",",".")) || 0;
 }
 
-function safeJson(value){
-  try{
-    return JSON.parse(value || "[]");
-  }catch(err){
-    return [];
-  }
+function parseTier(value){
+  if(isBlank(value)) return 4;
+  const found = String(value).match(/[1-4]/);
+  return found ? Number(found[0]) : 4;
 }
 
 function getInitials(name){
@@ -346,229 +358,334 @@ function getInitials(name){
 
 function getQueryName(){
   const params = new URLSearchParams(window.location.search);
-  return params.get("name");
+  return params.get("name") || "";
+}
+
+function getOutcome(home,away){
+  home = cleanNumber(home);
+  away = cleanNumber(away);
+
+  if(home > away) return "home";
+  if(away > home) return "away";
+  return "draw";
+}
+
+function getTierType(match,outcome){
+  if(outcome === "draw") return "draw";
+
+  const homeTier = parseTier(match.tier_home);
+  const awayTier = parseTier(match.tier_away);
+
+  if(outcome === "home"){
+    return homeTier <= awayTier ? "favorite" : "underdog";
+  }
+
+  if(outcome === "away"){
+    return awayTier <= homeTier ? "favorite" : "underdog";
+  }
+
+  return "draw";
+}
+
+function getRulePoint(rules,tierDiff,type){
+  const row = rules.find(r => cleanNumber(r.tier_diff) === cleanNumber(tierDiff));
+  if(!row) return 0;
+
+  if(type === "favorite") return cleanNumber(row.favorite || row.favoritt);
+  if(type === "draw") return cleanNumber(row.draw || row.uavgjort);
+  if(type === "underdog") return cleanNumber(row.underdog || row.outsider);
+
+  return 0;
+}
+
+function getLatestRowsForPhone(rows, phone){
+  const userRows = rows.filter(row =>
+    String(row.phone || "").trim() === String(phone || "").trim()
+  );
+
+  if(userRows.length === 0) return [];
+
+  const latestTimestamp = userRows[userRows.length - 1].timestamp;
+
+  return userRows.filter(row => row.timestamp === latestTimestamp);
+}
+
+function hasResult(result){
+  return result &&
+    !isBlank(result.actual_home) &&
+    !isBlank(result.actual_away);
+}
+
+function calculateMatch(tip, match, result, outcomeRules, diffRules, exactRules){
+  if(!match || !hasResult(result)){
+    return {
+      status:"Ikke spilt",
+      points:0,
+      className:"",
+      actualText:"Ikke spilt"
+    };
+  }
+
+  if(isBlank(tip.tips_home) || isBlank(tip.tips_away)){
+    return {
+      status:"Mangler tips",
+      points:0,
+      className:"bad",
+      actualText:`${result.actual_home} - ${result.actual_away}`
+    };
+  }
+
+  const tipHome = cleanNumber(tip.tips_home);
+  const tipAway = cleanNumber(tip.tips_away);
+  const actualHome = cleanNumber(result.actual_home);
+  const actualAway = cleanNumber(result.actual_away);
+
+  const tipOutcome = getOutcome(tipHome,tipAway);
+  const actualOutcome = getOutcome(actualHome,actualAway);
+
+  const tipDiff = tipHome - tipAway;
+  const actualDiff = actualHome - actualAway;
+
+  const homeTier = parseTier(match.tier_home);
+  const awayTier = parseTier(match.tier_away);
+  const tierDiff = Math.abs(homeTier - awayTier);
+  const tierType = getTierType(match,tipOutcome);
+
+  if(tipHome === actualHome && tipAway === actualAway){
+    return {
+      status:"Eksakt resultat",
+      points:getRulePoint(exactRules,tierDiff,tierType),
+      className:"gold",
+      actualText:`${actualHome} - ${actualAway}`
+    };
+  }
+
+  if(tipDiff === actualDiff){
+    return {
+      status:"Riktig målforskjell",
+      points:getRulePoint(diffRules,tierDiff,tierType),
+      className:"good",
+      actualText:`${actualHome} - ${actualAway}`
+    };
+  }
+
+  if(tipOutcome === actualOutcome){
+    return {
+      status:"Riktig utfall",
+      points:getRulePoint(outcomeRules,tierDiff,tierType),
+      className:"good",
+      actualText:`${actualHome} - ${actualAway}`
+    };
+  }
+
+  return {
+    status:"Bom",
+    points:0,
+    className:"bad",
+    actualText:`${actualHome} - ${actualAway}`
+  };
+}
+
+function renderBonusRows(rows){
+  const positive = rows.filter(row => cleanNumber(row.extra_points) > 0);
+
+  if(positive.length === 0){
+    return `<div style="color:rgba(255,255,255,0.7);">Ikke fylt ut.</div>`;
+  }
+
+  return positive.map(row => `
+    <div class="bonus-row">
+      <span>${row.extra_name || "-"}</span>
+      <strong>${row.extra_points || 0}</strong>
+    </div>
+  `).join("");
 }
 
 async function loadProfile(){
   const content = document.getElementById("content");
-  const playerName = getQueryName();
+  const queryName = getQueryName().trim().toLowerCase();
 
-  if(!playerName){
-    content.innerHTML = `
-      <div class="card error">
-        Mangler navn i URL.
-      </div>
-    `;
+  if(!queryName){
+    content.innerHTML = `<div class="card error">Mangler navn i URL.</div>`;
     return;
   }
 
   try{
-    const leaderboard = await fetchSheet(LEADERBOARD_URL);
-    const submissions = await fetchSheet(SUBMISSIONS_URL);
-    const matches = await fetchSheet(MATCHES_URL);
+    const [
+      registrations,
+      submissions,
+      matches,
+      results,
+      outcomeRules,
+      diffRules,
+      exactRules
+    ] = await Promise.all([
+      fetchSheet(REGISTRATIONS_URL),
+      fetchSheet(SUBMISSIONS_URL),
+      fetchSheet(MATCHES_URL),
+      fetchSheet(RESULTS_URL),
+      fetchSheet(OUTCOME_URL),
+      fetchSheet(DIFF_URL),
+      fetchSheet(EXACT_URL)
+    ]);
 
-    const sortedLeaderboard = leaderboard
-      .filter(row => row.name)
-      .sort((a,b) =>
-        cleanNumber(b.points) - cleanNumber(a.points)
-      );
+    const player = registrations.find(row => {
+      const fullName =
+        row.full_name ||
+        row["full name"] ||
+        `${row.first_name || row["first name"] || ""} ${row.last_name || row["last name"] || ""}`.trim();
 
-    const leaderboardRow = sortedLeaderboard.find(row =>
-      String(row.name).trim().toLowerCase() ===
-      playerName.trim().toLowerCase()
-    );
+      return fullName.trim().toLowerCase() === queryName;
+    });
 
-    const submission = submissions.find(row =>
-      String(row.name).trim().toLowerCase() ===
-      playerName.trim().toLowerCase()
-    );
-
-    if(!leaderboardRow){
-      content.innerHTML = `
-        <div class="card error">
-          Fant ikke denne spilleren.
-        </div>
-      `;
+    if(!player){
+      content.innerHTML = `<div class="card error">Fant ikke denne spilleren.</div>`;
       return;
     }
 
-    const position =
-      sortedLeaderboard.findIndex(row =>
-        String(row.name).trim().toLowerCase() ===
-        playerName.trim().toLowerCase()
-      ) + 1;
+    const playerName =
+      player.full_name ||
+      player["full name"] ||
+      `${player.first_name || player["first name"] || ""} ${player.last_name || player["last name"] || ""}`.trim();
 
-    const tips = submission
-      ? safeJson(submission.tips_json)
-      : [];
+    const phone = String(player.phone || "").trim();
+    const latestRows = getLatestRowsForPhone(submissions,phone);
 
-    const bestPlayer = submission
-      ? safeJson(submission.best_player_json)
-      : [];
-
-    const topScorer = submission
-      ? safeJson(submission.top_scorer_json)
-      : [];
+    const matchRows = latestRows.filter(row => row.type === "match");
+    const bestPlayerRows = latestRows.filter(row => row.type === "bestplayer");
+    const topScorerRows = latestRows.filter(row => row.type === "topscorer");
 
     const matchMap = {};
-
     matches.forEach(match => {
-      matchMap[String(match.id)] = match;
+      const id = String(match.id || match.match_id || "").trim();
+      if(id) matchMap[id] = match;
     });
+
+    const resultMap = {};
+    results.forEach(result => {
+      const id = String(result.id || result.match_id || "").trim();
+      if(id) resultMap[id] = result;
+    });
+
+    let totalPoints = 0;
+    let exactCount = 0;
+    let diffCount = 0;
+    let outcomeCount = 0;
+    let playedCount = 0;
+
+    const tipsHtml = matchRows.map(row => {
+      const matchId = String(row.match_id || row.id || "").trim();
+      const match = matchMap[matchId];
+      const result = resultMap[matchId];
+
+      const calc = calculateMatch(
+        row,
+        match,
+        result,
+        outcomeRules,
+        diffRules,
+        exactRules
+      );
+
+      totalPoints += calc.points;
+
+      if(calc.status !== "Ikke spilt") playedCount++;
+      if(calc.status === "Eksakt resultat") exactCount++;
+      if(calc.status === "Riktig målforskjell") diffCount++;
+      if(calc.status === "Riktig utfall") outcomeCount++;
+
+      return `
+        <div class="tip-card">
+          <div class="tip-top">
+            <div>
+              <div class="tip-match">
+                ${match ? `${match.home} vs ${match.away}` : `Kamp ${matchId}`}
+              </div>
+              <div class="tip-id">Kamp ${matchId}</div>
+            </div>
+
+            <div class="tip-score">
+              ${isBlank(row.tips_home) || isBlank(row.tips_away)
+                ? "Mangler"
+                : `${row.tips_home} - ${row.tips_away}`
+              }
+            </div>
+          </div>
+
+          <div class="match-meta">
+            <span class="pill">Resultat: ${calc.actualText}</span>
+            <span class="pill ${calc.className}">${calc.status}</span>
+            <span class="pill gold">${calc.points} poeng</span>
+          </div>
+        </div>
+      `;
+    }).join("");
 
     content.innerHTML = `
       <div class="hero">
-        <div class="badge">
-          FC BARRIOS • PROFIL
-        </div>
-
+        <div class="badge">FC BARRIOS • PROFIL</div>
         <h1>Spillerprofil</h1>
-
-        <p>
-          Full oversikt over tips, poeng og outsider-ambisjoner.
-        </p>
+        <p>Full oversikt over tips, poeng og treff.</p>
       </div>
 
       <div class="card">
         <div class="profile-top">
-
-          <div class="avatar">
-            ${getInitials(leaderboardRow.name)}
-          </div>
+          <div class="avatar">${getInitials(playerName)}</div>
 
           <div>
-            <div class="profile-name">
-              ${leaderboardRow.name}
-            </div>
-
+            <div class="profile-name">${playerName}</div>
             <div class="profile-sub">
-              Plass #${position} i FC Barrios World Cup Challenge 2026
+              ${latestRows.length ? "Tips funnet" : "Ingen tips registrert ennå"}
             </div>
           </div>
-
         </div>
       </div>
 
       <div class="card">
         <div class="grid">
-
           <div class="stat-box">
-            <strong>${cleanNumber(leaderboardRow.points)}</strong>
+            <strong>${totalPoints}</strong>
             <span>Totalpoeng</span>
           </div>
 
           <div class="stat-box">
-            <strong>${cleanNumber(leaderboardRow.exact)}</strong>
+            <strong>${exactCount}</strong>
             <span>Eksakte treff</span>
           </div>
 
           <div class="stat-box">
-            <strong>${cleanNumber(leaderboardRow.diff)}</strong>
+            <strong>${diffCount}</strong>
             <span>Diff-treff</span>
           </div>
 
           <div class="stat-box">
-            <strong>${cleanNumber(leaderboardRow.underdog)}</strong>
-            <span>Outsiderpoeng</span>
+            <strong>${outcomeCount}</strong>
+            <span>Riktige utfall</span>
           </div>
-
         </div>
       </div>
 
       <div class="bonus-grid">
-
         <div class="bonus-card">
           <h3>Beste spiller</h3>
-
-          ${
-            bestPlayer.length
-            ? bestPlayer.map(player => `
-                <div class="bonus-row">
-                  <span>${player.player || player.name || Object.values(player)[0] || "-"}</span>
-                  <strong>${player.points || 0}</strong>
-                </div>
-              `).join("")
-            : `<div style="color:rgba(255,255,255,0.7);">
-                Ingen valg ennå.
-              </div>`
-          }
+          ${renderBonusRows(bestPlayerRows)}
         </div>
 
         <div class="bonus-card">
           <h3>Toppscorer</h3>
-
-          ${
-            topScorer.length
-            ? topScorer.map(player => `
-                <div class="bonus-row">
-                  <span>${player.player || player.name || Object.values(player)[0] || "-"}</span>
-                  <strong>${player.points || 0}</strong>
-                </div>
-              `).join("")
-            : `<div style="color:rgba(255,255,255,0.7);">
-                Ingen valg ennå.
-              </div>`
-          }
+          ${renderBonusRows(topScorerRows)}
         </div>
-
       </div>
 
       <div class="card">
         <h2 class="section-title">Kamptips</h2>
-
-        ${
-          tips.length
-          ? tips.map(tip => {
-              const match =
-                matchMap[String(tip.id)];
-
-              return `
-                <div class="tip-card">
-                  <div class="tip-top">
-
-                    <div>
-                      <div class="tip-match">
-                        ${match
-                          ? `${match.home} vs ${match.away}`
-                          : `Kamp ${tip.id}`
-                        }
-                      </div>
-
-                      <div class="tip-id">
-                        Kamp ${tip.id}
-                      </div>
-                    </div>
-
-                    <div class="tip-score">
-                      ${
-                        tip.tips_home === "" ||
-                        tip.tips_away === "" ||
-                        tip.tips_home === undefined ||
-                        tip.tips_away === undefined
-                          ? "Mangler"
-                          : `${tip.tips_home} - ${tip.tips_away}`
-                      }
-                    </div>
-
-                  </div>
-                </div>
-              `;
-            }).join("")
-          : `<div style="color:rgba(255,255,255,0.7);">
-              Ingen tips registrert.
-            </div>`
-        }
+        ${tipsHtml || `<div style="color:rgba(255,255,255,0.7);">Ingen tips registrert.</div>`}
       </div>
     `;
 
   }catch(error){
     console.error(error);
-
-    content.innerHTML = `
-      <div class="card error">
-        Klarte ikke å laste profil.
-      </div>
-    `;
+    content.innerHTML = `<div class="card error">Klarte ikke å laste profil.</div>`;
   }
 }
 
