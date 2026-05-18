@@ -10,7 +10,6 @@
 :root{
   --card:rgba(7,14,28,0.84);
   --line:rgba(255,255,255,0.14);
-  --text:#fff;
   --muted:rgba(255,255,255,0.72);
   --green:#2ecc71;
   --gold:#ffd166;
@@ -20,19 +19,13 @@
 body{
   margin:0;
   font-family:Arial,sans-serif;
-  color:var(--text);
+  color:white;
   min-height:100vh;
   background:
     radial-gradient(circle at top left, rgba(46,204,113,0.24), transparent 30%),
     radial-gradient(circle at bottom right, rgba(255,209,102,0.14), transparent 28%),
     linear-gradient(rgba(0,0,0,0.72), rgba(0,0,0,0.88)),
-    repeating-linear-gradient(
-      90deg,
-      #0b3d24 0px,
-      #0b3d24 90px,
-      #0e4a2c 90px,
-      #0e4a2c 180px
-    );
+    repeating-linear-gradient(90deg,#0b3d24 0px,#0b3d24 90px,#0e4a2c 90px,#0e4a2c 180px);
 }
 
 .wrapper{
@@ -47,10 +40,6 @@ body{
   color:white;
   text-decoration:none;
   opacity:0.8;
-}
-
-.back-link:hover{
-  opacity:1;
 }
 
 .hero{
@@ -108,10 +97,6 @@ input{
   outline:none;
 }
 
-input:focus{
-  border-color:rgba(46,204,113,0.7);
-}
-
 button{
   border:none;
   cursor:pointer;
@@ -140,7 +125,7 @@ button{
 
 .status-card strong{
   display:block;
-  font-size:26px;
+  font-size:25px;
   margin-bottom:4px;
 }
 
@@ -208,7 +193,7 @@ button{
 
 .extra-card span{
   color:var(--muted);
-  line-height:1.5;
+  line-height:1.6;
 }
 
 .message{
@@ -251,33 +236,12 @@ button{
 }
 
 @media(max-width:700px){
-  .wrapper{
-    padding:14px;
-  }
-
-  h1{
-    font-size:30px;
-  }
-
-  .search-row{
-    grid-template-columns:1fr;
-  }
-
-  .status-grid{
-    grid-template-columns:1fr;
-  }
-
-  .extra-grid{
-    grid-template-columns:1fr;
-  }
-
-  .match-top{
-    grid-template-columns:1fr;
-  }
-
-  .tip-score{
-    font-size:20px;
-  }
+  .wrapper{ padding:14px; }
+  h1{ font-size:30px; }
+  .search-row{ grid-template-columns:1fr; }
+  .status-grid{ grid-template-columns:1fr; }
+  .extra-grid{ grid-template-columns:1fr; }
+  .match-top{ grid-template-columns:1fr; }
 }
 </style>
 </head>
@@ -291,15 +255,17 @@ button{
   <div class="hero">
     <div class="badge">FC BARRIOS • VM 2026</div>
     <h1>Mine tips</h1>
-    <p>Søk opp navnet ditt og se hva du har levert inn.</p>
+    <p>Skriv inn telefonnummeret ditt og se siste lagrede/innsendte tips.</p>
   </div>
 
   <div class="card">
     <div class="search-row">
       <input
-  id="phoneInput"
-        type="text"
-        placeholder="Skriv telefonnummeret ditt, 8 siffer."
+        id="phoneInput"
+        type="tel"
+        maxlength="8"
+        inputmode="numeric"
+        placeholder="Skriv telefonnummeret ditt, 8 siffer"
       >
 
       <button onclick="findTips()">Hent mine tips</button>
@@ -320,81 +286,131 @@ button{
 </div>
 
 <script>
-const SHEET_ID =
-  "1Ud5i11MEUXwvKDDsfyxvNIdyJgMbY_pS50BkecyzhDo";
+const SHEET_ID = "1Ud5i11MEUXwvKDDsfyxvNIdyJgMbY_pS50BkecyzhDo";
 
 const SUBMISSIONS_URL =
-  `https://opensheet.elk.sh/${SHEET_ID}/SUBMISSIONS`;
+  `https://opensheet.elk.sh/${SHEET_ID}/API_SUBMISSIONS`;
 
 const MATCHES_URL =
   `https://opensheet.elk.sh/${SHEET_ID}/API_MATCHES`;
 
+const REGISTRATIONS_URL =
+  `https://opensheet.elk.sh/${SHEET_ID}/API_REGISTRATIONS`;
+
 async function fetchSheet(url){
-  const response = await fetch(url);
-  return await response.json();
+  try{
+    const response = await fetch(url, { cache:"no-store" });
+    const data = await response.json();
+
+    if(!Array.isArray(data)) return [];
+
+    return data.map(normalizeRow);
+  }catch(error){
+    console.error(error);
+    return [];
+  }
 }
 
-function normalizeName(name){
-  return String(name || "")
-    .trim()
-    .toLowerCase()
-    .replace(/\s+/g," ");
+function normalizeRow(row){
+  const clean = {};
+
+  Object.keys(row || {}).forEach(key => {
+    const cleanKey = String(key)
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g,"_")
+      .replace(/-/g,"_");
+
+    clean[cleanKey] = typeof row[key] === "string"
+      ? row[key].trim()
+      : row[key];
+  });
+
+  return clean;
 }
 
 function isBlank(value){
   return value === "" || value === null || value === undefined;
 }
 
-function safeJson(value){
-  try{
-    return JSON.parse(value || "[]");
-  }catch(err){
-    return [];
-  }
+function cleanNumber(value){
+  if(value === undefined || value === null || value === "") return 0;
+  return Number(String(value).replace(/\s/g,"").replace(",",".")) || 0;
 }
 
 function getMatchLabel(match){
   if(!match) return "Ukjent kamp";
 
-  const home =
-    match.home || match.home_team || match.hjemme || "";
-
-  const away =
-    match.away || match.away_team || match.borte || "";
+  const home = match.home || "";
+  const away = match.away || "";
 
   if(home || away){
     return `${home} - ${away}`;
   }
 
-  return `Kamp ${match.id}`;
+  return `Kamp ${match.id || match.match_id || ""}`;
 }
 
-function getTipHome(tip){
-  return tip.tips_home ?? tip.home ?? tip.homeTip ?? tip.hjemme ?? "";
+function getLatestRowsForPhone(rows, phone){
+  const userRows = rows.filter(row =>
+    String(row.phone || "").trim() === phone
+  );
+
+  if(userRows.length === 0) return [];
+
+  const latestTimestamp = userRows[userRows.length - 1].timestamp;
+
+  return userRows.filter(row =>
+    row.timestamp === latestTimestamp
+  );
 }
 
-function getTipAway(tip){
-  return tip.tips_away ?? tip.away ?? tip.awayTip ?? tip.borte ?? "";
+function getRegisteredName(registrations, phone){
+  const person = registrations.find(row =>
+    String(row.phone || "").trim() === phone
+  );
+
+  if(!person) return "";
+
+  return (
+    person.full_name ||
+    person["full name"] ||
+    `${person.first_name || person["first name"] || ""} ${person.last_name || person["last name"] || ""}`.trim()
+  );
 }
 
-function isSubmissionComplete(tips,bestPlayer,topScorer){
-  if(!tips.length) return false;
+function isSubmissionComplete(matchRows,bestPlayerRows,topScorerRows,totalMatches){
+  if(matchRows.length < totalMatches) return false;
 
-  const missingTips = tips.some(tip =>
-    isBlank(getTipHome(tip)) || isBlank(getTipAway(tip))
+  const missingTips = matchRows.some(row =>
+    isBlank(row.tips_home) || isBlank(row.tips_away)
   );
 
   if(missingTips) return false;
-  if(!bestPlayer.length) return false;
-  if(!topScorer.length) return false;
 
-  return true;
+  const bestTotal = bestPlayerRows.reduce((sum,row) =>
+    sum + cleanNumber(row.extra_points),0
+  );
+
+  const scorerTotal = topScorerRows.reduce((sum,row) =>
+    sum + cleanNumber(row.extra_points),0
+  );
+
+  return bestTotal === 10 && scorerTotal === 10;
+}
+
+function renderBonusRows(rows){
+  if(rows.length === 0) return "Ikke fylt ut";
+
+  return rows
+    .filter(row => cleanNumber(row.extra_points) > 0)
+    .map(row => `${row.extra_name}: ${row.extra_points} poeng`)
+    .join("<br>") || "0 poeng fordelt";
 }
 
 async function findTips(){
   const result = document.getElementById("result");
-const inputPhone =
-  document.getElementById("phoneInput").value.trim();
+  const inputPhone = document.getElementById("phoneInput").value.trim();
 
   result.innerHTML = `
     <div class="card message">
@@ -402,63 +418,65 @@ const inputPhone =
     </div>
   `;
 
- if(!/^\\d{8}$/.test(inputPhone)){
-
-  result.innerHTML = `
-    <div class="card message error">
-      Skriv inn et gyldig telefonnummer.
-    </div>
-  `;
-
-  return;
-}
+  if(!/^\d{8}$/.test(inputPhone)){
+    result.innerHTML = `
+      <div class="card message error">
+        Skriv inn et gyldig telefonnummer.
+      </div>
+    `;
+    return;
+  }
 
   try{
-    const submissions = await fetchSheet(SUBMISSIONS_URL);
-    const matches = await fetchSheet(MATCHES_URL);
+    const [submissions, matches, registrations] = await Promise.all([
+      fetchSheet(SUBMISSIONS_URL),
+      fetchSheet(MATCHES_URL),
+      fetchSheet(REGISTRATIONS_URL)
+    ]);
 
-    const matchMap = {};
-    matches.forEach(match => {
-      matchMap[String(match.id).trim()] = match;
-    });
+    const latestRows = getLatestRowsForPhone(submissions, inputPhone);
 
-    const submission = submissions.find(row =>
-      String(row.phone || "").trim() === inputPhone
-    );
-
-    if(!submission){
+    if(latestRows.length === 0){
       result.innerHTML = `
         <div class="card message error">
-          Fant ingen innsending på dette telefonnummeret.
+          Fant ingen tips på dette telefonnummeret.
           <br><br>
-          Sjekk at telefonnummeret er riktig skrevet..
+          Sjekk nummeret, eller lever tips først.
         </div>
       `;
       return;
     }
 
-    const tips = safeJson(submission.tips_json);
-    const bestPlayer = safeJson(submission.best_player_json);
-    const topScorer = safeJson(submission.top_scorer_json);
+    const matchMap = {};
+    matches.forEach(match => {
+      const id = String(match.id || match.match_id || "").trim();
+      if(id) matchMap[id] = match;
+    });
 
-    const totalTips = tips.length;
+    const matchRows = latestRows.filter(row => row.type === "match");
+    const bestPlayerRows = latestRows.filter(row => row.type === "bestplayer");
+    const topScorerRows = latestRows.filter(row => row.type === "topscorer");
 
-    const completedTips = tips.filter(tip =>
-      !isBlank(getTipHome(tip)) && !isBlank(getTipAway(tip))
+    const completedTips = matchRows.filter(row =>
+      !isBlank(row.tips_home) && !isBlank(row.tips_away)
     ).length;
 
-    const complete =
-      isSubmissionComplete(tips,bestPlayer,topScorer);
+    const complete = isSubmissionComplete(
+      matchRows,
+      bestPlayerRows,
+      topScorerRows,
+      matches.length
+    );
 
-    const statusText =
-      complete ? "Fullført" : "Ikke fullført";
+    const statusText = complete ? "Fullført" : "Kladd/ikke fullført";
+    const statusColor = complete ? "#9dffc7" : "#ffb4b4";
 
-    const statusColor =
-      complete ? "#9dffc7" : "#ffb4b4";
+    const registeredName = getRegisteredName(registrations, inputPhone);
+    const displayName = registeredName || "Ukjent deltaker";
 
     result.innerHTML = `
       <div class="card">
-        <h2 class="section-title">${submission.name}</h2>
+        <h2 class="section-title">${displayName}</h2>
 
         <div class="status-grid">
           <div class="status-card">
@@ -467,13 +485,13 @@ const inputPhone =
           </div>
 
           <div class="status-card">
-            <strong>${completedTips}/${totalTips}</strong>
+            <strong>${completedTips}/${matches.length}</strong>
             <span>Kamptips fylt ut</span>
           </div>
 
           <div class="status-card">
-            <strong>${bestPlayer.length + topScorer.length}</strong>
-            <span>Bonusvalg</span>
+            <strong>${bestPlayerRows.length + topScorerRows.length}</strong>
+            <span>Bonusrader</span>
           </div>
         </div>
       </div>
@@ -484,12 +502,12 @@ const inputPhone =
         <div class="extra-grid">
           <div class="extra-card">
             <strong>Beste spiller</strong>
-            <span>${bestPlayer.length ? bestPlayer.map(x => Object.values(x).join(" ")).join("<br>") : "Ikke fylt ut"}</span>
+            <span>${renderBonusRows(bestPlayerRows)}</span>
           </div>
 
           <div class="extra-card">
             <strong>Toppscorer</strong>
-            <span>${topScorer.length ? topScorer.map(x => Object.values(x).join(" ")).join("<br>") : "Ikke fylt ut"}</span>
+            <span>${renderBonusRows(topScorerRows)}</span>
           </div>
         </div>
       </div>
@@ -497,19 +515,19 @@ const inputPhone =
       <div class="card">
         <h2 class="section-title">Kamptips</h2>
 
-        ${tips.map(tip => {
-          const match =
-            matchMap[String(tip.id).trim()];
+        ${matchRows.map(row => {
+          const matchId = String(row.match_id || row.id || "").trim();
+          const match = matchMap[matchId];
 
-          const homeScore = getTipHome(tip);
-          const awayScore = getTipAway(tip);
+          const homeScore = row.tips_home;
+          const awayScore = row.tips_away;
 
           return `
             <div class="match-card">
               <div class="match-top">
                 <div>
                   <div class="match-name">${getMatchLabel(match)}</div>
-                  <div class="match-id">Kamp ${tip.id}</div>
+                  <div class="match-id">Kamp ${matchId}</div>
                 </div>
 
                 <div class="tip-score">
@@ -525,8 +543,8 @@ const inputPhone =
       </div>
     `;
 
-  }catch(err){
-    console.error(err);
+  }catch(error){
+    console.error(error);
 
     result.innerHTML = `
       <div class="card message error">
@@ -535,6 +553,10 @@ const inputPhone =
     `;
   }
 }
+
+document.getElementById("phoneInput").addEventListener("input", e => {
+  e.target.value = e.target.value.replace(/\D/g,"").slice(0,8);
+});
 
 document.getElementById("phoneInput").addEventListener("keydown", e => {
   if(e.key === "Enter"){
