@@ -1423,10 +1423,11 @@ async function submitTips(){
     const response = await fetch(SUBMIT_URL, {
       method:"POST",
       body:JSON.stringify({
-        phone,
-        tips,
-        bestPlayer,
-        topScorer
+  action:"submitTips",
+  phone,
+  tips,
+  bestPlayer,
+  topScorer
       })
     });
 
