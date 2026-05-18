@@ -404,34 +404,49 @@ form.addEventListener("submit", async (e) => {
 
   try{
 
-await fetch(SCRIPT_URL,{
-  method:"POST",
-  mode:"no-cors",
-  headers:{
-    "Content-Type":"text/plain;charset=utf-8"
-  },
-  body:JSON.stringify({
+  const hiddenFrame = document.createElement("iframe");
+  hiddenFrame.name = "hiddenRegisterFrame";
+  hiddenFrame.style.display = "none";
+  document.body.appendChild(hiddenFrame);
+
+  const hiddenForm = document.createElement("form");
+  hiddenForm.method = "POST";
+  hiddenForm.action = SCRIPT_URL;
+  hiddenForm.target = "hiddenRegisterFrame";
+  hiddenForm.style.display = "none";
+
+  const fields = {
     action:"register",
     firstName,
     lastName,
     phone
-  })
-});
+  };
 
-    successMessage.innerHTML = `
-      <strong>Registrering fullført!</strong><br><br>
-      Du er nå med i FC Barrios World Cup Challenge 2026.
-    `;
+  Object.keys(fields).forEach(key => {
+    const input = document.createElement("input");
+    input.type = "hidden";
+    input.name = key;
+    input.value = fields[key];
+    hiddenForm.appendChild(input);
+  });
 
-    successMessage.style.display = "block";
+  document.body.appendChild(hiddenForm);
+  hiddenForm.submit();
 
-    form.reset();
+  successMessage.innerHTML = `
+    <strong>Registrering sendt!</strong><br><br>
+    Du er nå med i FC Barrios World Cup Challenge 2026.
+  `;
 
-  }catch(err){
+  successMessage.style.display = "block";
 
-    showError("Uffda... Noe gikk galt. Prøv igjen.");
+  form.reset();
 
-  }
+}catch(err){
+
+  showError("Uffda... Noe gikk galt. Prøv igjen.");
+
+}
 
   button.disabled = false;
   button.textContent = "Registrer meg";
