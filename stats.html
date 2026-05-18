@@ -11,41 +11,29 @@
   --card:rgba(7,14,28,0.84);
   --soft:rgba(255,255,255,0.08);
   --line:rgba(255,255,255,0.14);
-  --text:#fff;
   --muted:rgba(255,255,255,0.72);
   --green:#2ecc71;
   --gold:#ffd166;
-  --red:#ff5e5e;
 }
 
-*{
-  box-sizing:border-box;
-}
+*{ box-sizing:border-box; }
 
 body{
   margin:0;
   font-family:Arial,sans-serif;
-  color:var(--text);
+  color:white;
   min-height:100vh;
   background:
     radial-gradient(circle at top left, rgba(46,204,113,0.24), transparent 30%),
     radial-gradient(circle at bottom right, rgba(255,209,102,0.14), transparent 28%),
     linear-gradient(rgba(0,0,0,0.72), rgba(0,0,0,0.88)),
-    repeating-linear-gradient(
-      90deg,
-      #0b3d24 0px,
-      #0b3d24 90px,
-      #0e4a2c 90px,
-      #0e4a2c 180px
-    );
+    repeating-linear-gradient(90deg,#0b3d24 0px,#0b3d24 90px,#0e4a2c 90px,#0e4a2c 180px);
 }
 
 .wrapper{
   max-width:1100px;
   margin:auto;
   padding:22px;
-  position:relative;
-  z-index:1;
 }
 
 .back-link{
@@ -54,10 +42,6 @@ body{
   color:white;
   text-decoration:none;
   opacity:0.8;
-}
-
-.back-link:hover{
-  opacity:1;
 }
 
 .hero{
@@ -130,7 +114,8 @@ h1{
   font-size:24px;
 }
 
-.leader-grid{
+.leader-grid,
+.split-grid{
   display:grid;
   grid-template-columns:repeat(2,1fr);
   gap:14px;
@@ -169,28 +154,16 @@ h1{
   border-bottom:1px solid rgba(255,255,255,0.08);
 }
 
-.list-row:last-child{
-  border-bottom:none;
-}
+.list-row:last-child{ border-bottom:none; }
 
 .rank{
   font-weight:bold;
   color:var(--gold);
 }
 
-.name{
-  font-weight:bold;
-}
+.name{ font-weight:bold; }
 
-.value{
-  color:var(--muted);
-}
-
-.split-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:18px;
-}
+.value{ color:var(--muted); }
 
 .pill-wrap{
   display:flex;
@@ -220,41 +193,17 @@ h1{
 }
 
 @media(max-width:850px){
-  .grid{
-    grid-template-columns:repeat(2,1fr);
-  }
-
-  .leader-grid,
-  .split-grid{
-    grid-template-columns:1fr;
-  }
+  .grid{ grid-template-columns:repeat(2,1fr); }
+  .leader-grid,.split-grid{ grid-template-columns:1fr; }
 }
 
 @media(max-width:520px){
-  .wrapper{
-    padding:14px;
-  }
-
-  h1{
-    font-size:32px;
-  }
-
-  .grid{
-    grid-template-columns:1fr;
-  }
-
-  .card{
-    padding:17px;
-    border-radius:20px;
-  }
-
-  .list-row{
-    grid-template-columns:32px 1fr;
-  }
-
-  .list-row .value{
-    grid-column:2;
-  }
+  .wrapper{ padding:14px; }
+  h1{ font-size:32px; }
+  .grid{ grid-template-columns:1fr; }
+  .card{ padding:17px; border-radius:20px; }
+  .list-row{ grid-template-columns:32px 1fr; }
+  .list-row .value{ grid-column:2; }
 }
 </style>
 </head>
@@ -272,9 +221,7 @@ h1{
   </div>
 
   <div id="content">
-    <div class="card loading">
-      Laster stats...
-    </div>
+    <div class="card loading">Laster stats...</div>
   </div>
 
   <div class="footer-note">
@@ -284,76 +231,212 @@ h1{
 </div>
 
 <script>
-const SHEET_ID =
-  "1Ud5i11MEUXwvKDDsfyxvNIdyJgMbY_pS50BkecyzhDo";
+const SHEET_ID = "1Ud5i11MEUXwvKDDsfyxvNIdyJgMbY_pS50BkecyzhDo";
 
-const LEADERBOARD_URL =
-  `https://opensheet.elk.sh/${SHEET_ID}/API_LEADERBOARD`;
-
-const SUBMISSIONS_URL =
-  `https://opensheet.elk.sh/${SHEET_ID}/SUBMISSIONS`;
-
-const MATCHES_URL =
-  `https://opensheet.elk.sh/${SHEET_ID}/API_MATCHES`;
+const REGISTRATIONS_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_REGISTRATIONS`;
+const SUBMISSIONS_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_SUBMISSIONS`;
+const MATCHES_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_MATCHES`;
+const RESULTS_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_RESULTS`;
+const OUTCOME_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_OUTCOME`;
+const DIFF_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_DIFF`;
+const EXACT_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_EXACT`;
 
 const BUY_IN = 600;
 const FREE_ENTRIES = 1;
 
 async function fetchSheet(url){
-  const response = await fetch(url);
-  return await response.json();
-}
-
-function cleanNumber(value){
-  if(value === undefined || value === null || value === "") return 0;
-
-  return Number(
-    String(value)
-      .replace(/\s/g,"")
-      .replace(",",".")
-  ) || 0;
-}
-
-function safeJson(value){
   try{
-    return JSON.parse(value || "[]");
-  }catch(err){
+    const response = await fetch(url, { cache:"no-store" });
+    const data = await response.json();
+    if(!Array.isArray(data)) return [];
+    return data.map(normalizeRow);
+  }catch(error){
+    console.error(error);
     return [];
   }
+}
+
+function normalizeRow(row){
+  const clean = {};
+
+  Object.keys(row || {}).forEach(key => {
+    const cleanKey = String(key)
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g,"_")
+      .replace(/-/g,"_");
+
+    clean[cleanKey] = typeof row[key] === "string"
+      ? row[key].trim()
+      : row[key];
+  });
+
+  return clean;
 }
 
 function isBlank(value){
   return value === "" || value === null || value === undefined;
 }
 
-function getTipHome(tip){
-  return tip.tips_home ?? tip.home ?? tip.homeTip ?? "";
+function cleanNumber(value){
+  if(isBlank(value)) return 0;
+  return Number(String(value).replace(/\s/g,"").replace(",",".")) || 0;
 }
 
-function getTipAway(tip){
-  return tip.tips_away ?? tip.away ?? tip.awayTip ?? "";
+function parseTier(value){
+  if(isBlank(value)) return 4;
+  const found = String(value).match(/[1-4]/);
+  return found ? Number(found[0]) : 4;
 }
 
-function isSubmissionComplete(sub){
-  const tips = safeJson(sub.tips_json);
-  const bestPlayer = safeJson(sub.best_player_json);
-  const topScorer = safeJson(sub.top_scorer_json);
+function getOutcome(home,away){
+  home = cleanNumber(home);
+  away = cleanNumber(away);
 
-  if(!tips.length) return false;
+  if(home > away) return "home";
+  if(away > home) return "away";
+  return "draw";
+}
 
-  const missingTips = tips.some(tip =>
-    isBlank(getTipHome(tip)) || isBlank(getTipAway(tip))
+function getTierType(match,outcome){
+  if(outcome === "draw") return "draw";
+
+  const homeTier = parseTier(match.tier_home);
+  const awayTier = parseTier(match.tier_away);
+
+  if(outcome === "home"){
+    return homeTier <= awayTier ? "favorite" : "underdog";
+  }
+
+  if(outcome === "away"){
+    return awayTier <= homeTier ? "favorite" : "underdog";
+  }
+
+  return "draw";
+}
+
+function getRulePoint(rules,tierDiff,type){
+  const row = rules.find(r => cleanNumber(r.tier_diff) === cleanNumber(tierDiff));
+  if(!row) return 0;
+
+  if(type === "favorite") return cleanNumber(row.favorite || row.favoritt);
+  if(type === "draw") return cleanNumber(row.draw || row.uavgjort);
+  if(type === "underdog") return cleanNumber(row.underdog || row.outsider);
+
+  return 0;
+}
+
+function hasResult(result){
+  return result &&
+    !isBlank(result.actual_home) &&
+    !isBlank(result.actual_away);
+}
+
+function getLatestRowsForPhone(rows,phone){
+  const userRows = rows.filter(row =>
+    String(row.phone || "").trim() === String(phone || "").trim()
+  );
+
+  if(userRows.length === 0) return [];
+
+  const latestTimestamp = userRows[userRows.length - 1].timestamp;
+
+  return userRows.filter(row => row.timestamp === latestTimestamp);
+}
+
+function isSubmissionComplete(rows,totalMatches){
+  const matchRows = rows.filter(row => row.type === "match");
+
+  if(matchRows.length < totalMatches) return false;
+
+  const missingTips = matchRows.some(row =>
+    isBlank(row.tips_home) || isBlank(row.tips_away)
   );
 
   if(missingTips) return false;
-  if(!bestPlayer.length) return false;
-  if(!topScorer.length) return false;
 
-  return true;
+  const bestTotal = rows
+    .filter(row => row.type === "bestplayer")
+    .reduce((sum,row) => sum + cleanNumber(row.extra_points),0);
+
+  const scorerTotal = rows
+    .filter(row => row.type === "topscorer")
+    .reduce((sum,row) => sum + cleanNumber(row.extra_points),0);
+
+  return bestTotal === 10 && scorerTotal === 10;
+}
+
+function calculatePlayer(rows,matchesById,resultsById,outcomeRules,diffRules,exactRules){
+  let points = 0;
+  let exact = 0;
+  let outcome = 0;
+  let diff = 0;
+  let underdog = 0;
+  let played = 0;
+
+  rows
+    .filter(row => row.type === "match")
+    .forEach(tip => {
+      const matchId = String(tip.match_id || tip.id || "").trim();
+      const match = matchesById[matchId];
+      const result = resultsById[matchId];
+
+      if(!match || !hasResult(result)) return;
+
+      played++;
+
+      if(isBlank(tip.tips_home) || isBlank(tip.tips_away)) return;
+
+      const tipHome = cleanNumber(tip.tips_home);
+      const tipAway = cleanNumber(tip.tips_away);
+      const actualHome = cleanNumber(result.actual_home);
+      const actualAway = cleanNumber(result.actual_away);
+
+      const tipOutcome = getOutcome(tipHome,tipAway);
+      const actualOutcome = getOutcome(actualHome,actualAway);
+
+      const tipDiff = tipHome - tipAway;
+      const actualDiff = actualHome - actualAway;
+
+      const homeTier = parseTier(match.tier_home);
+      const awayTier = parseTier(match.tier_away);
+      const tierDiff = Math.abs(homeTier - awayTier);
+      const tierType = getTierType(match,tipOutcome);
+
+      let added = 0;
+
+      if(tipHome === actualHome && tipAway === actualAway){
+        added = getRulePoint(exactRules,tierDiff,tierType);
+        exact++;
+      }else if(tipDiff === actualDiff){
+        added = getRulePoint(diffRules,tierDiff,tierType);
+        diff++;
+      }else if(tipOutcome === actualOutcome){
+        added = getRulePoint(outcomeRules,tierDiff,tierType);
+        outcome++;
+      }
+
+      if(added > 0 && tierType === "underdog"){
+        underdog++;
+      }
+
+      points += added;
+    });
+
+  return {points, exact, outcome, diff, underdog, played};
+}
+
+function getFullName(row){
+  return (
+    row.full_name ||
+    row["full name"] ||
+    `${row.first_name || row["first name"] || ""} ${row.last_name || row["last name"] || ""}`.trim()
+  );
 }
 
 function topRows(rows,key,label,count = 5){
   const sorted = [...rows]
+    .filter(row => cleanNumber(row[key]) > 0)
     .sort((a,b) => cleanNumber(b[key]) - cleanNumber(a[key]))
     .slice(0,count);
 
@@ -386,25 +469,73 @@ async function loadStats(){
   const content = document.getElementById("content");
 
   try{
-    const leaderboardRaw = await fetchSheet(LEADERBOARD_URL);
-    const submissions = await fetchSheet(SUBMISSIONS_URL);
-    const matches = await fetchSheet(MATCHES_URL);
+    const [
+      registrations,
+      submissions,
+      matches,
+      results,
+      outcomeRules,
+      diffRules,
+      exactRules
+    ] = await Promise.all([
+      fetchSheet(REGISTRATIONS_URL),
+      fetchSheet(SUBMISSIONS_URL),
+      fetchSheet(MATCHES_URL),
+      fetchSheet(RESULTS_URL),
+      fetchSheet(OUTCOME_URL),
+      fetchSheet(DIFF_URL),
+      fetchSheet(EXACT_URL)
+    ]);
 
-    const rows = leaderboardRaw
-      .filter(row => row.name)
-      .map(row => ({
-        name: row.name,
-        points: cleanNumber(row.points),
-        exact: cleanNumber(row.exact),
-        outcome: cleanNumber(row.outcome),
-        diff: cleanNumber(row.diff),
-        underdog: cleanNumber(row.underdog),
-        updated: row.updated
-      }))
-      .sort((a,b) => b.points - a.points);
+    const matchesById = {};
+    matches.forEach(match => {
+      const id = String(match.id || match.match_id || "").trim();
+      if(id) matchesById[id] = match;
+    });
+
+    const resultsById = {};
+    results.forEach(result => {
+      const id = String(result.id || result.match_id || "").trim();
+      if(id) resultsById[id] = result;
+    });
+
+    const uniqueMap = new Map();
+
+    registrations.forEach(row => {
+      const phone = String(row.phone || "").trim();
+      const name = getFullName(row);
+
+      if(!phone || !name) return;
+
+      if(!uniqueMap.has(phone)){
+        uniqueMap.set(phone,{phone,name});
+      }
+    });
+
+    const rows = [...uniqueMap.values()].map(player => {
+      const latestRows = getLatestRowsForPhone(submissions,player.phone);
+      const score = calculatePlayer(
+        latestRows,
+        matchesById,
+        resultsById,
+        outcomeRules,
+        diffRules,
+        exactRules
+      );
+
+      return {
+        ...player,
+        ...score,
+        complete:isSubmissionComplete(latestRows,matches.length)
+      };
+    }).sort((a,b) =>
+      cleanNumber(b.points) - cleanNumber(a.points) ||
+      cleanNumber(b.exact) - cleanNumber(a.exact) ||
+      a.name.localeCompare(b.name,"no")
+    );
 
     const registeredCount = rows.length;
-    const completedCount = submissions.filter(isSubmissionComplete).length;
+    const completedCount = rows.filter(row => row.complete).length;
     const missingCount = Math.max(0, registeredCount - completedCount);
     const paidPlayers = Math.max(0, registeredCount - FREE_ENTRIES);
     const pot = paidPlayers * BUY_IN;
@@ -414,25 +545,16 @@ async function loadStats(){
     const totalOutcome = rows.reduce((sum,row) => sum + row.outcome,0);
     const totalUnderdog = rows.reduce((sum,row) => sum + row.underdog,0);
 
-    const pointsLeader = rows[0] || null;
+    const playedMatches = results.filter(hasResult).length;
+
+    const pointsLeader = rows.find(row => row.points > 0) || null;
     const exactLeader = getLeader(rows,"exact");
     const underdogLeader = getLeader(rows,"underdog");
     const diffLeader = getLeader(rows,"diff");
 
-    const submittedNames = submissions
-      .filter(isSubmissionComplete)
-      .map(row => String(row.name || "").trim())
-      .filter(Boolean);
-
-    const registeredNames = rows.map(row => row.name);
-
-    const completedSet = new Set(
-      submittedNames.map(name => name.toLowerCase())
-    );
-
-    const missingNames = registeredNames.filter(name =>
-      !completedSet.has(String(name).trim().toLowerCase())
-    );
+    const missingNames = rows
+      .filter(row => !row.complete)
+      .map(row => row.name);
 
     content.innerHTML = `
       <div class="card">
@@ -479,8 +601,8 @@ async function loadStats(){
           </div>
 
           <div class="stat-box">
-            <strong>${totalUnderdog}</strong>
-            <span>outsiderpoeng totalt</span>
+            <strong>${playedMatches}</strong>
+            <span>kamper med resultat</span>
           </div>
         </div>
       </div>
@@ -504,7 +626,7 @@ async function loadStats(){
           <div class="leader-card">
             <div class="label">Outsider-kongen</div>
             <div class="name">${underdogLeader ? underdogLeader.name : "Ingen ennå"}</div>
-            <div class="value">${underdogLeader ? underdogLeader.underdog + " outsiderpoeng" : "-"}</div>
+            <div class="value">${underdogLeader ? underdogLeader.underdog + " outsider-treff" : "-"}</div>
           </div>
 
           <div class="leader-card">
@@ -529,8 +651,8 @@ async function loadStats(){
 
       <div class="split-grid">
         <div class="card">
-          <h2 class="section-title">Mest outsiderpoeng</h2>
-          ${topRows(rows,"underdog","poeng")}
+          <h2 class="section-title">Mest outsider-treff</h2>
+          ${topRows(rows,"underdog","treff")}
         </div>
 
         <div class="card">
@@ -545,9 +667,7 @@ async function loadStats(){
         ${
           missingNames.length
           ? `<div class="pill-wrap">
-              ${missingNames.map(name => `
-                <span class="pill">${name}</span>
-              `).join("")}
+              ${missingNames.map(name => `<span class="pill">${name}</span>`).join("")}
             </div>`
           : `<div style="color:#9dffc7;font-weight:bold;">Alle har fullført tips. Urovekkende profesjonelt.</div>`
         }
@@ -564,7 +684,7 @@ async function loadStats(){
 
           <div class="stat-box">
             <strong>${submissions.length}</strong>
-            <span>innsendinger totalt</span>
+            <span>rader i API_SUBMISSIONS</span>
           </div>
 
           <div class="stat-box">
@@ -592,6 +712,7 @@ async function loadStats(){
 }
 
 loadStats();
+setInterval(loadStats,30000);
 </script>
 
 </body>
