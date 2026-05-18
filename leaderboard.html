@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>VM Leaderboard og deltagerliste</title>
+<title>Leaderboard | FC Barrios World Cup Challenge 2026</title>
 
 <style>
 body{
@@ -19,14 +19,14 @@ body{
 }
 
 .wrapper{
-  max-width:900px;
+  max-width:1000px;
   margin:auto;
   padding:22px;
 }
 
 .hero{
   text-align:center;
-  margin-bottom:26px;
+  margin-bottom:22px;
 }
 
 .hero h1{
@@ -37,6 +37,23 @@ body{
 .hero p{
   margin:0;
   color:rgba(255,255,255,0.7);
+}
+
+.nav{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  justify-content:center;
+  margin-bottom:20px;
+}
+
+.nav a{
+  color:white;
+  text-decoration:none;
+  padding:10px 15px;
+  border-radius:999px;
+  background:rgba(255,255,255,0.08);
+  font-weight:bold;
 }
 
 .top-box{
@@ -65,7 +82,7 @@ body{
 
 .status-card strong{
   display:block;
-  font-size:28px;
+  font-size:26px;
   margin-bottom:4px;
 }
 
@@ -98,7 +115,7 @@ body{
 
 .player-grid{
   display:grid;
-  grid-template-columns:48px 1fr auto;
+  grid-template-columns:52px 1fr auto;
   gap:12px;
   align-items:center;
 }
@@ -108,12 +125,7 @@ body{
   font-weight:bold;
 }
 
-.name{
-  font-size:18px;
-  font-weight:bold;
-  margin-bottom:8px;
-}
-  .profile-link{
+.profile-link{
   color:white;
   text-decoration:none;
   font-size:18px;
@@ -128,6 +140,7 @@ body{
   display:flex;
   flex-wrap:wrap;
   gap:8px;
+  margin-top:8px;
 }
 
 .tag{
@@ -138,24 +151,35 @@ body{
 }
 
 .points{
-  font-size:30px;
+  font-size:32px;
   font-weight:bold;
   color:#2ecc71;
   text-align:right;
-  min-width:70px;
+  min-width:80px;
+}
+
+.small-note{
+  color:rgba(255,255,255,0.62);
+  font-size:13px;
+  margin-top:4px;
 }
 
 @media(max-width:700px){
   .wrapper{ padding:14px; }
   .hero h1{ font-size:30px; }
+
   .status-grid{
-  grid-template-columns:repeat(2,1fr);
-}
-  .player-grid{ grid-template-columns:40px 1fr; }
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .player-grid{
+    grid-template-columns:42px 1fr;
+  }
+
   .points{
     grid-column:1 / -1;
     text-align:left;
-    font-size:24px;
+    font-size:25px;
   }
 }
 </style>
@@ -166,8 +190,14 @@ body{
 <div class="wrapper">
 
   <div class="hero">
-    <h1>🏆 VM Leaderboard og deltagerliste </h1>
+    <h1>🏆 Leaderboard</h1>
     <p>Stillingen i FC Barrios World Cup Challenge 2026</p>
+  </div>
+
+  <div class="nav">
+    <a href="index.html">Forside</a>
+    <a href="tips.html">Innlevering</a>
+    <a href="premier.html">Premiepott</a>
   </div>
 
   <div class="top-box">
@@ -187,15 +217,47 @@ body{
 <script>
 const SHEET_ID = "1Ud5i11MEUXwvKDDsfyxvNIdyJgMbY_pS50BkecyzhDo";
 
-const REGISTRATIONS_API_URL =
-  `https://opensheet.elk.sh/${SHEET_ID}/API_REGISTRATIONS`;
+const REGISTRATIONS_API_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_REGISTRATIONS`;
+const SUBMISSIONS_API_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_SUBMISSIONS`;
+const MATCHES_API_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_MATCHES`;
+const RESULTS_API_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_RESULTS`;
+const OUTCOME_API_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_OUTCOME`;
+const DIFF_API_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_DIFF`;
+const EXACT_API_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_EXACT`;
 
-const SUBMISSIONS_API_URL =
-  `https://opensheet.elk.sh/${SHEET_ID}/API_SUBMISSIONS`;
+const BUY_IN = 600;
+const FREE_ENTRIES = 1;
 
 async function fetchSheet(url){
-  const response = await fetch(url);
-  return await response.json();
+  try{
+    const response = await fetch(url, { cache:"no-store" });
+    const data = await response.json();
+
+    if(!Array.isArray(data)) return [];
+
+    return data.map(normalizeRow);
+  }catch(error){
+    console.error("Kunne ikke hente:", url, error);
+    return [];
+  }
+}
+
+function normalizeRow(row){
+  const clean = {};
+
+  Object.keys(row || {}).forEach(key => {
+    const cleanKey = String(key)
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g,"_")
+      .replace(/-/g,"_");
+
+    clean[cleanKey] = typeof row[key] === "string"
+      ? row[key].trim()
+      : row[key];
+  });
+
+  return clean;
 }
 
 function cleanNumber(value){
@@ -208,32 +270,151 @@ function cleanNumber(value){
   ) || 0;
 }
 
-function isSubmissionComplete(sub){
-  try{
-    const tips = JSON.parse(sub.tips_json || "[]");
-    const bestPlayer = JSON.parse(sub.best_player_json || "[]");
-    const topScorer = JSON.parse(sub.top_scorer_json || "[]");
+function parseTier(value){
+  if(value === undefined || value === null || value === "") return 4;
+  const found = String(value).match(/[1-4]/);
+  return found ? Number(found[0]) : 4;
+}
 
-    if(!tips.length) return false;
+function getMatchOutcome(home, away){
+  home = cleanNumber(home);
+  away = cleanNumber(away);
 
-    const missingTips = tips.some(t =>
-      t.tips_home === "" ||
-      t.tips_home === null ||
-      t.tips_home === undefined ||
-      t.tips_away === "" ||
-      t.tips_away === null ||
-      t.tips_away === undefined
-    );
+  if(home > away) return "home";
+  if(away > home) return "away";
+  return "draw";
+}
 
-    if(missingTips) return false;
-    if(!bestPlayer.length) return false;
-    if(!topScorer.length) return false;
+function getTierType(match, outcome){
+  if(outcome === "draw") return "draw";
 
-    return true;
+  const homeTier = parseTier(match.tier_home);
+  const awayTier = parseTier(match.tier_away);
 
-  }catch(err){
-    return false;
+  if(outcome === "home"){
+    return homeTier <= awayTier ? "favorite" : "underdog";
   }
+
+  if(outcome === "away"){
+    return awayTier <= homeTier ? "favorite" : "underdog";
+  }
+
+  return "draw";
+}
+
+function getRulePoint(rules, tierDiff, type){
+  const row = rules.find(r => cleanNumber(r.tier_diff) === cleanNumber(tierDiff));
+
+  if(!row) return 0;
+
+  if(type === "favorite") return cleanNumber(row.favorite || row.favoritt);
+  if(type === "draw") return cleanNumber(row.draw || row.uavgjort);
+  if(type === "underdog") return cleanNumber(row.underdog || row.outsider);
+
+  return 0;
+}
+
+function getLatestSubmissionRowsForPhone(submissions, phone){
+  const rows = submissions.filter(row =>
+    String(row.phone || "").trim() === String(phone || "").trim()
+  );
+
+  if(rows.length === 0) return [];
+
+  const latestTimestamp = rows[rows.length - 1].timestamp;
+
+  return rows.filter(row => row.timestamp === latestTimestamp);
+}
+
+function isSubmissionComplete(rows, totalMatches){
+  const matchRows = rows.filter(row => row.type === "match");
+
+  if(matchRows.length < totalMatches) return false;
+
+  const missingTips = matchRows.some(row =>
+    row.tips_home === "" ||
+    row.tips_home === null ||
+    row.tips_home === undefined ||
+    row.tips_away === "" ||
+    row.tips_away === null ||
+    row.tips_away === undefined
+  );
+
+  if(missingTips) return false;
+
+  const bestPlayerPoints = rows
+    .filter(row => row.type === "bestplayer")
+    .reduce((sum,row) => sum + cleanNumber(row.extra_points),0);
+
+  const topScorerPoints = rows
+    .filter(row => row.type === "topscorer")
+    .reduce((sum,row) => sum + cleanNumber(row.extra_points),0);
+
+  return bestPlayerPoints === 10 && topScorerPoints === 10;
+}
+
+function calculateScore(rows, matchesById, resultsById, outcomeRules, diffRules, exactRules){
+  let points = 0;
+  let exact = 0;
+  let outcome = 0;
+  let diff = 0;
+  let underdog = 0;
+
+  const matchRows = rows.filter(row => row.type === "match");
+
+  matchRows.forEach(tip => {
+    const matchId = String(tip.match_id || tip.id || "").trim();
+    const match = matchesById[matchId];
+    const result = resultsById[matchId];
+
+    if(!match || !result) return;
+
+    if(result.actual_home === "" || result.actual_away === "") return;
+
+    const tipHome = cleanNumber(tip.tips_home);
+    const tipAway = cleanNumber(tip.tips_away);
+    const actualHome = cleanNumber(result.actual_home);
+    const actualAway = cleanNumber(result.actual_away);
+
+    const tipOutcome = getMatchOutcome(tipHome, tipAway);
+    const actualOutcome = getMatchOutcome(actualHome, actualAway);
+
+    const tipDiff = tipHome - tipAway;
+    const actualDiff = actualHome - actualAway;
+
+    const homeTier = parseTier(match.tier_home);
+    const awayTier = parseTier(match.tier_away);
+    const tierDiff = Math.abs(homeTier - awayTier);
+    const tierType = getTierType(match, tipOutcome);
+
+    let added = 0;
+
+    if(tipHome === actualHome && tipAway === actualAway){
+      added = getRulePoint(exactRules, tierDiff, tierType);
+      exact++;
+    }else if(tipDiff === actualDiff){
+      added = getRulePoint(diffRules, tierDiff, tierType);
+      diff++;
+    }else if(tipOutcome === actualOutcome){
+      added = getRulePoint(outcomeRules, tierDiff, tierType);
+      outcome++;
+    }
+
+    if(added > 0 && tierType === "underdog"){
+      underdog++;
+    }
+
+    points += added;
+  });
+
+  return { points, exact, outcome, diff, underdog };
+}
+
+function getMedal(index){
+  if(index === 0) return "🥇";
+  if(index === 1) return "🥈";
+  if(index === 2) return "🥉";
+  return `${index + 1}.`;
 }
 
 async function loadLeaderboard(){
@@ -242,119 +423,131 @@ async function loadLeaderboard(){
   const missingBox = document.getElementById("missingBox");
 
   try{
-    const registrations = await fetchSheet(REGISTRATIONS_API_URL);
-const submissions = await fetchSheet(SUBMISSIONS_API_URL);
+    const [
+      registrations,
+      submissions,
+      matches,
+      results,
+      outcomeRules,
+      diffRules,
+      exactRules
+    ] = await Promise.all([
+      fetchSheet(REGISTRATIONS_API_URL),
+      fetchSheet(SUBMISSIONS_API_URL),
+      fetchSheet(MATCHES_API_URL),
+      fetchSheet(RESULTS_API_URL),
+      fetchSheet(OUTCOME_API_URL),
+      fetchSheet(DIFF_API_URL),
+      fetchSheet(EXACT_API_URL)
+    ]);
 
-const uniqueMap = new Map();
-
-registrations.forEach(row => {
-  const phone = String(row.phone || "").trim();
-
-  if(!phone) return;
-
-  if(!uniqueMap.has(phone)){
-    uniqueMap.set(phone,{
-      name:
-        row.full_name ||
-        row["full name"] ||
-        `${row.first_name || row["first name"] || ""} ${row.last_name || row["last name"] || ""}`.trim(),
-      phone,
-      points:0,
-      exact:0,
-      outcome:0,
-      diff:0,
-      underdog:0
+    const matchesById = {};
+    matches.forEach(match => {
+      const id = String(match.id || match.match_id || "").trim();
+      if(id) matchesById[id] = match;
     });
-  }
-});
 
-const rows = [...uniqueMap.values()]
-  .filter(row => row.name)
-  .sort((a,b) => cleanNumber(b.points) - cleanNumber(a.points));;
+    const resultsById = {};
+    results.forEach(result => {
+      const id = String(result.id || result.match_id || "").trim();
+      if(id) resultsById[id] = result;
+    });
 
-    const registeredCount = rows.length;
+    const uniqueMap = new Map();
 
-    const completedNames = new Set(
-      submissions
-        .filter(isSubmissionComplete)
-        .map(sub => String(sub.name || "").trim().toLowerCase())
+    registrations.forEach(row => {
+      const phone = String(row.phone || "").trim();
+
+      if(!phone) return;
+
+      if(!uniqueMap.has(phone)){
+        uniqueMap.set(phone,{
+          name:
+            row.full_name ||
+            row["full name"] ||
+            `${row.first_name || row["first name"] || ""} ${row.last_name || row["last name"] || ""}`.trim(),
+          phone
+        });
+      }
+    });
+
+    const players = [...uniqueMap.values()]
+      .filter(player => player.name);
+
+    const completedPhones = new Set();
+
+    const rows = players.map(player => {
+      const latestRows = getLatestSubmissionRowsForPhone(submissions, player.phone);
+      const complete = isSubmissionComplete(latestRows, matches.length);
+
+      if(complete){
+        completedPhones.add(player.phone);
+      }
+
+      const score = calculateScore(
+        latestRows,
+        matchesById,
+        resultsById,
+        outcomeRules,
+        diffRules,
+        exactRules
+      );
+
+      return {
+        ...player,
+        ...score,
+        complete
+      };
+    }).sort((a,b) =>
+      cleanNumber(b.points) - cleanNumber(a.points) ||
+      cleanNumber(b.exact) - cleanNumber(a.exact) ||
+      a.name.localeCompare(b.name,"no")
     );
 
-    const completedCount = rows.filter(row =>
-      completedNames.has(String(row.name || "").trim().toLowerCase())
-    ).length;
-
+    const registeredCount = rows.length;
+    const completedCount = rows.filter(row => row.complete).length;
     const missingNames = rows
-      .filter(row =>
-        !completedNames.has(String(row.name || "").trim().toLowerCase())
-      )
+      .filter(row => !row.complete)
       .map(row => row.name);
 
     const missingCount = Math.max(0, registeredCount - completedCount);
+    const paidPlayers = Math.max(0, registeredCount - FREE_ENTRIES);
+    const prizePool = paidPlayers * BUY_IN;
 
-   const BUY_IN = 600;
-const FREE_ENTRIES = 1;
+    statusBox.innerHTML = `
+      <div class="status-card">
+        <strong>${registeredCount}</strong>
+        <span>Registrerte</span>
+      </div>
 
-const paidPlayers =
-  Math.max(0, registeredCount - FREE_ENTRIES);
+      <div class="status-card">
+        <strong>${paidPlayers}</strong>
+        <span>Betalte plasser</span>
+      </div>
 
-const prizePool =
-  paidPlayers * BUY_IN;
+      <div class="status-card" style="background:rgba(255,209,102,0.12);border-color:rgba(255,209,102,0.25);">
+        <strong style="color:#ffd166;">${prizePool.toLocaleString("no-NO")} kr</strong>
+        <span>Premiepott</span>
+      </div>
 
-statusBox.innerHTML = `
-  <div class="status-card">
-    <strong>${registeredCount}</strong>
-    <span>Registrerte</span>
-  </div>
+      <div class="status-card" style="background:rgba(46,204,113,0.14);border-color:rgba(46,204,113,0.25);">
+        <strong style="color:#9dffc7;">${completedCount}</strong>
+        <span>Fullført tips</span>
+      </div>
 
-  <div class="status-card">
-    <strong>${paidPlayers}</strong>
-    <span>Betalte plasser</span>
-  </div>
+      <div class="status-card" style="background:rgba(255,94,94,0.12);border-color:rgba(255,94,94,0.22);">
+        <strong style="color:#ffb4b4;">${missingCount}</strong>
+        <span>Mangler tips</span>
+      </div>
+    `;
 
-  <div class="status-card" style="
-    background:rgba(255,209,102,0.12);
-    border-color:rgba(255,209,102,0.25);
-  ">
-    <strong style="color:#ffd166;">
-      ${prizePool.toLocaleString("no-NO")} kr
-    </strong>
-    <span>Premiepott</span>
-  </div>
-
-  <div class="status-card" style="
-    background:rgba(46,204,113,0.14);
-    border-color:rgba(46,204,113,0.25);
-  ">
-    <strong style="color:#9dffc7;">
-      ${completedCount}
-    </strong>
-    <span>Fullført tips</span>
-  </div>
-
-  <div class="status-card" style="
-    background:rgba(255,94,94,0.12);
-    border-color:rgba(255,94,94,0.22);
-  ">
-    <strong style="color:#ffb4b4;">
-      ${missingCount}
-    </strong>
-    <span>Mangler tips</span>
-  </div>
-`;
     if(missingNames.length > 0){
       missingBox.style.display = "block";
       missingBox.innerHTML = `
         <strong style="color:#ffb4b4;">Mangler fullført tips:</strong>
         <div style="margin-top:10px; display:flex; flex-wrap:wrap; gap:8px;">
           ${missingNames.map(name => `
-            <span style="
-              background:rgba(255,255,255,0.08);
-              border:1px solid rgba(255,255,255,0.10);
-              border-radius:999px;
-              padding:6px 10px;
-              font-size:13px;
-            ">
+            <span style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.10);border-radius:999px;padding:6px 10px;font-size:13px;">
               ${name}
             </span>
           `).join("")}
@@ -365,63 +558,49 @@ statusBox.innerHTML = `
     }
 
     if(rows.length === 0){
-      container.innerHTML = `
-        <div style="color:rgba(255,255,255,0.7);">
-          Ingen poeng ennå.
-        </div>
-      `;
+      container.innerHTML = `<div style="color:rgba(255,255,255,0.7);">Ingen registrerte deltakere ennå.</div>`;
       return;
     }
 
     container.innerHTML = "";
 
     rows.forEach((row,index) => {
-      const medal =
-        index === 0 ? "🥇" :
-        index === 1 ? "🥈" :
-        index === 2 ? "🥉" :
-        `${index + 1}.`;
-
       container.innerHTML += `
         <div class="player-card">
           <div class="player-grid">
-
-            <div class="medal">${medal}</div>
+            <div class="medal">${getMedal(index)}</div>
 
             <div>
-            <a
-  class="profile-link"
-  href="profil.html?name=${encodeURIComponent(row.name)}"
->
-  ${row.name}
-</a>
+              <a class="profile-link" href="profil.html?name=${encodeURIComponent(row.name)}">
+                ${row.name}
+              </a>
+
+              <div class="small-note">
+                ${row.complete ? "Tips levert" : "Ikke fullført tips"}
+              </div>
 
               <div class="tags">
                 <div class="tag">🎯 ${cleanNumber(row.exact)} eksakte</div>
-                <div class="tag">⚽ ${cleanNumber(row.outcome)} riktige</div>
+                <div class="tag">⚽ ${cleanNumber(row.outcome)} riktige utfall</div>
                 <div class="tag">📏 ${cleanNumber(row.diff)} diff</div>
                 <div class="tag">🔥 ${cleanNumber(row.underdog)} outsider</div>
               </div>
             </div>
 
             <div class="points">${cleanNumber(row.points)}</div>
-
           </div>
         </div>
       `;
     });
 
   }catch(error){
-    container.innerHTML = `
-      <div style="color:#ff8080;">
-        Klarte ikke å laste leaderboard.
-      </div>
-    `;
+    container.innerHTML = `<div style="color:#ff8080;">Klarte ikke å laste leaderboard.</div>`;
     console.error(error);
   }
 }
 
 loadLeaderboard();
+setInterval(loadLeaderboard, 30000);
 </script>
 
 </body>
