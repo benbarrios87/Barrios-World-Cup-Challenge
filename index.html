@@ -637,7 +637,9 @@ async function loadLivePool(){
 
   try{
 
-    const res = await fetch(LEADERBOARD_URL);
+    const res = await fetch(LEADERBOARD_URL + "?t=" + Date.now(), {
+  cache: "no-store"
+});
     const data = await res.json();
 
     const uniqueMap = new Map();
