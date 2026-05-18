@@ -294,7 +294,7 @@ async function submitHighRoller(){
     return;
   }
 
-  if(!/^\\d{8}$/.test(phone)){
+  if(!/^\d{8}$/.test(phone)){
     status.innerHTML =
       "Telefonnummer må være 8 siffer.";
     status.style.color = "#ffb4b4";
