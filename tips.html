@@ -1202,21 +1202,51 @@ async function loadDraftFromSheet(){
     normalizeType(row.type) === "match"
   );
 
-  matchRows.forEach(row => {
-    const matchId = String(row.match_id || row.id || "").trim();
+  setTimeout(() => {
+    matchRows.forEach(row => {
+      const matchId = String(row.match_id || row.id || "").trim();
 
-    const homeInput = document.querySelector(
-      `input[data-match-id="${matchId}"][data-side="home"]`
-    );
+      const homeInput = document.querySelector(
+        `input[data-match-id="${matchId}"][data-side="home"]`
+      );
 
-    const awayInput = document.querySelector(
-      `input[data-match-id="${matchId}"][data-side="away"]`
-    );
+      const awayInput = document.querySelector(
+        `input[data-match-id="${matchId}"][data-side="away"]`
+      );
 
-    if(homeInput) homeInput.value = row.tips_home || "";
-    if(awayInput) awayInput.value = row.tips_away || "";
-  });
+      if(homeInput) homeInput.value = row.tips_home || "";
+      if(awayInput) awayInput.value = row.tips_away || "";
+    });
 
+    userRows
+      .filter(row => normalizeType(row.type) === "bestplayer")
+      .forEach(row => {
+        const playerName = row.extra_name || row.player || "";
+
+        const input = [...document.querySelectorAll(".best-player-input")]
+          .find(el => el.dataset.player === playerName);
+
+        if(input) input.value = row.extra_points || row.points || "0";
+      });
+
+    userRows
+      .filter(row => normalizeType(row.type) === "topscorer")
+      .forEach(row => {
+        const playerName = row.extra_name || row.player || "";
+
+        const input = [...document.querySelectorAll(".top-scorer-input")]
+          .find(el => el.dataset.player === playerName);
+
+        if(input) input.value = row.extra_points || row.points || "0";
+      });
+
+    updateBonusStatus();
+    updateProgress();
+    saveTipsLocally();
+
+    alert("Lagrede tips hentet.");
+  }, 300);
+}
   userRows
     .filter(row => normalizeType(row.type) === "bestplayer")
     .forEach(row => {
