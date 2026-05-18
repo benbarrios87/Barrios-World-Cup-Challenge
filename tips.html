@@ -492,15 +492,6 @@ body::before{
   line-height:1.4;
 }
 
-.leaderboard-row{
-  display:grid;
-  grid-template-columns:44px 1fr auto;
-  gap:10px;
-  align-items:center;
-  padding:10px 0;
-  border-bottom:1px solid rgba(255,255,255,0.08);
-}
-
 .rules-box{
   display:none;
   margin-top:16px;
@@ -779,11 +770,6 @@ body::before{
     </div>
   </div>
 
-  <div class="top-box" id="leaderboardSection">
-    <h2 style="margin-top:0;">Leaderboard</h2>
-    <div id="leaderboardContainer">Laster leaderboard...</div>
-  </div>
-
   <div class="submit-panel">
 
   <button
@@ -825,7 +811,6 @@ const OUTCOME_API_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_OUTCOME`;
 const DIFF_API_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_DIFF`;
 const EXACT_API_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_EXACT`;
 const RESULTS_API_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_RESULTS`;
-const LEADERBOARD_API_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_LEADERBOARD`;
 
 const SUBMIT_URL =
 "https://script.google.com/macros/s/AKfycbyJB5mugyonYlXClojolIGcInen7ClFl55j-c7xQw6Z0-fS5rKfQKgF9AVhLLe9UQgM4Q/exec";
@@ -972,54 +957,6 @@ async function loadMatches(){
     updateProgress();
   }catch(error){
     container.innerHTML = `<div class="card">Klarte ikke å laste kampene.</div>`;
-    console.error(error);
-  }
-}
-
-async function loadLeaderboard(){
-  const container = document.getElementById("leaderboardContainer");
-
-  try{
-    const data = await fetchSheet(LEADERBOARD_API_URL);
-
-    const rows = data
-      .filter(row => row.name)
-      .sort((a,b) => safeNumber(b.points) - safeNumber(a.points))
-      .slice(0,10);
-
-    if(rows.length === 0){
-      container.innerHTML = `<div style="color:rgba(255,255,255,0.7);">Ingen poeng ennå.</div>`;
-      return;
-    }
-
-    container.innerHTML = "";
-
-    rows.forEach((row,index) => {
-      const medal =
-        index === 0 ? "🥇" :
-        index === 1 ? "🥈" :
-        index === 2 ? "🥉" :
-        `${index + 1}.`;
-
-      container.innerHTML += `
-        <div class="leaderboard-row">
-          <strong>${medal}</strong>
-          <span>${row.name}</span>
-          <strong>${safeNumber(row.points)} p</strong>
-        </div>
-      `;
-    });
-
-    container.innerHTML += `
-      <div style="margin-top:14px;">
-        <button class="nav-btn" onclick="window.location.href='leaderboard.html'">
-          Se hele leaderboard
-        </button>
-      </div>
-    `;
-
-  }catch(error){
-    container.innerHTML = "Klarte ikke å laste leaderboard.";
     console.error(error);
   }
 }
@@ -1544,7 +1481,6 @@ async function init(){
   await loadResults();
   await loadPlayers();
   await loadMatches();
-  await loadLeaderboard();
 }
 document.addEventListener("keydown", e => {
   if(e.key !== "Tab") return;
