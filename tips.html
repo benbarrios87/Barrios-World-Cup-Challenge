@@ -1522,18 +1522,36 @@ async function submitTips(isDraft = false){
   : "Sender inn...";
 
   try{
-    const response = await fetch(SUBMIT_URL, {
-      method:"POST",
-      body:JSON.stringify({
+    const hiddenFrame = document.createElement("iframe");
+hiddenFrame.name = "hiddenTipsFrame";
+hiddenFrame.style.display = "none";
+document.body.appendChild(hiddenFrame);
+
+const hiddenForm = document.createElement("form");
+hiddenForm.method = "POST";
+hiddenForm.action = SUBMIT_URL;
+hiddenForm.target = "hiddenTipsFrame";
+hiddenForm.style.display = "none";
+
+const input = document.createElement("input");
+input.type = "hidden";
+input.name = "payload";
+input.value = JSON.stringify({
   action:"submitTips",
   phone,
   tips,
   bestPlayer,
   topScorer
-      })
-    });
+});
 
-    const result = await response.json();
+hiddenForm.appendChild(input);
+document.body.appendChild(hiddenForm);
+hiddenForm.submit();
+
+button.textContent = isDraft ? "Kladd lagret ✅" : "Tips sendt inn ✅";
+button.style.background = "#2ecc71";
+
+alert(isDraft ? "Kladd lagret." : "Tips sendt inn!");
 
     if(!result.success){
       alert(result.message || "Innsendingen ble avvist.");
