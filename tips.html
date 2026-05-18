@@ -1373,7 +1373,12 @@ async function loadAll(){
     fetchSheet(RESULTS_API_URL)
   ]);
 
-  allMatches = matchRows.filter(row => row.id || row.match_id);
+  allMatches = matchRows
+  .map((row,index) => ({
+    ...row,
+    id: String(row.id || row.match_id || index + 1).trim()
+  }))
+  .filter(row => row.home && row.away);
   players = playerRows
     .map(row => ({
       name: row.player || row.name,
