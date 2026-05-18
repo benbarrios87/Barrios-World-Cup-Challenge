@@ -280,8 +280,27 @@ async function loadPrizes(){
   try{
     const data = await fetchSheet(REGISTRATIONS_API_URL);
 
-    const players = data
-      .filter(row => row.phone)
+    const uniqueMap = new Map();
+
+data.forEach(row => {
+  const phone = String(row.phone || "").trim();
+
+  if(!phone) return;
+
+  if(!uniqueMap.has(phone)){
+    uniqueMap.set(phone,{
+      name:
+        row.full_name ||
+        row["full name"] ||
+        `${row.first_name || row["first name"] || ""} ${row.last_name || row["last name"] || ""}`.trim(),
+      phone
+    });
+  }
+});
+
+const players = [...uniqueMap.values()]
+  .filter(row => row.name)
+  .sort((a,b) => a.name.localeCompare(b.name,"no"));
 .map(row => ({
   name: row.full_name || row["full name"] || `${row.first_name || row["first name"] || ""} ${row.last_name || row["last name"] || ""}`.trim(),
   phone: row.phone
