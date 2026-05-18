@@ -296,7 +296,10 @@ input:focus{
       Påmelding sikrer din plass i årets morsome VM konkurranse. 
     </div>
 
-    <form id="registerForm">
+    <form id="registerForm" method="POST" action="https://script.google.com/macros/s/AKfycbzBtq_RURHeZJ7hq1ECkHt4Tn5hN3tdmPaa29MwRcbiJzsdzKyAggQgNf_OGKS1cFXfSg/exec">
+  <input type="hidden" name="action" value="register">
+  <input type="hidden" id="firstNameHidden" name="firstName">
+  <input type="hidden" id="lastNameHidden" name="lastName">
 
      <div class="form-group">
   <label>Fornavn og etternavn</label>
@@ -316,6 +319,7 @@ input:focus{
         <input
           type="tel"
           id="phone"
+          name="phone"
           placeholder="F.eks. 12345678"
           inputmode="numeric"
           pattern="[0-9]{8}"
@@ -347,134 +351,47 @@ input:focus{
 </div>
 
 <script>
-
-const SCRIPT_URL =
-"https://script.google.com/macros/s/AKfycbzBtq_RURHeZJ7hq1ECkHt4Tn5hN3tdmPaa29MwRcbiJzsdzKyAggQgNf_OGKS1cFXfSg/exec";
-
 const form = document.getElementById("registerForm");
+const errorMessage = document.getElementById("errorMessage");
 
-const successMessage =
-  document.getElementById("successMessage");
-
-const errorMessage =
-  document.getElementById("errorMessage");
-
-form.addEventListener("submit", async (e) => {
-
-  e.preventDefault();
-
-  successMessage.style.display = "none";
+form.addEventListener("submit", (e) => {
   errorMessage.style.display = "none";
 
-  const button = form.querySelector("button");
-
-  const name =
-    document.getElementById("name").value.trim();
-
-  const phone =
-    document.getElementById("phone").value.trim();
+  const name = document.getElementById("name").value.trim();
+  const phone = document.getElementById("phone").value.trim();
 
   if(!name || !phone){
-
+    e.preventDefault();
     showError("Fyll inn navn og telefonnummer.");
     return;
-
   }
 
-  if(name.split(" ").length < 2){
+  const nameParts = name.split(/\s+/);
 
+  if(nameParts.length < 2){
+    e.preventDefault();
     showError("Skriv både fornavn og etternavn.");
     return;
-
   }
 
   if(!/^[0-9]{8}$/.test(phone)){
-
+    e.preventDefault();
     showError("Telefonnummer må være 8 siffer.");
     return;
-
   }
 
-  const nameParts = name.trim().split(/\s+/);
-  const firstName = nameParts[0];
-  const lastName = nameParts.slice(1).join(" ");
+  document.getElementById("firstNameHidden").value = nameParts[0];
+  document.getElementById("lastNameHidden").value = nameParts.slice(1).join(" ");
 
+  const button = form.querySelector("button");
   button.disabled = true;
   button.textContent = "Registrerer...";
-
-  try{
-
-  const hiddenFrame = document.createElement("iframe");
-  hiddenFrame.name = "hiddenRegisterFrame";
-  hiddenFrame.style.display = "none";
-  document.body.appendChild(hiddenFrame);
-
-  const hiddenForm = document.createElement("form");
-  hiddenForm.method = "POST";
-  hiddenForm.action = SCRIPT_URL;
-  hiddenForm.target = "hiddenRegisterFrame";
-  hiddenForm.style.display = "none";
-
-  const fields = {
-    action:"register",
-    firstName,
-    lastName,
-    phone
-  };
-
-  Object.keys(fields).forEach(key => {
-    const input = document.createElement("input");
-    input.type = "hidden";
-    input.name = key;
-    input.value = fields[key];
-    hiddenForm.appendChild(input);
-  });
-
-  document.body.appendChild(hiddenForm);
-  hiddenForm.submit();
-
-  successMessage.innerHTML = `
-  <strong>Registrering fullført!</strong><br><br>
-  Du er nå med i FC Barrios World Cup Challenge 2026.
-
-  <div style="margin-top:18px;">
-    <a href="tips.html" style="
-      display:inline-block;
-      padding:14px 18px;
-      border-radius:14px;
-      background:linear-gradient(135deg,#2ecc71,#7dffba);
-      color:#07111f;
-      text-decoration:none;
-      font-weight:bold;
-    ">
-      Gå til innlevering →
-    </a>
-  </div>
-`;
-
-  successMessage.style.display = "block";
-
-  form.reset();
-
-}catch(err){
-
-  showError("Uffda... Noe gikk galt. Prøv igjen.");
-
-}
-
-  button.disabled = false;
-  button.textContent = "Registrer meg";
-
 });
 
-
 function showError(message){
-
   errorMessage.textContent = message;
   errorMessage.style.display = "block";
-
 }
-
 </script>
 
 </body>
