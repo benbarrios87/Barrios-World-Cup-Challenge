@@ -635,7 +635,7 @@ body::before{
     <div class="section-head">
       <div>
         <h2 class="section-title">Bonus</h2>
-        <p class="section-sub">Fordel nøyaktig 10 poeng på beste spiller og 10 poeng på toppscorer.</p>
+        <p class="section-sub">Fordel nøyaktig 25 poeng på beste spiller og 25 poeng på toppscorer.</p>
       </div>
     </div>
 
@@ -643,13 +643,13 @@ body::before{
       <div class="top-box">
         <h2 style="margin-top:0;">Beste spiller</h2>
         <div id="bestPlayerContainer"></div>
-        <div id="bestPlayerStatus" class="bonus-status">0 / 10 poeng brukt</div>
+        <div id="bestPlayerStatus" class="bonus-status">0 / 25 poeng brukt</div>
       </div>
 
       <div class="top-box">
         <h2 style="margin-top:0;">Toppscorer</h2>
         <div id="topScorerContainer"></div>
-        <div id="topScorerStatus" class="bonus-status">0 / 10 poeng brukt</div>
+        <div id="topScorerStatus" class="bonus-status">0 / 25 poeng brukt</div>
       </div>
     </div>
   </div>
@@ -1084,11 +1084,11 @@ function updateBonusStatus(){
   const bestStatus = document.getElementById("bestPlayerStatus");
   const scorerStatus = document.getElementById("topScorerStatus");
 
-  bestStatus.textContent = `${bestTotal} / 10 poeng brukt`;
-  scorerStatus.textContent = `${scorerTotal} / 10 poeng brukt`;
+  bestStatus.textContent = `${bestTotal} / 25 poeng brukt`;
+  scorerStatus.textContent = `${scorerTotal} / 25 poeng brukt`;
 
-  bestStatus.style.color = bestTotal === 10 ? "#9dffc7" : "#ffd166";
-  scorerStatus.style.color = scorerTotal === 10 ? "#9dffc7" : "#ffd166";
+  bestStatus.style.color = bestTotal === 25 ? "#9dffc7" : "#ffd166";
+  scorerStatus.style.color = scorerTotal === 25 ? "#9dffc7" : "#ffd166";
 }
 
 function getBonusData(selector){
@@ -1286,13 +1286,13 @@ async function submitTips(isDraft = false){
   const bestTotal = bestPlayer.reduce((sum,item) => sum + safeNumber(item.points),0);
   const scorerTotal = topScorer.reduce((sum,item) => sum + safeNumber(item.points),0);
 
-  if(!isDraft && bestTotal !== 10){
-    alert(`Beste spiller må være nøyaktig 10 poeng. Nå har du brukt ${bestTotal}.`);
+  if(!isDraft && bestTotal !== 25){
+    alert(`Beste spiller må være nøyaktig 25 poeng. Nå har du brukt ${bestTotal}.`);
     return;
   }
 
-  if(!isDraft && scorerTotal !== 10){
-    alert(`Toppscorer må være nøyaktig 10 poeng. Nå har du brukt ${scorerTotal}.`);
+  if(!isDraft && scorerTotal !== 25){
+    alert(`Toppscorer må være nøyaktig 25 poeng. Nå har du brukt ${scorerTotal}.`);
     return;
   }
 
