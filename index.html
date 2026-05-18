@@ -2,7 +2,7 @@
 <html lang="no">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, in High Roller?itial-scale=1.0">
 <title>Barrios World Cup Challenge 2026</title>
 
 <style>
@@ -415,7 +415,19 @@ body::before{
 <body>
 
 <div class="wrapper">
-
+<div style="
+background:rgba(255,255,255,0.06);
+border:1px solid rgba(255,255,255,0.10);
+padding:14px 18px;
+border-radius:18px;
+margin-bottom:18px;
+color:rgba(255,255,255,0.75);
+line-height:1.6;
+font-size:14px;
+">
+FC Barrios World Cup Challenge er et privat hobbyprosjekt og en sosial VM-konkurranse mellom venner, bekjente og fotballinteresserte. Nettsiden drives ikke kommersielt.
+</div>
+  
   <div class="hero">
     <img
       class="hero-img"
@@ -457,13 +469,13 @@ body::before{
   </p>
 
   <p>
-    <span class="highlight">Buy in er 600 kr.</span>
-    Premiepotten vokser med antall deltakere, og alt følges live gjennom mesterskapet.
+    <span class="highlight">Deltageravgift er 600 kr.</span>
+    premieordning og praktisk info følges opp nærmere turneringsstart.
   </p>
 
   <div class="cta-row">
     <a class="cta-main" href="registrer.html">Meld meg på</a>
-    <a class="cta-secondary" href="premier.html">Se premiepott</a>
+    <a class="cta-secondary" href="premier.html">Se foreløpig premiepool</a>
   </div>
 
 </div>
@@ -495,7 +507,6 @@ body::before{
 
       <div class="deadline-text">
         Tipsfrist: 11. juni 2026 kl. 18:00.<br>
-        Plassen sikres ved betaling.
       </div>
     </div>
 
@@ -508,7 +519,7 @@ body::before{
   </div>
 
   <div class="live-pool-pot">
-    Premiepott:
+    Foreløpig premiepool:
     <strong id="livePot">-- kr</strong>
   </div>
 
@@ -521,8 +532,8 @@ body::before{
     <div class="quick-points">
 
       <div class="point">
-        <strong>600 kr buy in</strong>
-        <span>Én enkel inngang. Premiepotten regnes automatisk.</span>
+        <strong>600 kr deltageravgift </strong>
+        <span>Én enkel inngang. Foreløpig premiepool regnes automatisk.</span>
       </div>
 
       <div class="point">
@@ -548,7 +559,7 @@ body::before{
 
       <a class="menu-link primary" href="registrer.html">
         <strong>📝 Meld meg på</strong>
-        <span>Registrer deg til FC Barrios World Cup Challenge 2026. Buy in er 600 kr og påmelding er bindende.</span>
+        <span>Registrer deg til FC Barrios World Cup Challenge 2026. Deltageravgift er 600 kr.</span>
       </a>
 
       <a class="menu-link" href="tips.html">
@@ -562,8 +573,8 @@ body::before{
 </a>
 
       <a class="menu-link" href="premier.html">
-        <strong>💰 Premiepott</strong>
-        <span>Se dynamisk premiepott, buy in og fordeling basert på antall deltakere.</span>
+        <strong>💰 Premie </strong>
+        <span>Se dynamisk premier, deltageravgift og fordeling basert på antall deltakere.</span>
       </a>
 
       <a class="menu-link" href="leaderboard.html">
@@ -674,12 +685,7 @@ const players = [...uniqueMap.values()];
 loadLivePool();
 </script>
 
-<a class="highroller-bubble" href="highroller.html">
-  🥃 High Roller?
-</a>
-
 <script>
-const bubble = document.querySelector(".highroller-bubble");
 
 window.addEventListener("scroll", () => {
   const scrollPosition = window.innerHeight + window.scrollY;
