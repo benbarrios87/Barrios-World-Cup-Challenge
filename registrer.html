@@ -434,9 +434,23 @@ form.addEventListener("submit", async (e) => {
   hiddenForm.submit();
 
   successMessage.innerHTML = `
-    <strong>Registrering sendt!</strong><br><br>
-    Du er nå med i FC Barrios World Cup Challenge 2026.
-  `;
+  <strong>Registrering fullført!</strong><br><br>
+  Du er nå med i FC Barrios World Cup Challenge 2026.
+
+  <div style="margin-top:18px;">
+    <a href="tips.html" style="
+      display:inline-block;
+      padding:14px 18px;
+      border-radius:14px;
+      background:linear-gradient(135deg,#2ecc71,#7dffba);
+      color:#07111f;
+      text-decoration:none;
+      font-weight:bold;
+    ">
+      Gå til innlevering →
+    </a>
+  </div>
+`;
 
   successMessage.style.display = "block";
 
