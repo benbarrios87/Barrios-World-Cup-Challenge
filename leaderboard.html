@@ -242,12 +242,35 @@ async function loadLeaderboard(){
   const missingBox = document.getElementById("missingBox");
 
   try{
-    const data = await fetchSheet(LEADERBOARD_API_URL);
+    const registrations = await fetchSheet(REGISTRATIONS_API_URL);
 const submissions = await fetchSheet(SUBMISSIONS_API_URL);
 
-    const rows = data
-      .filter(row => row.name)
-      .sort((a,b) => cleanNumber(b.points) - cleanNumber(a.points));
+const uniqueMap = new Map();
+
+registrations.forEach(row => {
+  const phone = String(row.phone || "").trim();
+
+  if(!phone) return;
+
+  if(!uniqueMap.has(phone)){
+    uniqueMap.set(phone,{
+      name:
+        row.full_name ||
+        row["full name"] ||
+        `${row.first_name || row["first name"] || ""} ${row.last_name || row["last name"] || ""}`.trim(),
+      phone,
+      points:0,
+      exact:0,
+      outcome:0,
+      diff:0,
+      underdog:0
+    });
+  }
+});
+
+const rows = [...uniqueMap.values()]
+  .filter(row => row.name)
+  .sort((a,b) => cleanNumber(b.points) - cleanNumber(a.points));;
 
     const registeredCount = rows.length;
 
