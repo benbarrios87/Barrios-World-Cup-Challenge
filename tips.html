@@ -682,6 +682,11 @@ const RESULTS_API_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_RESULTS`;
 const SUBMISSIONS_API_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_SUBMISSIONS`;
 
 const SUBMIT_URL = "https://script.google.com/macros/s/AKfycbzBtq_RURHeZJ7hq1ECkHt4Tn5hN3tdmPaa29MwRcbiJzsdzKyAggQgNf_OGKS1cFXfSg/exec";
+  const DEADLINE = new Date("2026-06-11T18:00:00+02:00");
+
+function deadlinePassed(){
+  return new Date() > DEADLINE;
+}
 
 let allMatches = [];
 let players = [];
@@ -1249,8 +1254,14 @@ console.log("AWAY INPUT", awayInput);
 
     alert("Lagrede tips hentet.");
   }, 300);
-
+  }
+  
 async function submitTips(isDraft = false){
+   if(deadlinePassed()){
+    alert("Fristen har gått ut. Det er ikke lenger mulig å sende inn eller endre tips.");
+    return;
+  }
+  
   const phone = document.getElementById("playerPhone").value.trim();
 
   if(!/^\d{8}$/.test(phone)){
