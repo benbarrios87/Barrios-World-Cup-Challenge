@@ -3,8 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Mine tips | FC Barrios World Cup Challenge</title>
+<title>Mine tips | FC Barrios World Cup Challenge 2026</title>
 
 <style>
 :root{
@@ -29,7 +28,7 @@ body{
 }
 
 .wrapper{
-  max-width:980px;
+  max-width:1000px;
   margin:auto;
   padding:22px;
 }
@@ -108,9 +107,27 @@ button{
   background:linear-gradient(135deg,var(--green),#7dffba);
 }
 
+.actions{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-top:16px;
+}
+
+.action-link{
+  display:inline-block;
+  text-decoration:none;
+  color:white;
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.12);
+  border-radius:16px;
+  padding:13px 16px;
+  font-weight:bold;
+}
+
 .status-grid{
   display:grid;
-  grid-template-columns:repeat(3,1fr);
+  grid-template-columns:repeat(4,1fr);
   gap:12px;
   margin-top:18px;
 }
@@ -165,11 +182,45 @@ button{
   margin-top:4px;
 }
 
-.tip-score{
-  font-size:22px;
+.score-line{
+  font-size:20px;
   font-weight:bold;
   color:var(--gold);
   white-space:nowrap;
+  text-align:right;
+}
+
+.match-meta{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:12px;
+}
+
+.pill{
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:999px;
+  padding:6px 10px;
+  font-size:13px;
+}
+
+.pill.good{
+  background:rgba(46,204,113,0.14);
+  border-color:rgba(46,204,113,0.25);
+  color:#9dffc7;
+}
+
+.pill.bad{
+  background:rgba(255,94,94,0.12);
+  border-color:rgba(255,94,94,0.25);
+  color:#ffb4b4;
+}
+
+.pill.gold{
+  background:rgba(255,209,102,0.13);
+  border-color:rgba(255,209,102,0.25);
+  color:var(--gold);
 }
 
 .extra-grid{
@@ -205,29 +256,6 @@ button{
   color:#ffb4b4;
 }
 
-.actions{
-  display:flex;
-  gap:12px;
-  flex-wrap:wrap;
-  margin-top:16px;
-}
-
-.action-link{
-  display:inline-block;
-  text-decoration:none;
-  color:white;
-  background:rgba(255,255,255,0.08);
-  border:1px solid rgba(255,255,255,0.12);
-  border-radius:16px;
-  padding:13px 16px;
-  font-weight:bold;
-}
-
-.action-link.primary{
-  color:#07111f;
-  background:linear-gradient(135deg,var(--green),#7dffba);
-}
-
 .footer-note{
   color:var(--muted);
   text-align:center;
@@ -239,9 +267,10 @@ button{
   .wrapper{ padding:14px; }
   h1{ font-size:30px; }
   .search-row{ grid-template-columns:1fr; }
-  .status-grid{ grid-template-columns:1fr; }
+  .status-grid{ grid-template-columns:1fr 1fr; }
   .extra-grid{ grid-template-columns:1fr; }
   .match-top{ grid-template-columns:1fr; }
+  .score-line{ text-align:left; }
 }
 </style>
 </head>
@@ -255,7 +284,7 @@ button{
   <div class="hero">
     <div class="badge">FC BARRIOS • VM 2026</div>
     <h1>Mine tips</h1>
-    <p>Skriv inn telefonnummeret ditt og se siste lagrede/innsendte tips.</p>
+    <p>Skriv inn telefonnummeret ditt og se hva du leverte, hva resultatet ble og hvor mange poeng du fikk.</p>
   </div>
 
   <div class="card">
@@ -267,13 +296,12 @@ button{
         inputmode="numeric"
         placeholder="Skriv telefonnummeret ditt, 8 siffer"
       >
-
       <button onclick="findTips()">Hent mine tips</button>
     </div>
 
     <div class="actions">
-      <a class="action-link primary" href="tips.html">Lever eller endre tips</a>
       <a class="action-link" href="leaderboard.html">Se leaderboard</a>
+      <a class="action-link" href="tips.html">Til innlevering</a>
     </div>
   </div>
 
@@ -288,22 +316,19 @@ button{
 <script>
 const SHEET_ID = "1Ud5i11MEUXwvKDDsfyxvNIdyJgMbY_pS50BkecyzhDo";
 
-const SUBMISSIONS_URL =
-  `https://opensheet.elk.sh/${SHEET_ID}/API_SUBMISSIONS`;
-
-const MATCHES_URL =
-  `https://opensheet.elk.sh/${SHEET_ID}/API_MATCHES`;
-
-const REGISTRATIONS_URL =
-  `https://opensheet.elk.sh/${SHEET_ID}/API_REGISTRATIONS`;
+const SUBMISSIONS_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_SUBMISSIONS`;
+const MATCHES_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_MATCHES`;
+const RESULTS_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_RESULTS`;
+const REGISTRATIONS_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_REGISTRATIONS`;
+const OUTCOME_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_OUTCOME`;
+const DIFF_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_DIFF`;
+const EXACT_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_EXACT`;
 
 async function fetchSheet(url){
   try{
     const response = await fetch(url, { cache:"no-store" });
     const data = await response.json();
-
     if(!Array.isArray(data)) return [];
-
     return data.map(normalizeRow);
   }catch(error){
     console.error(error);
@@ -313,7 +338,6 @@ async function fetchSheet(url){
 
 function normalizeRow(row){
   const clean = {};
-
   Object.keys(row || {}).forEach(key => {
     const cleanKey = String(key)
       .trim()
@@ -325,7 +349,6 @@ function normalizeRow(row){
       ? row[key].trim()
       : row[key];
   });
-
   return clean;
 }
 
@@ -334,8 +357,50 @@ function isBlank(value){
 }
 
 function cleanNumber(value){
-  if(value === undefined || value === null || value === "") return 0;
+  if(isBlank(value)) return 0;
   return Number(String(value).replace(/\s/g,"").replace(",",".")) || 0;
+}
+
+function parseTier(value){
+  if(isBlank(value)) return 4;
+  const found = String(value).match(/[1-4]/);
+  return found ? Number(found[0]) : 4;
+}
+
+function getOutcome(home,away){
+  home = cleanNumber(home);
+  away = cleanNumber(away);
+  if(home > away) return "home";
+  if(away > home) return "away";
+  return "draw";
+}
+
+function getTierType(match,outcome){
+  if(outcome === "draw") return "draw";
+
+  const homeTier = parseTier(match.tier_home);
+  const awayTier = parseTier(match.tier_away);
+
+  if(outcome === "home"){
+    return homeTier <= awayTier ? "favorite" : "underdog";
+  }
+
+  if(outcome === "away"){
+    return awayTier <= homeTier ? "favorite" : "underdog";
+  }
+
+  return "draw";
+}
+
+function getRulePoint(rules,tierDiff,type){
+  const row = rules.find(r => cleanNumber(r.tier_diff) === cleanNumber(tierDiff));
+  if(!row) return 0;
+
+  if(type === "favorite") return cleanNumber(row.favorite || row.favoritt);
+  if(type === "draw") return cleanNumber(row.draw || row.uavgjort);
+  if(type === "underdog") return cleanNumber(row.underdog || row.outsider);
+
+  return 0;
 }
 
 function getMatchLabel(match){
@@ -379,6 +444,92 @@ function getRegisteredName(registrations, phone){
   );
 }
 
+function hasResult(result){
+  return result &&
+    !isBlank(result.actual_home) &&
+    !isBlank(result.actual_away);
+}
+
+function calculateMatch(tip, match, result, outcomeRules, diffRules, exactRules){
+  if(!match || !hasResult(result)){
+    return {
+      status:"Ikke spilt",
+      points:0,
+      className:"",
+      actualText:"Ikke spilt"
+    };
+  }
+
+  if(isBlank(tip.tips_home) || isBlank(tip.tips_away)){
+    return {
+      status:"Mangler tips",
+      points:0,
+      className:"bad",
+      actualText:`${result.actual_home} - ${result.actual_away}`
+    };
+  }
+
+  const tipHome = cleanNumber(tip.tips_home);
+  const tipAway = cleanNumber(tip.tips_away);
+  const actualHome = cleanNumber(result.actual_home);
+  const actualAway = cleanNumber(result.actual_away);
+
+  const tipOutcome = getOutcome(tipHome,tipAway);
+  const actualOutcome = getOutcome(actualHome,actualAway);
+
+  const tipDiff = tipHome - tipAway;
+  const actualDiff = actualHome - actualAway;
+
+  const homeTier = parseTier(match.tier_home);
+  const awayTier = parseTier(match.tier_away);
+  const tierDiff = Math.abs(homeTier - awayTier);
+  const tierType = getTierType(match,tipOutcome);
+
+  if(tipHome === actualHome && tipAway === actualAway){
+    return {
+      status:"Eksakt resultat",
+      points:getRulePoint(exactRules,tierDiff,tierType),
+      className:"gold",
+      actualText:`${actualHome} - ${actualAway}`
+    };
+  }
+
+  if(tipDiff === actualDiff){
+    return {
+      status:"Riktig målforskjell",
+      points:getRulePoint(diffRules,tierDiff,tierType),
+      className:"good",
+      actualText:`${actualHome} - ${actualAway}`
+    };
+  }
+
+  if(tipOutcome === actualOutcome){
+    return {
+      status:"Riktig utfall",
+      points:getRulePoint(outcomeRules,tierDiff,tierType),
+      className:"good",
+      actualText:`${actualHome} - ${actualAway}`
+    };
+  }
+
+  return {
+    status:"Bom",
+    points:0,
+    className:"bad",
+    actualText:`${actualHome} - ${actualAway}`
+  };
+}
+
+function renderBonusRows(rows){
+  const positive = rows.filter(row => cleanNumber(row.extra_points) > 0);
+
+  if(positive.length === 0) return "Ikke fylt ut";
+
+  return positive
+    .map(row => `${row.extra_name}: ${row.extra_points} poeng`)
+    .join("<br>");
+}
+
 function isSubmissionComplete(matchRows,bestPlayerRows,topScorerRows,totalMatches){
   if(matchRows.length < totalMatches) return false;
 
@@ -399,24 +550,11 @@ function isSubmissionComplete(matchRows,bestPlayerRows,topScorerRows,totalMatche
   return bestTotal === 10 && scorerTotal === 10;
 }
 
-function renderBonusRows(rows){
-  if(rows.length === 0) return "Ikke fylt ut";
-
-  return rows
-    .filter(row => cleanNumber(row.extra_points) > 0)
-    .map(row => `${row.extra_name}: ${row.extra_points} poeng`)
-    .join("<br>") || "0 poeng fordelt";
-}
-
 async function findTips(){
   const result = document.getElementById("result");
   const inputPhone = document.getElementById("phoneInput").value.trim();
 
-  result.innerHTML = `
-    <div class="card message">
-      Laster tips...
-    </div>
-  `;
+  result.innerHTML = `<div class="card message">Laster tips...</div>`;
 
   if(!/^\d{8}$/.test(inputPhone)){
     result.innerHTML = `
@@ -428,13 +566,25 @@ async function findTips(){
   }
 
   try{
-    const [submissions, matches, registrations] = await Promise.all([
+    const [
+      submissions,
+      matches,
+      results,
+      registrations,
+      outcomeRules,
+      diffRules,
+      exactRules
+    ] = await Promise.all([
       fetchSheet(SUBMISSIONS_URL),
       fetchSheet(MATCHES_URL),
-      fetchSheet(REGISTRATIONS_URL)
+      fetchSheet(RESULTS_URL),
+      fetchSheet(REGISTRATIONS_URL),
+      fetchSheet(OUTCOME_URL),
+      fetchSheet(DIFF_URL),
+      fetchSheet(EXACT_URL)
     ]);
 
-    const latestRows = getLatestRowsForPhone(submissions, inputPhone);
+    const latestRows = getLatestRowsForPhone(submissions,inputPhone);
 
     if(latestRows.length === 0){
       result.innerHTML = `
@@ -453,13 +603,67 @@ async function findTips(){
       if(id) matchMap[id] = match;
     });
 
+    const resultMap = {};
+    results.forEach(row => {
+      const id = String(row.id || row.match_id || "").trim();
+      if(id) resultMap[id] = row;
+    });
+
     const matchRows = latestRows.filter(row => row.type === "match");
     const bestPlayerRows = latestRows.filter(row => row.type === "bestplayer");
     const topScorerRows = latestRows.filter(row => row.type === "topscorer");
 
-    const completedTips = matchRows.filter(row =>
-      !isBlank(row.tips_home) && !isBlank(row.tips_away)
-    ).length;
+    let totalPoints = 0;
+    let exactCount = 0;
+    let diffCount = 0;
+    let outcomeCount = 0;
+    let playedCount = 0;
+
+    const matchHtml = matchRows.map(row => {
+      const matchId = String(row.match_id || row.id || "").trim();
+      const match = matchMap[matchId];
+      const actual = resultMap[matchId];
+
+      const calc = calculateMatch(
+        row,
+        match,
+        actual,
+        outcomeRules,
+        diffRules,
+        exactRules
+      );
+
+      totalPoints += calc.points;
+
+      if(calc.status !== "Ikke spilt") playedCount++;
+      if(calc.status === "Eksakt resultat") exactCount++;
+      if(calc.status === "Riktig målforskjell") diffCount++;
+      if(calc.status === "Riktig utfall") outcomeCount++;
+
+      return `
+        <div class="match-card">
+          <div class="match-top">
+            <div>
+              <div class="match-name">${getMatchLabel(match)}</div>
+              <div class="match-id">Kamp ${matchId}</div>
+            </div>
+
+            <div class="score-line">
+              ${isBlank(row.tips_home) || isBlank(row.tips_away)
+                ? "Mangler"
+                : `${row.tips_home} - ${row.tips_away}`
+              }
+            </div>
+          </div>
+
+          <div class="match-meta">
+            <span class="pill">Resultat: ${calc.actualText}</span>
+            <span class="pill ${calc.className}">${calc.status}</span>
+            <span class="pill gold">${calc.points} poeng</span>
+          </div>
+        </div>
+      `;
+    }).join("");
 
     const complete = isSubmissionComplete(
       matchRows,
@@ -470,9 +674,7 @@ async function findTips(){
 
     const statusText = complete ? "Fullført" : "Kladd/ikke fullført";
     const statusColor = complete ? "#9dffc7" : "#ffb4b4";
-
-    const registeredName = getRegisteredName(registrations, inputPhone);
-    const displayName = registeredName || "Ukjent deltaker";
+    const displayName = getRegisteredName(registrations,inputPhone) || "Ukjent deltaker";
 
     result.innerHTML = `
       <div class="card">
@@ -485,13 +687,44 @@ async function findTips(){
           </div>
 
           <div class="status-card">
-            <strong>${completedTips}/${matches.length}</strong>
-            <span>Kamptips fylt ut</span>
+            <strong>${totalPoints}</strong>
+            <span>Poeng hittil</span>
           </div>
 
           <div class="status-card">
-            <strong>${bestPlayerRows.length + topScorerRows.length}</strong>
-            <span>Bonusrader</span>
+            <strong>${playedCount}</strong>
+            <span>Kamper med resultat</span>
+          </div>
+
+          <div class="status-card">
+            <strong>${exactCount}</strong>
+            <span>Eksakte treff</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 class="section-title">Treff hittil</h2>
+
+        <div class="status-grid">
+          <div class="status-card">
+            <strong>${exactCount}</strong>
+            <span>Eksakt</span>
+          </div>
+
+          <div class="status-card">
+            <strong>${diffCount}</strong>
+            <span>Målforskjell</span>
+          </div>
+
+          <div class="status-card">
+            <strong>${outcomeCount}</strong>
+            <span>Riktig utfall</span>
+          </div>
+
+          <div class="status-card">
+            <strong>${matchRows.length}</strong>
+            <span>Tips levert</span>
           </div>
         </div>
       </div>
@@ -514,38 +747,12 @@ async function findTips(){
 
       <div class="card">
         <h2 class="section-title">Kamptips</h2>
-
-        ${matchRows.map(row => {
-          const matchId = String(row.match_id || row.id || "").trim();
-          const match = matchMap[matchId];
-
-          const homeScore = row.tips_home;
-          const awayScore = row.tips_away;
-
-          return `
-            <div class="match-card">
-              <div class="match-top">
-                <div>
-                  <div class="match-name">${getMatchLabel(match)}</div>
-                  <div class="match-id">Kamp ${matchId}</div>
-                </div>
-
-                <div class="tip-score">
-                  ${isBlank(homeScore) || isBlank(awayScore)
-                    ? "Mangler"
-                    : `${homeScore} - ${awayScore}`
-                  }
-                </div>
-              </div>
-            </div>
-          `;
-        }).join("")}
+        ${matchHtml}
       </div>
     `;
 
   }catch(error){
     console.error(error);
-
     result.innerHTML = `
       <div class="card message error">
         Klarte ikke å hente tips akkurat nå.
