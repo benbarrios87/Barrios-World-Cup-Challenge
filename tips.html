@@ -721,6 +721,13 @@ body::before{
   inputmode="numeric"
   oninput="saveTipsLocally()"
 >
+  <button
+  class="nav-btn"
+  style="margin-top:10px;"
+  onclick="loadDraftFromSheet()"
+>
+  Hent mine lagrede tips
+</button>
 
     <div class="progress">
       <div class="progress-row">
@@ -810,6 +817,9 @@ const OUTCOME_API_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_OUTCOME`;
 const DIFF_API_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_DIFF`;
 const EXACT_API_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_EXACT`;
 const RESULTS_API_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_RESULTS`;
+ 
+  const SUBMISSIONS_API_URL =
+  `https://opensheet.elk.sh/${SHEET_ID}/API_SUBMISSIONS`;
 
 const SUBMIT_URL =
 "https://script.google.com/macros/s/AKfycbyJB5mugyonYlXClojolIGcInen7ClFl55j-c7xQw6Z0-fS5rKfQKgF9AVhLLe9UQgM4Q/exec";
@@ -1363,7 +1373,99 @@ function loadSavedTips(){
   updateBonusStatus();
   updateProgress();
 }
+async function loadDraftFromSheet(){
 
+  const phone =
+    document.getElementById("playerPhone")
+    .value
+    .trim();
+
+  if(!/^\d{8}$/.test(phone)){
+    alert("Skriv inn telefonnummer først.");
+    return;
+  }
+
+  const rows = await fetchSheet(SUBMISSIONS_API_URL);
+
+  const userRows = rows.filter(row =>
+    String(row.phone).trim() === phone
+  );
+
+  if(userRows.length === 0){
+    alert("Fant ingen lagrede tips.");
+    return;
+  }
+
+  const latestTimestamp =
+    userRows[userRows.length - 1].timestamp;
+
+  const latestRows = userRows.filter(row =>
+    row.timestamp === latestTimestamp
+  );
+
+  latestRows
+    .filter(row => row.type === "match")
+    .forEach(row => {
+
+      const homeInput = document.querySelector(
+        `input[data-match-id="${row.match_id}"][data-side="home"]`
+      );
+
+      const awayInput = document.querySelector(
+        `input[data-match-id="${row.match_id}"][data-side="away"]`
+      );
+
+      if(homeInput){
+        homeInput.value = row.tips_home || "";
+      }
+
+      if(awayInput){
+        awayInput.value = row.tips_away || "";
+      }
+
+    });
+
+  latestRows
+    .filter(row => row.type === "bestplayer")
+    .forEach(row => {
+
+      const index = players.findIndex(player =>
+        player.name === row.extra_name
+      );
+
+      const input =
+        document.querySelectorAll(".best-player-input")[index];
+
+      if(input){
+        input.value = row.extra_points || "0";
+      }
+
+    });
+
+  latestRows
+    .filter(row => row.type === "topscorer")
+    .forEach(row => {
+
+      const index = players.findIndex(player =>
+        player.name === row.extra_name
+      );
+
+      const input =
+        document.querySelectorAll(".top-scorer-input")[index];
+
+      if(input){
+        input.value = row.extra_points || "0";
+      }
+
+    });
+
+  updateBonusStatus();
+  updateProgress();
+  saveTipsLocally();
+
+  alert("Lagrede tips hentet.");
+}
+  
 async function submitTips(isDraft = false){
   const phone =
   document.getElementById("playerPhone")
@@ -1392,10 +1494,10 @@ async function submitTips(isDraft = false){
     tip.tips_home === "" || tip.tips_away === ""
   );
 
-  if(missingMatches.length > 0){
-    alert(`Du mangler tips på ${missingMatches.length} kamper.`);
-    return;
-  }
+  if(!isDraft && missingMatches.length > 0){
+  alert(`Du mangler tips på ${missingMatches.length} kamper.`);
+  return;
+}
 
   const bestPlayer = getBonusData(".best-player-input");
   const topScorer = getBonusData(".top-scorer-input");
@@ -1403,12 +1505,12 @@ async function submitTips(isDraft = false){
   const bestTotal = bestPlayer.reduce((sum,item) => sum + Number(item.points || 0),0);
   const scorerTotal = topScorer.reduce((sum,item) => sum + Number(item.points || 0),0);
 
-  if(bestTotal !== 10){
+  if(!isDraft && bestTotal !== 10){
     alert(`Beste spiller må være nøyaktig 10 poeng. Nå har du brukt ${bestTotal}.`);
     return;
   }
 
-  if(scorerTotal !== 10){
+  if(!isDraft && scorerTotal !== 10){
     alert(`Toppscorer må være nøyaktig 10 poeng. Nå har du brukt ${scorerTotal}.`);
     return;
   }
