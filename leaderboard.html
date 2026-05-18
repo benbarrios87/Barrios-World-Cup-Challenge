@@ -205,7 +205,16 @@ body{
     <div id="statusBox" class="status-grid"></div>
 
     <div id="missingBox" class="missing-box"></div>
-
+    
+<div id="lastUpdated" style="
+  color:rgba(255,255,255,0.65);
+  font-size:13px;
+  text-align:center;
+  margin-bottom:14px;
+">
+  Oppdaterer...
+</div>
+    
     <div id="leaderboardContainer" class="loading">
       Laster leaderboard...
     </div>
@@ -236,13 +245,7 @@ async function fetchSheet(url){
     if(!Array.isArray(data)) return [];
 
     return data.map(normalizeRow);
-    document.getElementById("lastUpdated").textContent =
-  "Sist oppdatert: " +
-  new Date().toLocaleTimeString("no-NO",{
-    hour:"2-digit",
-    minute:"2-digit",
-    second:"2-digit"
-  });
+    
   }catch(error){
     console.error("Kunne ikke hente:", url, error);
     return [];
@@ -357,7 +360,7 @@ function isSubmissionComplete(rows, totalMatches){
     .filter(row => row.type === "topscorer")
     .reduce((sum,row) => sum + cleanNumber(row.extra_points),0);
 
-  return bestPlayerPoints === 10 && topScorerPoints === 10;
+  return bestPlayerPoints === 25 && topScorerPoints === 25;
 }
 
 function calculateScore(rows, matchesById, resultsById, outcomeRules, diffRules, exactRules){
@@ -608,7 +611,13 @@ async function loadLeaderboard(){
         </div>
       `;
     });
-
+document.getElementById("lastUpdated").textContent =
+  "Sist oppdatert: " +
+  new Date().toLocaleTimeString("no-NO",{
+    hour:"2-digit",
+    minute:"2-digit",
+    second:"2-digit"
+  });
   }catch(error){
     container.innerHTML = `<div style="color:#ff8080;">Klarte ikke å laste leaderboard.</div>`;
     console.error(error);
