@@ -659,6 +659,10 @@ async function loadLivePool(){
     });
 
     const data = await res.json();
+    const data = await res.json();
+
+alert("Antall rader hentet: " + data.length);
+alert("Første rad: " + JSON.stringify(data[0]));
 
     if(!Array.isArray(data)){
       throw new Error("Data er ikke liste");
