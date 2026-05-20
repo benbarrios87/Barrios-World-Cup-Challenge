@@ -664,7 +664,10 @@ async function loadLivePool(){
       throw new Error("Data er ikke liste");
     }
 
-    const players = data.filter(p => p.phone);
+    console.log("DATA FRA OPENSHEET:", data);
+console.log("FØRSTE RAD:", data[0]);
+
+const players = data.filter(p => Object.values(p).some(value => String(value).trim() !== ""));
 
 const totalPlayers = players.length;
 const paidPlayers = Math.max(0, totalPlayers - FREE_ENTRIES);
