@@ -296,7 +296,7 @@ input:focus{
       Påmelding sikrer din plass i årets morsome VM konkurranse. 
     </div>
 
-    <form id="registerForm" method="POST" action="https://script.google.com/macros/s/AKfycbzBtq_RURHeZJ7hq1ECkHt4Tn5hN3tdmPaa29MwRcbiJzsdzKyAggQgNf_OGKS1cFXfSg/exec">
+    <form id="registerForm">
   <input type="hidden" name="action" value="register">
   <input type="hidden" id="firstNameHidden" name="firstName">
   <input type="hidden" id="lastNameHidden" name="lastName">
@@ -351,17 +351,23 @@ input:focus{
 </div>
 
 <script>
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzBtq_RURHeZJ7hq1ECkHt4Tn5hN3tdmPaa29MwRcbiJzsdzKyAggQgNf_OGKS1cFXfSg/exec";
+
 const form = document.getElementById("registerForm");
 const errorMessage = document.getElementById("errorMessage");
+const successMessage = document.getElementById("successMessage");
 
-form.addEventListener("submit", (e) => {
+form.addEventListener("submit", async (e) => {
+
+  e.preventDefault();
+
   errorMessage.style.display = "none";
+  successMessage.style.display = "none";
 
   const name = document.getElementById("name").value.trim();
   const phone = document.getElementById("phone").value.trim();
 
   if(!name || !phone){
-    e.preventDefault();
     showError("Fyll inn navn og telefonnummer.");
     return;
   }
@@ -369,28 +375,66 @@ form.addEventListener("submit", (e) => {
   const nameParts = name.split(/\s+/);
 
   if(nameParts.length < 2){
-    e.preventDefault();
     showError("Skriv både fornavn og etternavn.");
     return;
   }
 
   if(!/^[0-9]{8}$/.test(phone)){
-    e.preventDefault();
     showError("Telefonnummer må være 8 siffer.");
     return;
   }
 
-  document.getElementById("firstNameHidden").value = nameParts[0];
-  document.getElementById("lastNameHidden").value = nameParts.slice(1).join(" ");
-
   const button = form.querySelector("button");
   button.disabled = true;
   button.textContent = "Registrerer...";
+
+  const formData = new FormData();
+
+  formData.append("action", "register");
+  formData.append("firstName", nameParts[0]);
+  formData.append("lastName", nameParts.slice(1).join(" "));
+  formData.append("phone", phone);
+
+  try{
+
+    const res = await fetch(SCRIPT_URL, {
+      method: "POST",
+      body: formData
+    });
+
+    const result = await res.json();
+
+    if(result.success){
+
+      successMessage.textContent =
+        "Du er registrert! Velkommen til VM-kaoset.";
+
+      successMessage.style.display = "block";
+
+      form.reset();
+
+    }else{
+
+      showError(result.message || "Noe gikk feil.");
+
+    }
+
+  }catch(err){
+
+    showError("Noe gikk galt med innsendingen.");
+
+  }
+
+  button.disabled = false;
+  button.textContent = "Registrer meg";
+
 });
 
 function showError(message){
+
   errorMessage.textContent = message;
   errorMessage.style.display = "block";
+
 }
 </script>
 
