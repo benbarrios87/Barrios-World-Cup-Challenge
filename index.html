@@ -664,39 +664,14 @@ async function loadLivePool(){
       throw new Error("Data er ikke liste");
     }
 
-    const uniqueMap = new Map();
+    const players = data.filter(p => Object.keys(p).length > 0);
 
-    data.forEach(p => {
-      const phone =
-        String(
-          p.phone ||
-          p.Phone ||
-          p.telefon ||
-          p.Telefon ||
-          p.telefonnummer ||
-          p.Telefonnummer ||
-          ""
-        ).trim();
+const totalPlayers = players.length;
+const paidPlayers = Math.max(0, totalPlayers - FREE_ENTRIES);
+const pot = paidPlayers * BUY_IN;
 
-      const firstName =
-        String(p.firstName || p.Fornavn || p.fornavn || "").trim();
-
-      const lastName =
-        String(p.lastName || p.Etternavn || p.etternavn || "").trim();
-
-      const key = phone || `${firstName} ${lastName}`.trim();
-
-      if(key && !uniqueMap.has(key)){
-        uniqueMap.set(key, p);
-      }
-    });
-
-    const totalPlayers = uniqueMap.size;
-    const paidPlayers = Math.max(0, totalPlayers - FREE_ENTRIES);
-    const pot = paidPlayers * BUY_IN;
-
-    livePlayers.textContent = totalPlayers;
-    livePot.textContent = pot.toLocaleString("no-NO") + " kr";
+livePlayers.textContent = totalPlayers;
+livePot.textContent = pot.toLocaleString("no-NO") + " kr";
 
   }catch(err){
     console.log("Kunne ikke hente live status:", err);
