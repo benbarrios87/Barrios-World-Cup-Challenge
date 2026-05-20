@@ -657,8 +657,7 @@ async function loadLivePool(){
     const res = await fetch(LEADERBOARD_URL + "?t=" + Date.now(), {
       cache: "no-store"
     });
-
-    const data = await res.json();
+    
     const data = await res.json();
 
 alert("Antall rader hentet: " + data.length);
