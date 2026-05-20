@@ -664,7 +664,7 @@ async function loadLivePool(){
       throw new Error("Data er ikke liste");
     }
 
-    const players = data.filter(p => Object.keys(p).length > 0);
+    const players = data.filter(p => p.phone);
 
 const totalPlayers = players.length;
 const paidPlayers = Math.max(0, totalPlayers - FREE_ENTRIES);
