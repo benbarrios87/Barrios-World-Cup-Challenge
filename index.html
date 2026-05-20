@@ -622,10 +622,9 @@ function updateCountdown(){
   const diff = DEADLINE - now;
 
   if(diff <= 0){
-    document.getElementById("days").textContent = "0";
-    document.getElementById("hours").textContent = "0";
-    document.getElementById("minutes").textContent = "0";
-    document.getElementById("seconds").textContent = "0";
+    ["days","hours","minutes","seconds"].forEach(id => {
+      document.getElementById(id).textContent = "0";
+    });
     return;
   }
 
@@ -644,65 +643,70 @@ function updateCountdown(){
 updateCountdown();
 setInterval(updateCountdown, 1000);
 
-  const LEADERBOARD_URL =
-"https://opensheet.elk.sh/1Ud5i11MEUXwvKDDsfyxvNIdyJgMbY_pS50BkecyzhDo/API_REGISTRATIONS";
+
+const LEADERBOARD_URL = "https://opensheet.elk.sh/1Ud5i11MEUXwvKDDsfyxvNIdyJgMbY_pS50BkecyzhDo/API_REGISTRATIONS";
 
 const BUY_IN = 600;
 const FREE_ENTRIES = 1;
 
 async function loadLivePool(){
+  const livePlayers = document.getElementById("livePlayers");
+  const livePot = document.getElementById("livePot");
 
   try{
-
     const res = await fetch(LEADERBOARD_URL + "?t=" + Date.now(), {
-  cache: "no-store"
-});
+      cache: "no-store"
+    });
+
     const data = await res.json();
+
+    if(!Array.isArray(data)){
+      throw new Error("Data er ikke liste");
+    }
 
     const uniqueMap = new Map();
 
-data.forEach(p => {
-  const phone = String(p.phone || "").trim();
+    data.forEach(p => {
+      const phone =
+        String(
+          p.phone ||
+          p.Phone ||
+          p.telefon ||
+          p.Telefon ||
+          p.telefonnummer ||
+          p.Telefonnummer ||
+          ""
+        ).trim();
 
-if(phone && !uniqueMap.has(phone)){
-  uniqueMap.set(phone, p);
-}
-});
+      const firstName =
+        String(p.firstName || p.Fornavn || p.fornavn || "").trim();
 
-const players = [...uniqueMap.values()];
+      const lastName =
+        String(p.lastName || p.Etternavn || p.etternavn || "").trim();
 
-    const totalPlayers = players.length;
+      const key = phone || `${firstName} ${lastName}`.trim();
+
+      if(key && !uniqueMap.has(key)){
+        uniqueMap.set(key, p);
+      }
+    });
+
+    const totalPlayers = uniqueMap.size;
     const paidPlayers = Math.max(0, totalPlayers - FREE_ENTRIES);
     const pot = paidPlayers * BUY_IN;
 
-    document.getElementById("livePlayers").textContent = totalPlayers;
-
-    document.getElementById("livePot").textContent =
-      pot.toLocaleString("no-NO") + " kr";
+    livePlayers.textContent = totalPlayers;
+    livePot.textContent = pot.toLocaleString("no-NO") + " kr";
 
   }catch(err){
+    console.log("Kunne ikke hente live status:", err);
 
-    console.log(err);
-
+    livePlayers.textContent = "0";
+    livePot.textContent = "0 kr";
   }
-
 }
 
 loadLivePool();
-</script>
-
-<script>
-
-window.addEventListener("scroll", () => {
-  const scrollPosition = window.innerHeight + window.scrollY;
-  const triggerPoint = document.body.offsetHeight - 500;
-
-  if(scrollPosition >= triggerPoint){
-    bubble.classList.add("visible");
-  }else{
-    bubble.classList.remove("visible");
-  }
-});
 </script>
 
 </body>
