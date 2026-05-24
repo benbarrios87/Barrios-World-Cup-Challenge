@@ -305,7 +305,7 @@ const players = [...uniqueMap.values()]
     const playerCount = players.length;
     const paidCount = Math.max(0, playerCount - FREE_ENTRIES);
     const totalPot = paidCount * BUY_IN;
-    const prizeCount = playerCount === 0 ? 0 : Math.max(1, Math.round(playerCount * 0.3));
+    const prizeCount = playerCount === 0 ? 0 : Math.max(1, Math.round(playerCount * 0.2));
     const percents = getPrizePercents(prizeCount);
 
     document.getElementById("playerCount").textContent = playerCount;
