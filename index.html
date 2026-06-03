@@ -322,7 +322,61 @@ body::before{
   font-size:13px;
   margin-top:20px;
 }
+.today-match{
+  background:rgba(255,255,255,0.07);
+  border:1px solid rgba(255,255,255,0.12);
+  border-radius:18px;
+  padding:16px;
+  margin-top:12px;
+}
 
+.today-match-top{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  align-items:flex-start;
+}
+
+.today-match-name{
+  font-weight:bold;
+  font-size:18px;
+}
+
+.today-match-date{
+  color:var(--muted);
+  font-size:13px;
+  margin-top:4px;
+}
+
+.today-tip{
+  font-size:22px;
+  font-weight:bold;
+  color:var(--gold);
+  white-space:nowrap;
+}
+
+.today-pill{
+  display:inline-block;
+  margin-top:10px;
+  background:rgba(255,209,102,0.13);
+  border:1px solid rgba(255,209,102,0.25);
+  color:var(--gold);
+  border-radius:999px;
+  padding:7px 11px;
+  font-size:13px;
+  font-weight:bold;
+}
+
+@media(max-width:600px){
+  .today-match-top{
+    display:block;
+  }
+
+  .today-tip{
+    margin-top:8px;
+  }
+}
+  
 @media(max-width:800px){
   .hero{
     grid-template-columns:1fr;
@@ -485,22 +539,46 @@ body::before{
   </div>
 
   <div class="live-pool-card">
-    <div class="live-label">LIVE STATUS</div>
+  <div class="live-label">LIVE STATUS</div>
 
-    <div class="live-pool-main">
-      <span id="livePlayers">--</span> deltakere
-    </div>
-
-    <div class="live-pool-pot">
-      Foreløpig premiepool:
-      <strong id="livePot">-- kr</strong>
-    </div>
-
-    <div class="live-pool-sub">
-      Buy in: 600 kr • 1 gratisplass til arrangør.
-    </div>
+  <div class="live-pool-main">
+    <span id="livePlayers">--</span> deltakere
   </div>
 
+  <div class="live-pool-pot">
+    Foreløpig premiepool:
+    <strong id="livePot">-- kr</strong>
+  </div>
+
+  <div class="live-pool-sub">
+    Buy in: 600 kr • 1 gratisplass til arrangør.
+  </div>
+</div>
+
+<div id="todayCard" class="card today-card" style="display:none;">
+  <h2 style="margin-top:0;">🔥 Dine tips i dag</h2>
+
+  <div id="todayIntro" class="message">
+    Laster dagens kamper...
+  </div>
+
+  <div id="todayPhoneBox" style="display:none;margin-top:14px;">
+    <input
+      id="todayPhoneInput"
+      type="tel"
+      maxlength="8"
+      inputmode="numeric"
+      placeholder="Skriv telefonnummeret ditt"
+      style="width:100%;box-sizing:border-box;padding:15px;border-radius:16px;border:none;font-size:16px;margin-bottom:10px;"
+    >
+
+    <button class="cta-main" style="border:none;cursor:pointer;" onclick="loadTodayTipsFromPhone()">
+      Hent dagens tips
+    </button>
+  </div>
+
+  <div id="todayMatches"></div>
+</div>
   <div class="card">
     <div class="quick-points">
 
@@ -649,6 +727,259 @@ async function loadLivePool(){
 }
 
 loadLivePool();
+  const SHEET_ID = "1Ud5i11MEUXwvKDDsfyxvNIdyJgMbY_pS50BkecyzhDo";
+
+const MATCHES_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_MATCHES`;
+const SUBMISSIONS_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_SUBMISSIONS`;
+const OUTCOME_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_OUTCOME`;
+const DIFF_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_DIFF`;
+const EXACT_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_EXACT`;
+
+let todayMatchesCache = [];
+let todaySubmissionsCache = [];
+let todayOutcomeRules = [];
+let todayDiffRules = [];
+let todayExactRules = [];
+
+function normalizeRow(row){
+  const clean = {};
+
+  Object.keys(row || {}).forEach(key => {
+    const cleanKey = String(key)
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g,"_")
+      .replace(/-/g,"_");
+
+    clean[cleanKey] = typeof row[key] === "string"
+      ? row[key].trim()
+      : row[key];
+  });
+
+  return clean;
+}
+
+async function fetchSheetToday(url){
+  try{
+    const response = await fetch(url, { cache:"no-store" });
+    const data = await response.json();
+
+    if(!Array.isArray(data)) return [];
+
+    return data.map(normalizeRow);
+  }catch(error){
+    console.log("Kunne ikke hente data:", error);
+    return [];
+  }
+}
+
+function cleanNumber(value){
+  if(value === "" || value === null || value === undefined) return 0;
+  return Number(String(value).replace(/\s/g,"").replace(",",".")) || 0;
+}
+
+function parseTier(value){
+  if(value === "" || value === null || value === undefined) return 4;
+  const found = String(value).match(/[1-4]/);
+  return found ? Number(found[0]) : 4;
+}
+
+function getOutcome(home, away){
+  home = cleanNumber(home);
+  away = cleanNumber(away);
+
+  if(home > away) return "home";
+  if(away > home) return "away";
+  return "draw";
+}
+
+function getTierType(match, outcome){
+  if(outcome === "draw") return "draw";
+
+  const homeTier = parseTier(match.tier_home);
+  const awayTier = parseTier(match.tier_away);
+
+  if(outcome === "home"){
+    return homeTier <= awayTier ? "favorite" : "underdog";
+  }
+
+  if(outcome === "away"){
+    return awayTier <= homeTier ? "favorite" : "underdog";
+  }
+
+  return "draw";
+}
+
+function getRulePoint(rules, tierDiff, type){
+  const row = rules.find(r => cleanNumber(r.tier_diff) === cleanNumber(tierDiff));
+  if(!row) return 0;
+
+  if(type === "favorite") return cleanNumber(row.favorite || row.favoritt);
+  if(type === "draw") return cleanNumber(row.draw || row.uavgjort);
+  if(type === "underdog") return cleanNumber(row.underdog || row.outsider);
+
+  return 0;
+}
+
+function getMaxPossiblePoints(tip, match){
+  if(!tip || !match || tip.tips_home === "" || tip.tips_away === "") return 0;
+
+  const tipOutcome = getOutcome(tip.tips_home, tip.tips_away);
+  const tierDiff = Math.abs(parseTier(match.tier_home) - parseTier(match.tier_away));
+  const tierType = getTierType(match, tipOutcome);
+
+  return getRulePoint(todayExactRules, tierDiff, tierType);
+}
+
+function getSavedPhone(){
+  try{
+    const saved = JSON.parse(localStorage.getItem("vm2026_tips") || "{}");
+    return String(saved.phone || "").trim();
+  }catch(error){
+    return "";
+  }
+}
+
+function isToday(match){
+  const raw = String(match.date || match.dato || "").trim();
+
+  if(!raw) return false;
+
+  const today = new Date();
+  const dd = String(today.getDate()).padStart(2,"0");
+  const mm = String(today.getMonth() + 1).padStart(2,"0");
+  const yyyy = today.getFullYear();
+
+  const noDate = `${dd}.${mm}.${yyyy}`;
+  const isoDate = `${yyyy}-${mm}-${dd}`;
+
+  return raw.includes(noDate) || raw.includes(isoDate);
+}
+
+function getLatestRowsForPhone(rows, phone){
+  const userRows = rows.filter(row =>
+    String(row.phone || "").trim() === phone
+  );
+
+  if(userRows.length === 0) return [];
+
+  const latestTimestamp = userRows[userRows.length - 1].timestamp;
+
+  return userRows.filter(row =>
+    row.timestamp === latestTimestamp
+  );
+}
+
+function renderTodayWithoutPhone(){
+  document.getElementById("todayIntro").innerHTML =
+    "Skriv inn telefonnummeret ditt for å se hva du har tippet på dagens kamper.";
+
+  document.getElementById("todayPhoneBox").style.display = "block";
+  document.getElementById("todayMatches").innerHTML = "";
+}
+
+function renderTodayTips(phone){
+  const todayBox = document.getElementById("todayMatches");
+  const todayIntro = document.getElementById("todayIntro");
+
+  const latestRows = getLatestRowsForPhone(todaySubmissionsCache, phone);
+  const matchTips = latestRows.filter(row => row.type === "match");
+
+  if(todayMatchesCache.length === 0){
+    todayIntro.innerHTML = "Ingen VM-kamper registrert i dag.";
+    todayBox.innerHTML = "";
+    return;
+  }
+
+  todayIntro.innerHTML = `Du har ${todayMatchesCache.length} kamp${todayMatchesCache.length === 1 ? "" : "er"} i dag.`;
+
+  todayBox.innerHTML = todayMatchesCache.map(match => {
+    const matchId = String(match.id || match.match_id || "").trim();
+
+    const tip = matchTips.find(row =>
+      String(row.match_id || row.id || "").trim() === matchId
+    );
+
+    const tipText = tip && tip.tips_home !== "" && tip.tips_away !== ""
+      ? `${tip.tips_home} - ${tip.tips_away}`
+      : "Mangler tips";
+
+    const maxPoints = tip ? getMaxPossiblePoints(tip, match) : 0;
+
+    return `
+      <div class="today-match">
+        <div class="today-match-top">
+          <div>
+            <div class="today-match-name">${match.home || ""} - ${match.away || ""}</div>
+            <div class="today-match-date">${match.date || match.dato || ""}</div>
+          </div>
+
+          <div class="today-tip">${tipText}</div>
+        </div>
+
+        ${tip
+          ? `<div class="today-pill">Maks ${maxPoints} poeng</div>`
+          : `<div class="today-pill">Ikke funnet blant dine tips</div>`
+        }
+      </div>
+    `;
+  }).join("");
+}
+
+function loadTodayTipsFromPhone(){
+  const input = document.getElementById("todayPhoneInput");
+  const phone = input.value.trim();
+
+  if(!/^\d{8}$/.test(phone)){
+    alert("Skriv inn et gyldig telefonnummer.");
+    return;
+  }
+
+  renderTodayTips(phone);
+}
+
+async function initTodayCard(){
+  const todayCard = document.getElementById("todayCard");
+
+  if(new Date() < DEADLINE){
+    todayCard.style.display = "none";
+    return;
+  }
+
+  todayCard.style.display = "block";
+
+  const [
+    matches,
+    submissions,
+    outcomeRules,
+    diffRules,
+    exactRules
+  ] = await Promise.all([
+    fetchSheetToday(MATCHES_URL),
+    fetchSheetToday(SUBMISSIONS_URL),
+    fetchSheetToday(OUTCOME_URL),
+    fetchSheetToday(DIFF_URL),
+    fetchSheetToday(EXACT_URL)
+  ]);
+
+  todayMatchesCache = matches.filter(isToday);
+  todaySubmissionsCache = submissions;
+  todayOutcomeRules = outcomeRules;
+  todayDiffRules = diffRules;
+  todayExactRules = exactRules;
+
+  const savedPhone = getSavedPhone();
+
+  if(/^\d{8}$/.test(savedPhone)){
+    document.getElementById("todayPhoneInput").value = savedPhone;
+    document.getElementById("todayPhoneBox").style.display = "none";
+    renderTodayTips(savedPhone);
+  }else{
+    renderTodayWithoutPhone();
+  }
+}
+
+document.addEventListener("DOMContentLoaded", initTodayCard);
 </script>
 
 </body>
