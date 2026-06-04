@@ -1106,8 +1106,21 @@ function getBonusData(selector){
 }
 
 function getTipsData(){
+  let savedTips = [];
+
+  try{
+    const saved = JSON.parse(localStorage.getItem("vm2026_tips") || "{}");
+    savedTips = Array.isArray(saved.tips) ? saved.tips : [];
+  }catch(error){
+    savedTips = [];
+  }
+
   return allMatches.map(match => {
     const matchId = String(match.id || match.match_id || "").trim();
+
+    const existing = savedTips.find(tip =>
+      String(tip.id || tip.match_id || "").trim() === matchId
+    );
 
     const homeInput = document.querySelector(`input[data-match-id="${matchId}"][data-side="home"]`);
     const awayInput = document.querySelector(`input[data-match-id="${matchId}"][data-side="away"]`);
@@ -1116,8 +1129,8 @@ function getTipsData(){
       id: matchId,
       home: match.home || "",
       away: match.away || "",
-      tips_home: homeInput ? homeInput.value : "",
-      tips_away: awayInput ? awayInput.value : ""
+      tips_home: homeInput ? homeInput.value : (existing ? existing.tips_home : ""),
+      tips_away: awayInput ? awayInput.value : (existing ? existing.tips_away : "")
     };
   });
 }
