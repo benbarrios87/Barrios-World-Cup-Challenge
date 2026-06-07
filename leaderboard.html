@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="no">
 <head>
@@ -7,36 +8,124 @@
 <title>Leaderboard | FC Barrios World Cup Challenge 2026</title>
 
 <style>
+:root{
+  --bg:#050713;
+  --panel:rgba(10,13,28,0.82);
+  --panel2:rgba(255,255,255,0.075);
+  --line:rgba(255,255,255,0.14);
+  --text:#fff;
+  --muted:rgba(255,255,255,0.66);
+  --gold:#ffd166;
+  --gold2:#ffb703;
+  --green:#2ecc71;
+  --cyan:#6ee7ff;
+  --pink:#ff4fd8;
+  --red:#ff5e5e;
+}
+
+*{ box-sizing:border-box; }
+
 body{
   margin:0;
   font-family:Arial,sans-serif;
-  background:
-    radial-gradient(circle at top left, rgba(46,204,113,0.18), transparent 28%),
-    linear-gradient(rgba(0,0,0,0.72), rgba(0,0,0,0.88)),
-    repeating-linear-gradient(90deg,#0b3d24 0px,#0b3d24 80px,#0e4a2c 80px,#0e4a2c 160px);
-  color:white;
+  color:var(--text);
   min-height:100vh;
+  background:
+    radial-gradient(circle at 18% 10%, rgba(255,79,216,0.24), transparent 27%),
+    radial-gradient(circle at 82% 12%, rgba(110,231,255,0.20), transparent 25%),
+    radial-gradient(circle at 50% 90%, rgba(46,204,113,0.20), transparent 35%),
+    linear-gradient(180deg,#060817 0%,#08111f 46%,#02040a 100%);
+  overflow-x:hidden;
+}
+
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  background:
+    linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.028) 1px, transparent 1px);
+  background-size:38px 38px;
+  mask-image:linear-gradient(to bottom, rgba(0,0,0,0.9), transparent 86%);
+}
+
+body::after{
+  content:"";
+  position:fixed;
+  inset:auto -10% -180px -10%;
+  height:330px;
+  pointer-events:none;
+  background:
+    radial-gradient(ellipse at center, rgba(46,204,113,0.22), transparent 62%),
+    repeating-linear-gradient(90deg, rgba(255,255,255,0.06) 0 2px, transparent 2px 70px);
+  transform:perspective(420px) rotateX(58deg);
+  transform-origin:bottom;
+  opacity:0.78;
 }
 
 .wrapper{
-  max-width:1000px;
+  max-width:1120px;
   margin:auto;
   padding:22px;
+  position:relative;
+  z-index:1;
+}
+
+.scoreboard-shell{
+  border:1px solid rgba(255,255,255,0.16);
+  border-radius:30px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.04)),
+    rgba(6,9,20,0.74);
+  box-shadow:0 24px 80px rgba(0,0,0,0.48), inset 0 1px 0 rgba(255,255,255,0.12);
+  overflow:hidden;
 }
 
 .hero{
+  padding:30px 24px 22px;
   text-align:center;
-  margin-bottom:22px;
+  position:relative;
+  background:
+    linear-gradient(90deg, rgba(255,209,102,0.10), rgba(110,231,255,0.08), rgba(255,79,216,0.10));
+  border-bottom:1px solid rgba(255,255,255,0.12);
+}
+
+.live-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  margin-bottom:12px;
+  padding:7px 12px;
+  border-radius:999px;
+  background:rgba(255,255,255,0.10);
+  border:1px solid rgba(255,255,255,0.14);
+  color:#9dffc7;
+  font-size:12px;
+  font-weight:bold;
+  letter-spacing:1.2px;
+}
+
+.live-dot{
+  width:9px;
+  height:9px;
+  border-radius:50%;
+  background:#2ecc71;
+  box-shadow:0 0 18px #2ecc71;
 }
 
 .hero h1{
-  margin:0 0 10px;
-  font-size:40px;
+  margin:0;
+  font-size:54px;
+  line-height:0.95;
+  letter-spacing:-2px;
+  text-transform:uppercase;
 }
 
 .hero p{
-  margin:0;
-  color:rgba(255,255,255,0.7);
+  margin:12px 0 0;
+  color:var(--muted);
+  font-size:16px;
 }
 
 .nav{
@@ -44,143 +133,257 @@ body{
   gap:10px;
   flex-wrap:wrap;
   justify-content:center;
-  margin-bottom:20px;
+  padding:16px;
+  background:rgba(0,0,0,0.18);
+  border-bottom:1px solid rgba(255,255,255,0.10);
 }
 
 .nav a{
   color:white;
   text-decoration:none;
-  padding:10px 15px;
+  padding:10px 14px;
   border-radius:999px;
   background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.10);
   font-weight:bold;
+  font-size:14px;
+}
+
+.nav a:hover{
+  background:rgba(255,209,102,0.16);
+  border-color:rgba(255,209,102,0.28);
 }
 
 .top-box{
-  background:rgba(7,14,28,0.82);
-  border:1px solid rgba(255,255,255,0.12);
-  border-radius:24px;
   padding:20px;
-  backdrop-filter:blur(10px);
-  box-shadow:0 14px 40px rgba(0,0,0,0.35);
 }
 
 .status-grid{
   display:grid;
   grid-template-columns:repeat(5,1fr);
   gap:12px;
-  margin-bottom:18px;
+  margin-bottom:16px;
 }
 
 .status-card{
-  border-radius:18px;
-  padding:16px;
+  position:relative;
+  overflow:hidden;
+  border-radius:20px;
+  padding:18px 14px;
   text-align:center;
-  background:rgba(255,255,255,0.06);
-  border:1px solid rgba(255,255,255,0.1);
+  background:linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0.055));
+  border:1px solid rgba(255,255,255,0.13);
+}
+
+.status-card::after{
+  content:"";
+  position:absolute;
+  inset:auto 12px 0 12px;
+  height:2px;
+  background:linear-gradient(90deg, transparent, rgba(110,231,255,0.65), transparent);
 }
 
 .status-card strong{
   display:block;
-  font-size:26px;
+  font-size:28px;
   margin-bottom:4px;
+  color:white;
 }
 
 .status-card span{
-  color:rgba(255,255,255,0.7);
-  font-size:13px;
+  color:var(--muted);
+  font-size:12px;
+  text-transform:uppercase;
+  letter-spacing:.7px;
 }
 
 .missing-box{
   display:none;
   background:rgba(255,94,94,0.10);
-  border:1px solid rgba(255,94,94,0.22);
-  border-radius:18px;
+  border:1px solid rgba(255,94,94,0.24);
+  border-radius:20px;
   padding:16px;
   margin-bottom:18px;
 }
 
+#lastUpdated{
+  color:rgba(255,255,255,0.58) !important;
+  font-size:12px !important;
+  text-align:right !important;
+  margin:0 4px 14px !important;
+  letter-spacing:.4px;
+}
+
 .loading{
-  color:rgba(255,255,255,0.7);
-  padding:12px;
+  color:var(--muted);
+  padding:14px;
 }
 
 .player-card{
-  background:rgba(255,255,255,0.06);
-  border:1px solid rgba(255,255,255,0.1);
-  border-radius:18px;
-  padding:16px;
+  position:relative;
+  overflow:hidden;
+  background:linear-gradient(135deg, rgba(255,255,255,0.105), rgba(255,255,255,0.045));
+  border:1px solid rgba(255,255,255,0.12);
+  border-radius:24px;
+  padding:18px;
   margin-bottom:14px;
+  box-shadow:0 14px 34px rgba(0,0,0,0.22);
 }
+
+.player-card::before{
+  content:"";
+  position:absolute;
+  left:0;
+  top:0;
+  bottom:0;
+  width:5px;
+  background:rgba(255,255,255,0.16);
+}
+
+.player-card.top-1{
+  background:
+    linear-gradient(135deg, rgba(255,209,102,0.23), rgba(255,255,255,0.06)),
+    rgba(8,10,18,0.82);
+  border-color:rgba(255,209,102,0.45);
+}
+
+.player-card.top-1::before{ background:linear-gradient(#fff0a8,#ffb703); width:7px; }
+.player-card.top-2::before{ background:linear-gradient(#e6edf7,#9fb3c8); width:7px; }
+.player-card.top-3::before{ background:linear-gradient(#f1b07a,#b86b35); width:7px; }
 
 .player-grid{
   display:grid;
-  grid-template-columns:52px 1fr auto;
-  gap:12px;
+  grid-template-columns:58px 1fr auto;
+  gap:14px;
   align-items:center;
+  position:relative;
+  z-index:1;
 }
 
 .medal{
-  font-size:24px;
+  width:46px;
+  height:46px;
+  display:grid;
+  place-items:center;
+  border-radius:16px;
+  background:rgba(0,0,0,0.26);
+  border:1px solid rgba(255,255,255,0.13);
+  font-size:22px;
   font-weight:bold;
 }
 
 .profile-link{
   color:white;
   text-decoration:none;
-  font-size:18px;
-  font-weight:bold;
+  font-size:20px;
+  font-weight:900;
+  letter-spacing:-0.2px;
 }
 
-.profile-link:hover{
-  color:#ffd166;
-}
+.profile-link:hover{ color:var(--gold); }
 
 .tags{
   display:flex;
   flex-wrap:wrap;
   gap:8px;
-  margin-top:8px;
+  margin-top:10px;
 }
 
 .tag{
-  background:rgba(255,255,255,0.08);
-  padding:5px 10px;
+  background:rgba(0,0,0,0.20);
+  border:1px solid rgba(255,255,255,0.10);
+  padding:6px 10px;
   border-radius:999px;
   font-size:12px;
+  color:rgba(255,255,255,0.82);
 }
 
 .points{
-  font-size:32px;
+  min-width:114px;
+  text-align:center;
+  padding:12px 14px;
+  border-radius:20px;
+  background:rgba(0,0,0,0.28);
+  border:1px solid rgba(46,204,113,0.26);
+  font-size:42px;
+  line-height:0.95;
+  font-weight:900;
+  color:#7dffba;
+  text-shadow:0 0 22px rgba(46,204,113,0.32);
+}
+
+.points span{
+  display:block;
+  margin-top:6px;
+  color:var(--muted);
+  font-size:11px;
   font-weight:bold;
-  color:#2ecc71;
-  text-align:right;
-  min-width:80px;
+  text-transform:uppercase;
+  letter-spacing:1px;
 }
 
 .small-note{
-  color:rgba(255,255,255,0.62);
+  color:var(--muted);
   font-size:13px;
-  margin-top:4px;
+  margin-top:5px;
 }
 
-@media(max-width:700px){
+.next-tips{
+  margin-top:13px;
+  padding:12px;
+  border-radius:18px;
+  background:rgba(0,0,0,0.21);
+  border:1px solid rgba(255,255,255,0.10);
+}
+
+.next-tips-title{
+  color:var(--gold);
+  font-size:12px;
+  font-weight:bold;
+  text-transform:uppercase;
+  letter-spacing:.8px;
+  margin-bottom:8px;
+}
+
+.next-tip-row{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  padding:5px 0;
+  color:rgba(255,255,255,0.78);
+  font-size:13px;
+  border-top:1px solid rgba(255,255,255,0.06);
+}
+
+.next-tip-row:first-of-type{ border-top:0; }
+
+.next-tip-score{
+  color:var(--gold);
+  font-weight:bold;
+  white-space:nowrap;
+}
+
+.prize-tag{
+  background:rgba(255,209,102,0.16) !important;
+  border-color:rgba(255,209,102,0.32) !important;
+  color:var(--gold) !important;
+  font-weight:bold;
+}
+
+@media(max-width:800px){
   .wrapper{ padding:14px; }
-  .hero h1{ font-size:30px; }
+  .hero h1{ font-size:36px; letter-spacing:-1px; }
+  .status-grid{ grid-template-columns:repeat(2,1fr); }
+  .player-grid{ grid-template-columns:46px 1fr; }
+  .points{ grid-column:1 / -1; text-align:left; font-size:30px; }
+  .points span{ display:inline; margin-left:6px; }
+}
 
-  .status-grid{
-    grid-template-columns:repeat(2,1fr);
-  }
-
-  .player-grid{
-    grid-template-columns:42px 1fr;
-  }
-
-  .points{
-    grid-column:1 / -1;
-    text-align:left;
-    font-size:25px;
-  }
+@media(max-width:460px){
+  .top-box{ padding:14px; }
+  .status-card strong{ font-size:23px; }
+  .player-card{ padding:14px; border-radius:20px; }
+  .profile-link{ font-size:18px; }
 }
 </style>
 </head>
@@ -189,35 +392,33 @@ body{
 
 <div class="wrapper">
 
+  <div class="scoreboard-shell">
+
   <div class="hero">
-    <h1>🏆 Leaderboard</h1>
-    <p>Stillingen i FC Barrios World Cup Challenge 2026</p>
+    <div class="live-badge"><span class="live-dot"></span> LIVE VM-SENTER</div>
+    <h1>Leaderboard</h1>
+    <p>FC Barrios World Cup Challenge 2026 • stilling, premier og neste drama</p>
   </div>
 
   <div class="nav">
     <a href="index.html">Forside</a>
     <a href="tips.html">Innlevering</a>
     <a href="premier.html">Premiepott</a>
+    <a href="minetips.html">Mine tips</a>
   </div>
 
   <div class="top-box">
-
     <div id="statusBox" class="status-grid"></div>
-
     <div id="missingBox" class="missing-box"></div>
-    
-<div id="lastUpdated" style="
-  color:rgba(255,255,255,0.65);
-  font-size:13px;
-  text-align:center;
-  margin-bottom:14px;
-">
-  Oppdaterer...
-</div>
-    
+
+    <div id="lastUpdated" class="live-note">
+      Oppdaterer...
+    </div>
+
     <div id="leaderboardContainer" class="loading">
       Laster leaderboard...
     </div>
+  </div>
 
   </div>
 
@@ -236,6 +437,11 @@ const EXACT_API_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_EXACT`;
 
 const BUY_IN = 600;
 const FREE_ENTRIES = 1;
+const TIPS_DEADLINE = new Date("2026-06-11T18:00:00+02:00");
+
+function tipsAreLocked(){
+  return new Date() >= TIPS_DEADLINE;
+}
 
 async function fetchSheet(url){
   try{
@@ -245,7 +451,6 @@ async function fetchSheet(url){
     if(!Array.isArray(data)) return [];
 
     return data.map(normalizeRow);
-    
   }catch(error){
     console.error("Kunne ikke hente:", url, error);
     return [];
@@ -284,6 +489,16 @@ function parseTier(value){
   if(value === undefined || value === null || value === "") return 4;
   const found = String(value).match(/[1-4]/);
   return found ? Number(found[0]) : 4;
+}
+
+function hasResult(result){
+  return result &&
+    result.actual_home !== undefined &&
+    result.actual_home !== null &&
+    result.actual_home !== "" &&
+    result.actual_away !== undefined &&
+    result.actual_away !== null &&
+    result.actual_away !== "";
 }
 
 function getMatchOutcome(home, away){
@@ -377,18 +592,7 @@ function calculateScore(rows, matchesById, resultsById, outcomeRules, diffRules,
     const match = matchesById[matchId];
     const result = resultsById[matchId];
 
-    if(!match || !result) return;
-
-    if(
-  result.actual_home === undefined ||
-  result.actual_home === null ||
-  result.actual_home === "" ||
-  result.actual_away === undefined ||
-  result.actual_away === null ||
-  result.actual_away === ""
-){
-  return;
-}
+    if(!match || !hasResult(result)) return;
 
     const tipHome = cleanNumber(tip.tips_home);
     const tipAway = cleanNumber(tip.tips_away);
@@ -429,11 +633,75 @@ function calculateScore(rows, matchesById, resultsById, outcomeRules, diffRules,
   return { points, exact, outcome, diff, underdog };
 }
 
+function getNextThreeTips(latestRows, matches, resultsById){
+  const matchRows = latestRows.filter(row => row.type === "match");
+
+  const unplayedMatches = matches.filter(match => {
+    const matchId = String(match.id || match.match_id || "").trim();
+    const result = resultsById[matchId];
+    return !hasResult(result);
+  });
+
+  return unplayedMatches.slice(0,3).map(match => {
+    const matchId = String(match.id || match.match_id || "").trim();
+
+    const tip = matchRows.find(row =>
+      String(row.match_id || row.id || "").trim() === matchId
+    );
+
+    return {
+      home: match.home || "",
+      away: match.away || "",
+      date: match.date || match.dato || "",
+      tips_home: tip ? tip.tips_home : "",
+      tips_away: tip ? tip.tips_away : ""
+    };
+  });
+}
+
+function getPrizeForPlace(index, prizePool){
+  const prizes = [
+    { label:"1. premie", percent:0.50 },
+    { label:"2. premie", percent:0.30 },
+    { label:"3. premie", percent:0.20 }
+  ];
+
+  const prize = prizes[index];
+  if(!prize) return "";
+
+  const amount = Math.round(prizePool * prize.percent);
+
+  return `
+    <div class="tag prize-tag">
+      💰 ${prize.label}: ${amount.toLocaleString("no-NO")} kr
+    </div>
+  `;
+}
+
 function getMedal(index){
   if(index === 0) return "🥇";
   if(index === 1) return "🥈";
   if(index === 2) return "🥉";
   return `${index + 1}.`;
+}
+
+function renderNextTips(row){
+  if(!tipsAreLocked()) return "";
+  if(!row.nextTips || row.nextTips.length === 0) return "";
+
+  return `
+    <div class="next-tips">
+      <div class="next-tips-title">Neste 3 tips</div>
+      ${row.nextTips.map(tip => `
+        <div class="next-tip-row">
+          <span>${tip.home}–${tip.away}</span>
+          <span class="next-tip-score">
+            ${tip.tips_home !== "" && tip.tips_away !== "" ? `${tip.tips_home}-${tip.tips_away}` : "—"}
+          </span>
+        </div>
+      `).join("")}
+    </div>
+  `;
 }
 
 async function loadLeaderboard(){
@@ -476,7 +744,6 @@ async function loadLeaderboard(){
 
     registrations.forEach(row => {
       const phone = String(row.phone || "").trim();
-
       if(!phone) return;
 
       if(!uniqueMap.has(phone)){
@@ -493,15 +760,9 @@ async function loadLeaderboard(){
     const players = [...uniqueMap.values()]
       .filter(player => player.name);
 
-    const completedPhones = new Set();
-
     const rows = players.map(player => {
       const latestRows = getLatestSubmissionRowsForPhone(submissions, player.phone);
       const complete = isSubmissionComplete(latestRows, matches.length);
-
-      if(complete){
-        completedPhones.add(player.phone);
-      }
 
       const score = calculateScore(
         latestRows,
@@ -515,7 +776,8 @@ async function loadLeaderboard(){
       return {
         ...player,
         ...score,
-        complete
+        complete,
+        nextTips:getNextThreeTips(latestRows, matches, resultsById)
       };
     }).sort((a,b) =>
       cleanNumber(b.points) - cleanNumber(a.points) ||
@@ -532,8 +794,36 @@ async function loadLeaderboard(){
     const missingCount = Math.max(0, registeredCount - completedCount);
     const paidPlayers = Math.max(0, registeredCount - FREE_ENTRIES);
     const prizePool = paidPlayers * BUY_IN;
+    const playedCount = Object.values(resultsById).filter(hasResult).length;
+    const totalExact = rows.reduce((sum,row) => sum + cleanNumber(row.exact),0);
+    const leaderPoints = rows[0] ? cleanNumber(rows[0].points) : 0;
 
-    statusBox.innerHTML = `
+    statusBox.innerHTML = tipsAreLocked() ? `
+      <div class="status-card">
+        <strong>${registeredCount}</strong>
+        <span>Deltakere</span>
+      </div>
+
+      <div class="status-card">
+        <strong>${playedCount}</strong>
+        <span>Kamper spilt</span>
+      </div>
+
+      <div class="status-card" style="background:rgba(255,209,102,0.12);border-color:rgba(255,209,102,0.25);">
+        <strong style="color:#ffd166;">${prizePool.toLocaleString("no-NO")} kr</strong>
+        <span>Premiepott</span>
+      </div>
+
+      <div class="status-card" style="background:rgba(46,204,113,0.14);border-color:rgba(46,204,113,0.25);">
+        <strong style="color:#9dffc7;">${leaderPoints}</strong>
+        <span>Lederpoeng</span>
+      </div>
+
+      <div class="status-card">
+        <strong>${totalExact}</strong>
+        <span>Eksakte treff totalt</span>
+      </div>
+    ` : `
       <div class="status-card">
         <strong>${registeredCount}</strong>
         <span>Registrerte</span>
@@ -560,7 +850,7 @@ async function loadLeaderboard(){
       </div>
     `;
 
-    if(missingNames.length > 0){
+    if(!tipsAreLocked() && missingNames.length > 0){
       missingBox.style.display = "block";
       missingBox.innerHTML = `
         <strong style="color:#ffb4b4;">Mangler fullført tips:</strong>
@@ -585,7 +875,7 @@ async function loadLeaderboard(){
 
     rows.forEach((row,index) => {
       container.innerHTML += `
-        <div class="player-card">
+        <div class="player-card ${index < 3 ? `top-${index + 1}` : ""}">
           <div class="player-grid">
             <div class="medal">${getMedal(index)}</div>
 
@@ -595,29 +885,36 @@ async function loadLeaderboard(){
               </a>
 
               <div class="small-note">
-                ${row.complete ? "Tips levert" : "Ikke fullført tips"}
+                ${tipsAreLocked() ? "VM-modus" : (row.complete ? "Tips levert" : "Ikke fullført tips")}
               </div>
 
               <div class="tags">
+                ${getPrizeForPlace(index, prizePool)}
                 <div class="tag">🎯 ${cleanNumber(row.exact)} eksakte</div>
                 <div class="tag">⚽ ${cleanNumber(row.outcome)} riktige utfall</div>
                 <div class="tag">📏 ${cleanNumber(row.diff)} diff</div>
                 <div class="tag">🔥 ${cleanNumber(row.underdog)} outsider</div>
               </div>
+
+              ${renderNextTips(row)}
             </div>
 
-            <div class="points">${cleanNumber(row.points)}</div>
+            <div class="points">
+              ${cleanNumber(row.points)}
+              <span>poeng</span>
+            </div>
           </div>
         </div>
       `;
     });
-document.getElementById("lastUpdated").textContent =
-  "Sist oppdatert: " +
-  new Date().toLocaleTimeString("no-NO",{
-    hour:"2-digit",
-    minute:"2-digit",
-    second:"2-digit"
-  });
+
+    document.getElementById("lastUpdated").textContent =
+      "Sist oppdatert: " +
+      new Date().toLocaleTimeString("no-NO",{
+        hour:"2-digit",
+        minute:"2-digit",
+        second:"2-digit"
+      });
   }catch(error){
     container.innerHTML = `<div style="color:#ff8080;">Klarte ikke å laste leaderboard.</div>`;
     console.error(error);
