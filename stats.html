@@ -674,27 +674,30 @@ async function loadStats(){
       </div>
 
       <div class="card">
-        <h2 class="section-title">Datagrunnlag</h2>
+  <h2 class="section-title">Nerdehjørnet</h2>
 
-        <div class="grid">
-          <div class="stat-box">
-            <strong>${matches.length}</strong>
-            <span>kamper i systemet</span>
-          </div>
+  <div class="grid">
+    <div class="stat-box">
+      <strong>${matches.length}</strong>
+      <span>kamper i systemet</span>
+    </div>
 
-          <div class="stat-box">
-            <strong>${submissions.length}</strong>
-            <span>rader i API_SUBMISSIONS</span>
-          </div>
+    <div class="stat-box">
+      <strong>${playedMatches}</strong>
+      <span>kamper med resultat</span>
+    </div>
 
-          <div class="stat-box">
-            <strong>${BUY_IN}</strong>
-            <span>kroner buy in</span>
-          </div>
+    <div class="stat-box">
+      <strong>${totalUnderdog}</strong>
+      <span>outsider-treff totalt</span>
+    </div>
 
-          <div class="stat-box">
-            <strong>${FREE_ENTRIES}</strong>
-            <span>gratisplass</span>
+    <div class="stat-box">
+      <strong>${Math.round(totalPoints / Math.max(1, playedMatches))}</strong>
+      <span>poeng per kampdag-ish</span>
+    </div>
+  </div>
+</div>
           </div>
         </div>
       </div>
