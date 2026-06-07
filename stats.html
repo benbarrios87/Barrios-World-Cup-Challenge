@@ -535,8 +535,6 @@ async function loadStats(){
     );
 
     const registeredCount = rows.length;
-    const completedCount = rows.filter(row => row.complete).length;
-    const missingCount = Math.max(0, registeredCount - completedCount);
     const paidPlayers = Math.max(0, registeredCount - FREE_ENTRIES);
     const pot = paidPlayers * BUY_IN;
 
@@ -552,10 +550,6 @@ async function loadStats(){
     const underdogLeader = getLeader(rows,"underdog");
     const diffLeader = getLeader(rows,"diff");
 
-    const missingNames = rows
-      .filter(row => !row.complete)
-      .map(row => row.name);
-
     content.innerHTML = `
       <div class="card">
         <div class="grid">
@@ -567,11 +561,6 @@ async function loadStats(){
           <div class="stat-box">
             <strong>${completedCount}</strong>
             <span>har fullført tips</span>
-          </div>
-
-          <div class="stat-box">
-            <strong>${missingCount}</strong>
-            <span>mangler fullført tips</span>
           </div>
 
           <div class="stat-box">
@@ -659,18 +648,6 @@ async function loadStats(){
           <h2 class="section-title">Flest diff-treff</h2>
           ${topRows(rows,"diff","diff")}
         </div>
-      </div>
-
-      <div class="card">
-        <h2 class="section-title">Mangler fullført tips</h2>
-
-        ${
-          missingNames.length
-          ? `<div class="pill-wrap">
-              ${missingNames.map(name => `<span class="pill">${name}</span>`).join("")}
-            </div>`
-          : `<div style="color:#9dffc7;font-weight:bold;">Alle har fullført tips. Urovekkende profesjonelt.</div>`
-        }
       </div>
 
       <div class="card">
