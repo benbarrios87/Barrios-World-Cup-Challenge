@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="no">
 <head>
@@ -21,7 +22,10 @@
   --green:#2ecc71;
   --gold:#ffd166;
   --red:#ff5e5e;
+  --blue:#7cc7ff;
 }
+
+*{ box-sizing:border-box; }
 
 body{
   margin:0;
@@ -58,6 +62,17 @@ body::before{
   padding:22px;
   position:relative;
   z-index:1;
+}
+
+.legal-box{
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.10);
+  padding:14px 18px;
+  border-radius:18px;
+  margin-bottom:18px;
+  color:rgba(255,255,255,0.75);
+  line-height:1.6;
+  font-size:14px;
 }
 
 .hero{
@@ -153,6 +168,8 @@ body::before{
 .cta-main{
   background:linear-gradient(135deg,var(--green),#7dffba);
   color:#07111f;
+  border:none;
+  cursor:pointer;
 }
 
 .cta-secondary{
@@ -316,13 +333,46 @@ body::before{
   line-height:1.45;
 }
 
-.footer-note{
-  color:var(--muted);
-  text-align:center;
-  font-size:13px;
-  margin-top:20px;
+.vm-hub{
+  display:none;
 }
-.today-match{
+
+.hub-hero{
+  position:relative;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at top right, rgba(255,209,102,0.22), transparent 34%),
+    linear-gradient(135deg, rgba(7,14,28,0.94), rgba(7,14,28,0.70));
+  border:1px solid rgba(255,209,102,0.22);
+}
+
+.hub-kicker{
+  color:#9dffc7;
+  font-size:12px;
+  font-weight:bold;
+  letter-spacing:1px;
+  margin-bottom:9px;
+}
+
+.hub-title{
+  margin:0 0 8px;
+  font-size:34px;
+  line-height:1.1;
+}
+
+.hub-text{
+  margin:0;
+  color:var(--muted);
+  line-height:1.55;
+}
+
+.hub-grid{
+  display:grid;
+  grid-template-columns:1.25fr 0.75fr;
+  gap:18px;
+}
+
+.next-match{
   background:rgba(255,255,255,0.07);
   border:1px solid rgba(255,255,255,0.12);
   border-radius:18px;
@@ -330,32 +380,32 @@ body::before{
   margin-top:12px;
 }
 
-.today-match-top{
+.next-match-top{
   display:flex;
   justify-content:space-between;
   gap:12px;
   align-items:flex-start;
 }
 
-.today-match-name{
+.next-match-name{
   font-weight:bold;
   font-size:18px;
 }
 
-.today-match-date{
+.next-match-date{
   color:var(--muted);
   font-size:13px;
   margin-top:4px;
 }
 
-.today-tip{
+.next-tip{
   font-size:22px;
   font-weight:bold;
   color:var(--gold);
   white-space:nowrap;
 }
 
-.today-pill{
+.next-pill{
   display:inline-block;
   margin-top:10px;
   background:rgba(255,209,102,0.13);
@@ -367,16 +417,54 @@ body::before{
   font-weight:bold;
 }
 
-@media(max-width:600px){
-  .today-match-top{
-    display:block;
-  }
-
-  .today-tip{
-    margin-top:8px;
-  }
+.phone-box{
+  margin-top:14px;
 }
-  
+
+.phone-input{
+  width:100%;
+  box-sizing:border-box;
+  padding:15px;
+  border-radius:16px;
+  border:none;
+  font-size:16px;
+  margin-bottom:10px;
+}
+
+.hub-links{
+  display:grid;
+  gap:12px;
+}
+
+.hub-link{
+  display:block;
+  text-decoration:none;
+  color:white;
+  padding:18px;
+  border-radius:18px;
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.12);
+}
+
+.hub-link strong{
+  display:block;
+  font-size:18px;
+  margin-bottom:5px;
+}
+
+.hub-link span{
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.45;
+}
+
+.footer-note{
+  color:var(--muted);
+  text-align:center;
+  font-size:13px;
+  margin-top:20px;
+}
+
 @media(max-width:800px){
   .hero{
     grid-template-columns:1fr;
@@ -392,7 +480,8 @@ body::before{
     font-size:16px;
   }
 
-  .sell-grid{
+  .sell-grid,
+  .hub-grid{
     grid-template-columns:1fr;
   }
 
@@ -402,6 +491,16 @@ body::before{
 
   .menu-grid{
     grid-template-columns:1fr;
+  }
+}
+
+@media(max-width:600px){
+  .next-match-top{
+    display:block;
+  }
+
+  .next-tip{
+    margin-top:8px;
   }
 }
 
@@ -419,7 +518,8 @@ body::before{
     border-radius:20px;
   }
 
-  .sell-card h2{
+  .sell-card h2,
+  .hub-title{
     font-size:25px;
   }
 
@@ -441,16 +541,7 @@ body::before{
 
 <div class="wrapper">
 
-  <div style="
-  background:rgba(255,255,255,0.06);
-  border:1px solid rgba(255,255,255,0.10);
-  padding:14px 18px;
-  border-radius:18px;
-  margin-bottom:18px;
-  color:rgba(255,255,255,0.75);
-  line-height:1.6;
-  font-size:14px;
-  ">
+  <div class="legal-box">
     FC Barrios World Cup Challenge er et privat hobbyprosjekt og en sosial VM-konkurranse mellom venner, bekjente og fotballinteresserte. Nettsiden drives ikke kommersielt.
   </div>
 
@@ -464,156 +555,211 @@ body::before{
     <div>
       <div class="badge">VM 2026</div>
       <h1>FC Barrios World Cup Challenge</h1>
-      <p class="hero-subtitle">
+      <p id="heroSubtitle" class="hero-subtitle">
         Tipp hele VM. Jakt eksakte resultater. Treff outsiders. Klatre på leaderboardet.
       </p>
     </div>
   </div>
 
-  <div class="card sell-grid">
+  <div id="preLaunchContent">
 
-    <div class="sell-card">
+    <div class="card sell-grid">
+      <div class="sell-card">
+        <h2>Dette er ikke bare VM-tipping.</h2>
 
-      <h2>Dette er ikke bare VM-tipping.</h2>
+        <p>
+          FC Barrios World Cup Challenge er bygget for å gjøre absolutt alle VM-kamper spennende,
+          også de du vanligvis aldri hadde brydd deg om. (Ja. Til og med Uzbekistan-DR Congo 🤭)
+        </p>
 
-      <p>
-        FC Barrios World Cup Challenge er bygget for å gjøre absolutt alle VM-kamper spennende,
-        også de du vanligvis aldri hadde brydd deg om. (Ja. Til og med Uzbekistan-DR Congo 🤭)
-      </p>
+        <p>
+          Alle lag er delt inn i fire nivåer basert på ranking og styrke. Treffer du en trygg favoritt,
+          får du poeng. Treffer du en outsider, får du mer.
+        </p>
 
-      <p>
-        Alle lag er delt inn i fire nivåer basert på ranking og styrke. Treffer du en trygg favoritt,
-        får du poeng. Treffer du en outsider, får du mer.
-      </p>
+        <p>
+          Det betyr at modige tips faktisk belønnes, og at hver eneste kamp kan snu leaderboardet på hodet.
+        </p>
 
-      <p>
-        Det betyr at modige tips faktisk belønnes, og at hver eneste kamp kan snu leaderboardet på hodet.
-      </p>
+        <p>
+          Hele dette konseptet er 100% utviklet av undertegnede, og har surret rundt i hodet mitt siden forrige mesterskap.
+        </p>
 
-      <p>
-        Hele dette konseptet er 100% utviklet av undertegnede, og har surret rundt i hodet mitt siden forrige mesterskap.
-      </p>
+        <p>
+          <span class="highlight">Deltageravgift er 600 kr.</span>
+          Premieordning og praktisk info følges opp nærmere turneringsstart.
+        </p>
 
-      <p>
-        <span class="highlight">Deltageravgift er 600 kr.</span>
-        Premieordning og praktisk info følges opp nærmere turneringsstart.
-      </p>
-
-      <div class="cta-row">
-        <a class="cta-main" href="registrer.html">Meld meg på</a>
-        <a class="cta-secondary" href="premier.html">Se foreløpig premiepool</a>
+        <div class="cta-row">
+          <a class="cta-main" href="registrer.html">Meld meg på</a>
+          <a class="cta-secondary" href="premier.html">Se foreløpig premiepool</a>
+        </div>
       </div>
 
+      <div class="countdown-card">
+        <div class="countdown-title">Tid igjen til tipsfristen</div>
+
+        <div class="countdown" id="countdown">
+          <div class="time-box">
+            <strong id="days">--</strong>
+            <span>dager</span>
+          </div>
+
+          <div class="time-box">
+            <strong id="hours">--</strong>
+            <span>timer</span>
+          </div>
+
+          <div class="time-box">
+            <strong id="minutes">--</strong>
+            <span>minutter</span>
+          </div>
+
+          <div class="time-box">
+            <strong id="seconds">--</strong>
+            <span>sekunder</span>
+          </div>
+        </div>
+
+        <div class="deadline-text">
+          Tipsfrist: 11. juni 2026 kl. 18:00.
+        </div>
+      </div>
     </div>
 
-    <div class="countdown-card">
-      <div class="countdown-title">Tid igjen til tipsfristen</div>
+    <div class="live-pool-card">
+      <div class="live-label">LIVE STATUS</div>
 
-      <div class="countdown" id="countdown">
-        <div class="time-box">
-          <strong id="days">--</strong>
-          <span>dager</span>
-        </div>
-
-        <div class="time-box">
-          <strong id="hours">--</strong>
-          <span>timer</span>
-        </div>
-
-        <div class="time-box">
-          <strong id="minutes">--</strong>
-          <span>minutter</span>
-        </div>
-
-        <div class="time-box">
-          <strong id="seconds">--</strong>
-          <span>sekunder</span>
-        </div>
+      <div class="live-pool-main">
+        <span id="livePlayers">--</span> deltakere
       </div>
 
-      <div class="deadline-text">
-        Tipsfrist: 11. juni 2026 kl. 18:00.
+      <div class="live-pool-pot">
+        Foreløpig premiepool:
+        <strong id="livePot">-- kr</strong>
+      </div>
+
+      <div class="live-pool-sub">
+        Deltagerstatus oppdateres automatisk.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="quick-points">
+        <div class="point">
+          <strong>600 kr deltageravgift</strong>
+          <span>Én enkel inngang. Foreløpig premiepool regnes automatisk.</span>
+        </div>
+
+        <div class="point">
+          <strong>Live leaderboard</strong>
+          <span>Følg hvem som leder, jager og kollapser gjennom VM.</span>
+        </div>
+
+        <div class="point">
+          <strong>Outsiderpoeng</strong>
+          <span>Du belønnes ekstra når du treffer de modige tipsene.</span>
+        </div>
+
+        <div class="point">
+          <strong>Tips senere</strong>
+          <span>Registrer deg nå. Selve tipsene kan leveres før fristen.</span>
+        </div>
       </div>
     </div>
 
   </div>
 
-  <div class="live-pool-card">
-  <div class="live-label">LIVE STATUS</div>
+  <div id="vmHub" class="vm-hub">
 
-  <div class="live-pool-main">
-    <span id="livePlayers">--</span> deltakere
-  </div>
-
-  <div class="live-pool-pot">
-    Foreløpig premiepool:
-    <strong id="livePot">-- kr</strong>
-  </div>
-
-  <div class="live-pool-sub">
-    Buy in: 600 kr • 1 gratisplass til arrangør.
-  </div>
-</div>
-
-<div id="todayCard" class="card today-card" style="display:none;">
-  <h2 style="margin-top:0;">🔥 Dine tips i dag</h2>
-
-  <div id="todayIntro" class="message">
-    Laster dagens kamper...
-  </div>
-
-  <div id="todayPhoneBox" style="display:none;margin-top:14px;">
-    <input
-      id="todayPhoneInput"
-      type="tel"
-      maxlength="8"
-      inputmode="numeric"
-      placeholder="Skriv telefonnummeret ditt"
-      style="width:100%;box-sizing:border-box;padding:15px;border-radius:16px;border:none;font-size:16px;margin-bottom:10px;"
-    >
-
-    <button class="cta-main" style="border:none;cursor:pointer;" onclick="loadTodayTipsFromPhone()">
-      Hent dagens tips
-    </button>
-  </div>
-
-  <div id="todayMatches"></div>
-</div>
-  <div class="card">
-    <div class="quick-points">
-
-      <div class="point">
-        <strong>600 kr deltageravgift</strong>
-        <span>Én enkel inngang. Foreløpig premiepool regnes automatisk.</span>
-      </div>
-
-      <div class="point">
-        <strong>Live leaderboard</strong>
-        <span>Følg hvem som leder, jager og kollapser gjennom VM.</span>
-      </div>
-
-      <div class="point">
-        <strong>Outsiderpoeng</strong>
-        <span>Du belønnes ekstra når du treffer de modige tipsene.</span>
-      </div>
-
-      <div class="point">
-        <strong>Tips senere</strong>
-        <span>Registrer deg nå. Selve tipsene kan leveres før fristen.</span>
-      </div>
-
+    <div class="card hub-hero">
+      <div class="hub-kicker">VM-MODUS ER I GANG</div>
+      <h2 id="hubGreeting" class="hub-title">Velkommen til kampdag.</h2>
+      <p class="hub-text">
+        Forsiden viser nå det folk faktisk trenger under VM: dine neste tips, kjappe snarveier og veien videre inn i kaoset.
+      </p>
     </div>
+
+    <div class="hub-grid">
+      <div class="card">
+        <h2 style="margin-top:0;">🔥 Dine neste 3 tips</h2>
+
+        <div id="nextIntro" class="hub-text">
+          Laster neste kamper...
+        </div>
+
+        <div id="phoneBox" class="phone-box" style="display:none;">
+          <input
+            id="phoneInput"
+            class="phone-input"
+            type="tel"
+            maxlength="8"
+            inputmode="numeric"
+            placeholder="Skriv telefonnummeret ditt"
+          >
+
+          <button class="cta-main" onclick="loadNextTipsFromPhone()">
+            Hent mine tips
+          </button>
+        </div>
+
+        <div id="nextMatches"></div>
+      </div>
+
+      <div class="card">
+        <h2 style="margin-top:0;">⚡ Kjapp tilgang</h2>
+
+        <div class="hub-links">
+          <a class="hub-link" href="leaderboard.html">
+            <strong>🏆 Leaderboard</strong>
+            <span>Se hvem som leder, hvem som jager og hvem som allerede angrer.</span>
+          </a>
+
+          <a class="hub-link" href="minetips.html">
+            <strong>🧠 Mine tips</strong>
+            <span>Se hele innleveringen din og status på kampene.</span>
+          </a>
+
+          <a class="hub-link" href="stats.html">
+            <strong>📊 Stats</strong>
+            <span>Eksakte treff, outsider-konger og annen deilig VM-nerding.</span>
+          </a>
+
+          <a class="hub-link" href="sluttspill.html">
+            <strong>🏆 Sluttspill</strong>
+            <span>Veien fra Round of 32 til finalen.</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="live-pool-card">
+      <div class="live-label">LIVE STATUS</div>
+
+      <div class="live-pool-main">
+        <span id="livePlayersVm">--</span> deltakere
+      </div>
+
+      <div class="live-pool-pot">
+        Premiepool:
+        <strong id="livePotVm">-- kr</strong>
+      </div>
+
+      <div class="live-pool-sub">
+        Oppdateres automatisk. Sjekk leaderboard for stillingen.
+      </div>
+    </div>
+
   </div>
 
   <div class="card">
     <div class="menu-grid">
-
-      <a class="menu-link primary" href="registrer.html">
+      <a id="registerLink" class="menu-link primary" href="registrer.html">
         <strong>📝 Meld meg på</strong>
         <span>Registrer deg til FC Barrios World Cup Challenge 2026. Deltageravgift er 600 kr.</span>
       </a>
 
-      <a class="menu-link" href="tips.html">
+      <a id="tipsLink" class="menu-link" href="tips.html">
         <strong>⚽ Innlevering av tips</strong>
         <span>Fyll inn resultatene dine for kampene. Tipsene må leveres før VM starter.</span>
       </a>
@@ -625,7 +771,7 @@ body::before{
 
       <a class="menu-link" href="premier.html">
         <strong>💰 Premie</strong>
-        <span>Se dynamiske premier, deltageravgift og fordeling basert på antall deltakere.</span>
+        <span>Se dynamiske premier og fordeling basert på antall deltakere.</span>
       </a>
 
       <a class="menu-link" href="leaderboard.html">
@@ -635,7 +781,7 @@ body::before{
 
       <a class="menu-link" href="stats.html">
         <strong>📊 Stats</strong>
-        <span>Et fremtidig statsrom for treffprosent, underdog-konger og eksakte resultater.</span>
+        <span>Statsrom for treffprosent, underdog-konger og eksakte resultater.</span>
       </a>
 
       <a class="menu-link" href="sluttspill.html">
@@ -645,9 +791,8 @@ body::before{
 
       <a class="menu-link" href="tiers.html">
         <strong>🌍 Lagtiers</strong>
-        <span>Se hvilke lag som er i tier 1, 2, 3 og 4 basert på FIFA-ranking og styrke.</span>
+        <span>Se hvilke lag som er i tier 1, 2, 3 og 4.</span>
       </a>
-
     </div>
   </div>
 
@@ -658,17 +803,50 @@ body::before{
 </div>
 
 <script>
+const SHEET_ID = "1Ud5i11MEUXwvKDDsfyxvNIdyJgMbY_pS50BkecyzhDo";
+
 const DEADLINE = new Date("2026-06-11T18:00:00+02:00");
+const VM_HUB_START = new Date("2026-06-11T20:00:00+02:00");
+
+const REGISTRATIONS_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_REGISTRATIONS`;
+const MATCHES_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_MATCHES`;
+const SUBMISSIONS_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_SUBMISSIONS`;
+const RESULTS_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_RESULTS`;
+const OUTCOME_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_OUTCOME`;
+const DIFF_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_DIFF`;
+const EXACT_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_EXACT`;
+
+const BUY_IN = 600;
+const FREE_ENTRIES = 1;
+
+let matchesCache = [];
+let submissionsCache = [];
+let resultsById = {};
+let outcomeRules = [];
+let diffRules = [];
+let exactRules = [];
+let registrationsCache = [];
+
+function isVmHubMode(){
+  return new Date() >= VM_HUB_START;
+}
 
 function updateCountdown(){
+  const daysEl = document.getElementById("days");
+  const hoursEl = document.getElementById("hours");
+  const minutesEl = document.getElementById("minutes");
+  const secondsEl = document.getElementById("seconds");
+
+  if(!daysEl || !hoursEl || !minutesEl || !secondsEl) return;
+
   const now = new Date();
   const diff = DEADLINE - now;
 
   if(diff <= 0){
-    document.getElementById("days").textContent = "0";
-    document.getElementById("hours").textContent = "0";
-    document.getElementById("minutes").textContent = "0";
-    document.getElementById("seconds").textContent = "0";
+    daysEl.textContent = "0";
+    hoursEl.textContent = "0";
+    minutesEl.textContent = "0";
+    secondsEl.textContent = "0";
     return;
   }
 
@@ -678,68 +856,11 @@ function updateCountdown(){
   const minutes = Math.floor((totalSeconds % 3600) / 60);
   const seconds = totalSeconds % 60;
 
-  document.getElementById("days").textContent = days;
-  document.getElementById("hours").textContent = hours;
-  document.getElementById("minutes").textContent = minutes;
-  document.getElementById("seconds").textContent = seconds;
+  daysEl.textContent = days;
+  hoursEl.textContent = hours;
+  minutesEl.textContent = minutes;
+  secondsEl.textContent = seconds;
 }
-
-updateCountdown();
-setInterval(updateCountdown, 1000);
-
-const LEADERBOARD_URL = "https://opensheet.elk.sh/1Ud5i11MEUXwvKDDsfyxvNIdyJgMbY_pS50BkecyzhDo/API_REGISTRATIONS";
-
-const BUY_IN = 600;
-const FREE_ENTRIES = 1;
-
-async function loadLivePool(){
-  const livePlayers = document.getElementById("livePlayers");
-  const livePot = document.getElementById("livePot");
-
-  try{
-    const res = await fetch(LEADERBOARD_URL, {
-      cache: "no-store"
-    });
-
-    const data = await res.json();
-
-    if(!Array.isArray(data)){
-      throw new Error("Data fra Opensheet er ikke en liste");
-    }
-
-    const players = data.filter(row =>
-      Object.values(row).some(value => String(value).trim() !== "")
-    );
-
-    const totalPlayers = players.length;
-    const paidPlayers = Math.max(0, totalPlayers - FREE_ENTRIES);
-    const pot = paidPlayers * BUY_IN;
-
-    livePlayers.textContent = totalPlayers;
-    livePot.textContent = pot.toLocaleString("no-NO") + " kr";
-
-  }catch(err){
-    console.log("Kunne ikke hente live status:", err);
-
-    livePlayers.textContent = "Kunne ikke hente";
-    livePot.textContent = "-- kr";
-  }
-}
-
-loadLivePool();
-  const SHEET_ID = "1Ud5i11MEUXwvKDDsfyxvNIdyJgMbY_pS50BkecyzhDo";
-
-const MATCHES_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_MATCHES`;
-const SUBMISSIONS_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_SUBMISSIONS`;
-const OUTCOME_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_OUTCOME`;
-const DIFF_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_DIFF`;
-const EXACT_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_EXACT`;
-
-let todayMatchesCache = [];
-let todaySubmissionsCache = [];
-let todayOutcomeRules = [];
-let todayDiffRules = [];
-let todayExactRules = [];
 
 function normalizeRow(row){
   const clean = {};
@@ -759,7 +880,7 @@ function normalizeRow(row){
   return clean;
 }
 
-async function fetchSheetToday(url){
+async function fetchSheet(url){
   try{
     const response = await fetch(url, { cache:"no-store" });
     const data = await response.json();
@@ -828,7 +949,7 @@ function getMaxPossiblePoints(tip, match){
   const tierDiff = Math.abs(parseTier(match.tier_home) - parseTier(match.tier_away));
   const tierType = getTierType(match, tipOutcome);
 
-  return getRulePoint(todayExactRules, tierDiff, tierType);
+  return getRulePoint(exactRules, tierDiff, tierType);
 }
 
 function getSavedPhone(){
@@ -838,22 +959,6 @@ function getSavedPhone(){
   }catch(error){
     return "";
   }
-}
-
-function isToday(match){
-  const raw = String(match.date || match.dato || "").trim();
-
-  if(!raw) return false;
-
-  const today = new Date();
-  const dd = String(today.getDate()).padStart(2,"0");
-  const mm = String(today.getMonth() + 1).padStart(2,"0");
-  const yyyy = today.getFullYear();
-
-  const noDate = `${dd}.${mm}.${yyyy}`;
-  const isoDate = `${yyyy}-${mm}-${dd}`;
-
-  return raw.includes(noDate) || raw.includes(isoDate);
 }
 
 function getLatestRowsForPhone(rows, phone){
@@ -870,30 +975,77 @@ function getLatestRowsForPhone(rows, phone){
   );
 }
 
-function renderTodayWithoutPhone(){
-  document.getElementById("todayIntro").innerHTML =
-    "Skriv inn telefonnummeret ditt for å se hva du har tippet på dagens kamper.";
+function getNameForPhone(phone){
+  const person = registrationsCache.find(row =>
+    String(row.phone || "").trim() === String(phone || "").trim()
+  );
 
-  document.getElementById("todayPhoneBox").style.display = "block";
-  document.getElementById("todayMatches").innerHTML = "";
+  if(!person) return "";
+
+  return (
+    person.full_name ||
+    person["full name"] ||
+    `${person.first_name || person["first name"] || ""} ${person.last_name || person["last name"] || ""}`.trim()
+  );
 }
 
-function renderTodayTips(phone){
-  const todayBox = document.getElementById("todayMatches");
-  const todayIntro = document.getElementById("todayIntro");
+function hasResult(matchId){
+  const result = resultsById[matchId];
 
-  const latestRows = getLatestRowsForPhone(todaySubmissionsCache, phone);
+  return result &&
+    result.actual_home !== "" &&
+    result.actual_home !== undefined &&
+    result.actual_away !== "" &&
+    result.actual_away !== undefined;
+}
+
+function getNextThreeMatches(){
+  return [...matchesCache]
+    .sort((a,b) => cleanNumber(a.id || a.match_id) - cleanNumber(b.id || b.match_id))
+    .filter(match => {
+      const matchId = String(match.id || match.match_id || "").trim();
+      return matchId && !hasResult(matchId);
+    })
+    .slice(0,3);
+}
+
+function renderNextWithoutPhone(){
+  document.getElementById("nextIntro").innerHTML =
+    "Skriv inn telefonnummeret ditt for å se tipsene dine på de neste kampene.";
+
+  document.getElementById("phoneBox").style.display = "block";
+  document.getElementById("nextMatches").innerHTML = "";
+}
+
+function renderNextTips(phone){
+  const nextBox = document.getElementById("nextMatches");
+  const nextIntro = document.getElementById("nextIntro");
+  const phoneBox = document.getElementById("phoneBox");
+  const greeting = document.getElementById("hubGreeting");
+
+  const latestRows = getLatestRowsForPhone(submissionsCache, phone);
   const matchTips = latestRows.filter(row => row.type === "match");
+  const nextMatches = getNextThreeMatches();
+  const displayName = getNameForPhone(phone);
 
-  if(todayMatchesCache.length === 0){
-    todayIntro.innerHTML = "Ingen VM-kamper registrert i dag.";
-    todayBox.innerHTML = "";
+  if(displayName){
+    greeting.textContent = `Hei ${displayName.split(" ")[0]}!`;
+  }
+
+  if(phoneBox){
+    phoneBox.style.display = "none";
+  }
+
+  if(nextMatches.length === 0){
+    nextIntro.innerHTML = "Ingen kommende kamper funnet akkurat nå.";
+    nextBox.innerHTML = "";
     return;
   }
 
-  todayIntro.innerHTML = `Du har ${todayMatchesCache.length} kamp${todayMatchesCache.length === 1 ? "" : "er"} i dag.`;
+  nextIntro.innerHTML =
+    "Her er de neste 3 kampene i systemet, med dine tips og mulig maksuttelling.";
 
-  todayBox.innerHTML = todayMatchesCache.map(match => {
+  nextBox.innerHTML = nextMatches.map(match => {
     const matchId = String(match.id || match.match_id || "").trim();
 
     const tip = matchTips.find(row =>
@@ -907,27 +1059,27 @@ function renderTodayTips(phone){
     const maxPoints = tip ? getMaxPossiblePoints(tip, match) : 0;
 
     return `
-      <div class="today-match">
-        <div class="today-match-top">
+      <div class="next-match">
+        <div class="next-match-top">
           <div>
-            <div class="today-match-name">${match.home || ""} - ${match.away || ""}</div>
-            <div class="today-match-date">${match.date || match.dato || ""}</div>
+            <div class="next-match-name">${match.home || ""} - ${match.away || ""}</div>
+            <div class="next-match-date">${match.date || match.dato || ""}</div>
           </div>
 
-          <div class="today-tip">${tipText}</div>
+          <div class="next-tip">${tipText}</div>
         </div>
 
         ${tip
-          ? `<div class="today-pill">Maks ${maxPoints} poeng</div>`
-          : `<div class="today-pill">Ikke funnet blant dine tips</div>`
+          ? `<div class="next-pill">Maks ${maxPoints} poeng</div>`
+          : `<div class="next-pill">Ikke funnet blant dine tips</div>`
         }
       </div>
     `;
   }).join("");
 }
 
-function loadTodayTipsFromPhone(){
-  const input = document.getElementById("todayPhoneInput");
+function loadNextTipsFromPhone(){
+  const input = document.getElementById("phoneInput");
   const phone = input.value.trim();
 
   if(!/^\d{8}$/.test(phone)){
@@ -935,51 +1087,123 @@ function loadTodayTipsFromPhone(){
     return;
   }
 
-  renderTodayTips(phone);
+  renderNextTips(phone);
 }
 
-async function initTodayCard(){
-  const todayCard = document.getElementById("todayCard");
+async function loadLivePool(){
+  const targets = [
+    {
+      players: document.getElementById("livePlayers"),
+      pot: document.getElementById("livePot")
+    },
+    {
+      players: document.getElementById("livePlayersVm"),
+      pot: document.getElementById("livePotVm")
+    }
+  ];
 
-  if(new Date() < DEADLINE){
-    todayCard.style.display = "none";
+  try{
+    const registrations = registrationsCache.length
+      ? registrationsCache
+      : await fetchSheet(REGISTRATIONS_URL);
+
+    const players = registrations.filter(row =>
+      Object.values(row).some(value => String(value).trim() !== "")
+    );
+
+    const totalPlayers = players.length;
+    const paidPlayers = Math.max(0, totalPlayers - FREE_ENTRIES);
+    const pot = paidPlayers * BUY_IN;
+
+    targets.forEach(target => {
+      if(target.players) target.players.textContent = totalPlayers;
+      if(target.pot) target.pot.textContent = pot.toLocaleString("no-NO") + " kr";
+    });
+
+  }catch(err){
+    console.log("Kunne ikke hente live status:", err);
+
+    targets.forEach(target => {
+      if(target.players) target.players.textContent = "Kunne ikke hente";
+      if(target.pot) target.pot.textContent = "-- kr";
+    });
+  }
+}
+
+async function initVmHub(){
+  const preLaunchContent = document.getElementById("preLaunchContent");
+  const vmHub = document.getElementById("vmHub");
+  const heroSubtitle = document.getElementById("heroSubtitle");
+  const registerLink = document.getElementById("registerLink");
+  const tipsLink = document.getElementById("tipsLink");
+
+  if(!isVmHubMode()){
+    preLaunchContent.style.display = "block";
+    vmHub.style.display = "none";
     return;
   }
 
-  todayCard.style.display = "block";
+  preLaunchContent.style.display = "none";
+  vmHub.style.display = "block";
+
+  heroSubtitle.textContent = "VM er i gang. Nå handler alt om neste kamp, neste tips og neste klatring på leaderboardet.";
+
+  if(registerLink){
+    registerLink.style.display = "none";
+  }
+
+  if(tipsLink){
+    tipsLink.style.display = "none";
+  }
 
   const [
+    registrations,
     matches,
     submissions,
-    outcomeRules,
-    diffRules,
-    exactRules
+    results,
+    outcome,
+    diff,
+    exact
   ] = await Promise.all([
-    fetchSheetToday(MATCHES_URL),
-    fetchSheetToday(SUBMISSIONS_URL),
-    fetchSheetToday(OUTCOME_URL),
-    fetchSheetToday(DIFF_URL),
-    fetchSheetToday(EXACT_URL)
+    fetchSheet(REGISTRATIONS_URL),
+    fetchSheet(MATCHES_URL),
+    fetchSheet(SUBMISSIONS_URL),
+    fetchSheet(RESULTS_URL),
+    fetchSheet(OUTCOME_URL),
+    fetchSheet(DIFF_URL),
+    fetchSheet(EXACT_URL)
   ]);
 
-  todayMatchesCache = matches.filter(isToday);
-  todaySubmissionsCache = submissions;
-  todayOutcomeRules = outcomeRules;
-  todayDiffRules = diffRules;
-  todayExactRules = exactRules;
+  registrationsCache = registrations;
+  matchesCache = matches;
+  submissionsCache = submissions;
+  outcomeRules = outcome;
+  diffRules = diff;
+  exactRules = exact;
+
+  resultsById = {};
+  results.forEach(result => {
+    const id = String(result.id || result.match_id || "").trim();
+    if(id) resultsById[id] = result;
+  });
+
+  loadLivePool();
 
   const savedPhone = getSavedPhone();
 
   if(/^\d{8}$/.test(savedPhone)){
-    document.getElementById("todayPhoneInput").value = savedPhone;
-    document.getElementById("todayPhoneBox").style.display = "none";
-    renderTodayTips(savedPhone);
+    document.getElementById("phoneInput").value = savedPhone;
+    renderNextTips(savedPhone);
   }else{
-    renderTodayWithoutPhone();
+    renderNextWithoutPhone();
   }
 }
 
-document.addEventListener("DOMContentLoaded", initTodayCard);
+updateCountdown();
+setInterval(updateCountdown, 1000);
+
+initVmHub();
+loadLivePool();
 </script>
 
 </body>
