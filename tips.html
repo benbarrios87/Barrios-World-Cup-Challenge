@@ -664,8 +664,8 @@ body::before{
     </button>
 
     <div class="submit-note">
-      Du kan endre og sende inn på nytt frem til fristen. Siste innsending gjelder.
-    </div>
+  Du kan endre og sende inn på nytt frem til fristen. Siste innsending gjelder. Det kan ta noen minutter før tipsene vises på Mine tips og leaderboard.
+</div>
   </div>
 
 </div>
@@ -1231,9 +1231,6 @@ async function loadDraftFromSheet(){
       const awayInput = document.querySelector(
         `input[data-match-id="${matchId}"][data-side="away"]`
       );
-console.log("MATCH ID", matchId);
-console.log("HOME INPUT", homeInput);
-console.log("AWAY INPUT", awayInput);
       
       if(homeInput) homeInput.value = row.tips_home || "";
       if(awayInput) awayInput.value = row.tips_away || "";
