@@ -1355,7 +1355,11 @@ async function submitTips(isDraft = false){
       button.textContent = originalText;
     }, 1800);
 
-    alert(isDraft ? "Kladd lagret." : "Tips sendt inn!");
+    alert(
+  isDraft
+    ? "Kladd lagret. Det kan ta litt tid før den vises andre steder."
+    : "Tips sendt inn! Det kan ta noen minutter før Mine tips og leaderboard oppdateres."
+);
   }catch(error){
     console.error(error);
     alert("Feil ved innsending: " + error.message);
