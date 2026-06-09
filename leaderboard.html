@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="no">
 <head>
@@ -328,6 +329,36 @@ body::after{
   margin-top:5px;
 }
 
+.movement-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  margin-top:8px;
+  padding:6px 10px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:bold;
+  width:max-content;
+}
+
+.movement-up{
+  background:rgba(46,204,113,0.15);
+  border:1px solid rgba(46,204,113,0.28);
+  color:#9dffc7;
+}
+
+.movement-down{
+  background:rgba(255,94,94,0.14);
+  border:1px solid rgba(255,94,94,0.28);
+  color:#ffb4b4;
+}
+
+.movement-same{
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.12);
+  color:rgba(255,255,255,0.74);
+}
+
 .next-tips{
   margin-top:13px;
   padding:12px;
@@ -578,7 +609,7 @@ function isSubmissionComplete(rows, totalMatches){
   return bestPlayerPoints === 25 && topScorerPoints === 25;
 }
 
-function calculateScore(rows, matchesById, resultsById, outcomeRules, diffRules, exactRules){
+function calculateScore(rows, matchesById, resultsById, outcomeRules, diffRules, exactRules, excludeMatchId = null){
   let points = 0;
   let exact = 0;
   let outcome = 0;
@@ -589,6 +620,11 @@ function calculateScore(rows, matchesById, resultsById, outcomeRules, diffRules,
 
   matchRows.forEach(tip => {
     const matchId = String(tip.match_id || tip.id || "").trim();
+
+    if(excludeMatchId && matchId === String(excludeMatchId)){
+      return;
+    }
+
     const match = matchesById[matchId];
     const result = resultsById[matchId];
 
@@ -704,6 +740,52 @@ function renderNextTips(row){
   `;
 }
 
+
+function getLatestPlayedMatchId(resultsById){
+  const played = Object.values(resultsById).filter(hasResult);
+
+  if(played.length === 0) return null;
+
+  const latest = played[played.length - 1];
+
+  return String(latest.id || latest.match_id || "").trim();
+}
+
+function sortLeaderboardRows(rows){
+  return [...rows].sort((a,b) =>
+    cleanNumber(b.points) - cleanNumber(a.points) ||
+    cleanNumber(b.exact) - cleanNumber(a.exact) ||
+    a.name.localeCompare(b.name,"no")
+  );
+}
+
+function getRankMap(rows){
+  const map = new Map();
+
+  rows.forEach((row,index) => {
+    map.set(row.phone, index + 1);
+  });
+
+  return map;
+}
+
+function getMovementHtml(row){
+  if(!tipsAreLocked()) return "";
+  if(row.previousRank === null || row.previousRank === undefined) return "";
+
+  const delta = row.previousRank - row.currentRank;
+
+  if(delta > 0){
+    return `<div class="movement-badge movement-up">▲ Opp ${delta}</div>`;
+  }
+
+  if(delta < 0){
+    return `<div class="movement-badge movement-down">▼ Ned ${Math.abs(delta)}</div>`;
+  }
+
+  return `<div class="movement-badge movement-same">– Uendret</div>`;
+}
+
 async function loadLeaderboard(){
   const container = document.getElementById("leaderboardContainer");
   const statusBox = document.getElementById("statusBox");
@@ -760,7 +842,9 @@ async function loadLeaderboard(){
     const players = [...uniqueMap.values()]
       .filter(player => player.name);
 
-    const rows = players.map(player => {
+    const latestPlayedMatchId = getLatestPlayedMatchId(resultsById);
+
+    const baseRows = players.map(player => {
       const latestRows = getLatestSubmissionRowsForPhone(submissions, player.phone);
       const complete = isSubmissionComplete(latestRows, matches.length);
 
@@ -773,17 +857,41 @@ async function loadLeaderboard(){
         exactRules
       );
 
+      const previousScore = latestPlayedMatchId
+        ? calculateScore(
+            latestRows,
+            matchesById,
+            resultsById,
+            outcomeRules,
+            diffRules,
+            exactRules,
+            latestPlayedMatchId
+          )
+        : score;
+
       return {
         ...player,
         ...score,
+        previousPoints:previousScore.points,
+        previousExact:previousScore.exact,
         complete,
         nextTips:getNextThreeTips(latestRows, matches, resultsById)
       };
-    }).sort((a,b) =>
-      cleanNumber(b.points) - cleanNumber(a.points) ||
-      cleanNumber(b.exact) - cleanNumber(a.exact) ||
-      a.name.localeCompare(b.name,"no")
-    );
+    });
+
+    const previousRows = sortLeaderboardRows(baseRows.map(row => ({
+      ...row,
+      points:row.previousPoints,
+      exact:row.previousExact
+    })));
+
+    const previousRankMap = getRankMap(previousRows);
+
+    const rows = sortLeaderboardRows(baseRows).map((row,index) => ({
+      ...row,
+      currentRank:index + 1,
+      previousRank:previousRankMap.get(row.phone)
+    }));
 
     const registeredCount = rows.length;
     const completedCount = rows.filter(row => row.complete).length;
@@ -887,6 +995,8 @@ async function loadLeaderboard(){
               <div class="small-note">
                 ${tipsAreLocked() ? "VM-modus" : (row.complete ? "Tips levert" : "Ikke fullført tips")}
               </div>
+
+              ${getMovementHtml(row)}
 
               <div class="tags">
                 ${getPrizeForPlace(index, prizePool)}
