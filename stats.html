@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="no">
 <head>
@@ -179,6 +180,43 @@ h1{
   font-size:13px;
 }
 
+.bonus-links{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+}
+
+.bonus-link{
+  display:block;
+  text-decoration:none;
+  color:white;
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.12);
+  border-radius:18px;
+  padding:16px;
+  transition:0.2s;
+}
+
+.bonus-link:hover{
+  transform:translateY(-2px);
+  background:rgba(255,255,255,0.13);
+}
+
+.bonus-link strong{
+  display:block;
+  font-size:18px;
+  margin-bottom:6px;
+  color:var(--gold);
+}
+
+.bonus-link span{
+  display:block;
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.45;
+}
+
+
 .loading{
   color:var(--muted);
   text-align:center;
@@ -194,7 +232,7 @@ h1{
 
 @media(max-width:850px){
   .grid{ grid-template-columns:repeat(2,1fr); }
-  .leader-grid,.split-grid{ grid-template-columns:1fr; }
+  .leader-grid,.split-grid,.bonus-links{ grid-template-columns:1fr; }
 }
 
 @media(max-width:520px){
@@ -363,7 +401,7 @@ function isSubmissionComplete(rows,totalMatches){
     .filter(row => row.type === "topscorer")
     .reduce((sum,row) => sum + cleanNumber(row.extra_points),0);
 
-  return bestTotal === 10 && scorerTotal === 10;
+  return bestTotal === 25 && scorerTotal === 25;
 }
 
 function calculatePlayer(rows,matchesById,resultsById,outcomeRules,diffRules,exactRules){
@@ -555,17 +593,22 @@ async function loadStats(){
         <div class="grid">
           <div class="stat-box">
             <strong>${registeredCount}</strong>
-            <span>registrerte deltakere</span>
-          </div>
-
-          <div class="stat-box">
-            <strong>${completedCount}</strong>
-            <span>har fullført tips</span>
+            <span>deltakere</span>
           </div>
 
           <div class="stat-box">
             <strong>${formatKr(pot)}</strong>
             <span>foreløpig premiepott</span>
+          </div>
+
+          <div class="stat-box">
+            <strong>${playedMatches}</strong>
+            <span>kamper med resultat</span>
+          </div>
+
+          <div class="stat-box">
+            <strong>${totalPoints}</strong>
+            <span>poeng delt ut</span>
           </div>
         </div>
       </div>
@@ -651,6 +694,22 @@ async function loadStats(){
       </div>
 
       <div class="card">
+        <h2 class="section-title">Bonusspill</h2>
+
+        <div class="bonus-links">
+          <a class="bonus-link" href="https://www.fotmob.com/" target="_blank" rel="noopener">
+            <strong>⚽ Se toppscorerlista</strong>
+            <span>Følg hvem som leder toppscorerjakten i VM. Åpnes i ny fane.</span>
+          </a>
+
+          <a class="bonus-link" href="https://www.fifa.com/" target="_blank" rel="noopener">
+            <strong>⭐ Se offisiell VM-info</strong>
+            <span>Offisiell FIFA-side for kampinfo, statistikk og turneringsdata.</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="card">
   <h2 class="section-title">Nerdehjørnet</h2>
 
   <div class="grid">
@@ -675,9 +734,6 @@ async function loadStats(){
     </div>
   </div>
 </div>
-          </div>
-        </div>
-      </div>
     `;
 
   }catch(error){
