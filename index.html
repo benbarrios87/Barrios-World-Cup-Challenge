@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="no">
 <head>
@@ -438,6 +439,59 @@ body::before{
   gap:12px;
 }
 
+.latest-news-card{
+  background:
+    radial-gradient(circle at top left, rgba(255,209,102,0.20), transparent 34%),
+    rgba(7,14,28,0.88);
+  border:1px solid rgba(255,209,102,0.22);
+}
+
+.news-list{
+  display:grid;
+  gap:10px;
+  margin-top:14px;
+}
+
+.news-item{
+  display:grid;
+  grid-template-columns:34px 1fr;
+  gap:10px;
+  align-items:flex-start;
+  background:rgba(255,255,255,0.07);
+  border:1px solid rgba(255,255,255,0.11);
+  border-radius:16px;
+  padding:13px;
+}
+
+.news-icon{
+  width:34px;
+  height:34px;
+  border-radius:12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:rgba(255,209,102,0.14);
+  border:1px solid rgba(255,209,102,0.22);
+  font-size:18px;
+}
+
+.news-title{
+  font-weight:bold;
+  margin-bottom:3px;
+}
+
+.news-text{
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.45;
+}
+
+.news-empty{
+  color:var(--muted);
+  line-height:1.5;
+}
+
+
 .hub-link{
   display:block;
   text-decoration:none;
@@ -682,6 +736,14 @@ body::before{
       </p>
     </div>
 
+    <div id="latestNewsCard" class="card latest-news-card">
+      <h2 style="margin-top:0;">🔥 Siste nytt</h2>
+      <div id="latestNewsIntro" class="hub-text">
+        Laster siste nytt fra VM-kaoset...
+      </div>
+      <div id="latestNewsList" class="news-list"></div>
+    </div>
+
     <div class="hub-grid">
       <div class="card">
         <h2 style="margin-top:0;">🔥 Dine neste 3 tips</h2>
@@ -817,6 +879,7 @@ const RESULTS_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_RESULTS`;
 const OUTCOME_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_OUTCOME`;
 const DIFF_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_DIFF`;
 const EXACT_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_EXACT`;
+const LEADERBOARD_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_LEADERBOARD`;
 
 const BUY_IN = 600;
 const FREE_ENTRIES = 1;
@@ -828,6 +891,7 @@ let outcomeRules = [];
 let diffRules = [];
 let exactRules = [];
 let registrationsCache = [];
+let leaderboardCache = [];
 
 function isVmHubMode(){
   return new Date() >= VM_HUB_START;
@@ -1011,6 +1075,160 @@ function getNextThreeMatches(){
     .slice(0,3);
 }
 
+
+function getPlayedResults(){
+  return Object.values(resultsById).filter(result =>
+    result &&
+    result.actual_home !== "" &&
+    result.actual_home !== undefined &&
+    result.actual_away !== "" &&
+    result.actual_away !== undefined
+  );
+}
+
+function getMatchById(matchId){
+  return matchesCache.find(match =>
+    String(match.id || match.match_id || "").trim() === String(matchId || "").trim()
+  );
+}
+
+function getLatestResultStory(){
+  const played = getPlayedResults();
+  if(played.length === 0) return null;
+
+  const latest = played[played.length - 1];
+  const matchId = String(latest.id || latest.match_id || "").trim();
+  const match = getMatchById(matchId);
+  if(!match) return null;
+
+  return {
+    icon:"⚽",
+    title:"Siste resultat",
+    text:`${match.home}–${match.away} endte ${latest.actual_home}–${latest.actual_away}. Leaderboard og stats oppdateres fortløpende.`
+  };
+}
+
+function getLeaderStory(){
+  if(!leaderboardCache.length) return null;
+
+  const leader = leaderboardCache[0];
+
+  return {
+    icon:"🏆",
+    title:"Lederen akkurat nå",
+    text:`${leader.name || "Ukjent"} leder med ${cleanNumber(leader.points || leader.score)} poeng.`
+  };
+}
+
+function getNextMatchStory(){
+  const next = getNextThreeMatches();
+  const match = next[0];
+
+  if(!match) return null;
+
+  return {
+    icon:"⏭️",
+    title:"Neste kamp",
+    text:`${match.home || ""}–${match.away || ""}${match.date || match.dato ? " • " + (match.date || match.dato) : ""}.`
+  };
+}
+
+function getRareHitStory(){
+  const latestResult = getPlayedResults().slice(-1)[0];
+
+  if(!latestResult) return null;
+
+  const matchId = String(latestResult.id || latestResult.match_id || "").trim();
+  const match = getMatchById(matchId);
+
+  if(!match) return null;
+
+  const latestByPhone = new Map();
+
+  submissionsCache.forEach(row => {
+    const phone = String(row.phone || "").trim();
+    if(!phone) return;
+    latestByPhone.set(phone, row.timestamp);
+  });
+
+  let exactHits = 0;
+
+  submissionsCache.forEach(row => {
+    if(row.type !== "match") return;
+    if(String(row.match_id || row.id || "").trim() !== matchId) return;
+
+    const phone = String(row.phone || "").trim();
+    if(!phone) return;
+
+    if(row.timestamp !== latestByPhone.get(phone)) return;
+
+    if(
+      cleanNumber(row.tips_home) === cleanNumber(latestResult.actual_home) &&
+      cleanNumber(row.tips_away) === cleanNumber(latestResult.actual_away)
+    ){
+      exactHits++;
+    }
+  });
+
+  if(exactHits === 0){
+    return {
+      icon:"😬",
+      title:"Ingen fulltreffer",
+      text:`Ingen traff eksakt resultat i ${match.home}–${match.away}.`
+    };
+  }
+
+  if(exactHits === 1){
+    return {
+      icon:"🎯",
+      title:"Én fulltreffer",
+      text:`Kun én spiller traff eksakt resultat i ${match.home}–${match.away}.`
+    };
+  }
+
+  return {
+    icon:"🎯",
+    title:"Eksakte treff",
+    text:`${exactHits} spillere traff eksakt resultat i ${match.home}–${match.away}.`
+  };
+}
+
+function renderLatestNews(){
+  const intro = document.getElementById("latestNewsIntro");
+  const list = document.getElementById("latestNewsList");
+
+  if(!intro || !list) return;
+
+  const stories = [
+    getLatestResultStory(),
+    getRareHitStory(),
+    getLeaderStory(),
+    getNextMatchStory()
+  ].filter(Boolean).slice(0,4);
+
+  if(stories.length === 0){
+    intro.innerHTML = "Siste nytt våkner når VM-resultatene begynner å tikke inn.";
+    list.innerHTML = `
+      <div class="news-empty">
+        Før første resultat vises neste kamp og dine tips under. Etter hvert kommer leder, fulltreffere og små drama her.
+      </div>
+    `;
+    return;
+  }
+
+  intro.innerHTML = "Små historier fra konkurransen, automatisk oppdatert etter hvert som resultater kommer inn.";
+
+  list.innerHTML = stories.map(story => `
+    <div class="news-item">
+      <div class="news-icon">${story.icon}</div>
+      <div>
+        <div class="news-title">${story.title}</div>
+        <div class="news-text">${story.text}</div>
+      </div>
+    </div>
+  `).join("");
+}
+
 function renderNextWithoutPhone(){
   document.getElementById("nextIntro").innerHTML =
     "Skriv inn telefonnummeret ditt for å se tipsene dine på de neste kampene.";
@@ -1165,7 +1383,8 @@ async function initVmHub(){
     results,
     outcome,
     diff,
-    exact
+    exact,
+    leaderboard
   ] = await Promise.all([
     fetchSheet(REGISTRATIONS_URL),
     fetchSheet(MATCHES_URL),
@@ -1173,7 +1392,8 @@ async function initVmHub(){
     fetchSheet(RESULTS_URL),
     fetchSheet(OUTCOME_URL),
     fetchSheet(DIFF_URL),
-    fetchSheet(EXACT_URL)
+    fetchSheet(EXACT_URL),
+    fetchSheet(LEADERBOARD_URL)
   ]);
 
   registrationsCache = registrations;
@@ -1182,6 +1402,7 @@ async function initVmHub(){
   outcomeRules = outcome;
   diffRules = diff;
   exactRules = exact;
+  leaderboardCache = leaderboard.sort((a,b) => cleanNumber(b.points || b.score) - cleanNumber(a.points || a.score));
 
   resultsById = {};
   results.forEach(result => {
@@ -1190,6 +1411,7 @@ async function initVmHub(){
   });
 
   loadLivePool();
+  renderLatestNews();
 
   const savedPhone = getSavedPhone();
 
