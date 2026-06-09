@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="no">
 <head>
@@ -8,12 +9,16 @@
 
 <style>
 :root{
-  --card:rgba(7,14,28,0.84);
+  --bg:#03100b;
+  --card:rgba(5,18,13,0.86);
+  --card2:rgba(255,255,255,0.075);
   --line:rgba(255,255,255,0.14);
-  --muted:rgba(255,255,255,0.72);
-  --green:#2ecc71;
+  --muted:rgba(255,255,255,0.70);
+  --green:#7ee35f;
   --gold:#ffd166;
+  --gold2:#f1b84b;
   --red:#ff5e5e;
+  --dark:#07110d;
 }
 
 *{ box-sizing:border-box; }
@@ -24,16 +29,32 @@ body{
   color:white;
   min-height:100vh;
   background:
-    radial-gradient(circle at top left, rgba(46,204,113,0.24), transparent 30%),
-    radial-gradient(circle at bottom right, rgba(255,209,102,0.14), transparent 28%),
-    linear-gradient(rgba(0,0,0,0.72), rgba(0,0,0,0.88)),
-    repeating-linear-gradient(90deg,#0b3d24 0px,#0b3d24 90px,#0e4a2c 90px,#0e4a2c 180px);
+    radial-gradient(circle at top left, rgba(255,209,102,0.18), transparent 32%),
+    radial-gradient(circle at top right, rgba(46,204,113,0.18), transparent 30%),
+    linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.88)),
+    url("stadium-bg.jpg"),
+    repeating-linear-gradient(90deg,#0b3d24 0px,#0b3d24 80px,#0e4a2c 80px,#0e4a2c 160px);
+  background-size:cover, cover, cover, cover, auto;
+  background-position:center;
+}
+
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  background:
+    radial-gradient(circle at center, transparent 0 140px, rgba(255,255,255,0.045) 141px 143px, transparent 144px),
+    linear-gradient(90deg, transparent 49.8%, rgba(255,255,255,0.06) 50%, transparent 50.2%);
+  opacity:0.45;
 }
 
 .wrapper{
-  max-width:1050px;
+  max-width:1180px;
   margin:auto;
-  padding:22px;
+  padding:24px;
+  position:relative;
+  z-index:1;
 }
 
 .back-link{
@@ -41,112 +62,427 @@ body{
   margin-bottom:18px;
   color:white;
   text-decoration:none;
-  opacity:0.8;
-}
-
-.hero{
-  text-align:center;
-  margin-bottom:22px;
-}
-
-.badge{
-  display:inline-block;
-  margin-bottom:12px;
-  padding:6px 11px;
-  border-radius:999px;
-  background:rgba(46,204,113,0.18);
-  color:#9dffc7;
-  font-size:13px;
+  opacity:0.86;
   font-weight:bold;
 }
 
-.hero h1{
-  font-size:42px;
-  margin:0 0 10px;
+.header{
+  display:flex;
+  justify-content:space-between;
+  gap:18px;
+  align-items:center;
+  margin-bottom:18px;
 }
 
-.hero p{
+.brand{
+  text-align:right;
+}
+
+.brand h1{
   margin:0;
-  color:var(--muted);
+  font-size:34px;
+  font-style:italic;
+  letter-spacing:-1px;
 }
 
-.card{
+.brand span{
+  color:var(--green);
+  font-weight:bold;
+  font-size:13px;
+  letter-spacing:1px;
+}
+
+.loading,
+.error{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:24px;
+  padding:26px;
+  color:var(--muted);
+  text-align:center;
+}
+
+.error{ color:#ffb4b4; }
+
+.profile-layout{
+  display:grid;
+  grid-template-columns:420px 1fr;
+  gap:22px;
+  align-items:start;
+}
+
+.fut-card{
+  position:relative;
+  min-height:610px;
+  padding:32px 28px 28px;
+  border-radius:34px;
+  overflow:hidden;
+  background:
+    linear-gradient(145deg, rgba(255,232,150,0.98), rgba(177,121,35,0.98) 48%, rgba(255,217,117,0.98)),
+    radial-gradient(circle at top right, rgba(255,255,255,0.65), transparent 30%);
+  color:#211805;
+  box-shadow:
+    0 30px 70px rgba(0,0,0,0.48),
+    inset 0 0 0 3px rgba(255,255,255,0.25),
+    inset 0 0 0 8px rgba(80,45,0,0.22);
+}
+
+.fut-card::before{
+  content:"";
+  position:absolute;
+  inset:16px;
+  border:2px solid rgba(72,42,0,0.48);
+  border-radius:28px;
+  pointer-events:none;
+}
+
+.fut-card::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(120deg, transparent 20%, rgba(255,255,255,0.22) 35%, transparent 46%),
+    repeating-linear-gradient(135deg, rgba(255,255,255,0.09) 0 2px, transparent 2px 18px);
+  opacity:0.32;
+  pointer-events:none;
+}
+
+.fut-top{
+  position:relative;
+  z-index:2;
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+}
+
+.ovr{
+  font-size:72px;
+  line-height:0.85;
+  font-weight:900;
+  letter-spacing:-3px;
+}
+
+.ovr span{
+  display:block;
+  font-size:24px;
+  letter-spacing:0;
+  margin-top:8px;
+}
+
+.flag{
+  font-size:34px;
+  margin-top:10px;
+}
+
+.card-logo{
+  font-weight:900;
+  font-size:18px;
+  border:2px solid rgba(0,0,0,0.35);
+  border-radius:12px;
+  padding:8px 9px;
+  background:rgba(255,255,255,0.25);
+}
+
+.player-photo-wrap{
+  position:relative;
+  z-index:2;
+  height:250px;
+  margin:2px 0 8px;
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
+}
+
+.player-photo{
+  max-height:255px;
+  max-width:100%;
+  object-fit:contain;
+  filter:drop-shadow(0 18px 20px rgba(0,0,0,0.45));
+}
+
+.photo-fallback{
+  width:190px;
+  height:190px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:rgba(0,0,0,0.22);
+  border:3px solid rgba(0,0,0,0.22);
+  font-size:70px;
+  font-weight:900;
+}
+
+.card-name{
+  position:relative;
+  z-index:2;
+  text-align:center;
+  font-size:38px;
+  font-weight:900;
+  line-height:0.98;
+  text-transform:uppercase;
+  letter-spacing:-1px;
+  margin-top:8px;
+}
+
+.card-name span{
+  display:block;
+}
+
+.card-stats{
+  position:relative;
+  z-index:2;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:0;
+  margin-top:26px;
+  border-top:2px solid rgba(0,0,0,0.25);
+  border-bottom:2px solid rgba(0,0,0,0.25);
+}
+
+.card-stat{
+  text-align:center;
+  padding:12px 4px;
+  border-right:1px solid rgba(0,0,0,0.25);
+}
+
+.card-stat:last-child{ border-right:none; }
+
+.card-stat strong{
+  display:block;
+  font-size:30px;
+  line-height:1;
+}
+
+.card-stat span{
+  display:block;
+  font-size:13px;
+  font-weight:900;
+  margin-top:4px;
+}
+
+.boot{
+  position:relative;
+  z-index:2;
+  text-align:center;
+  margin-top:18px;
+  font-size:24px;
+}
+
+.panel{
   background:var(--card);
   border:1px solid var(--line);
   border-radius:24px;
   padding:22px;
   margin-bottom:18px;
   backdrop-filter:blur(10px);
-  box-shadow:0 16px 40px rgba(0,0,0,0.32);
+  box-shadow:0 16px 40px rgba(0,0,0,0.30);
 }
 
-.profile-top{
+.player-panel{
   display:grid;
-  grid-template-columns:120px 1fr;
-  gap:20px;
+  grid-template-columns:1fr 150px;
+  gap:18px;
   align-items:center;
 }
 
-.avatar{
-  width:120px;
-  height:120px;
-  border-radius:50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:44px;
-  font-weight:bold;
-  background:linear-gradient(135deg, rgba(46,204,113,0.35), rgba(255,209,102,0.24));
-  border:2px solid rgba(255,255,255,0.14);
+.player-name{
+  font-size:38px;
+  font-weight:900;
+  margin-bottom:10px;
+  letter-spacing:-1px;
 }
 
-.profile-name{
-  font-size:34px;
-  font-weight:bold;
-  margin-bottom:8px;
-}
-
-.profile-sub{
+.info-line{
   color:var(--muted);
-  line-height:1.5;
+  line-height:1.7;
 }
 
-.grid{
+.rank-shield{
+  border-radius:22px;
+  background:
+    linear-gradient(145deg, rgba(255,209,102,0.24), rgba(0,0,0,0.18));
+  border:1px solid rgba(255,209,102,0.35);
+  text-align:center;
+  padding:18px 12px;
+}
+
+.rank-shield strong{
+  display:block;
+  font-size:60px;
+  color:var(--gold);
+  line-height:0.9;
+}
+
+.rank-shield span{
+  display:block;
+  color:var(--muted);
+  font-size:13px;
+  margin-top:8px;
+}
+
+.mini-grid{
   display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:14px;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
 }
 
-.stat-box{
-  background:rgba(255,255,255,0.08);
-  border:1px solid rgba(255,255,255,0.1);
+.mini-box{
+  background:rgba(0,0,0,0.22);
+  border:1px solid rgba(255,255,255,0.10);
   border-radius:18px;
-  padding:18px;
+  padding:16px;
   text-align:center;
 }
 
-.stat-box strong{
+.mini-box strong{
   display:block;
-  font-size:30px;
-  margin-bottom:5px;
+  font-size:36px;
   color:var(--gold);
 }
 
-.stat-box span{
+.mini-box span{
   color:var(--muted);
   font-size:13px;
 }
 
 .section-title{
   margin:0 0 16px;
-  font-size:24px;
+  font-size:22px;
+  color:var(--green);
+  text-transform:uppercase;
+  letter-spacing:.6px;
+}
+
+.bonus-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+}
+
+.bonus-choice{
+  background:rgba(255,255,255,0.07);
+  border:1px solid rgba(255,255,255,0.11);
+  border-radius:18px;
+  padding:16px;
+}
+
+.bonus-choice .label{
+  color:var(--muted);
+  font-size:12px;
+  text-transform:uppercase;
+  font-weight:bold;
+  margin-bottom:8px;
+}
+
+.bonus-choice .pick{
+  font-size:22px;
+  font-weight:bold;
+  margin-bottom:6px;
+}
+
+.bonus-choice .pts{
+  color:#9dffc7;
+  font-weight:bold;
+}
+
+.next-list,
+.hit-list{
+  display:grid;
+  gap:10px;
+}
+
+.next-row,
+.hit-row{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:12px;
+  align-items:center;
+  padding:13px;
+  border-radius:16px;
+  background:rgba(255,255,255,0.07);
+  border:1px solid rgba(255,255,255,0.10);
+}
+
+.next-match,
+.hit-match{
+  font-weight:bold;
+}
+
+.next-date,
+.hit-meta{
+  color:var(--muted);
+  font-size:12px;
+  margin-top:4px;
+}
+
+.next-score,
+.hit-points{
+  color:var(--gold);
+  font-size:22px;
+  font-weight:900;
+  white-space:nowrap;
+}
+
+.attributes{
+  display:grid;
+  gap:12px;
+}
+
+.attr-row{
+  display:grid;
+  grid-template-columns:120px 1fr 38px;
+  gap:12px;
+  align-items:center;
+}
+
+.attr-name{
+  color:var(--muted);
+  font-size:13px;
+}
+
+.attr-bar{
+  height:12px;
+  border-radius:999px;
+  background:rgba(255,255,255,0.10);
+  overflow:hidden;
+}
+
+.attr-fill{
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,#2ecc71,#b4ff63);
+}
+
+.attr-value{
+  color:var(--gold);
+  font-weight:bold;
+  text-align:right;
+}
+
+.tips-toggle{
+  width:100%;
+  border:none;
+  color:white;
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.13);
+  border-radius:18px;
+  padding:16px;
+  font-weight:bold;
+  cursor:pointer;
+  font-size:16px;
+}
+
+.all-tips{
+  display:none;
+  margin-top:14px;
 }
 
 .tip-card{
   background:rgba(255,255,255,0.06);
   border:1px solid rgba(255,255,255,0.10);
   border-radius:18px;
-  padding:16px;
+  padding:15px;
   margin-bottom:12px;
 }
 
@@ -159,11 +495,11 @@ body{
 
 .tip-match{
   font-weight:bold;
-  font-size:18px;
+  font-size:17px;
 }
 
 .tip-score{
-  font-size:24px;
+  font-size:22px;
   font-weight:bold;
   color:var(--gold);
   text-align:right;
@@ -208,45 +544,6 @@ body{
   color:var(--gold);
 }
 
-.bonus-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:18px;
-}
-
-.bonus-card{
-  background:rgba(255,255,255,0.06);
-  border:1px solid rgba(255,255,255,0.10);
-  border-radius:18px;
-  padding:18px;
-}
-
-.bonus-card h3{
-  margin-top:0;
-}
-
-.bonus-row{
-  display:flex;
-  justify-content:space-between;
-  gap:12px;
-  padding:10px 0;
-  border-bottom:1px solid rgba(255,255,255,0.08);
-}
-
-.bonus-row:last-child{
-  border-bottom:none;
-}
-
-.loading{
-  color:var(--muted);
-  text-align:center;
-  padding:30px;
-}
-
-.error{
-  color:#ffb4b4;
-}
-
 .footer-note{
   color:var(--muted);
   text-align:center;
@@ -254,25 +551,41 @@ body{
   margin-top:20px;
 }
 
-@media(max-width:850px){
-  .grid{ grid-template-columns:repeat(2,1fr); }
-  .bonus-grid{ grid-template-columns:1fr; }
-}
-
-@media(max-width:650px){
-  .wrapper{ padding:14px; }
-  .hero h1{ font-size:32px; }
-  .profile-top{
+@media(max-width:980px){
+  .profile-layout{
     grid-template-columns:1fr;
-    text-align:center;
   }
-  .avatar{ margin:auto; }
-  .grid{ grid-template-columns:1fr; }
-  .tip-top{ grid-template-columns:1fr; }
-  .tip-score{
-    font-size:20px;
+
+  .fut-card{
+    max-width:430px;
+    margin:auto;
+  }
+
+  .header{
+    display:block;
+  }
+
+  .brand{
     text-align:left;
   }
+}
+
+@media(max-width:700px){
+  .wrapper{ padding:14px; }
+  .player-panel{ grid-template-columns:1fr; }
+  .mini-grid{ grid-template-columns:1fr; }
+  .bonus-grid{ grid-template-columns:1fr; }
+  .player-name{ font-size:30px; }
+  .fut-card{ min-height:560px; }
+  .ovr{ font-size:62px; }
+  .player-photo-wrap{ height:220px; }
+  .card-name{ font-size:32px; }
+  .tip-top,
+  .next-row,
+  .hit-row{ grid-template-columns:1fr; }
+  .tip-score,
+  .next-score,
+  .hit-points{ text-align:left; }
 }
 </style>
 </head>
@@ -281,10 +594,17 @@ body{
 
 <div class="wrapper">
 
-  <a class="back-link" href="leaderboard.html">← Til leaderboard</a>
+  <div class="header">
+    <a class="back-link" href="leaderboard.html">← Til leaderboard</a>
+
+    <div class="brand">
+      <h1>FC BARRIOS</h1>
+      <span>WORLD CUP CHALLENGE 2026</span>
+    </div>
+  </div>
 
   <div id="content">
-    <div class="card loading">Laster profil...</div>
+    <div class="loading">Laster FUT-profil...</div>
   </div>
 
   <div class="footer-note">
@@ -359,6 +679,31 @@ function getInitials(name){
 function getQueryName(){
   const params = new URLSearchParams(window.location.search);
   return params.get("name") || "";
+}
+
+function slugifyName(name){
+  const lower = String(name || "")
+    .trim()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g,"");
+
+  if(lower.includes("anders") && (lower.includes("uldalden") || lower.includes("brosstad") || lower.includes("brosstand"))){
+    return "andersub";
+  }
+
+  return lower.split(/\s+/)[0] || "default";
+}
+
+function getPhotoSrc(name){
+  return `${slugifyName(name)}.jpg`;
+}
+
+function handlePhotoError(img, initials){
+  const wrap = img.parentElement;
+  if(!wrap) return;
+
+  wrap.innerHTML = `<div class="photo-fallback">${initials}</div>`;
 }
 
 function getOutcome(home,away){
@@ -486,19 +831,137 @@ function calculateMatch(tip, match, result, outcomeRules, diffRules, exactRules)
   };
 }
 
-function renderBonusRows(rows){
-  const positive = rows.filter(row => cleanNumber(row.extra_points) > 0);
+function getFullName(row){
+  return (
+    row.full_name ||
+    row["full name"] ||
+    `${row.first_name || row["first name"] || ""} ${row.last_name || row["last name"] || ""}`.trim()
+  );
+}
 
-  if(positive.length === 0){
-    return `<div style="color:rgba(255,255,255,0.7);">Ikke fylt ut.</div>`;
+function renderBonusChoice(rows, title, icon){
+  const positive = rows
+    .filter(row => cleanNumber(row.extra_points) > 0)
+    .sort((a,b) => cleanNumber(b.extra_points) - cleanNumber(a.extra_points));
+
+  const main = positive[0];
+
+  if(!main){
+    return `
+      <div class="bonus-choice">
+        <div class="label">${icon} ${title}</div>
+        <div class="pick">Ikke fylt ut</div>
+        <div class="pts">0 mulig poeng</div>
+      </div>
+    `;
   }
 
-  return positive.map(row => `
-    <div class="bonus-row">
-      <span>${row.extra_name || "-"}</span>
-      <strong>${row.extra_points || 0}</strong>
+  return `
+    <div class="bonus-choice">
+      <div class="label">${icon} ${title}</div>
+      <div class="pick">${main.extra_name || "-"}</div>
+      <div class="pts">+${cleanNumber(main.extra_points)} mulig poeng</div>
     </div>
-  `).join("");
+  `;
+}
+
+function getNextThreeTips(matchRows, matches, resultMap){
+  return matches
+    .filter(match => {
+      const id = String(match.id || match.match_id || "").trim();
+      return id && !hasResult(resultMap[id]);
+    })
+    .slice(0,3)
+    .map(match => {
+      const matchId = String(match.id || match.match_id || "").trim();
+      const tip = matchRows.find(row => String(row.match_id || row.id || "").trim() === matchId);
+
+      return {
+        home: match.home || "",
+        away: match.away || "",
+        date: match.date || match.dato || "",
+        tips_home: tip ? tip.tips_home : "",
+        tips_away: tip ? tip.tips_away : ""
+      };
+    });
+}
+
+function renderNextThree(nextTips){
+  if(!nextTips.length){
+    return `<div style="color:rgba(255,255,255,0.7);">Ingen kommende kamper funnet.</div>`;
+  }
+
+  return `
+    <div class="next-list">
+      ${nextTips.map(tip => `
+        <div class="next-row">
+          <div>
+            <div class="next-match">${tip.home} vs ${tip.away}</div>
+            <div class="next-date">${tip.date || ""}</div>
+          </div>
+          <div class="next-score">
+            ${!isBlank(tip.tips_home) && !isBlank(tip.tips_away) ? `${tip.tips_home} - ${tip.tips_away}` : "—"}
+          </div>
+        </div>
+      `).join("")}
+    </div>
+  `;
+}
+
+function clamp(value,min,max){
+  return Math.max(min, Math.min(max, value));
+}
+
+function toRating(value, maxValue){
+  if(maxValue <= 0) return 65;
+  return clamp(Math.round(65 + (value / maxValue) * 34), 65, 99);
+}
+
+function getRatings(playerRow, allRows){
+  const maxPoints = Math.max(...allRows.map(row => row.totalPoints), 1);
+  const maxExact = Math.max(...allRows.map(row => row.exactCount), 1);
+  const maxUnderdog = Math.max(...allRows.map(row => row.underdogCount), 1);
+  const maxDiff = Math.max(...allRows.map(row => row.diffCount), 1);
+
+  const tip = toRating(playerRow.exactCount + playerRow.diffCount * 0.6, maxExact + maxDiff * 0.6);
+  const out = toRating(playerRow.underdogCount, maxUnderdog);
+  const res = toRating(playerRow.totalPoints, maxPoints);
+  const luk = toRating(playerRow.diffCount + playerRow.outcomeCount * 0.25, maxDiff + Math.max(...allRows.map(row => row.outcomeCount), 1) * 0.25);
+
+  const ovr = Math.round((tip + out + res + luk) / 4);
+
+  return { tip, out, res, luk, ovr };
+}
+
+function getShortNameParts(name){
+  const parts = String(name || "").trim().split(/\s+/);
+
+  if(parts.length <= 1){
+    return [parts[0] || ""];
+  }
+
+  return [parts[0], parts[parts.length - 1]];
+}
+
+function renderAllTips(tipsHtml){
+  return `
+    <button class="tips-toggle" onclick="toggleAllTips()">Vis alle kamptips →</button>
+    <div id="allTips" class="all-tips">
+      ${tipsHtml || `<div style="color:rgba(255,255,255,0.7);">Ingen tips registrert.</div>`}
+    </div>
+  `;
+}
+
+function toggleAllTips(){
+  const box = document.getElementById("allTips");
+  const btn = document.querySelector(".tips-toggle");
+
+  if(!box || !btn) return;
+
+  const visible = box.style.display === "block";
+
+  box.style.display = visible ? "none" : "block";
+  btn.textContent = visible ? "Vis alle kamptips →" : "Skjul kamptips ↑";
 }
 
 async function loadProfile(){
@@ -506,7 +969,7 @@ async function loadProfile(){
   const queryName = getQueryName().trim().toLowerCase();
 
   if(!queryName){
-    content.innerHTML = `<div class="card error">Mangler navn i URL.</div>`;
+    content.innerHTML = `<div class="error">Mangler navn i URL.</div>`;
     return;
   }
 
@@ -529,32 +992,6 @@ async function loadProfile(){
       fetchSheet(EXACT_URL)
     ]);
 
-    const player = registrations.find(row => {
-      const fullName =
-        row.full_name ||
-        row["full name"] ||
-        `${row.first_name || row["first name"] || ""} ${row.last_name || row["last name"] || ""}`.trim();
-
-      return fullName.trim().toLowerCase() === queryName;
-    });
-
-    if(!player){
-      content.innerHTML = `<div class="card error">Fant ikke denne spilleren.</div>`;
-      return;
-    }
-
-    const playerName =
-      player.full_name ||
-      player["full name"] ||
-      `${player.first_name || player["first name"] || ""} ${player.last_name || player["last name"] || ""}`.trim();
-
-    const phone = String(player.phone || "").trim();
-    const latestRows = getLatestRowsForPhone(submissions,phone);
-
-    const matchRows = latestRows.filter(row => row.type === "match");
-    const bestPlayerRows = latestRows.filter(row => row.type === "bestplayer");
-    const topScorerRows = latestRows.filter(row => row.type === "topscorer");
-
     const matchMap = {};
     matches.forEach(match => {
       const id = String(match.id || match.match_id || "").trim();
@@ -567,11 +1004,88 @@ async function loadProfile(){
       if(id) resultMap[id] = result;
     });
 
-    let totalPoints = 0;
-    let exactCount = 0;
-    let diffCount = 0;
-    let outcomeCount = 0;
-    let playedCount = 0;
+    const players = registrations
+      .map(row => ({
+        ...row,
+        name:getFullName(row),
+        phone:String(row.phone || "").trim()
+      }))
+      .filter(row => row.name && row.phone);
+
+    const player = players.find(row => row.name.trim().toLowerCase() === queryName);
+
+    if(!player){
+      content.innerHTML = `<div class="error">Fant ikke denne spilleren.</div>`;
+      return;
+    }
+
+    const allPlayerRows = players.map(p => {
+      const latestRows = getLatestRowsForPhone(submissions,p.phone);
+      const matchRows = latestRows.filter(row => row.type === "match");
+
+      let totalPoints = 0;
+      let exactCount = 0;
+      let diffCount = 0;
+      let outcomeCount = 0;
+      let underdogCount = 0;
+      let playedCount = 0;
+
+      matchRows.forEach(row => {
+        const matchId = String(row.match_id || row.id || "").trim();
+        const match = matchMap[matchId];
+        const result = resultMap[matchId];
+
+        const calc = calculateMatch(row, match, result, outcomeRules, diffRules, exactRules);
+        totalPoints += calc.points;
+
+        if(calc.status !== "Ikke spilt") playedCount++;
+        if(calc.status === "Eksakt resultat") exactCount++;
+        if(calc.status === "Riktig målforskjell") diffCount++;
+        if(calc.status === "Riktig utfall") outcomeCount++;
+
+        if(calc.points > 0 && match){
+          const tipOutcome = getOutcome(row.tips_home,row.tips_away);
+          if(getTierType(match,tipOutcome) === "underdog"){
+            underdogCount++;
+          }
+        }
+      });
+
+      return {
+        ...p,
+        latestRows,
+        matchRows,
+        totalPoints,
+        exactCount,
+        diffCount,
+        outcomeCount,
+        underdogCount,
+        playedCount
+      };
+    }).sort((a,b) =>
+      cleanNumber(b.totalPoints) - cleanNumber(a.totalPoints) ||
+      cleanNumber(b.exactCount) - cleanNumber(a.exactCount) ||
+      a.name.localeCompare(b.name,"no")
+    );
+
+    const playerStats = allPlayerRows.find(row => row.phone === player.phone);
+    const rank = allPlayerRows.findIndex(row => row.phone === player.phone) + 1;
+    const leader = allPlayerRows[0];
+    const behindLeader = leader ? Math.max(0, leader.totalPoints - playerStats.totalPoints) : 0;
+
+    const latestRows = playerStats.latestRows;
+    const matchRows = playerStats.matchRows;
+    const bestPlayerRows = latestRows.filter(row => row.type === "bestplayer");
+    const topScorerRows = latestRows.filter(row => row.type === "topscorer");
+
+    const ratings = getRatings(playerStats, allPlayerRows);
+    const nameParts = getShortNameParts(player.name);
+    const photoSrc = getPhotoSrc(player.name);
+    const initials = getInitials(player.name);
+
+    const nextTips = getNextThreeTips(matchRows, matches, resultMap);
+
+    let bestHits = [];
 
     const tipsHtml = matchRows.map(row => {
       const matchId = String(row.match_id || row.id || "").trim();
@@ -587,12 +1101,13 @@ async function loadProfile(){
         exactRules
       );
 
-      totalPoints += calc.points;
-
-      if(calc.status !== "Ikke spilt") playedCount++;
-      if(calc.status === "Eksakt resultat") exactCount++;
-      if(calc.status === "Riktig målforskjell") diffCount++;
-      if(calc.status === "Riktig utfall") outcomeCount++;
+      if(calc.points > 0 && match){
+        bestHits.push({
+          match:`${match.home} ${calc.actualText} ${match.away}`,
+          meta:`Kamp ${matchId}`,
+          points:calc.points
+        });
+      }
 
       return `
         <div class="tip-card">
@@ -621,71 +1136,180 @@ async function loadProfile(){
       `;
     }).join("");
 
+    bestHits = bestHits.sort((a,b) => b.points - a.points).slice(0,3);
+
+    const hitHtml = bestHits.length
+      ? `<div class="hit-list">
+          ${bestHits.map(hit => `
+            <div class="hit-row">
+              <div>
+                <div class="hit-match">${hit.match}</div>
+                <div class="hit-meta">${hit.meta}</div>
+              </div>
+              <div class="hit-points">+${hit.points}</div>
+            </div>
+          `).join("")}
+        </div>`
+      : `<div style="color:rgba(255,255,255,0.7);">Beste treff dukker opp når kampene er spilt.</div>`;
+
+    const played = playerStats.playedCount;
+    const hitPercent = played
+      ? Math.round(((playerStats.exactCount + playerStats.diffCount + playerStats.outcomeCount) / played) * 100)
+      : 0;
+
+    const pointsPerMatch = played
+      ? (playerStats.totalPoints / played).toFixed(1).replace(".",",")
+      : "0";
+
     content.innerHTML = `
-      <div class="hero">
-        <div class="badge">FC BARRIOS • PROFIL</div>
-        <h1>Spillerprofil</h1>
-        <p>Full oversikt over tips, poeng og treff.</p>
-      </div>
+      <div class="profile-layout">
+        <div>
+          <div class="fut-card">
+            <div class="fut-top">
+              <div>
+                <div class="ovr">${ratings.ovr}<span>OVR</span></div>
+                <div class="flag">🇳🇴</div>
+              </div>
+              <div class="card-logo">FCB</div>
+            </div>
 
-      <div class="card">
-        <div class="profile-top">
-          <div class="avatar">${getInitials(playerName)}</div>
+            <div class="player-photo-wrap">
+              <img
+                class="player-photo"
+                src="${photoSrc}"
+                alt="${player.name}"
+                onerror="handlePhotoError(this,'${initials}')"
+              >
+            </div>
 
-          <div>
-            <div class="profile-name">${playerName}</div>
-            <div class="profile-sub">
-              ${latestRows.length ? "Tips funnet" : "Ingen tips registrert ennå"}
+            <div class="card-name">
+              ${nameParts.map(part => `<span>${part}</span>`).join("")}
+            </div>
+
+            <div class="card-stats">
+              <div class="card-stat"><strong>${ratings.tip}</strong><span>TIP</span></div>
+              <div class="card-stat"><strong>${ratings.out}</strong><span>OUT</span></div>
+              <div class="card-stat"><strong>${ratings.res}</strong><span>RES</span></div>
+              <div class="card-stat"><strong>${ratings.luk}</strong><span>LUK</span></div>
+            </div>
+
+            <div class="boot">⚽</div>
+          </div>
+        </div>
+
+        <div>
+          <div class="panel player-panel">
+            <div>
+              <div class="player-name">${player.name}</div>
+              <div class="info-line">🇳🇴 Norge</div>
+              <div class="info-line">🎯 Rolle: Tippinator</div>
+              <div class="info-line">🧊 Kjent for: kalde tips og store baller</div>
+            </div>
+
+            <div class="rank-shield">
+              <strong>${rank}.</strong>
+              <span>plassering av ${allPlayerRows.length}</span>
             </div>
           </div>
-        </div>
-      </div>
 
-      <div class="card">
-        <div class="grid">
-          <div class="stat-box">
-            <strong>${totalPoints}</strong>
-            <span>Totalpoeng</span>
+          <div class="panel">
+            <div class="mini-grid">
+              <div class="mini-box">
+                <strong>${playerStats.totalPoints}</strong>
+                <span>poeng</span>
+              </div>
+
+              <div class="mini-box">
+                <strong>${behindLeader}</strong>
+                <span>bak lederen</span>
+              </div>
+
+              <div class="mini-box">
+                <strong>${pointsPerMatch}</strong>
+                <span>poeng per kamp</span>
+              </div>
+            </div>
           </div>
 
-          <div class="stat-box">
-            <strong>${exactCount}</strong>
-            <span>Eksakte treff</span>
+          <div class="panel">
+            <h2 class="section-title">Dine bonusvalg</h2>
+            <div class="bonus-grid">
+              ${renderBonusChoice(topScorerRows,"Toppscorer","⚽")}
+              ${renderBonusChoice(bestPlayerRows,"Beste spiller","⭐")}
+            </div>
           </div>
 
-          <div class="stat-box">
-            <strong>${diffCount}</strong>
-            <span>Diff-treff</span>
+          <div class="panel">
+            <h2 class="section-title">Neste 3 kamper</h2>
+            ${renderNextThree(nextTips)}
           </div>
 
-          <div class="stat-box">
-            <strong>${outcomeCount}</strong>
-            <span>Riktige utfall</span>
+          <div class="panel">
+            <h2 class="section-title">Din statistikk</h2>
+
+            <div class="mini-grid">
+              <div class="mini-box">
+                <strong>${hitPercent}%</strong>
+                <span>treffprosent</span>
+              </div>
+
+              <div class="mini-box">
+                <strong>${playerStats.underdogCount}</strong>
+                <span>outsider-treff</span>
+              </div>
+
+              <div class="mini-box">
+                <strong>${playerStats.exactCount}</strong>
+                <span>eksakte treff</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <h2 class="section-title">Egenskaper</h2>
+
+            <div class="attributes">
+              <div class="attr-row">
+                <div class="attr-name">Presisjon</div>
+                <div class="attr-bar"><div class="attr-fill" style="width:${ratings.tip}%"></div></div>
+                <div class="attr-value">${ratings.tip}</div>
+              </div>
+
+              <div class="attr-row">
+                <div class="attr-name">Outsider-talent</div>
+                <div class="attr-bar"><div class="attr-fill" style="width:${ratings.out}%"></div></div>
+                <div class="attr-value">${ratings.out}</div>
+              </div>
+
+              <div class="attr-row">
+                <div class="attr-name">Resultatorientert</div>
+                <div class="attr-bar"><div class="attr-fill" style="width:${ratings.res}%"></div></div>
+                <div class="attr-value">${ratings.res}</div>
+              </div>
+
+              <div class="attr-row">
+                <div class="attr-name">Flaksfaktor</div>
+                <div class="attr-bar"><div class="attr-fill" style="width:${ratings.luk}%"></div></div>
+                <div class="attr-value">${ratings.luk}</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <h2 class="section-title">Dine beste treff</h2>
+            ${hitHtml}
+          </div>
+
+          <div class="panel">
+            ${renderAllTips(tipsHtml)}
           </div>
         </div>
-      </div>
-
-      <div class="bonus-grid">
-        <div class="bonus-card">
-          <h3>Beste spiller</h3>
-          ${renderBonusRows(bestPlayerRows)}
-        </div>
-
-        <div class="bonus-card">
-          <h3>Toppscorer</h3>
-          ${renderBonusRows(topScorerRows)}
-        </div>
-      </div>
-
-      <div class="card">
-        <h2 class="section-title">Kamptips</h2>
-        ${tipsHtml || `<div style="color:rgba(255,255,255,0.7);">Ingen tips registrert.</div>`}
       </div>
     `;
 
   }catch(error){
     console.error(error);
-    content.innerHTML = `<div class="card error">Klarte ikke å laste profil.</div>`;
+    content.innerHTML = `<div class="error">Klarte ikke å laste profil.</div>`;
   }
 }
 
