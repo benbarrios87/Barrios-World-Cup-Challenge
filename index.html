@@ -1,5 +1,6 @@
 
 
+
 <!DOCTYPE html>
 <html lang="no">
 <head>
@@ -514,6 +515,47 @@ body::before{
   line-height:1.45;
 }
 
+.profile-lookup-card{
+  background:rgba(255,255,255,0.07);
+  border:1px solid rgba(255,255,255,0.12);
+  border-radius:18px;
+  padding:16px;
+}
+
+.profile-lookup-row{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:10px;
+  margin-top:12px;
+}
+
+.profile-lookup-row input{
+  width:100%;
+  box-sizing:border-box;
+  padding:14px;
+  border-radius:14px;
+  border:none;
+  font-size:16px;
+}
+
+.profile-lookup-row button{
+  white-space:nowrap;
+}
+
+.profile-result{
+  margin-top:10px;
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.45;
+}
+
+@media(max-width:600px){
+  .profile-lookup-row{
+    grid-template-columns:1fr;
+  }
+}
+
+
 .footer-note{
   color:var(--muted);
   text-align:center;
@@ -773,7 +815,30 @@ body::before{
       <div class="card">
         <h2 style="margin-top:0;">⚡ Kjapp tilgang</h2>
 
-        <div class="hub-links">
+        <div class="profile-lookup-card">
+          <strong>👤 Min profil</strong>
+          <div class="profile-result">
+            Skriv telefonnummeret ditt og hopp rett til FUT-kortet ditt.
+          </div>
+
+          <div class="profile-lookup-row">
+            <input
+              id="profilePhoneInput"
+              type="tel"
+              maxlength="8"
+              inputmode="numeric"
+              placeholder="Telefonnummer"
+            >
+
+            <button class="cta-main" onclick="goToProfileFromPhone()">
+              Åpne profil
+            </button>
+          </div>
+
+          <div id="profileLookupResult" class="profile-result"></div>
+        </div>
+
+        <div class="hub-links" style="margin-top:12px;">
           <a class="hub-link" href="leaderboard.html">
             <strong>🏆 Leaderboard</strong>
             <span>Se hvem som leder, hvem som jager og hvem som allerede angrer.</span>
@@ -833,14 +898,19 @@ body::before{
         <span>Se hva du har levert inn, status på tipsene dine og bonusvalgene dine.</span>
       </a>
 
+      <a class="menu-link" href="leaderboard.html">
+        <strong>👤 Profiler</strong>
+        <span>Gå via leaderboard og trykk på navnet ditt for å åpne FUT-profilen.</span>
+      </a>
+
       <a class="menu-link" href="premier.html">
         <strong>💰 Premie</strong>
         <span>Se dynamiske premier og fordeling basert på antall deltakere.</span>
       </a>
 
       <a class="menu-link" href="leaderboard.html">
-        <strong>🏆 Leaderboard og deltagerliste</strong>
-        <span>Se hvem som leder, hvem som jager, og hvem som har fått VM-mareritt.</span>
+        <strong>🏆 Leaderboard og profiler</strong>
+        <span>Se stillingen og trykk deg inn på FUT-profilene til deltakerne.</span>
       </a>
 
       <a class="menu-link" href="stats.html">
@@ -879,7 +949,7 @@ const RESULTS_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_RESULTS`;
 const OUTCOME_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_OUTCOME`;
 const DIFF_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_DIFF`;
 const EXACT_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_EXACT`;
-const LEADERBOARD_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_LEADERBOARD`;
+const PROFILE_CACHE_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_PROFILE_CACHE`;
 
 const BUY_IN = 600;
 const FREE_ENTRIES = 1;
@@ -1310,6 +1380,36 @@ function loadNextTipsFromPhone(){
   renderNextTips(phone);
 }
 
+
+function findProfileByPhone(phone){
+  return leaderboardCache.find(row =>
+    String(row.phone || "").trim() === String(phone || "").trim()
+  );
+}
+
+function goToProfileFromPhone(){
+  const input = document.getElementById("profilePhoneInput");
+  const result = document.getElementById("profileLookupResult");
+
+  if(!input) return;
+
+  const phone = input.value.trim();
+
+  if(!/^\d{8}$/.test(phone)){
+    if(result) result.textContent = "Skriv inn et gyldig 8-sifret telefonnummer.";
+    return;
+  }
+
+  const profile = findProfileByPhone(phone);
+
+  if(!profile || !profile.name){
+    if(result) result.textContent = "Fant ikke profil på dette nummeret. Prøv leaderboard.";
+    return;
+  }
+
+  window.location.href = `profil.html?name=${encodeURIComponent(profile.name)}`;
+}
+
 async function loadLivePool(){
   const targets = [
     {
@@ -1393,7 +1493,7 @@ async function initVmHub(){
     fetchSheet(OUTCOME_URL),
     fetchSheet(DIFF_URL),
     fetchSheet(EXACT_URL),
-    fetchSheet(LEADERBOARD_URL)
+    fetchSheet(PROFILE_CACHE_URL)
   ]);
 
   registrationsCache = registrations;
@@ -1402,7 +1502,7 @@ async function initVmHub(){
   outcomeRules = outcome;
   diffRules = diff;
   exactRules = exact;
-  leaderboardCache = leaderboard.sort((a,b) => cleanNumber(b.points || b.score) - cleanNumber(a.points || a.score));
+  leaderboardCache = leaderboard.sort((a,b) => cleanNumber(a.rank) - cleanNumber(b.rank));
 
   resultsById = {};
   results.forEach(result => {
@@ -1416,7 +1516,12 @@ async function initVmHub(){
   const savedPhone = getSavedPhone();
 
   if(/^\d{8}$/.test(savedPhone)){
-    document.getElementById("phoneInput").value = savedPhone;
+    const phoneInput = document.getElementById("phoneInput");
+    const profilePhoneInput = document.getElementById("profilePhoneInput");
+
+    if(phoneInput) phoneInput.value = savedPhone;
+    if(profilePhoneInput) profilePhoneInput.value = savedPhone;
+
     renderNextTips(savedPhone);
   }else{
     renderNextWithoutPhone();
