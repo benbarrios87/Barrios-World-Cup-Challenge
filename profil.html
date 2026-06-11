@@ -113,7 +113,7 @@ body::before{
 
 .fut-card{
   position:relative;
-  min-height:610px;
+  min-height:520px;
   padding:32px 28px 28px;
   border-radius:34px;
   overflow:hidden;
@@ -186,7 +186,7 @@ body::before{
 .player-photo-wrap{
   position:relative;
   z-index:2;
-  height:320px;
+  height:280px;
   margin-top:-40px;
   margin:2px 0 8px;
   display:flex;
@@ -394,6 +394,24 @@ body::before{
 .hit-list{
   display:grid;
   gap:10px;
+}
+  .compact-bonus-list{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+
+.compact-bonus-pill{
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.12);
+  border-radius:999px;
+  padding:7px 10px;
+  font-size:13px;
+  color:rgba(255,255,255,0.84);
+}
+
+.compact-bonus-pill strong{
+  color:var(--gold);
 }
 
 .next-row,
@@ -848,9 +866,7 @@ function renderBonusChoice(rows, title, icon){
     .filter(row => cleanNumber(row.extra_points) > 0)
     .sort((a,b) => cleanNumber(b.extra_points) - cleanNumber(a.extra_points));
 
-  const main = positive[0];
-
-  if(!main){
+  if(positive.length === 0){
     return `
       <div class="bonus-choice">
         <div class="label">${icon} ${title}</div>
@@ -863,8 +879,14 @@ function renderBonusChoice(rows, title, icon){
   return `
     <div class="bonus-choice">
       <div class="label">${icon} ${title}</div>
-      <div class="pick">${main.extra_name || "-"}</div>
-      <div class="pts">+${cleanNumber(main.extra_points)} mulig poeng</div>
+
+      <div class="compact-bonus-list">
+        ${positive.map(row => `
+          <span class="compact-bonus-pill">
+            ${row.extra_name || "-"} <strong>+${cleanNumber(row.extra_points)}</strong>
+          </span>
+        `).join("")}
+      </div>
     </div>
   `;
 }
