@@ -1387,7 +1387,7 @@ function findProfileByPhone(phone){
   );
 }
 
-function goToProfileFromPhone(){
+async function goToProfileFromPhone(){
   const input = document.getElementById("profilePhoneInput");
   const result = document.getElementById("profileLookupResult");
 
@@ -1400,10 +1400,16 @@ function goToProfileFromPhone(){
     return;
   }
 
-  const profile = findProfileByPhone(phone);
+  if(!leaderboardCache.length){
+    leaderboardCache = await fetchSheet(PROFILE_CACHE_URL);
+  }
+
+  const profile = leaderboardCache.find(row =>
+    String(row.phone || "").trim() === phone
+  );
 
   if(!profile || !profile.name){
-    if(result) result.textContent = "Fant ikke profil på dette nummeret. Prøv leaderboard.";
+    if(result) result.textContent = "Fant ikke profil på dette nummeret. Sjekk at updateProfileCache er kjørt.";
     return;
   }
 
