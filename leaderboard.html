@@ -641,19 +641,41 @@ function renderBonusTags(row){
 
   return tags.join("");
 }
+function shortMatch(match){
+
+  return String(match || "")
+    .split(" - ")
+    .map(team => team.trim().substring(0,3).toUpperCase())
+    .join("-");
+}
+
 function renderNextTips(row){
 
-  const tips = [
-    row.next_1_tip,
-    row.next_2_tip,
-    row.next_3_tip
-  ].filter(Boolean);
+  const tips = [];
+
+  if(row.next_1_match && row.next_1_tip){
+    tips.push(
+      `${shortMatch(row.next_1_match)} ${row.next_1_tip}`
+    );
+  }
+
+  if(row.next_2_match && row.next_2_tip){
+    tips.push(
+      `${shortMatch(row.next_2_match)} ${row.next_2_tip}`
+    );
+  }
+
+  if(row.next_3_match && row.next_3_tip){
+    tips.push(
+      `${shortMatch(row.next_3_match)} ${row.next_3_tip}`
+    );
+  }
 
   if(tips.length === 0) return "";
 
   return `
     <div class="next-tips">
-      🎯 Neste: ${tips.join(" • ")}
+      🎯 ${tips.join(" • ")}
     </div>
   `;
 }
