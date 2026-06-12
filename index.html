@@ -3,6 +3,7 @@
 
 
 
+
 <!DOCTYPE html>
 <html lang="no">
 <head>
@@ -704,6 +705,52 @@ body::before{
   line-height:1.5;
 }
 
+.public-next-list{
+  display:grid;
+  gap:8px;
+  margin-top:14px;
+}
+
+.public-next-row{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:10px;
+  align-items:center;
+  background:rgba(255,255,255,0.07);
+  border:1px solid rgba(255,255,255,0.11);
+  border-radius:14px;
+  padding:10px 12px;
+}
+
+.public-next-name{
+  color:white;
+  text-decoration:none;
+  font-weight:bold;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.public-next-tips{
+  color:var(--gold);
+  font-size:13px;
+  font-weight:bold;
+  white-space:nowrap;
+}
+
+@media(max-width:600px){
+  .public-next-row{
+    grid-template-columns:1fr;
+    gap:5px;
+  }
+
+  .public-next-tips{
+    white-space:normal;
+    line-height:1.35;
+  }
+}
+
+
 @media(max-width:800px){
   .front-live-grid{
     grid-template-columns:1fr;
@@ -1018,6 +1065,17 @@ Målet er enkelt: samle flest poeng før finalen er spilt.
             <span>Veien fra Round of 32 til finalen.</span>
           </a>
         </div>
+      </div>
+    </div>
+
+
+    <div class="card">
+      <h2 style="margin-top:0;">👀 Alles neste 3 tips</h2>
+      <div class="hub-text">
+        Snokemodus. Kompakt oversikt over hva folk har tippet på de neste kampene.
+      </div>
+      <div id="publicNextBets" class="public-next-list">
+        <div class="front-empty">Laster alles neste tips...</div>
       </div>
     </div>
 
@@ -1910,9 +1968,61 @@ function renderFrontTop3(){
   `).join("");
 }
 
+
+function shortMatch(match){
+  return String(match || "")
+    .split(" - ")
+    .map(team => team.trim().substring(0,3).toUpperCase())
+    .join("-");
+}
+
+function renderPublicNextBets(){
+  const box = document.getElementById("publicNextBets");
+  if(!box) return;
+
+  const rows = [...leaderboardCache]
+    .sort((a,b) => cleanNumber(a.rank) - cleanNumber(b.rank))
+    .filter(row =>
+      row.next_1_tip || row.next_2_tip || row.next_3_tip
+    );
+
+  if(rows.length === 0){
+    box.innerHTML = `<div class="front-empty">Ingen neste 3 tips i cache ennå. Kjør updateProfileCache().</div>`;
+    return;
+  }
+
+  box.innerHTML = rows.map(row => {
+    const tips = [];
+
+    if(row.next_1_match && row.next_1_tip){
+      tips.push(`${shortMatch(row.next_1_match)} ${row.next_1_tip}`);
+    }
+
+    if(row.next_2_match && row.next_2_tip){
+      tips.push(`${shortMatch(row.next_2_match)} ${row.next_2_tip}`);
+    }
+
+    if(row.next_3_match && row.next_3_tip){
+      tips.push(`${shortMatch(row.next_3_match)} ${row.next_3_tip}`);
+    }
+
+    return `
+      <div class="public-next-row">
+        <a class="public-next-name" href="profil.html?name=${encodeURIComponent(row.name || "")}">
+          ${cleanNumber(row.rank)}. ${row.name || "Ukjent"}
+        </a>
+        <div class="public-next-tips">
+          🎯 ${tips.join(" • ")}
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
 function renderFrontpageWidgets(){
   renderCommunityPredictions();
   renderFrontTop3();
+  renderPublicNextBets();
 }
 
 
