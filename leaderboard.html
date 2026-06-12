@@ -639,7 +639,28 @@ function renderBonusTags(row){
 
   return tags.join("");
 }
+function renderNextTips(row){
+  const tips = [
+    { match: row.next_1_match, tip: row.next_1_tip },
+    { match: row.next_2_match, tip: row.next_2_tip },
+    { match: row.next_3_match, tip: row.next_3_tip }
+  ].filter(item => item.match && item.tip);
 
+  if(tips.length === 0) return "";
+
+  return `
+    <div class="next-tips">
+      <div class="next-tips-title">Neste 3 tips</div>
+
+      ${tips.map(item => `
+        <div class="next-tip-row">
+          <span>${item.match}</span>
+          <span class="next-tip-score">${item.tip}</span>
+        </div>
+      `).join("")}
+    </div>
+  `;
+}
 async function loadLeaderboard(){
   const container = document.getElementById("leaderboardContainer");
   const statusBox = document.getElementById("statusBox");
@@ -727,6 +748,7 @@ async function loadLeaderboard(){
                 <div class="tag">🔥 ${cleanNumber(row.underdog)} outsider</div>
                 ${renderBonusTags(row)}
               </div>
+              ${renderNextTips(row)}
             </div>
 
             <div class="points">
