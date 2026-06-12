@@ -755,6 +755,44 @@ function renderLastResults(player){
     </div>
   `;
 }
+  function renderNextTips(player){
+
+  const rows = [
+    {
+      match: player.next_1_match,
+      tip: player.next_1_tip
+    },
+    {
+      match: player.next_2_match,
+      tip: player.next_2_tip
+    },
+    {
+      match: player.next_3_match,
+      tip: player.next_3_tip
+    }
+  ].filter(row => row.match && row.tip);
+
+  if(rows.length === 0) return "";
+
+  return `
+    <div class="panel">
+      <h2 class="section-title">Neste 3 tips</h2>
+
+      ${rows.map(row => `
+        <div style="
+          display:flex;
+          justify-content:space-between;
+          gap:12px;
+          padding:8px 0;
+          border-bottom:1px solid rgba(255,255,255,0.08);
+        ">
+          <span>${row.match}</span>
+          <strong>${row.tip}</strong>
+        </div>
+      `).join("")}
+    </div>
+  `;
+}
   
 async function loadProfile(){
   const content = document.getElementById("content");
@@ -877,6 +915,7 @@ async function loadProfile(){
           </div>
           
           ${renderLastResults(player)}
+          ${renderNextTips(player)}
 
           <div class="panel">
             <h2 class="section-title">Bonusvalg</h2>
