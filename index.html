@@ -705,49 +705,65 @@ body::before{
   line-height:1.5;
 }
 
-.public-next-list{
+.last-bets-list{
   display:grid;
-  gap:8px;
-  margin-top:14px;
+  gap:10px;
+  margin-bottom:14px;
 }
 
-.public-next-row{
-  display:grid;
-  grid-template-columns:1fr auto;
-  gap:10px;
-  align-items:center;
+.last-bet-card{
   background:rgba(255,255,255,0.07);
   border:1px solid rgba(255,255,255,0.11);
-  border-radius:14px;
-  padding:10px 12px;
+  border-radius:16px;
+  padding:13px;
 }
 
-.public-next-name{
-  color:white;
-  text-decoration:none;
+.last-bet-top{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  align-items:flex-start;
+}
+
+.last-bet-match{
   font-weight:bold;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
 }
 
-.public-next-tips{
+.last-bet-points{
   color:var(--gold);
-  font-size:13px;
-  font-weight:bold;
+  font-weight:900;
   white-space:nowrap;
 }
 
-@media(max-width:600px){
-  .public-next-row{
-    grid-template-columns:1fr;
-    gap:5px;
-  }
+.last-bet-sub{
+  color:var(--muted);
+  font-size:13px;
+  margin-top:5px;
+  line-height:1.4;
+}
 
-  .public-next-tips{
-    white-space:normal;
-    line-height:1.35;
-  }
+.last-bet-hit{
+  display:inline-block;
+  margin-top:8px;
+  padding:5px 8px;
+  border-radius:999px;
+  background:rgba(46,204,113,0.14);
+  border:1px solid rgba(46,204,113,0.25);
+  color:#9dffc7;
+  font-size:12px;
+  font-weight:bold;
+}
+
+.last-bet-miss{
+  display:inline-block;
+  margin-top:8px;
+  padding:5px 8px;
+  border-radius:999px;
+  background:rgba(255,94,94,0.12);
+  border:1px solid rgba(255,94,94,0.24);
+  color:#ffb4b4;
+  font-size:12px;
+  font-weight:bold;
 }
 
 
@@ -996,6 +1012,8 @@ Målet er enkelt: samle flest poeng før finalen er spilt.
       <div class="card">
         <h2 style="margin-top:0;">🔥 Dine neste 3 tips</h2>
 
+        <div id="lastBetsBox" class="last-bets-list"></div>
+
         <div id="nextIntro" class="hub-text">
           Laster neste kamper...
         </div>
@@ -1065,17 +1083,6 @@ Målet er enkelt: samle flest poeng før finalen er spilt.
             <span>Veien fra Round of 32 til finalen.</span>
           </a>
         </div>
-      </div>
-    </div>
-
-
-    <div class="card">
-      <h2 style="margin-top:0;">👀 Alles neste 3 tips</h2>
-      <div class="hub-text">
-        Snokemodus. Kompakt oversikt over hva folk har tippet på de neste kampene.
-      </div>
-      <div id="publicNextBets" class="public-next-list">
-        <div class="front-empty">Laster alles neste tips...</div>
       </div>
     </div>
 
@@ -1730,6 +1737,114 @@ function renderNextWithoutPhone(){
   document.getElementById("nextMatches").innerHTML = "";
 }
 
+
+function calculateTipPointsForMatch(tip, match, result){
+  if(!tip || !match || !result) return 0;
+
+  if(
+    tip.tips_home === "" ||
+    tip.tips_home === undefined ||
+    tip.tips_away === "" ||
+    tip.tips_away === undefined ||
+    result.actual_home === "" ||
+    result.actual_home === undefined ||
+    result.actual_away === "" ||
+    result.actual_away === undefined
+  ){
+    return 0;
+  }
+
+  const tipHome = cleanNumber(tip.tips_home);
+  const tipAway = cleanNumber(tip.tips_away);
+  const actualHome = cleanNumber(result.actual_home);
+  const actualAway = cleanNumber(result.actual_away);
+
+  const tipOutcome = getOutcome(tipHome, tipAway);
+  const actualOutcome = getOutcome(actualHome, actualAway);
+
+  const tipDiff = tipHome - tipAway;
+  const actualDiff = actualHome - actualAway;
+
+  const tierDiff = Math.abs(parseTier(match.tier_home) - parseTier(match.tier_away));
+  const tierType = getTierType(match, tipOutcome);
+
+  if(tipHome === actualHome && tipAway === actualAway){
+    return getRulePoint(exactRules, tierDiff, tierType);
+  }
+
+  if(tipDiff === actualDiff){
+    return getRulePoint(diffRules, tierDiff, tierType);
+  }
+
+  if(tipOutcome === actualOutcome){
+    return getRulePoint(outcomeRules, tierDiff, tierType);
+  }
+
+  return 0;
+}
+
+function renderLastBets(phone){
+  const box = document.getElementById("lastBetsBox");
+  if(!box) return;
+
+  const latestRows = getLatestRowsForPhone(submissionsCache, phone);
+  const matchTips = latestRows.filter(row => row.type === "match");
+
+  renderLastBets(phone);
+
+  const settled = matchTips
+    .map(tip => {
+      const matchId = String(tip.match_id || tip.id || "").trim();
+      const match = getMatchById(matchId);
+      const result = resultsById[matchId];
+
+      if(!match || !hasResult(matchId)) return null;
+
+      const points = calculateTipPointsForMatch(tip, match, result);
+
+      return {
+        matchId,
+        match,
+        result,
+        tip,
+        points
+      };
+    })
+    .filter(Boolean)
+    .sort((a,b) => cleanNumber(b.matchId) - cleanNumber(a.matchId))
+    .slice(0,3);
+
+  if(settled.length === 0){
+    box.innerHTML = "";
+    return;
+  }
+
+  box.innerHTML = `
+    <h2 style="margin:0 0 10px;">🧾 Dine siste 3 bets</h2>
+    ${settled.map(item => {
+      const hitClass = item.points > 0 ? "last-bet-hit" : "last-bet-miss";
+      const hitText = item.points > 0 ? "Treff" : "Bom";
+
+      return `
+        <div class="last-bet-card">
+          <div class="last-bet-top">
+            <div>
+              <div class="last-bet-match">${item.match.home || ""} - ${item.match.away || ""}</div>
+              <div class="last-bet-sub">
+                Du: ${item.tip.tips_home}-${item.tip.tips_away}
+                · Resultat: ${item.result.actual_home}-${item.result.actual_away}
+              </div>
+              <span class="${hitClass}">${hitText}</span>
+            </div>
+            <div class="last-bet-points">+${item.points} p</div>
+          </div>
+        </div>
+      `;
+    }).join("")}
+  `;
+}
+
+
 function renderNextTips(phone){
   const nextBox = document.getElementById("nextMatches");
   const nextIntro = document.getElementById("nextIntro");
@@ -1738,6 +1853,8 @@ function renderNextTips(phone){
 
   const latestRows = getLatestRowsForPhone(submissionsCache, phone);
   const matchTips = latestRows.filter(row => row.type === "match");
+
+  renderLastBets(phone);
   const nextMatches = getNextThreeMatches();
   const displayName = getNameForPhone(phone);
 
@@ -1968,61 +2085,9 @@ function renderFrontTop3(){
   `).join("");
 }
 
-
-function shortMatch(match){
-  return String(match || "")
-    .split(" - ")
-    .map(team => team.trim().substring(0,3).toUpperCase())
-    .join("-");
-}
-
-function renderPublicNextBets(){
-  const box = document.getElementById("publicNextBets");
-  if(!box) return;
-
-  const rows = [...leaderboardCache]
-    .sort((a,b) => cleanNumber(a.rank) - cleanNumber(b.rank))
-    .filter(row =>
-      row.next_1_tip || row.next_2_tip || row.next_3_tip
-    );
-
-  if(rows.length === 0){
-    box.innerHTML = `<div class="front-empty">Ingen neste 3 tips i cache ennå. Kjør updateProfileCache().</div>`;
-    return;
-  }
-
-  box.innerHTML = rows.map(row => {
-    const tips = [];
-
-    if(row.next_1_match && row.next_1_tip){
-      tips.push(`${shortMatch(row.next_1_match)} ${row.next_1_tip}`);
-    }
-
-    if(row.next_2_match && row.next_2_tip){
-      tips.push(`${shortMatch(row.next_2_match)} ${row.next_2_tip}`);
-    }
-
-    if(row.next_3_match && row.next_3_tip){
-      tips.push(`${shortMatch(row.next_3_match)} ${row.next_3_tip}`);
-    }
-
-    return `
-      <div class="public-next-row">
-        <a class="public-next-name" href="profil.html?name=${encodeURIComponent(row.name || "")}">
-          ${cleanNumber(row.rank)}. ${row.name || "Ukjent"}
-        </a>
-        <div class="public-next-tips">
-          🎯 ${tips.join(" • ")}
-        </div>
-      </div>
-    `;
-  }).join("");
-}
-
 function renderFrontpageWidgets(){
   renderCommunityPredictions();
   renderFrontTop3();
-  renderPublicNextBets();
 }
 
 
