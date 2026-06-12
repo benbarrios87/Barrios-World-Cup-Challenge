@@ -1,6 +1,7 @@
 
 
 
+
 <!DOCTYPE html>
 <html lang="no">
 <head>
@@ -556,6 +557,127 @@ body::before{
 }
 
 
+
+.front-live-grid{
+  display:grid;
+  grid-template-columns:1.25fr 0.75fr;
+  gap:18px;
+}
+
+.community-list,
+.front-top3-list{
+  display:grid;
+  gap:12px;
+  margin-top:14px;
+}
+
+.community-card,
+.front-top3-row{
+  background:rgba(255,255,255,0.07);
+  border:1px solid rgba(255,255,255,0.11);
+  border-radius:18px;
+  padding:14px;
+}
+
+.community-title{
+  font-weight:bold;
+  margin-bottom:4px;
+}
+
+.community-sub{
+  color:var(--muted);
+  font-size:12px;
+  margin-bottom:12px;
+}
+
+.prediction-row{
+  display:grid;
+  grid-template-columns:88px 1fr 44px;
+  gap:10px;
+  align-items:center;
+  margin-top:8px;
+}
+
+.prediction-label{
+  color:rgba(255,255,255,0.82);
+  font-size:13px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.prediction-bar{
+  height:10px;
+  border-radius:999px;
+  background:rgba(255,255,255,0.10);
+  overflow:hidden;
+}
+
+.prediction-fill{
+  height:100%;
+  border-radius:999px;
+  background:linear-gradient(90deg,var(--green),#9dffc7);
+}
+
+.prediction-fill.draw{
+  background:linear-gradient(90deg,var(--gold),#ffe6a3);
+}
+
+.prediction-fill.away{
+  background:linear-gradient(90deg,var(--blue),#bde5ff);
+}
+
+.prediction-pct{
+  color:var(--gold);
+  font-weight:bold;
+  font-size:13px;
+  text-align:right;
+}
+
+.front-top3-row{
+  display:grid;
+  grid-template-columns:38px 1fr auto;
+  gap:10px;
+  align-items:center;
+}
+
+.front-medal{
+  width:34px;
+  height:34px;
+  border-radius:12px;
+  display:grid;
+  place-items:center;
+  background:rgba(0,0,0,0.24);
+  border:1px solid rgba(255,255,255,0.12);
+}
+
+.front-top3-name{
+  color:white;
+  text-decoration:none;
+  font-weight:bold;
+}
+
+.front-top3-points{
+  color:#9dffc7;
+  font-weight:900;
+  white-space:nowrap;
+}
+
+.front-empty{
+  color:var(--muted);
+  line-height:1.5;
+}
+
+@media(max-width:800px){
+  .front-live-grid{
+    grid-template-columns:1fr;
+  }
+
+  .prediction-row{
+    grid-template-columns:78px 1fr 40px;
+  }
+}
+
 .footer-note{
   color:var(--muted);
   text-align:center;
@@ -726,6 +848,9 @@ Målet er enkelt: samle flest poeng før finalen er spilt.
       </div>
     </div>
 
+    <div class="live-pool-card">
+      <div class="live-label">LIVE STATUS</div>
+
       <div class="live-pool-main">
         <span id="livePlayers">--</span> deltakere
       </div>
@@ -860,6 +985,30 @@ Målet er enkelt: samle flest poeng før finalen er spilt.
       </div>
     </div>
 
+
+    <div class="front-live-grid">
+      <div class="card">
+        <h2 style="margin-top:0;">📊 Folkets tips</h2>
+        <div class="hub-text">
+          Fordeling på neste 3 kamper. Ikke score, bare utfall.
+        </div>
+        <div id="communityPredictions" class="community-list">
+          <div class="front-empty">Laster folkets tips...</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 style="margin-top:0;">🏆 Topp 3 akkurat nå</h2>
+        <div id="frontTop3" class="front-top3-list">
+          <div class="front-empty">Laster topp 3...</div>
+        </div>
+        <a class="hub-link" href="leaderboard.html" style="margin-top:12px;">
+          <strong>Se hele leaderboardet →</strong>
+          <span>Full tabell, profiler og poeng.</span>
+        </a>
+      </div>
+    </div>
+
     <div class="live-pool-card">
       <div class="live-label">LIVE STATUS</div>
 
@@ -939,6 +1088,7 @@ const OUTCOME_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_OUTCOME`;
 const DIFF_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_DIFF`;
 const EXACT_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_EXACT`;
 const PROFILE_CACHE_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_PROFILE_CACHE`;
+const FRONTPAGE_CACHE_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_FRONTPAGE_CACHE`;
 
 const BUY_IN = 600;
 const FREE_ENTRIES = 1;
@@ -951,6 +1101,7 @@ let diffRules = [];
 let exactRules = [];
 let registrationsCache = [];
 let leaderboardCache = [];
+let frontpageCache = [];
 
 function isVmHubMode(){
   return new Date() >= VM_HUB_START;
@@ -1445,6 +1596,101 @@ async function loadLivePool(){
   }
 }
 
+
+function getMedal(slot){
+  const n = cleanNumber(slot);
+  if(n === 1) return "🥇";
+  if(n === 2) return "🥈";
+  if(n === 3) return "🥉";
+  return `${n}.`;
+}
+
+function renderCommunityPredictions(){
+  const box = document.getElementById("communityPredictions");
+  if(!box) return;
+
+  const rows = frontpageCache
+    .filter(row => String(row.type || "").trim().toLowerCase() === "community")
+    .sort((a,b) => cleanNumber(a.slot) - cleanNumber(b.slot));
+
+  if(rows.length === 0){
+    box.innerHTML = `<div class="front-empty">Ingen folkets tips-data ennå. Kjør updateFrontpageCache().</div>`;
+    return;
+  }
+
+  box.innerHTML = rows.map(row => {
+    const homePct = cleanNumber(row.home_pct);
+    const drawPct = cleanNumber(row.draw_pct);
+    const awayPct = cleanNumber(row.away_pct);
+
+    return `
+      <div class="community-card">
+        <div class="community-title">${row.home || ""} - ${row.away || ""}</div>
+        <div class="community-sub">${cleanNumber(row.total)} tips med i fordelingen</div>
+
+        <div class="prediction-row">
+          <div class="prediction-label">${row.home || "Hjemme"}</div>
+          <div class="prediction-bar"><div class="prediction-fill" style="width:${homePct}%"></div></div>
+          <div class="prediction-pct">${homePct}%</div>
+        </div>
+
+        <div class="prediction-row">
+          <div class="prediction-label">Uavgjort</div>
+          <div class="prediction-bar"><div class="prediction-fill draw" style="width:${drawPct}%"></div></div>
+          <div class="prediction-pct">${drawPct}%</div>
+        </div>
+
+        <div class="prediction-row">
+          <div class="prediction-label">${row.away || "Borte"}</div>
+          <div class="prediction-bar"><div class="prediction-fill away" style="width:${awayPct}%"></div></div>
+          <div class="prediction-pct">${awayPct}%</div>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+function renderFrontTop3(){
+  const box = document.getElementById("frontTop3");
+  if(!box) return;
+
+  let rows = frontpageCache
+    .filter(row => String(row.type || "").trim().toLowerCase() === "top3")
+    .sort((a,b) => cleanNumber(a.slot) - cleanNumber(b.slot));
+
+  if(rows.length === 0 && leaderboardCache.length){
+    rows = leaderboardCache
+      .sort((a,b) => cleanNumber(a.rank) - cleanNumber(b.rank))
+      .slice(0,3)
+      .map((row,index) => ({
+        slot:index + 1,
+        home:row.name,
+        total:row.points
+      }));
+  }
+
+  if(rows.length === 0){
+    box.innerHTML = `<div class="front-empty">Ingen topp 3-data ennå.</div>`;
+    return;
+  }
+
+  box.innerHTML = rows.map(row => `
+    <div class="front-top3-row">
+      <div class="front-medal">${getMedal(row.slot)}</div>
+      <a class="front-top3-name" href="profil.html?name=${encodeURIComponent(row.home || row.name || "")}">
+        ${row.home || row.name || "Ukjent"}
+      </a>
+      <div class="front-top3-points">${cleanNumber(row.total || row.points)} p</div>
+    </div>
+  `).join("");
+}
+
+function renderFrontpageWidgets(){
+  renderCommunityPredictions();
+  renderFrontTop3();
+}
+
+
 async function initVmHub(){
   const preLaunchContent = document.getElementById("preLaunchContent");
   const vmHub = document.getElementById("vmHub");
@@ -1479,7 +1725,8 @@ async function initVmHub(){
     outcome,
     diff,
     exact,
-    leaderboard
+    leaderboard,
+    frontpage
   ] = await Promise.all([
     fetchSheet(REGISTRATIONS_URL),
     fetchSheet(MATCHES_URL),
@@ -1488,7 +1735,8 @@ async function initVmHub(){
     fetchSheet(OUTCOME_URL),
     fetchSheet(DIFF_URL),
     fetchSheet(EXACT_URL),
-    fetchSheet(PROFILE_CACHE_URL)
+    fetchSheet(PROFILE_CACHE_URL),
+    fetchSheet(FRONTPAGE_CACHE_URL)
   ]);
 
   registrationsCache = registrations;
@@ -1498,6 +1746,7 @@ async function initVmHub(){
   diffRules = diff;
   exactRules = exact;
   leaderboardCache = leaderboard.sort((a,b) => cleanNumber(a.rank) - cleanNumber(b.rank));
+  frontpageCache = frontpage;
 
   resultsById = {};
   results.forEach(result => {
@@ -1507,6 +1756,7 @@ async function initVmHub(){
 
   loadLivePool();
   renderLatestNews();
+  renderFrontpageWidgets();
 
   const savedPhone = getSavedPhone();
 
