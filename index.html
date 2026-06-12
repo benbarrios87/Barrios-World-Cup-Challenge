@@ -1017,11 +1017,12 @@ Målet er enkelt: samle flest poeng før finalen er spilt.
 
     <div class="hub-grid">
       <div class="card">
-        <h2 style="margin-top:0;">🔥 Dine neste 3 tips</h2>
+        <div id="lastBetsBox"></div>
 
-        <div id="lastBetsBox" class="last-bets-list"></div>
+<h2 style="margin-top:24px;">🔥 Dine neste 3 tips</h2>
 
-        <div id="nextIntro" class="hub-text">
+<div id="nextIntro">...</div>
+<div id="nextTipsList">...</div>
           Laster neste kamper...
         </div>
 
@@ -1860,6 +1861,13 @@ function renderLastBets(phone){
 
   if(bets.length === 0){
     box.innerHTML = "";
+    box.innerHTML = `
+  <h2 style="margin:0 0 12px;">🧾 Dine siste 3 bets</h2>
+
+  ${bets.map(item => `
+    ...
+  `).join("")}
+`;
     return;
   }
 
