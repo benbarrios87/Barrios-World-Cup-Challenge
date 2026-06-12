@@ -1816,11 +1816,23 @@ function calculateTipPoints(tip, match, result){
 }
 
 function getLastThreeBets(phone){
-  const matchTips = getLatestMatchTipsForPhone(phone);
+  const matchTips = submissionsCache
+    .filter(row =>
+      String(row.phone || "").trim() === String(phone || "").trim() &&
+      String(row.type || "").trim().toLowerCase() === "match"
+    );
 
-  return matchTips
-    .map(tip => {
-      const matchId = String(tip.match_id || tip.id || "").trim();
+  const latestByMatch = new Map();
+
+  matchTips.forEach(tip => {
+    const matchId = String(tip.match_id || tip.id || "").trim();
+    if(!matchId) return;
+
+    latestByMatch.set(matchId, tip);
+  });
+
+  return [...latestByMatch.entries()]
+    .map(([matchId, tip]) => {
       const match = getMatchById(matchId);
       const result = resultsById[matchId];
 
@@ -1840,7 +1852,6 @@ function getLastThreeBets(phone){
     .sort((a,b) => cleanNumber(b.matchId) - cleanNumber(a.matchId))
     .slice(0,3);
 }
-
 function renderLastBets(phone){
   const box = document.getElementById("lastBetsBox");
   if(!box) return;
