@@ -708,7 +708,7 @@ body::before{
 .last-bets-list{
   display:grid;
   gap:10px;
-  margin-bottom:14px;
+  margin:0 0 16px;
 }
 
 .last-bet-card{
@@ -716,6 +716,16 @@ body::before{
   border:1px solid rgba(255,255,255,0.11);
   border-radius:16px;
   padding:13px;
+}
+
+.last-bet-card.hit{
+  border-color:rgba(46,204,113,0.25);
+  background:rgba(46,204,113,0.08);
+}
+
+.last-bet-card.miss{
+  border-color:rgba(255,94,94,0.22);
+  background:rgba(255,94,94,0.08);
 }
 
 .last-bet-top{
@@ -729,12 +739,6 @@ body::before{
   font-weight:bold;
 }
 
-.last-bet-points{
-  color:var(--gold);
-  font-weight:900;
-  white-space:nowrap;
-}
-
 .last-bet-sub{
   color:var(--muted);
   font-size:13px;
@@ -742,28 +746,31 @@ body::before{
   line-height:1.4;
 }
 
-.last-bet-hit{
+.last-bet-points{
+  color:var(--gold);
+  font-weight:900;
+  white-space:nowrap;
+}
+
+.last-bet-badge{
   display:inline-block;
   margin-top:8px;
   padding:5px 8px;
   border-radius:999px;
-  background:rgba(46,204,113,0.14);
-  border:1px solid rgba(46,204,113,0.25);
-  color:#9dffc7;
+  background:rgba(0,0,0,0.20);
+  border:1px solid rgba(255,255,255,0.10);
   font-size:12px;
   font-weight:bold;
 }
 
-.last-bet-miss{
-  display:inline-block;
-  margin-top:8px;
-  padding:5px 8px;
-  border-radius:999px;
-  background:rgba(255,94,94,0.12);
-  border:1px solid rgba(255,94,94,0.24);
-  color:#ffb4b4;
-  font-size:12px;
-  font-weight:bold;
+@media(max-width:600px){
+  .last-bet-top{
+    display:block;
+  }
+
+  .last-bet-points{
+    margin-top:8px;
+  }
 }
 
 
@@ -1730,6 +1737,9 @@ function renderLatestNews(){
 }
 
 function renderNextWithoutPhone(){
+  const lastBetsBox = document.getElementById("lastBetsBox");
+  if(lastBetsBox) lastBetsBox.innerHTML = "";
+
   document.getElementById("nextIntro").innerHTML =
     "Skriv inn telefonnummeret ditt for å se tipsene dine på de neste kampene.";
 
@@ -1738,7 +1748,29 @@ function renderNextWithoutPhone(){
 }
 
 
-function calculateTipPointsForMatch(tip, match, result){
+function latestTimestampForPhone(phone){
+  const userRows = submissionsCache.filter(row =>
+    String(row.phone || "").trim() === String(phone || "").trim()
+  );
+
+  if(userRows.length === 0) return "";
+
+  return userRows[userRows.length - 1].timestamp;
+}
+
+function getLatestMatchTipsForPhone(phone){
+  const latestTimestamp = latestTimestampForPhone(phone);
+
+  if(!latestTimestamp) return [];
+
+  return submissionsCache.filter(row =>
+    String(row.phone || "").trim() === String(phone || "").trim() &&
+    String(row.timestamp || "") === String(latestTimestamp || "") &&
+    String(row.type || "").trim().toLowerCase() === "match"
+  );
+}
+
+function calculateTipPoints(tip, match, result){
   if(!tip || !match || !result) return 0;
 
   if(
@@ -1783,24 +1815,18 @@ function calculateTipPointsForMatch(tip, match, result){
   return 0;
 }
 
-function renderLastBets(phone){
-  const box = document.getElementById("lastBetsBox");
-  if(!box) return;
+function getLastThreeBets(phone){
+  const matchTips = getLatestMatchTipsForPhone(phone);
 
-  const latestRows = getLatestRowsForPhone(submissionsCache, phone);
-  const matchTips = latestRows.filter(row => row.type === "match");
-
-  renderLastBets(phone);
-
-  const settled = matchTips
+  return matchTips
     .map(tip => {
       const matchId = String(tip.match_id || tip.id || "").trim();
       const match = getMatchById(matchId);
       const result = resultsById[matchId];
 
-      if(!match || !hasResult(matchId)) return null;
+      if(!match || !result || !hasResult(matchId)) return null;
 
-      const points = calculateTipPointsForMatch(tip, match, result);
+      const points = calculateTipPoints(tip, match, result);
 
       return {
         matchId,
@@ -1813,29 +1839,38 @@ function renderLastBets(phone){
     .filter(Boolean)
     .sort((a,b) => cleanNumber(b.matchId) - cleanNumber(a.matchId))
     .slice(0,3);
+}
 
-  if(settled.length === 0){
+function renderLastBets(phone){
+  const box = document.getElementById("lastBetsBox");
+  if(!box) return;
+
+  const bets = getLastThreeBets(phone);
+
+  if(bets.length === 0){
     box.innerHTML = "";
     return;
   }
 
   box.innerHTML = `
     <h2 style="margin:0 0 10px;">🧾 Dine siste 3 bets</h2>
-    ${settled.map(item => {
-      const hitClass = item.points > 0 ? "last-bet-hit" : "last-bet-miss";
-      const hitText = item.points > 0 ? "Treff" : "Bom";
+
+    ${bets.map(item => {
+      const hit = item.points > 0;
+      const resultText = `${item.result.actual_home}-${item.result.actual_away}`;
+      const tipText = `${item.tip.tips_home}-${item.tip.tips_away}`;
 
       return `
-        <div class="last-bet-card">
+        <div class="last-bet-card ${hit ? "hit" : "miss"}">
           <div class="last-bet-top">
             <div>
               <div class="last-bet-match">${item.match.home || ""} - ${item.match.away || ""}</div>
               <div class="last-bet-sub">
-                Du: ${item.tip.tips_home}-${item.tip.tips_away}
-                · Resultat: ${item.result.actual_home}-${item.result.actual_away}
+                Du: ${tipText} · Resultat: ${resultText}
               </div>
-              <span class="${hitClass}">${hitText}</span>
+              <span class="last-bet-badge">${hit ? "Treff" : "Bom"}</span>
             </div>
+
             <div class="last-bet-points">+${item.points} p</div>
           </div>
         </div>
@@ -1853,10 +1888,10 @@ function renderNextTips(phone){
 
   const latestRows = getLatestRowsForPhone(submissionsCache, phone);
   const matchTips = latestRows.filter(row => row.type === "match");
-
-  renderLastBets(phone);
   const nextMatches = getNextThreeMatches();
   const displayName = getNameForPhone(phone);
+
+  renderLastBets(phone);
 
   if(displayName){
     greeting.textContent = `Hei ${displayName.split(" ")[0]}!`;
