@@ -565,7 +565,29 @@ function getInitials(name){
     .toUpperCase();
 }
 
+function slugify(value){
+  return String(value || "")
+    .trim()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g,"")
+    .replace(/æ/g,"ae")
+    .replace(/ø/g,"o")
+    .replace(/å/g,"a")
+    .replace(/[^a-z0-9]/g,"");
+}
+
 function getAvatarFile(name){
+
+  const first =
+    slugify(
+      String(name || "")
+        .trim()
+        .split(/\s+/)[0]
+    );
+
+  const full = slugify(name);
+
   const lower = String(name || "")
     .trim()
     .toLowerCase()
@@ -584,7 +606,19 @@ function getAvatarFile(name){
     return "andersub.png";
   }
 
-  return `${lower.split(/\s+/)[0] || "default"}.png`;
+  const specialFiles = {
+    "kristoffereckhoff":"kristoffereckhoff.png",
+    "kristoffermerker":"kristoffermerker.png",
+    "kristofferlongva":"kristofferlongva.png",
+    "kristofferrunestad":"kristofferrunestad.png",
+    "andreasstraete":"andreasstraete.png"
+  };
+
+  if(specialFiles[full]){
+    return specialFiles[full];
+  }
+
+  return `${first}.png`;
 }
 
 function handleAvatarError(img, name){
