@@ -733,7 +733,29 @@ function getStatComment(player, ratings){
 
   return comments.join(" ");
 }
+function renderLastResults(player){
+  const rows = [
+    player.last_1,
+    player.last_2,
+    player.last_3,
+    player.last_4,
+    player.last_5
+  ].filter(Boolean);
 
+  if(rows.length === 0) return "";
+
+  return `
+    <div class="panel">
+      <h2 class="section-title">Siste 5 resultater</h2>
+      <div class="compact-bonus-list">
+        ${rows.map(row => `
+          <span class="compact-bonus-pill">${row}</span>
+        `).join("")}
+      </div>
+    </div>
+  `;
+}
+  
 async function loadProfile(){
   const content = document.getElementById("content");
   const queryName = getQueryName().trim().toLowerCase();
@@ -853,6 +875,8 @@ async function loadProfile(){
             <h2 class="section-title">Kortanalyse</h2>
             <div class="note">${statComment}</div>
           </div>
+          
+          ${renderLastResults(player)}
 
           <div class="panel">
             <h2 class="section-title">Bonusvalg</h2>
