@@ -2,6 +2,7 @@
 
 
 
+
 <!DOCTYPE html>
 <html lang="no">
 <head>
@@ -492,6 +493,41 @@ body::before{
   color:var(--muted);
   line-height:1.5;
 }
+
+.news-item.drama{
+  border-color:rgba(255,94,94,0.24);
+  background:rgba(255,94,94,0.08);
+}
+
+.news-item.stat{
+  border-color:rgba(126,227,95,0.24);
+  background:rgba(46,204,113,0.08);
+}
+
+.news-item.bonus{
+  border-color:rgba(255,209,102,0.28);
+  background:rgba(255,209,102,0.08);
+}
+
+.news-item.weird{
+  border-color:rgba(124,199,255,0.25);
+  background:rgba(124,199,255,0.08);
+}
+
+.news-tag{
+  display:inline-block;
+  margin-bottom:5px;
+  padding:3px 7px;
+  border-radius:999px;
+  background:rgba(0,0,0,0.22);
+  border:1px solid rgba(255,255,255,0.10);
+  color:var(--gold);
+  font-size:10px;
+  font-weight:bold;
+  text-transform:uppercase;
+  letter-spacing:.5px;
+}
+
 
 
 .hub-link{
@@ -1028,7 +1064,7 @@ Målet er enkelt: samle flest poeng før finalen er spilt.
 
   </div>
 
-  <div class="card">
+  <div id="bottomMenuCard" class="card">
     <div class="menu-grid">
       <a id="registerLink" class="menu-link primary" href="registrer.html">
         <strong>📝 Meld meg på</strong>
@@ -1403,6 +1439,190 @@ function getRareHitStory(){
   };
 }
 
+function makeStory(icon,title,text,type="stat",tag="Siste nytt"){
+  return { icon, title, text, type, tag };
+}
+
+function shuffleStories(stories){
+  return [...stories].sort(() => Math.random() - 0.5);
+}
+
+function getCommunityStories(){
+  const community = frontpageCache
+    .filter(row => String(row.type || "").trim().toLowerCase() === "community");
+
+  const stories = [];
+
+  community.forEach(row => {
+    const home = row.home || "Hjemmelaget";
+    const away = row.away || "Bortelaget";
+    const total = cleanNumber(row.total);
+    const homePct = cleanNumber(row.home_pct);
+    const drawPct = cleanNumber(row.draw_pct);
+    const awayPct = cleanNumber(row.away_pct);
+
+    if(total <= 0) return;
+
+    const options = [
+      { label:`${home}-seier`, pct:homePct },
+      { label:"uavgjort", pct:drawPct },
+      { label:`${away}-seier`, pct:awayPct }
+    ].sort((a,b) => b.pct - a.pct);
+
+    const favorite = options[0];
+    const outsider = [...options].sort((a,b) => a.pct - b.pct)[0];
+
+    if(favorite.pct >= 55){
+      stories.push(makeStory(
+        "🐑",
+        "Flokken har bestemt seg",
+        `${favorite.pct}% går for ${favorite.label} i ${home}–${away}.`,
+        "drama",
+        "Folkets tips"
+      ));
+    }
+
+    if(outsider.pct > 0 && outsider.pct <= 12){
+      const estimated = Math.max(1, Math.round(total * outsider.pct / 100));
+      stories.push(makeStory(
+        "🧨",
+        "Mot strømmen",
+        `Bare ${estimated} av ${total} har valgt ${outsider.label} i ${home}–${away}.`,
+        "drama",
+        "Underdog"
+      ));
+    }
+
+    if(drawPct >= 35){
+      stories.push(makeStory(
+        "🤝",
+        "Uavgjort-feber",
+        `${drawPct}% tror på kryss i ${home}–${away}.`,
+        "weird",
+        "Taktisk feighet"
+      ));
+    }
+  });
+
+  return stories;
+}
+
+function getLeaderboardStories(){
+  if(!leaderboardCache.length) return [];
+
+  const stories = [];
+  const sorted = [...leaderboardCache].sort((a,b) => cleanNumber(a.rank) - cleanNumber(b.rank));
+  const leader = sorted[0];
+
+  if(leader){
+    stories.push(makeStory(
+      "🏆",
+      "Lederen akkurat nå",
+      `${leader.name || "Ukjent"} leder med ${cleanNumber(leader.points || leader.score)} poeng.`,
+      "stat",
+      "Tabellen"
+    ));
+  }
+
+  if(sorted.length >= 5){
+    const gap = cleanNumber(sorted[0].points) - cleanNumber(sorted[4].points);
+    stories.push(makeStory(
+      "🔥",
+      "Tett i toppen",
+      `Det skiller ${gap} poeng mellom 1. og 5. plass.`,
+      gap <= 6 ? "drama" : "stat",
+      "Premiekampen"
+    ));
+  }
+
+  const exactKing = [...leaderboardCache]
+    .sort((a,b) => cleanNumber(b.exact) - cleanNumber(a.exact))[0];
+
+  if(exactKing && cleanNumber(exactKing.exact) > 0){
+    stories.push(makeStory(
+      "🎯",
+      "Fulltreff-kongen",
+      `${exactKing.name} har flest eksakte treff med ${cleanNumber(exactKing.exact)}.`,
+      "stat",
+      "Presisjon"
+    ));
+  }
+
+  const underdogKing = [...leaderboardCache]
+    .sort((a,b) => cleanNumber(b.underdog) - cleanNumber(a.underdog))[0];
+
+  if(underdogKing && cleanNumber(underdogKing.underdog) > 0){
+    stories.push(makeStory(
+      "🧨",
+      "Outsider-jeger",
+      `${underdogKing.name} har flest outsider-treff så langt.`,
+      "weird",
+      "Risiko"
+    ));
+  }
+
+  return stories;
+}
+
+function getBonusStories(){
+  const stories = [];
+  const scorerTotals = {};
+  const playerTotals = {};
+
+  leaderboardCache.forEach(row => {
+    const scorerNames = String(row.top_scorer_all || row.top_scorer || "")
+      .split("|")
+      .map(x => x.trim())
+      .filter(Boolean);
+
+    const scorerPoints = String(row.top_scorer_points_all || row.top_scorer_points || "")
+      .split("|")
+      .map(x => cleanNumber(x));
+
+    scorerNames.forEach((name,index) => {
+      scorerTotals[name] = (scorerTotals[name] || 0) + cleanNumber(scorerPoints[index]);
+    });
+
+    const playerNames = String(row.best_player_all || row.best_player || "")
+      .split("|")
+      .map(x => x.trim())
+      .filter(Boolean);
+
+    const playerPoints = String(row.best_player_points_all || row.best_player_points || "")
+      .split("|")
+      .map(x => cleanNumber(x));
+
+    playerNames.forEach((name,index) => {
+      playerTotals[name] = (playerTotals[name] || 0) + cleanNumber(playerPoints[index]);
+    });
+  });
+
+  const topScorer = Object.entries(scorerTotals).sort((a,b) => b[1] - a[1])[0];
+  const bestPlayer = Object.entries(playerTotals).sort((a,b) => b[1] - a[1])[0];
+
+  if(topScorer && topScorer[1] > 0){
+    stories.push(makeStory(
+      "⚽",
+      "Toppscorer-markedet",
+      `${topScorer[0]} har fått flest toppscorer-poeng totalt: ${topScorer[1]}.`,
+      "bonus",
+      "Bonus"
+    ));
+  }
+
+  if(bestPlayer && bestPlayer[1] > 0){
+    stories.push(makeStory(
+      "⭐",
+      "Folkets spiller",
+      `${bestPlayer[0]} er mest populær som beste spiller med ${bestPlayer[1]} poeng investert.`,
+      "bonus",
+      "Bonus"
+    ));
+  }
+
+  return stories;
+}
+
 function renderLatestNews(){
   const intro = document.getElementById("latestNewsIntro");
   const list = document.getElementById("latestNewsList");
@@ -1412,9 +1632,11 @@ function renderLatestNews(){
   const stories = [
     getLatestResultStory(),
     getRareHitStory(),
-    getLeaderStory(),
+    ...getCommunityStories(),
+    ...getLeaderboardStories(),
+    ...getBonusStories(),
     getNextMatchStory()
-  ].filter(Boolean).slice(0,4);
+  ].filter(Boolean);
 
   if(stories.length === 0){
     intro.innerHTML = "Siste nytt våkner når VM-resultatene begynner å tikke inn.";
@@ -1426,12 +1648,15 @@ function renderLatestNews(){
     return;
   }
 
-  intro.innerHTML = "Små historier fra konkurransen, automatisk oppdatert etter hvert som resultater kommer inn.";
+  const selected = shuffleStories(stories).slice(0,4);
 
-  list.innerHTML = stories.map(story => `
-    <div class="news-item">
+  intro.innerHTML = "Automatiske små historier fra konkurransen. Oppdater siden og du kan få nye vinkler.";
+
+  list.innerHTML = selected.map(story => `
+    <div class="news-item ${story.type || ""}">
       <div class="news-icon">${story.icon}</div>
       <div>
+        <div class="news-tag">${story.tag || "Siste nytt"}</div>
         <div class="news-title">${story.title}</div>
         <div class="news-text">${story.text}</div>
       </div>
@@ -1697,15 +1922,18 @@ async function initVmHub(){
   const heroSubtitle = document.getElementById("heroSubtitle");
   const registerLink = document.getElementById("registerLink");
   const tipsLink = document.getElementById("tipsLink");
+  const bottomMenuCard = document.getElementById("bottomMenuCard");
 
   if(!isVmHubMode()){
     preLaunchContent.style.display = "block";
     vmHub.style.display = "none";
+    if(bottomMenuCard) bottomMenuCard.style.display = "block";
     return;
   }
 
   preLaunchContent.style.display = "none";
   vmHub.style.display = "block";
+  if(bottomMenuCard) bottomMenuCard.style.display = "none";
 
   heroSubtitle.textContent = "VM er i gang. Nå handler alt om neste kamp, neste tips og neste klatring på leaderboardet.";
 
