@@ -531,14 +531,13 @@ function cleanNumber(value){
 }
 
 function getPrizeForPlace(index, prizePool){
-  const prizes = [
-   { label:"1. premie", percent:0.40 },
-    { label:"2. premie", percent:0.25 },
-    { label:"3. premie", percent:0.15 },
-    { label:"4. premie", percent:0.10 },
-    { label:"5. premie", percent:0.06 },
-    { label:"6. premie", percent:0.04 }
-  ];
+ const prizes = [
+  { label:"1. premie", percent:0.45 },
+  { label:"2. premie", percent:0.25 },
+  { label:"3. premie", percent:0.15 },
+  { label:"4. premie", percent:0.10 },
+  { label:"5. premie", percent:0.05 }
+];
 
   const prize = prizes[index];
   if(!prize) return "";
@@ -643,24 +642,18 @@ function renderBonusTags(row){
   return tags.join("");
 }
 function renderNextTips(row){
+
   const tips = [
-    { match: row.next_1_match, tip: row.next_1_tip },
-    { match: row.next_2_match, tip: row.next_2_tip },
-    { match: row.next_3_match, tip: row.next_3_tip }
-  ].filter(item => item.match && item.tip);
+    row.next_1_tip,
+    row.next_2_tip,
+    row.next_3_tip
+  ].filter(Boolean);
 
   if(tips.length === 0) return "";
 
   return `
     <div class="next-tips">
-      <div class="next-tips-title">Neste 3 tips</div>
-
-      ${tips.map(item => `
-        <div class="next-tip-row">
-          <span>${item.match}</span>
-          <span class="next-tip-score">${item.tip}</span>
-        </div>
-      `).join("")}
+      🎯 Neste: ${tips.join(" • ")}
     </div>
   `;
 }
