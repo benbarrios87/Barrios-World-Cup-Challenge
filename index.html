@@ -5,6 +5,7 @@
 
 
 
+
 <!DOCTYPE html>
 <html lang="no">
 <head>
@@ -671,6 +672,26 @@ body::before{
   font-size:13px;
   text-align:right;
 }
+.common-bets{
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+  margin-top:12px;
+}
+
+.common-bet-pill{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:7px 10px;
+  border-radius:999px;
+  background:rgba(255,209,102,0.12);
+  border:1px solid rgba(255,209,102,0.24);
+  color:var(--gold);
+  font-size:12px;
+  font-weight:bold;
+}
+
 
 .front-top3-row{
   display:grid;
@@ -868,10 +889,6 @@ body::before{
 
 <div class="wrapper">
 
-  <div class="legal-box">
-    FC Barrios World Cup Challenge er et privat hobbyprosjekt og en sosial VM-konkurranse mellom venner, bekjente og fotballinteresserte. Nettsiden drives ikke kommersielt.
-  </div>
-
   <div class="hero">
     <img
       class="hero-img"
@@ -1004,7 +1021,7 @@ Målet er enkelt: samle flest poeng før finalen er spilt.
       <div class="hub-kicker">VM-MODUS ER I GANG</div>
       <h2 id="hubGreeting" class="hub-title">Velkommen til kampdag.</h2>
       <p class="hub-text">
-        Forsiden viser nå det folk faktisk trenger under VM: dine neste tips, kjappe snarveier og veien videre inn i kaoset.
+        Alt du trenger akkurat nå samlet på én side.
       </p>
     </div>
 
@@ -1099,7 +1116,7 @@ Målet er enkelt: samle flest poeng før finalen er spilt.
       <div class="card">
         <h2 style="margin-top:0;">📊 Folkets tips</h2>
         <div class="hub-text">
-          Fordeling på neste kamper. Ikke score, bare utfall.
+          Fordeling og vanligste resultattips på de neste kampene.
         </div>
         <div id="communityPredictions" class="community-list">
           <div class="front-empty">Laster folkets tips...</div>
@@ -1179,6 +1196,10 @@ Målet er enkelt: samle flest poeng før finalen er spilt.
 
   <div class="footer-note">
     FC Barrios World Cup Challenge 2026
+  </div>
+
+  <div class="footer-note" style="margin-top:8px;font-size:11px;opacity:.72;">
+    FC Barrios World Cup Challenge er et privat hobbyprosjekt og en sosial VM-konkurranse mellom venner, bekjente og fotballinteresserte. Nettsiden drives ikke kommersielt.
   </div>
 
 </div>
@@ -2052,6 +2073,29 @@ function getMedal(slot){
   return `${n}.`;
 }
 
+
+function renderCommonBets(row){
+  const bets = [
+    row.common_1,
+    row.common_2,
+    row.common_3
+  ]
+    .map(value => String(value || "").trim())
+    .filter(Boolean);
+
+  if(bets.length === 0) return "";
+
+  return `
+    <div class="common-bets">
+      ${bets.map((bet,index) => `
+        <div class="common-bet-pill">
+          ${index + 1}. ${bet}
+        </div>
+      `).join("")}
+    </div>
+  `;
+}
+
 function renderCommunityPredictions(){
   const box = document.getElementById("communityPredictions");
   if(!box) return;
@@ -2074,6 +2118,8 @@ function renderCommunityPredictions(){
       <div class="community-card">
         <div class="community-title">${row.home || ""} - ${row.away || ""}</div>
         <div class="community-sub">${cleanNumber(row.total)} tips med i fordelingen</div>
+
+        ${renderCommonBets(row)}
 
         <div class="prediction-row">
           <div class="prediction-label">${row.home || "Hjemme"}</div>
@@ -2157,7 +2203,7 @@ async function initVmHub(){
   vmHub.style.display = "block";
   if(bottomMenuCard) bottomMenuCard.style.display = "none";
 
-  heroSubtitle.textContent = "VM er i gang. Nå handler alt om neste kamp, neste tips og neste klatring på leaderboardet.";
+  heroSubtitle.textContent = "Neste kamp, siste bets, folkets tips og live leaderboard.";
 
   if(registerLink){
     registerLink.style.display = "none";
