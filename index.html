@@ -2085,11 +2085,17 @@ function renderCommonBets(row){
 
   if(bets.length === 0) return "";
 
+  const medals = ["🥇", "🥈", "🥉"];
+
   return `
     <div class="common-bets">
+      <strong style="width:100%;color:var(--gold);font-size:12px;">
+        🔥 Mest tippet:
+      </strong>
+
       ${bets.map((bet,index) => `
         <div class="common-bet-pill">
-          ${index + 1}. ${bet}
+          ${medals[index]} ${bet}
         </div>
       `).join("")}
     </div>
