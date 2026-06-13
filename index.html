@@ -1020,7 +1020,7 @@ Målet er enkelt: samle flest poeng før finalen er spilt.
       <div class="card">
         <div id="lastBetsBox"></div>
 
-        <h2 style="margin-top:24px;">🔥 Dine neste 3 tips</h2>
+        <h2 style="margin-top:24px;">🔥 Dine neste 4 tips</h2>
 
         <div id="nextIntro" class="hub-text">
           Laster neste kamper...
@@ -1391,7 +1391,7 @@ function getNextThreeMatches(){
       const matchId = String(match.id || match.match_id || "").trim();
       return matchId && !hasResult(matchId);
     })
-    .slice(0,3);
+    .slice(0,4);
 }
 
 
@@ -1920,7 +1920,7 @@ function renderNextTips(phone){
   }
 
   nextIntro.innerHTML =
-    "Her er de neste 3 kampene i systemet, med dine tips og mulig maksuttelling.";
+    "Her er de neste 4 kampene i systemet, med dine tips og mulig maksuttelling.";
 
   nextBox.innerHTML = nextMatches.map(match => {
     const matchId = String(match.id || match.match_id || "").trim();
