@@ -1,5 +1,12 @@
 
 
+
+
+
+
+
+
+
 <!DOCTYPE html>
 <html lang="no">
 <head>
@@ -605,6 +612,30 @@ body::before{
 }
 
 .community-card,
+.front-top3-avatar{
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  object-fit:cover;
+  object-position:center top;
+  background:rgba(0,0,0,0.24);
+  border:2px solid rgba(255,255,255,0.15);
+  box-shadow:0 8px 16px rgba(0,0,0,0.22);
+}
+
+.front-top3-fallback{
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  background:rgba(0,0,0,0.24);
+  border:2px solid rgba(255,255,255,0.15);
+  color:var(--gold);
+  font-weight:900;
+  font-size:13px;
+}
+
 .front-top3-row{
   background:rgba(255,255,255,0.07);
   border:1px solid rgba(255,255,255,0.11);
@@ -625,22 +656,22 @@ body::before{
 
 .prediction-row{
   display:grid;
-  grid-template-columns:88px 1fr 44px;
+  grid-template-columns:70px 1fr 38px;
   gap:10px;
   align-items:center;
-  margin-top:8px;
+  margin-top:6px;
 }
 
 .prediction-label{
   color:rgba(255,255,255,0.82);
-  font-size:13px;
+  font-size:12px;
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
 }
 
 .prediction-bar{
-  height:10px;
+  height:7px;
   border-radius:999px;
   background:rgba(255,255,255,0.10);
   overflow:hidden;
@@ -663,7 +694,7 @@ body::before{
 .prediction-pct{
   color:var(--gold);
   font-weight:bold;
-  font-size:13px;
+  font-size:12px;
   text-align:right;
 }
 .common-bets{
@@ -687,9 +718,33 @@ body::before{
 }
 
 
+.front-top3-avatar{
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  object-fit:cover;
+  object-position:center top;
+  background:rgba(0,0,0,0.24);
+  border:2px solid rgba(255,255,255,0.15);
+  box-shadow:0 8px 16px rgba(0,0,0,0.22);
+}
+
+.front-top3-fallback{
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  background:rgba(0,0,0,0.24);
+  border:2px solid rgba(255,255,255,0.15);
+  color:var(--gold);
+  font-weight:900;
+  font-size:13px;
+}
+
 .front-top3-row{
   display:grid;
-  grid-template-columns:38px 1fr auto;
+  grid-template-columns:34px 42px 1fr auto;
   gap:10px;
   align-items:center;
 }
@@ -963,6 +1018,23 @@ Målet er enkelt: samle flest poeng før finalen er spilt.
         <div class="deadline-text">
           Tipsfrist: 11. juni 2026 kl. 18:00.
         </div>
+      </div>
+    </div>
+
+    <div class="live-pool-card">
+      <div class="live-label">LIVE STATUS</div>
+
+      <div class="live-pool-main">
+        <span id="livePlayers">--</span> deltakere
+      </div>
+
+      <div class="live-pool-pot">
+        Foreløpig premiepool:
+        <strong id="livePot">-- kr</strong>
+      </div>
+
+      <div class="live-pool-sub">
+        Deltagerstatus oppdateres automatisk.
       </div>
     </div>
 
@@ -2126,6 +2198,67 @@ function renderCommunityPredictions(){
   }).join("");
 }
 
+
+function getInitials(name){
+  return String(name || "")
+    .split(" ")
+    .map(part => part[0] || "")
+    .join("")
+    .slice(0,2)
+    .toUpperCase();
+}
+
+function slugify(value){
+  return String(value || "")
+    .trim()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g,"")
+    .replace(/æ/g,"ae")
+    .replace(/ø/g,"o")
+    .replace(/å/g,"a")
+    .replace(/[^a-z0-9]/g,"");
+}
+
+function getAvatarFile(name){
+  const first = slugify(String(name || "").trim().split(/\s+/)[0]);
+  const full = slugify(name);
+
+  const lower = String(name || "")
+    .trim()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g,"");
+
+  if(
+    lower.includes("anders") &&
+    (
+      lower.includes("uldalen") ||
+      lower.includes("uldalden") ||
+      lower.includes("brosstad") ||
+      lower.includes("brosstand")
+    )
+  ){
+    return "andersub.png";
+  }
+
+  const specialFiles = {
+    "kristoffereckhoff":"kristoffereckhoff.png",
+    "kristoffermerker":"kristoffermerker.png",
+    "kristofferlongva":"kristofferlongva.png",
+    "kristofferrunestad":"kristofferrunestad.png",
+    "andreasstraete":"andreasstraete.png"
+  };
+
+  if(specialFiles[full]) return specialFiles[full];
+
+  return `${first}.png`;
+}
+
+function handleTop3AvatarError(img, name){
+  img.outerHTML = `<div class="front-top3-fallback">${getInitials(name)}</div>`;
+}
+
 function renderFrontTop3(){
   const box = document.getElementById("frontTop3");
   if(!box) return;
@@ -2150,15 +2283,28 @@ function renderFrontTop3(){
     return;
   }
 
-  box.innerHTML = rows.map(row => `
-    <div class="front-top3-row">
-      <div class="front-medal">${getMedal(row.slot)}</div>
-      <a class="front-top3-name" href="profil.html?name=${encodeURIComponent(row.home || row.name || "")}">
-        ${row.home || row.name || "Ukjent"}
-      </a>
-      <div class="front-top3-points">${cleanNumber(row.total || row.points)} p</div>
-    </div>
-  `).join("");
+  box.innerHTML = rows.map(row => {
+    const playerName = row.home || row.name || "Ukjent";
+
+    return `
+      <div class="front-top3-row">
+        <div class="front-medal">${getMedal(row.slot)}</div>
+
+        <img
+          class="front-top3-avatar"
+          src="${getAvatarFile(playerName)}"
+          alt="${playerName}"
+          onerror="handleTop3AvatarError(this,'${String(playerName || "").replace(/'/g,"&#39;")}')"
+        >
+
+        <a class="front-top3-name" href="profil.html?name=${encodeURIComponent(playerName)}">
+          ${playerName}
+        </a>
+
+        <div class="front-top3-points">${cleanNumber(row.total || row.points)} p</div>
+      </div>
+    `;
+  }).join("");
 }
 
 function renderFrontpageWidgets(){
