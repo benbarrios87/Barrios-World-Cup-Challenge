@@ -725,15 +725,6 @@ function renderNextTips(row){
     </div>
   `;
 }
-
-  if(tips.length === 0) return "";
-
-  return `
-    <div class="next-tips">
-      🎯 ${tips.join(" • ")}
-    </div>
-  `;
-}
 async function loadLeaderboard(){
   const container = document.getElementById("leaderboardContainer");
   const statusBox = document.getElementById("statusBox");
