@@ -612,30 +612,6 @@ body::before{
 }
 
 .community-card,
-.front-top3-avatar{
-  width:42px;
-  height:42px;
-  border-radius:50%;
-  object-fit:cover;
-  object-position:center top;
-  background:rgba(0,0,0,0.24);
-  border:2px solid rgba(255,255,255,0.15);
-  box-shadow:0 8px 16px rgba(0,0,0,0.22);
-}
-
-.front-top3-fallback{
-  width:42px;
-  height:42px;
-  border-radius:50%;
-  display:grid;
-  place-items:center;
-  background:rgba(0,0,0,0.24);
-  border:2px solid rgba(255,255,255,0.15);
-  color:var(--gold);
-  font-weight:900;
-  font-size:13px;
-}
-
 .front-top3-row{
   background:rgba(255,255,255,0.07);
   border:1px solid rgba(255,255,255,0.11);
@@ -718,6 +694,13 @@ body::before{
 }
 
 
+.front-top3-row{
+  display:grid;
+  grid-template-columns:34px 42px 1fr auto;
+  gap:10px;
+  align-items:center;
+}
+
 .front-top3-avatar{
   width:42px;
   height:42px;
@@ -740,13 +723,6 @@ body::before{
   color:var(--gold);
   font-weight:900;
   font-size:13px;
-}
-
-.front-top3-row{
-  display:grid;
-  grid-template-columns:34px 42px 1fr auto;
-  gap:10px;
-  align-items:center;
 }
 
 .front-medal{
