@@ -769,12 +769,11 @@ function renderLastResults(player){
     {
       match: player.next_3_match,
       tip: player.next_3_tip
-    }
+    },
     {
-  match: player.next_4_match,
-  tip: player.next_4_tip
-},
-    
+      match: player.next_4_match,
+      tip: player.next_4_tip
+    }
   ].filter(row => row.match && row.tip);
 
   if(rows.length === 0) return "";
