@@ -705,11 +705,11 @@ function renderNextTips(row){
     );
   }
 
-  if(row.next_3_match && row.next_3_tip){
-    tips.push(
-      `${shortMatch(row.next_3_match)} ${row.next_3_tip}`
-    );
-  }
+  if(row.next_4_match && row.next_4_tip){
+  tips.push(
+    `${shortMatch(row.next_4_match)} ${row.next_4_tip}`
+  );
+}
 
   if(tips.length === 0) return "";
 
