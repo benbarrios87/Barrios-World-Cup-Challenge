@@ -657,7 +657,7 @@ body::before{
 .prediction-row{
   display:grid;
   grid-template-columns:70px 1fr 38px;
-  gap:10px;
+  gap:8px;
   align-items:center;
   margin-top:6px;
 }
@@ -1183,25 +1183,7 @@ Målet er enkelt: samle flest poeng før finalen er spilt.
         </a>
       </div>
     </div>
-
-    <div class="live-pool-card">
-      <div class="live-label">LIVE STATUS</div>
-
-      <div class="live-pool-main">
-        <span id="livePlayersVm">--</span> deltakere
-      </div>
-
-      <div class="live-pool-pot">
-        Premiepool:
-        <strong id="livePotVm">-- kr</strong>
-      </div>
-
-      <div class="live-pool-sub">
-        Oppdateres automatisk. Sjekk leaderboard for stillingen.
-      </div>
-    </div>
-
-  </div>
+</div>
 
   <div id="bottomMenuCard" class="card">
     <div class="menu-grid">
@@ -2221,7 +2203,12 @@ function slugify(value){
 }
 
 function getAvatarFile(name){
-  const first = slugify(String(name || "").trim().split(/\s+/)[0]);
+  const first = slugify(
+    String(name || "")
+      .trim()
+      .split(/\s+/)[0]
+  );
+
   const full = slugify(name);
 
   const lower = String(name || "")
@@ -2250,7 +2237,9 @@ function getAvatarFile(name){
     "andreasstraete":"andreasstraete.png"
   };
 
-  if(specialFiles[full]) return specialFiles[full];
+  if(specialFiles[full]){
+    return specialFiles[full];
+  }
 
   return `${first}.png`;
 }
