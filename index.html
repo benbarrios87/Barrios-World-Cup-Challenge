@@ -1616,17 +1616,6 @@ if(common){
   }
   return stories;
 }
-  const common = String(row.common_1 || "").trim();
-
-if(common){
-  stories.push(makeStory(
-    "🔥",
-    "Mest tippet",
-    `Det vanligste tipset i ${home}–${away} er ${common}.`,
-    "stat",
-    "Folkets favoritt"
-  ));
-}
   
 
 function getLeaderboardStories(){
