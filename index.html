@@ -2369,13 +2369,7 @@ async function initVmHub(){
 
     if(phoneInput) phoneInput.value = savedPhone;
     if(profilePhoneInput) profilePhoneInput.value = savedPhone;
-const profile = leaderboardCache.find(
-  row => String(row.phone || "").trim() === savedPhone
-);
 
-if(profile){
-  renderWelcomeRank(profile);
-}
     renderNextTips(savedPhone);
   }else{
     renderNextWithoutPhone();
