@@ -469,6 +469,15 @@ body::before{
   border-radius:16px;
   padding:13px;
 }
+  .welcome-rank{
+  margin:16px 0 20px;
+  padding:12px 16px;
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.10);
+  border-radius:14px;
+  color:rgba(255,255,255,0.92);
+  font-weight:600;
+}
 
 .news-icon{
   width:34px;
@@ -1049,6 +1058,8 @@ Målet er enkelt: samle flest poeng før finalen er spilt.
         Alt du trenger akkurat nå samlet på én side.
       </p>
     </div>
+    
+    <div id="welcomeRank" class="welcome-rank" style="display:none"></div>
 
     <div id="latestNewsCard" class="card latest-news-card">
       <h2 style="margin-top:0;">🔥 Siste nytt</h2>
@@ -1764,7 +1775,22 @@ function renderLatestNews(){
     </div>
   `).join("");
 }
+  
+function renderWelcomeRank(profile){
 
+  const box = document.getElementById("welcomeRank");
+
+  if(!box || !profile) return;
+
+  const firstName = String(profile.name || "")
+    .split(" ")[0];
+
+  box.innerHTML =
+    `🏆 Hei ${firstName}! Du ligger på ${profile.rank}. plass akkurat nå.`;
+
+  box.style.display = "block";
+}
+  
 function renderNextWithoutPhone(){
   const lastBetsBox = document.getElementById("lastBetsBox");
   if(lastBetsBox) lastBetsBox.innerHTML = "";
@@ -2356,7 +2382,13 @@ async function initVmHub(){
 
     if(phoneInput) phoneInput.value = savedPhone;
     if(profilePhoneInput) profilePhoneInput.value = savedPhone;
+const profile = leaderboardCache.find(
+  row => String(row.phone || "").trim() === savedPhone
+);
 
+if(profile){
+  renderWelcomeRank(profile);
+}
     renderNextTips(savedPhone);
   }else{
     renderNextWithoutPhone();
