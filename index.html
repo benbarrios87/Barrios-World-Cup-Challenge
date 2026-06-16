@@ -98,6 +98,35 @@ body::before{
   max-width:34vw;
   filter:drop-shadow(0 12px 24px rgba(0,0,0,0.45));
 }
+  .team-pill{
+  display:inline-flex;
+  align-items:center;
+  padding:3px 8px;
+  border-radius:999px;
+  font-weight:bold;
+  font-size:0.95em;
+  border:1px solid rgba(255,255,255,0.14);
+}
+
+.team-pill.tier-1{
+  background:rgba(46,204,113,0.18);
+  color:#9dffc7;
+}
+
+.team-pill.tier-2{
+  background:rgba(255,209,102,0.18);
+  color:#ffd166;
+}
+
+.team-pill.tier-3{
+  background:rgba(255,145,77,0.18);
+  color:#ffb06b;
+}
+
+.team-pill.tier-4{
+  background:rgba(255,94,94,0.18);
+  color:#ff8f8f;
+}
 
 .badge{
   display:inline-block;
@@ -1401,6 +1430,18 @@ function getNameForPhone(phone){
     `${person.first_name || person["first name"] || ""} ${person.last_name || person["last name"] || ""}`.trim()
   );
 }
+  function getTierClass(tier){
+  const n = cleanNumber(tier);
+
+  if(n === 1) return "tier-1";
+  if(n === 2) return "tier-2";
+  if(n === 3) return "tier-3";
+  return "tier-4";
+}
+
+function renderTeamWithTier(name, tier){
+  return `<span class="team-pill ${getTierClass(tier)}">${name}</span>`;
+}
 
 function hasResult(matchId){
   const result = resultsById[matchId];
@@ -1991,7 +2032,7 @@ if(displayName){
       <div class="next-match">
         <div class="next-match-top">
           <div>
-            <div class="next-match-name">${match.home || ""} - ${match.away || ""}</div>
+            <div class="next-match-name">${renderTeamWithTier(match.home, match.tier_home)} - ${renderTeamWithTier(match.away, match.tier_away)}</div>
             <div class="next-match-date">${match.date || match.dato || ""}</div>
           </div>
 
