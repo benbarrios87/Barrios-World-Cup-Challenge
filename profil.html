@@ -759,22 +759,10 @@ function renderLastResults(player){
   function renderNextTips(player){
 
   const rows = [
-    {
-      match: player.next_1_match,
-      tip: player.next_1_tip
-    },
-    {
-      match: player.next_2_match,
-      tip: player.next_2_tip
-    },
-    {
-      match: player.next_3_match,
-      tip: player.next_3_tip
-    },
-    {
-      match: player.next_4_match,
-      tip: player.next_4_tip
-    }
+    { match: player.next_1_match, tip: player.next_1_tip },
+    { match: player.next_2_match, tip: player.next_2_tip },
+    { match: player.next_3_match, tip: player.next_3_tip },
+    { match: player.next_4_match, tip: player.next_4_tip }
   ].filter(row => row.match && row.tip);
 
   if(rows.length === 0) return "";
@@ -783,16 +771,6 @@ function renderLastResults(player){
     <div class="panel">
       <h2 class="section-title">Neste 4 tips</h2>
 
-${rows.map(row => {
-
-  const icon =
-    row.reason === "Eksakt" ? "🎯" :
-    row.reason === "Målforskjell" ? "📏" :
-    row.reason === "Utfall" ? "⚽" :
-    "❌";
-
-  return `
-  
       ${rows.map(row => `
         <div style="
           display:flex;
@@ -808,14 +786,16 @@ ${rows.map(row => {
     </div>
   `;
 }
-  function renderMatchHistory(historyRows, player){
+
+
+function renderMatchHistory(historyRows, player){
   const rows = historyRows
     .filter(row => String(row.phone || "").trim() === String(player.phone || "").trim())
     .sort((a,b) => {
-  const pointDiff = cleanNumber(b.points) - cleanNumber(a.points);
-  if(pointDiff !== 0) return pointDiff;
-  return cleanNumber(b.match_id) - cleanNumber(a.match_id);
-});
+      const pointDiff = cleanNumber(b.points) - cleanNumber(a.points);
+      if(pointDiff !== 0) return pointDiff;
+      return cleanNumber(b.match_id) - cleanNumber(a.match_id);
+    });
 
   if(rows.length === 0) return "";
 
@@ -823,33 +803,42 @@ ${rows.map(row => {
     <div class="panel">
       <h2 class="section-title">Poenghistorikk</h2>
 
-      ${rows.map(row => `
-        <div style="
-          display:grid;
-          grid-template-columns:1fr auto;
-          gap:12px;
-          padding:10px 0;
-          border-bottom:1px solid rgba(255,255,255,0.08);
-        ">
-          <div>
-            <strong>${row.match}</strong>
-            <div class="note">
-  ${icon} Du: ${row.tip} · Resultat: ${row.result} · ${row.reason}
-</div>
+      ${rows.map(row => {
+        const points = cleanNumber(row.points);
+
+        const icon =
+          row.reason === "Eksakt" ? "🎯" :
+          row.reason === "Målforskjell" ? "📏" :
+          row.reason === "Utfall" ? "⚽" :
+          "❌";
+
+        const pointColor =
+          points >= 8 ? "#7ee35f" :
+          points >= 4 ? "#ffd166" :
+          points > 0 ? "#8fd3ff" :
+          "#ff7b7b";
+
+        return `
+          <div style="
+            display:grid;
+            grid-template-columns:1fr auto;
+            gap:12px;
+            padding:10px 0;
+            border-bottom:1px solid rgba(255,255,255,0.08);
+          ">
+            <div>
+              <strong>${row.match}</strong>
+              <div class="note">
+                ${icon} Du: ${row.tip} · Resultat: ${row.result} · ${row.reason}
+              </div>
+            </div>
+
+            <strong style="color:${pointColor}; white-space:nowrap;">
+              +${points} p
+            </strong>
           </div>
-        <strong style="
-  color:${
-    cleanNumber(row.points) >= 8 ? '#7ee35f' :
-    cleanNumber(row.points) >= 4 ? '#ffd166' :
-    cleanNumber(row.points) > 0 ? '#8fd3ff' :
-    '#ff7b7b'
-  };
-">
-  +${cleanNumber(row.points)} p
-</strong>
-        </div>
-    `;
-}).join("")}
+        `;
+      }).join("")}
     </div>
   `;
 }
