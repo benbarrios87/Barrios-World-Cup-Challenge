@@ -820,8 +820,8 @@ async function loadLeaderboard(){
                 ${getPrizeForPlace(index, prizePool)}
                 <div class="tag">🎯 ${cleanNumber(row.exact)} eksakte</div>
                 <div class="tag">⚽ ${cleanNumber(row.outcome)} riktige utfall</div>
-                <div class="tag">📏 ${cleanNumber(row.diff)} diff</div>
-                <div class="tag">🔥 ${cleanNumber(row.underdog)} outsider</div>
+                <div class="tag">📏 ${cleanNumber(row.diff)} målforskjell </div>
+                <div class="tag">🔥 ${cleanNumber(row.underdog)} Modige treff (poeng til underdog) </div>
                 ${renderBonusTags(row)}
               </div>
               ${renderNextTips(row)}
