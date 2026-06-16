@@ -505,6 +505,7 @@ body::before{
 <script>
 const SHEET_ID = "1Ud5i11MEUXwvKDDsfyxvNIdyJgMbY_pS50BkecyzhDo";
 const PROFILE_CACHE_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_PROFILE_CACHE`;
+const MATCH_HISTORY_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_MATCH_HISTORY`;  
 
 async function fetchSheet(url){
   try{
@@ -797,6 +798,37 @@ function renderLastResults(player){
     </div>
   `;
 }
+  function renderMatchHistory(historyRows, player){
+  const rows = historyRows
+    .filter(row => String(row.phone || "").trim() === String(player.phone || "").trim())
+    .sort((a,b) => cleanNumber(b.match_id) - cleanNumber(a.match_id));
+
+  if(rows.length === 0) return "";
+
+  return `
+    <div class="panel">
+      <h2 class="section-title">Poenghistorikk</h2>
+
+      ${rows.map(row => `
+        <div style="
+          display:grid;
+          grid-template-columns:1fr auto;
+          gap:12px;
+          padding:10px 0;
+          border-bottom:1px solid rgba(255,255,255,0.08);
+        ">
+          <div>
+            <strong>${row.match}</strong>
+            <div class="note">
+              Du: ${row.tip} · Resultat: ${row.result} · ${row.reason}
+            </div>
+          </div>
+          <strong style="color:var(--gold);">+${cleanNumber(row.points)} p</strong>
+        </div>
+      `).join("")}
+    </div>
+  `;
+}
   
 async function loadProfile(){
   const content = document.getElementById("content");
@@ -808,7 +840,10 @@ async function loadProfile(){
   }
 
   try{
-    const rows = await fetchSheet(PROFILE_CACHE_URL);
+    const [rows, historyRows] = await Promise.all([
+  fetchSheet(PROFILE_CACHE_URL),
+  fetchSheet(MATCH_HISTORY_URL)
+]);
 
     rows.sort((a,b) =>
       cleanNumber(a.rank) - cleanNumber(b.rank) ||
@@ -1005,6 +1040,8 @@ async function loadProfile(){
               </div>
             </div>
           </div>
+
+${renderMatchHistory(historyRows, player)}
 
           <div class="panel">
             <a class="link-button" href="minetips.html">Se mine kamptips</a>
