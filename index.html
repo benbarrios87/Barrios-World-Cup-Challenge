@@ -1603,6 +1603,10 @@ function getCommunityStories(){
     const drawPct = cleanNumber(row.draw_pct);
     const awayPct = cleanNumber(row.away_pct);
 
+    const match = matchesCache.find(m =>
+  String(m.id || m.match_id || "").trim() === String(row.match_id || "").trim()
+);
+    
     if(total <= 0) return;
 
     const options = [
@@ -2194,7 +2198,9 @@ function renderCommunityPredictions(){
 
     return `
       <div class="community-card">
-        <div class="community-title">${row.home || ""} - ${row.away || ""}</div>
+       <div class="community-title">
+  ${renderTeamWithTier(row.home, match?.tier_home)} - ${renderTeamWithTier(row.away, match?.tier_away)}
+</div>
         <div class="community-sub">${cleanNumber(row.total)} tips med i fordelingen</div>
 
         ${renderCommonBets(row)}
