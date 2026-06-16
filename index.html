@@ -1661,17 +1661,17 @@ function getLeaderboardStories(){
   }
 
   const underdogKing = [...leaderboardCache]
-    .sort((a,b) => cleanNumber(b.underdog) - cleanNumber(a.underdog))[0];
+  .sort((a,b) => cleanNumber(b.underdog) - cleanNumber(a.underdog))[0];
 
-  if(underdogKing && cleanNumber(underdogKing.underdog) > 0){
-    stories.push(makeStory(
-      "🧨",
-      "Outsider-jeger",
-      `${underdogKing.name} har flest outsider-treff så langt.`,
-      "weird",
-      "Risiko"
-    ));
-  }
+if(underdogKing && cleanNumber(underdogKing.underdog) > 0){
+  stories.push(makeStory(
+    "🧨",
+    "Modigste tipper",
+    `${underdogKing.name} har flest modige treff så langt: ${cleanNumber(underdogKing.underdog)}.`,
+    "weird",
+    "Modige tips"
+  ));
+}
 
   return stories;
 }
