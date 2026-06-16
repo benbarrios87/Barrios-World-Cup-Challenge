@@ -447,13 +447,13 @@ body::before{
 .next-pill{
   display:inline-block;
   margin-top:10px;
-  background:rgba(255,209,102,0.13);
-  border:1px solid rgba(255,209,102,0.25);
-  color:var(--gold);
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.10);
+  color:var(--muted);
   border-radius:999px;
   padding:7px 11px;
-  font-size:13px;
-  font-weight:bold;
+  font-size:12px;
+  font-weight:600;
 }
 
 .phone-box{
@@ -1961,7 +1961,11 @@ function renderLastBets(phone){
         <div class="last-bet-card ${hit ? "hit" : "miss"}">
           <div class="last-bet-top">
             <div>
-              <div class="last-bet-match">${item.match.home || ""} - ${item.match.away || ""}</div>
+              <div class="last-bet-match">
+  ${renderTeamWithTier(item.match.home, item.match.tier_home)}
+  -
+  ${renderTeamWithTier(item.match.away, item.match.tier_away)}
+</div>
               <div class="last-bet-sub">
                 Du: ${tipText} · Resultat: ${resultText}
               </div>
