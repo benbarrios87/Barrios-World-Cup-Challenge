@@ -2181,19 +2181,17 @@ function renderRareBets(row){
 
   if(!names || !label || count <= 0) return "";
 
-  const text =
-    count === 1
-      ? `🤪 ${names} står alene på ${label}.`
-      : `🤪 ${names} går mot strømmen med ${label}.`;
-
   return `
     <div style="
       margin-top:10px;
+      padding:8px 12px;
+      border-radius:12px;
+      background:rgba(255,255,255,0.04);
+      border:1px solid rgba(255,255,255,0.08);
       font-size:13px;
-      color:var(--muted);
-      line-height:1.4;
+      color:rgba(255,255,255,0.85);
     ">
-      ${text}
+      🤪 <strong>Dagens gærning:</strong> ${names} har ${label}
     </div>
   `;
 }
