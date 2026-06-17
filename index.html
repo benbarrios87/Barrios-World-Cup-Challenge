@@ -2213,6 +2213,32 @@ function renderCommunityPredictions(){
         <div class="community-sub">${cleanNumber(row.total)} tips med i fordelingen</div>
 
         ${renderCommonBets(row)}
+        function renderRareBets(row){
+  const names = String(row.rare_names || "").trim();
+  const label = String(row.rare_label || "").trim();
+  const count = cleanNumber(row.rare_count);
+
+  if(!names || !label || count <= 0) return "";
+
+  const title = count === 1 ? "🤪 Dagens gærning:" : "🤪 Gærningene:";
+
+  return `
+    <div class="common-bets">
+      <strong style="width:100%;color:#ffb06b;font-size:12px;">
+        ${title}
+      </strong>
+
+      <div class="common-bet-pill" style="
+        background:rgba(255,145,77,0.12);
+        border-color:rgba(255,145,77,0.26);
+        color:#ffb06b;
+      ">
+        ${names} har ${label}
+      </div>
+    </div>
+  `;
+}
+        ${renderRareBets(row)}
 
         <div class="prediction-row">
           <div class="prediction-label">${row.home || "Hjemme"}</div>
