@@ -2181,21 +2181,19 @@ function renderRareBets(row){
 
   if(!names || !label || count <= 0) return "";
 
-  const title = count === 1 ? "🤪 Dagens gærning:" : "🤪 Gærningene:";
+  const text =
+    count === 1
+      ? `🤪 ${names} står alene på ${label}.`
+      : `🤪 ${names} går mot strømmen med ${label}.`;
 
   return `
-    <div class="common-bets">
-      <strong style="width:100%;color:#ffb06b;font-size:12px;">
-        ${title}
-      </strong>
-
-      <div class="common-bet-pill" style="
-        background:rgba(255,145,77,0.12);
-        border-color:rgba(255,145,77,0.26);
-        color:#ffb06b;
-      ">
-        ${names} har ${label}
-      </div>
+    <div style="
+      margin-top:10px;
+      font-size:13px;
+      color:var(--muted);
+      line-height:1.4;
+    ">
+      ${text}
     </div>
   `;
 }
