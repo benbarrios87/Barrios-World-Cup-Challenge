@@ -1174,6 +1174,12 @@ Målet er enkelt: samle flest poeng før finalen er spilt.
         <div id="frontTop3" class="front-top3-list">
           <div class="front-empty">Laster topp 3...</div>
         </div>
+        
+        <h2 style="margin-top:20px;">🔥 Formspillere siste 4</h2>
+<div id="frontForm" class="front-top3-list">
+  <div class="front-empty">Laster form...</div>
+</div>
+        
         <a class="hub-link" href="leaderboard.html" style="margin-top:12px;">
           <strong>Se hele leaderboardet →</strong>
           <span>Full tabell, profiler og poeng.</span>
@@ -2365,10 +2371,35 @@ function renderFrontTop3(){
     `;
   }).join("");
 }
+  
+function renderFrontForm(){
+  const box = document.getElementById("frontForm");
+  if(!box) return;
 
+  const rows = frontpageCache
+    .filter(row => String(row.type || "").trim().toLowerCase() === "form")
+    .sort((a,b) => cleanNumber(a.slot) - cleanNumber(b.slot))
+    .slice(0,5);
+
+  if(rows.length === 0){
+    box.innerHTML = `<div class="front-empty">Ingen formdata ennå.</div>`;
+    return;
+  }
+
+  box.innerHTML = rows.map(row => `
+    <div class="front-top3-row">
+      <div class="front-medal">${cleanNumber(row.slot)}.</div>
+      <div></div>
+      <div class="front-top3-name">${row.home || row.name || "Ukjent"}</div>
+      <div class="front-top3-points">+${cleanNumber(row.total || row.points)} p</div>
+    </div>
+  `).join("");
+}
+  
 function renderFrontpageWidgets(){
   renderCommunityPredictions();
   renderFrontTop3();
+  renderFrontForm();
 }
 
 
