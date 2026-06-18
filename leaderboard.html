@@ -788,7 +788,7 @@ async function loadLeaderboard(){
     missingBox.style.display = "none";
 
     if(rows.length === 0){
-      container.innerHTML = `<div style="color:rgba(255,255,255,0.7);">Ingen deltakere i API_PROFILE_CACHE. Kjør updateProfileCache().</div>`;
+      container.innerHTML = `<div style="color:rgba(255,255,255,0.7);">Kunne ikke laste leaderboard akkurat nå. Prøv å oppdatere siden.</div>`;
       return;
     }
 
