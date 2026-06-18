@@ -2409,7 +2409,9 @@ function renderFrontForm(){
         >
 
         <div>
-          <div class="front-top3-name">${playerName}</div>
+          <a class="front-top3-name" href="profil.html?name=${encodeURIComponent(playerName)}">
+  ${playerName}
+</a>
          <div style="
   display:flex;
   gap:8px;
