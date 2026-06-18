@@ -2388,6 +2388,14 @@ function renderFrontForm(){
 
   box.innerHTML = rows.map(row => {
     const playerName = row.home || row.name || "Ukjent";
+    const points = cleanNumber(row.total || row.points);
+    const rank = cleanNumber(row.home_pct);
+    const climb = cleanNumber(row.draw_pct);
+
+    const climbText =
+      climb > 0 ? `↑${climb}` :
+      climb < 0 ? `↓${Math.abs(climb)}` :
+      "→";
 
     return `
       <div class="front-top3-row">
@@ -2400,9 +2408,14 @@ function renderFrontForm(){
           onerror="handleTop3AvatarError(this,'${String(playerName || "").replace(/'/g,"&#39;")}')"
         >
 
-        <div class="front-top3-name">${playerName}</div>
+        <div>
+          <div class="front-top3-name">${playerName}</div>
+          <div style="color:var(--muted);font-size:12px;margin-top:3px;">
+            #${rank} ${climbText}
+          </div>
+        </div>
 
-        <div class="front-top3-points">+${cleanNumber(row.total || row.points)} p</div>
+        <div class="front-top3-points">+${points} p</div>
       </div>
     `;
   }).join("");
