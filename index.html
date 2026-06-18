@@ -2386,14 +2386,26 @@ function renderFrontForm(){
     return;
   }
 
-  box.innerHTML = rows.map(row => `
-    <div class="front-top3-row">
-      <div class="front-medal">${cleanNumber(row.slot)}.</div>
-      <div></div>
-      <div class="front-top3-name">${row.home || row.name || "Ukjent"}</div>
-      <div class="front-top3-points">+${cleanNumber(row.total || row.points)} p</div>
-    </div>
-  `).join("");
+  box.innerHTML = rows.map(row => {
+    const playerName = row.home || row.name || "Ukjent";
+
+    return `
+      <div class="front-top3-row">
+        <div class="front-medal">${cleanNumber(row.slot)}.</div>
+
+        <img
+          class="front-top3-avatar"
+          src="${getAvatarFile(playerName)}"
+          alt="${playerName}"
+          onerror="handleTop3AvatarError(this,'${String(playerName || "").replace(/'/g,"&#39;")}')"
+        >
+
+        <div class="front-top3-name">${playerName}</div>
+
+        <div class="front-top3-points">+${cleanNumber(row.total || row.points)} p</div>
+      </div>
+    `;
+  }).join("");
 }
   
 function renderFrontpageWidgets(){
