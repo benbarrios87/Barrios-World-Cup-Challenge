@@ -2410,9 +2410,32 @@ function renderFrontForm(){
 
         <div>
           <div class="front-top3-name">${playerName}</div>
-          <div style="color:var(--muted);font-size:12px;margin-top:3px;">
-            #${rank} ${climbText}
-          </div>
+         <div style="
+  display:flex;
+  gap:8px;
+  align-items:center;
+  margin-top:4px;
+  font-size:12px;
+">
+  <span style="
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.08);
+    color:var(--muted);
+    padding:2px 8px;
+    border-radius:999px;
+    font-weight:600;
+  ">
+    🏅 #${rank}
+  </span>
+
+  ${
+    climb > 0
+      ? `<span style="color:#9dffc7;font-weight:700;">📈 +${climb}</span>`
+      : climb < 0
+        ? `<span style="color:#ff8f8f;font-weight:700;">📉 ${climb}</span>`
+        : `<span style="color:var(--muted);font-weight:700;">➖ 0</span>`
+  }
+</div>
         </div>
 
         <div class="front-top3-points">+${points} p</div>
