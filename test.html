@@ -1,0 +1,1340 @@
+
+
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Profil | FC Barrios World Cup Challenge 2026</title>
+
+<style>
+:root{
+  --card:rgba(5,18,13,0.88);
+  --line:rgba(255,255,255,0.14);
+  --muted:rgba(255,255,255,0.70);
+  --green:#7ee35f;
+  --gold:#ffd166;
+  --red:#ff5e5e;
+}
+
+*{ box-sizing:border-box; }
+
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  color:white;
+  min-height:100vh;
+  background:
+    radial-gradient(circle at top left, rgba(255,209,102,0.18), transparent 32%),
+    radial-gradient(circle at top right, rgba(46,204,113,0.18), transparent 30%),
+    linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.88)),
+    url("stadium-bg.jpg"),
+    repeating-linear-gradient(90deg,#0b3d24 0px,#0b3d24 80px,#0e4a2c 80px,#0e4a2c 160px);
+  background-size:cover, cover, cover, cover, auto;
+  background-position:center;
+}
+
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  background:
+    radial-gradient(circle at center, transparent 0 140px, rgba(255,255,255,0.045) 141px 143px, transparent 144px),
+    linear-gradient(90deg, transparent 49.8%, rgba(255,255,255,0.06) 50%, transparent 50.2%);
+  opacity:0.45;
+}
+
+.wrapper{
+  max-width:1180px;
+  margin:auto;
+  padding:22px;
+  position:relative;
+  z-index:1;
+}
+
+.header{
+  display:flex;
+  justify-content:space-between;
+  gap:18px;
+  align-items:center;
+  margin-bottom:18px;
+}
+
+.back-link{
+  display:inline-block;
+  color:white;
+  text-decoration:none;
+  opacity:0.88;
+  font-weight:bold;
+}
+
+.brand{ text-align:right; }
+
+.brand h1{
+  margin:0;
+  font-size:34px;
+  font-style:italic;
+  letter-spacing:-1px;
+}
+
+.brand span{
+  color:var(--green);
+  font-weight:bold;
+  font-size:13px;
+  letter-spacing:1px;
+}
+
+.loading,
+.error{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:24px;
+  padding:26px;
+  color:var(--muted);
+  text-align:center;
+}
+
+.error{ color:#ffb4b4; }
+
+.profile-layout{
+  display:grid;
+  grid-template-columns:410px 1fr;
+  gap:22px;
+  align-items:start;
+}
+
+.fut-card{
+  position:relative;
+  min-height:525px;
+  padding:30px 26px 24px;
+  border-radius:34px;
+  overflow:hidden;
+  background:
+    linear-gradient(145deg, rgba(255,232,150,0.98), rgba(177,121,35,0.98) 48%, rgba(255,217,117,0.98)),
+    radial-gradient(circle at top right, rgba(255,255,255,0.65), transparent 30%);
+  color:#211805;
+  box-shadow:
+    0 30px 70px rgba(0,0,0,0.48),
+    inset 0 0 0 3px rgba(255,255,255,0.25),
+    inset 0 0 0 8px rgba(80,45,0,0.22);
+}
+
+.fut-card::before{
+  content:"";
+  position:absolute;
+  inset:16px;
+  border:2px solid rgba(72,42,0,0.48);
+  border-radius:28px;
+  pointer-events:none;
+}
+
+.fut-card::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(120deg, transparent 20%, rgba(255,255,255,0.22) 35%, transparent 46%),
+    repeating-linear-gradient(135deg, rgba(255,255,255,0.09) 0 2px, transparent 2px 18px);
+  opacity:0.32;
+  pointer-events:none;
+}
+
+.fut-top{
+  position:relative;
+  z-index:2;
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+}
+
+.ovr{
+  font-size:72px;
+  line-height:0.85;
+  font-weight:900;
+  letter-spacing:-3px;
+}
+
+.ovr span{
+  display:block;
+  font-size:24px;
+  letter-spacing:0;
+  margin-top:8px;
+}
+
+.flag{
+  font-size:34px;
+  margin-top:10px;
+}
+
+.card-logo{
+  font-weight:900;
+  font-size:18px;
+  border:2px solid rgba(0,0,0,0.35);
+  border-radius:12px;
+  padding:8px 9px;
+  background:rgba(255,255,255,0.25);
+}
+
+.player-photo-wrap{
+  position:relative;
+  z-index:2;
+  height:270px;
+  margin:0 0 4px;
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
+}
+
+.player-photo{
+  max-height:395px;
+  max-width:100%;
+  object-fit:contain;
+  margin-top:-85px;
+  filter:drop-shadow(0 18px 20px rgba(0,0,0,0.45));
+}
+
+.photo-fallback{
+  width:190px;
+  height:190px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:rgba(0,0,0,0.22);
+  border:3px solid rgba(0,0,0,0.22);
+  font-size:70px;
+  font-weight:900;
+}
+
+.card-name{
+  position:relative;
+  z-index:2;
+  text-align:center;
+  font-size:35px;
+  font-weight:900;
+  line-height:0.98;
+  text-transform:uppercase;
+  letter-spacing:-1px;
+  margin-top:0;
+}
+
+.card-name span{ display:block; }
+
+.card-stats{
+  position:relative;
+  z-index:2;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  margin-top:22px;
+  border-top:2px solid rgba(0,0,0,0.25);
+  border-bottom:2px solid rgba(0,0,0,0.25);
+}
+
+.card-stat{
+  text-align:center;
+  padding:12px 4px;
+  border-right:1px solid rgba(0,0,0,0.25);
+}
+
+.card-stat:last-child{ border-right:none; }
+
+.card-stat strong{
+  display:block;
+  font-size:30px;
+  line-height:1;
+}
+
+.card-stat span{
+  display:block;
+  font-size:13px;
+  font-weight:900;
+  margin-top:4px;
+}
+
+.boot{
+  position:relative;
+  z-index:2;
+  text-align:center;
+  margin-top:14px;
+  font-size:24px;
+}
+
+.panel{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:24px;
+  padding:20px;
+  margin-bottom:16px;
+  backdrop-filter:blur(10px);
+  box-shadow:0 16px 40px rgba(0,0,0,0.30);
+}
+
+.player-panel{
+  display:grid;
+  grid-template-columns:1fr 145px;
+  gap:18px;
+  align-items:center;
+}
+
+.player-name{
+  font-size:36px;
+  font-weight:900;
+  margin-bottom:10px;
+  letter-spacing:-1px;
+}
+
+.info-line{
+  color:var(--muted);
+  line-height:1.65;
+}
+
+.rank-shield{
+  border-radius:22px;
+  background:linear-gradient(145deg, rgba(255,209,102,0.24), rgba(0,0,0,0.18));
+  border:1px solid rgba(255,209,102,0.35);
+  text-align:center;
+  padding:16px 12px;
+}
+
+.rank-shield strong{
+  display:block;
+  font-size:56px;
+  color:var(--gold);
+  line-height:0.9;
+}
+
+.rank-shield span{
+  display:block;
+  color:var(--muted);
+  font-size:13px;
+  margin-top:8px;
+}
+
+.mini-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+}
+
+.mini-box{
+  background:rgba(0,0,0,0.22);
+  border:1px solid rgba(255,255,255,0.10);
+  border-radius:18px;
+  padding:14px;
+  text-align:center;
+}
+
+.mini-box strong{
+  display:block;
+  font-size:33px;
+  color:var(--gold);
+}
+
+.mini-box span{
+  color:var(--muted);
+  font-size:13px;
+}
+
+.section-title{
+  margin:0 0 14px;
+  font-size:22px;
+  color:var(--green);
+  text-transform:uppercase;
+  letter-spacing:.6px;
+}
+
+.bonus-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+}
+
+.bonus-choice{
+  background:rgba(255,255,255,0.07);
+  border:1px solid rgba(255,255,255,0.11);
+  border-radius:18px;
+  padding:15px;
+}
+
+.label{
+  color:var(--muted);
+  font-size:12px;
+  text-transform:uppercase;
+  font-weight:bold;
+  margin-bottom:8px;
+}
+
+.compact-bonus-list{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+
+.compact-bonus-pill{
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.12);
+  border-radius:999px;
+  padding:7px 10px;
+  font-size:13px;
+  color:rgba(255,255,255,0.84);
+}
+
+.compact-bonus-pill strong{ color:var(--gold); }
+
+.card-career-badges{
+  position:relative;
+  z-index:2;
+  display:flex;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:7px;
+  margin-top:12px;
+}
+
+.card-career-badge{
+  background:rgba(0,0,0,0.18);
+  border:1px solid rgba(0,0,0,0.20);
+  border-radius:999px;
+  padding:6px 9px;
+  font-size:12px;
+  font-weight:900;
+  color:#211805;
+}
+
+.career-summary-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+  margin-bottom:14px;
+}
+
+.career-box{
+  background:rgba(255,255,255,0.065);
+  border:1px solid rgba(255,255,255,0.10);
+  border-radius:16px;
+  padding:12px;
+  text-align:center;
+}
+
+.career-box strong{
+  display:block;
+  color:var(--gold);
+  font-size:24px;
+  line-height:1;
+}
+
+.career-box span{
+  display:block;
+  color:var(--muted);
+  font-size:12px;
+  margin-top:5px;
+}
+
+.career-timeline{
+  display:grid;
+  gap:8px;
+}
+
+.career-row{
+  display:grid;
+  grid-template-columns:72px 1fr auto;
+  gap:10px;
+  align-items:center;
+  background:rgba(255,255,255,0.055);
+  border:1px solid rgba(255,255,255,0.09);
+  border-radius:14px;
+  padding:10px 12px;
+}
+
+.career-year{
+  color:var(--green);
+  font-weight:900;
+}
+
+.career-rank{
+  color:var(--gold);
+  font-weight:900;
+  white-space:nowrap;
+}
+
+.career-medal{
+  font-size:18px;
+  margin-right:4px;
+}
+
+@media(max-width:700px){
+  .career-summary-grid{ grid-template-columns:1fr 1fr; }
+  .career-row{ grid-template-columns:58px 1fr auto; }
+}
+
+.attributes{
+  display:grid;
+  gap:12px;
+}
+
+.attr-row{
+  display:grid;
+  grid-template-columns:135px 1fr 42px;
+  gap:12px;
+  align-items:center;
+}
+
+.attr-name{
+  color:var(--muted);
+  font-size:13px;
+}
+
+.attr-bar{
+  height:12px;
+  border-radius:999px;
+  background:rgba(255,255,255,0.10);
+  overflow:hidden;
+}
+
+.attr-fill{
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,#2ecc71,#b4ff63);
+}
+
+.attr-value{
+  color:var(--gold);
+  font-weight:bold;
+  text-align:right;
+}
+
+.meaning-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+.meaning-card{
+  background:rgba(255,255,255,0.065);
+  border:1px solid rgba(255,255,255,0.10);
+  border-radius:16px;
+  padding:13px;
+}
+
+.meaning-card strong{
+  color:var(--gold);
+  display:block;
+  margin-bottom:5px;
+}
+
+.meaning-card span{
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.45;
+}
+
+.note{
+  color:var(--muted);
+  line-height:1.5;
+}
+
+.link-button{
+  display:block;
+  text-align:center;
+  color:white;
+  text-decoration:none;
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.13);
+  border-radius:18px;
+  padding:15px;
+  font-weight:bold;
+}
+
+@media(max-width:980px){
+  .profile-layout{ grid-template-columns:1fr; }
+  .fut-card{ max-width:430px; margin:auto; }
+  .header{ display:block; }
+  .brand{ text-align:left; margin-top:12px; }
+}
+
+@media(max-width:700px){
+  .wrapper{ padding:14px; }
+  .player-panel{ grid-template-columns:1fr; }
+  .mini-grid{ grid-template-columns:1fr; }
+  .bonus-grid{ grid-template-columns:1fr; }
+  .meaning-grid{ grid-template-columns:1fr; }
+  .player-name{ font-size:30px; }
+  .fut-card{ min-height:540px; }
+  .ovr{ font-size:62px; }
+  .player-photo-wrap{ height:225px; }
+  .card-name{ font-size:31px; }
+  .attr-row{ grid-template-columns:115px 1fr 38px; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="wrapper">
+
+  <div class="header">
+    <a class="back-link" href="leaderboard.html">← Til leaderboard</a>
+
+    <div class="brand">
+      <h1>FC BARRIOS</h1>
+      <span>WORLD CUP CHALLENGE 2026</span>
+    </div>
+  </div>
+
+  <div id="content">
+    <div class="loading">Laster FUT-profil...</div>
+  </div>
+
+</div>
+
+<script>
+const SHEET_ID = "1Ud5i11MEUXwvKDDsfyxvNIdyJgMbY_pS50BkecyzhDo";
+const PROFILE_CACHE_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_PROFILE_CACHE`;
+const MATCH_HISTORY_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_MATCH_HISTORY`;
+const HISTORY_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_HISTORY`;
+
+async function fetchSheet(url){
+  try{
+    const response = await fetch(url, { cache:"no-store" });
+    const data = await response.json();
+    if(!Array.isArray(data)) return [];
+    return data.map(normalizeRow);
+  }catch(error){
+    console.error(error);
+    return [];
+  }
+}
+
+function normalizeRow(row){
+  const clean = {};
+
+  Object.keys(row || {}).forEach(key => {
+    const cleanKey = String(key)
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g,"_")
+      .replace(/-/g,"_");
+
+    clean[cleanKey] = typeof row[key] === "string"
+      ? row[key].trim()
+      : row[key];
+  });
+
+  return clean;
+}
+
+function cleanNumber(value){
+  if(value === undefined || value === null || value === "") return 0;
+  return Number(String(value).replace(/\s/g,"").replace(",",".")) || 0;
+}
+
+function clamp(value,min,max){
+  return Math.max(min, Math.min(max, value));
+}
+
+function toRating(value, maxValue){
+  if(maxValue <= 0) return 75;
+  return clamp(Math.round(75 + (value / maxValue) * 24), 75, 99);
+}
+
+function getQueryName(){
+  const params = new URLSearchParams(window.location.search);
+  return params.get("name") || "";
+}
+
+function getInitials(name){
+  return String(name || "")
+    .split(" ")
+    .map(part => part[0] || "")
+    .join("")
+    .slice(0,2)
+    .toUpperCase();
+}
+
+function slugify(value){
+  return String(value || "")
+    .trim()
+    .toLowerCase()
+    .replace(/æ/g,"ae")
+    .replace(/ø/g,"o")
+    .replace(/å/g,"a")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g,"")
+    .replace(/[^a-z0-9]/g,"");
+}
+
+function firstNameSlug(name){
+  const first = String(name || "").trim().split(/\s+/)[0] || "default";
+  return slugify(first);
+}
+
+function fullNameSlug(name){
+  return slugify(name || "default");
+}
+
+function getPhotoCandidates(name, allRows){
+  const first = firstNameSlug(name);
+  const full = fullNameSlug(name);
+
+  const sameFirstCount = allRows.filter(row => firstNameSlug(row.name) === first).length;
+
+  const candidates = [];
+
+  if(sameFirstCount > 1){
+    candidates.push(`${full}.png`);
+  }
+
+  candidates.push(`${first}.png`);
+
+  if(first === "anders" && full.includes("uldalen")) candidates.unshift("andersub.png");
+  if(first === "anders" && full.includes("uldalden")) candidates.unshift("andersub.png");
+  if(first === "anders" && full.includes("brosstad")) candidates.unshift("andersub.png");
+  if(first === "anders" && full.includes("brosstand")) candidates.unshift("andersub.png");
+
+  return [...new Set(candidates)];
+}
+
+function setPhotoWithFallback(img, name, allRows){
+  const candidates = getPhotoCandidates(name, allRows);
+  img.dataset.candidates = JSON.stringify(candidates);
+  img.dataset.index = "0";
+  img.src = candidates[0] || "default.png";
+}
+
+function handlePhotoError(img, initials){
+  let candidates = [];
+
+  try{
+    candidates = JSON.parse(img.dataset.candidates || "[]");
+  }catch(error){
+    candidates = [];
+  }
+
+  let index = Number(img.dataset.index || 0) + 1;
+
+  if(index < candidates.length){
+    img.dataset.index = String(index);
+    img.src = candidates[index];
+    return;
+  }
+
+  const wrap = img.parentElement;
+  if(!wrap) return;
+  wrap.innerHTML = `<div class="photo-fallback">${initials}</div>`;
+}
+
+function getShortNameParts(name){
+  const parts = String(name || "").trim().split(/\s+/);
+
+  if(parts.length <= 1){
+    return [parts[0] || ""];
+  }
+
+  return [parts[0], parts[parts.length - 1]];
+}
+
+function splitBonus(names, points){
+  const nameArr = String(names || "")
+    .split("|")
+    .map(item => item.trim())
+    .filter(Boolean);
+
+  const pointArr = String(points || "")
+    .split("|")
+    .map(item => item.trim());
+
+  return nameArr.map((name,index) => ({
+    name,
+    points:cleanNumber(pointArr[index])
+  }));
+}
+
+function renderBonusChoice(title, icon, names, points){
+  const items = splitBonus(names, points);
+
+  if(items.length === 0){
+    return `
+      <div class="bonus-choice">
+        <div class="label">${icon} ${title}</div>
+        <div class="note">Ikke fylt ut</div>
+      </div>
+    `;
+  }
+
+  return `
+    <div class="bonus-choice">
+      <div class="label">${icon} ${title}</div>
+
+      <div class="compact-bonus-list">
+        ${items.map(item => `
+          <span class="compact-bonus-pill">
+            ${item.name} <strong>+${item.points}</strong>
+          </span>
+        `).join("")}
+      </div>
+    </div>
+  `;
+}
+
+function getRatings(player, allRows){
+  const maxPoints = Math.max(...allRows.map(row => cleanNumber(row.points)), 1);
+  const maxExact = Math.max(...allRows.map(row => cleanNumber(row.exact)), 1);
+  const maxUnderdog = Math.max(...allRows.map(row => cleanNumber(row.underdog)), 1);
+  const maxDiff = Math.max(...allRows.map(row => cleanNumber(row.diff)), 1);
+  const maxOutcome = Math.max(...allRows.map(row => cleanNumber(row.outcome)), 1);
+
+  const tip = toRating(cleanNumber(player.exact) + cleanNumber(player.diff) * 0.6, maxExact + maxDiff * 0.6);
+  const out = toRating(cleanNumber(player.underdog), maxUnderdog);
+  const res = toRating(cleanNumber(player.points), maxPoints);
+  const luk = toRating(cleanNumber(player.diff) + cleanNumber(player.outcome) * 0.25, maxDiff + maxOutcome * 0.25);
+
+  const ovr = Math.round((tip + out + res + luk) / 4);
+
+  return { tip, out, res, luk, ovr };
+}
+
+function getStatComment(player, ratings){
+  const comments = [];
+
+  if(cleanNumber(player.points) === 0){
+    comments.push("VM har så vidt begynt. Kortet er fortsatt ferskt og fullstendig arrogant.");
+  }else if(cleanNumber(player.rank) <= 3){
+    comments.push("Topp 3 akkurat nå. Klassisk skjermdump-materiale.");
+  }else if(ratings.out >= 90){
+    comments.push("Outsider-radaren blinker. Her lukter det mørke hester og unødvendig selvtillit.");
+  }else if(ratings.tip >= 90){
+    comments.push("Presisjonen er høy. Irriterende solid tipping.");
+  }else if(ratings.luk >= 90){
+    comments.push("Flaksfaktoren er høy. Ikke nødvendigvis pent, men tabellen bryr seg ikke.");
+  }else{
+    comments.push("Trygg start. Ikke legende ennå, men heller ikke katastrofe.");
+  }
+
+  if(cleanNumber(player.exact) > 0){
+    comments.push(`Eksakte treff: ${cleanNumber(player.exact)}. Det er der de store hoppene kommer.`);
+  }
+
+  if(cleanNumber(player.underdog) > 0){
+    comments.push(`Outsider-treff: ${cleanNumber(player.underdog)}. Respekt.`);
+  }
+
+  return comments.join(" ");
+}
+function normalizeNameKey(value){
+  return slugify(value || "");
+}
+
+function getHistoryAliases(name){
+  const aliases = {
+    "benjaminbarrios":["Benjamin"],
+    "kristoffermerker":["Merker","Basse","Kristoffer"],
+    "kristoffereckhoff":["Kristoffer E.","Kristoffer E"],
+    "mattiasandersson":["Mattias"],
+    "larsharaldsen":["Lars H","Lars"],
+    "andreasstraete":["Andreas"],
+    "orjanknutsen":["Ørjan","Orjan"],
+    "jannikberg":["Jannik"],
+    "edwardeikland":["Edward"],
+    "mariusmartinsen":["Marius"],
+    "martinhildonenmarum":["Martin Marum","Martin"],
+    "andersuldalenbrosstad":["Anders UB","Anders Ub","Anders U.B.","Anders U.B"],
+    "andersulvestad":["Anders Ulv","Anders U. og Ingrid Helene"],
+    "oyvindrefsnes":["Øyvind","Øyvind R.","Øyvind R"],
+    "oleandreas":["Ole"],
+    "frederikskoe":["Frederik"],
+    "silvia":["Silvia"],
+    "eirik":["Eirik"]
+  };
+
+  const key = normalizeNameKey(name);
+  return [name, ...(aliases[key] || [])].map(normalizeNameKey);
+}
+
+function getPlayerHistory(historyRows, playerName){
+  const keys = new Set(getHistoryAliases(playerName));
+
+  return historyRows
+    .filter(row => keys.has(normalizeNameKey(row.name)))
+    .sort((a,b) => cleanNumber(a.year) - cleanNumber(b.year));
+}
+
+function getMedalForRank(rank){
+  const n = cleanNumber(rank);
+  if(n === 1) return "🥇";
+  if(n === 2) return "🥈";
+  if(n === 3) return "🥉";
+  return "";
+}
+
+function getCareerStats(historyRows){
+  const tournaments = historyRows.length;
+  const ranks = historyRows.map(row => cleanNumber(row.rank)).filter(Boolean);
+  const bestRank = ranks.length ? Math.min(...ranks) : 0;
+  const avgRank = ranks.length
+    ? (ranks.reduce((sum,value) => sum + value, 0) / ranks.length).toFixed(1).replace(".",",")
+    : "-";
+
+  const gold = historyRows.filter(row => cleanNumber(row.rank) === 1).length;
+  const silver = historyRows.filter(row => cleanNumber(row.rank) === 2).length;
+  const bronze = historyRows.filter(row => cleanNumber(row.rank) === 3).length;
+  const podiums = gold + silver + bronze;
+  const totalCorrect = historyRows.reduce((sum,row) => sum + cleanNumber(row.correct_predictions), 0);
+  const firstYear = historyRows.length ? cleanNumber(historyRows[0].year) : "";
+
+  return { tournaments, bestRank, avgRank, gold, silver, bronze, podiums, totalCorrect, firstYear };
+}
+
+function renderCardCareerBadges(careerStats){
+  if(!careerStats || careerStats.tournaments === 0) return "";
+
+  const badges = [];
+
+  if(careerStats.gold > 0){
+    badges.push(`🏆 ${careerStats.gold}x mester`);
+  }
+
+  if(careerStats.podiums > 0){
+    badges.push(`🎖 ${careerStats.podiums} podier`);
+  }
+
+  badges.push(`📜 ${careerStats.tournaments} mesterskap`);
+
+  if(careerStats.firstYear){
+    badges.push(`Siden ${careerStats.firstYear}`);
+  }
+
+  return `
+    <div class="card-career-badges">
+      ${badges.slice(0,3).map(badge => `<span class="card-career-badge">${badge}</span>`).join("")}
+    </div>
+  `;
+}
+
+function renderCareerPanel(historyRows, player, allRows){
+  const playerHistory = getPlayerHistory(historyRows, player.name);
+
+  if(playerHistory.length === 0){
+    return `
+      <div class="panel">
+        <h2 class="section-title">FC Barrios-karriere</h2>
+        <div class="note">Ingen historiske mesterskap koblet til denne spilleren ennå.</div>
+      </div>
+    `;
+  }
+
+  const stats = getCareerStats(playerHistory);
+
+  const currentRank = cleanNumber(player.rank);
+  const currentPlayers = allRows.length;
+
+  return `
+    <div class="panel">
+      <h2 class="section-title">🏛 FC Barrios-karriere</h2>
+
+      <div class="career-summary-grid">
+        <div class="career-box">
+          <strong>${stats.tournaments}</strong>
+          <span>mesterskap</span>
+        </div>
+
+        <div class="career-box">
+          <strong>#${stats.bestRank}</strong>
+          <span>beste plassering</span>
+        </div>
+
+        <div class="career-box">
+          <strong>${stats.avgRank}</strong>
+          <span>snittplassering</span>
+        </div>
+
+        <div class="career-box">
+          <strong>🥇${stats.gold} 🥈${stats.silver} 🥉${stats.bronze}</strong>
+          <span>podier</span>
+        </div>
+      </div>
+
+      <div class="career-timeline">
+        ${playerHistory.map(row => {
+          const medal = getMedalForRank(row.rank);
+          const correct = row.correct_predictions !== undefined && row.correct_predictions !== ""
+            ? ` · 🎯 ${cleanNumber(row.correct_predictions)} riktige`
+            : "";
+
+          return `
+            <div class="career-row">
+              <div class="career-year">${row.year}</div>
+              <div>
+                <strong>${row.tournament || "Mesterskap"}</strong>
+                <div class="note">${cleanNumber(row.players)} deltakere${correct}</div>
+              </div>
+              <div class="career-rank">
+                <span class="career-medal">${medal}</span>#${cleanNumber(row.rank)}
+              </div>
+            </div>
+          `;
+        }).join("")}
+
+        <div class="career-row" style="border-color:rgba(126,227,95,0.22);background:rgba(126,227,95,0.07);">
+          <div class="career-year">2026</div>
+          <div>
+            <strong>VM pågår</strong>
+            <div class="note">Live plassering akkurat nå</div>
+          </div>
+          <div class="career-rank">#${currentRank}/${currentPlayers}</div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderLastResults(player){
+  const rows = [
+    player.last_1,
+    player.last_2,
+    player.last_3,
+    player.last_4,
+    player.last_5,
+    player.last_6,
+    player.last_7,
+    player.last_8
+  ].filter(Boolean);
+
+  if(rows.length === 0) return "";
+
+  return `
+    <div class="panel">
+      <h2 class="section-title">Siste 8 resultater</h2>
+      <div class="compact-bonus-list">
+        ${rows.map(row => `
+          <span class="compact-bonus-pill">${row}</span>
+        `).join("")}
+      </div>
+    </div>
+  `;
+}
+  function renderNextTips(player){
+
+  const rows = [
+    { match: player.next_1_match, tip: player.next_1_tip },
+    { match: player.next_2_match, tip: player.next_2_tip },
+    { match: player.next_3_match, tip: player.next_3_tip },
+    { match: player.next_4_match, tip: player.next_4_tip }
+  ].filter(row => row.match && row.tip);
+
+  if(rows.length === 0) return "";
+
+  return `
+    <div class="panel">
+      <h2 class="section-title">Neste 4 tips</h2>
+
+      ${rows.map(row => `
+        <div style="
+          display:flex;
+          justify-content:space-between;
+          gap:12px;
+          padding:8px 0;
+          border-bottom:1px solid rgba(255,255,255,0.08);
+        ">
+          <span>${row.match}</span>
+          <strong>${row.tip}</strong>
+        </div>
+      `).join("")}
+    </div>
+  `;
+}
+
+
+function renderMatchHistory(historyRows, player){
+  const rows = historyRows
+    .filter(row => String(row.phone || "").trim() === String(player.phone || "").trim())
+   .sort((a,b) => cleanNumber(b.match_id) - cleanNumber(a.match_id));
+
+  if(rows.length === 0) return "";
+
+  return `
+    <div class="panel">
+      <h2 class="section-title">Poenghistorikk</h2>
+
+      ${rows.map(row => {
+        const points = cleanNumber(row.points);
+
+        const icon =
+          row.reason === "Eksakt" ? "🎯" :
+          row.reason === "Målforskjell" ? "📏" :
+          row.reason === "Utfall" ? "⚽" :
+          "❌";
+
+        const pointColor =
+          points >= 8 ? "#7ee35f" :
+          points >= 4 ? "#ffd166" :
+          points > 0 ? "#8fd3ff" :
+          "#ff7b7b";
+
+        return `
+          <div style="
+            display:grid;
+            grid-template-columns:1fr auto;
+            gap:12px;
+            padding:10px 0;
+            border-bottom:1px solid rgba(255,255,255,0.08);
+          ">
+            <div>
+              <strong>${row.match}</strong>
+              <div class="note">
+                ${icon} Du: ${row.tip} · Resultat: ${row.result} · ${row.reason}
+              </div>
+            </div>
+
+            <strong style="color:${pointColor}; white-space:nowrap;">
+              +${points} p
+            </strong>
+          </div>
+        `;
+      }).join("")}
+    </div>
+  `;
+}
+  
+async function loadProfile(){
+  const content = document.getElementById("content");
+  const queryName = getQueryName().trim().toLowerCase();
+
+  if(!queryName){
+    content.innerHTML = `<div class="error">Mangler navn i URL.</div>`;
+    return;
+  }
+
+  try{
+    const [rows, historyRows, careerHistoryRows] = await Promise.all([
+      fetchSheet(PROFILE_CACHE_URL),
+      fetchSheet(MATCH_HISTORY_URL),
+      fetchSheet(HISTORY_URL)
+    ]);
+
+    rows.sort((a,b) =>
+      cleanNumber(a.rank) - cleanNumber(b.rank) ||
+      cleanNumber(b.points) - cleanNumber(a.points) ||
+      String(a.name || "").localeCompare(String(b.name || ""),"no")
+    );
+
+    const player = rows.find(row =>
+      String(row.name || "").trim().toLowerCase() === queryName
+    );
+
+    if(!player){
+      content.innerHTML = `<div class="error">Fant ikke denne spilleren i API_PROFILE_CACHE. Kjør updateProfileCache().</div>`;
+      return;
+    }
+
+    const leader = rows[0];
+    const behindLeader = leader ? Math.max(0, cleanNumber(leader.points) - cleanNumber(player.points)) : 0;
+
+    const ratings = getRatings(player, rows);
+    const nameParts = getShortNameParts(player.name);
+    const initials = getInitials(player.name);
+    const played = cleanNumber(player.played);
+
+    const hitPercent = played
+      ? Math.round(((cleanNumber(player.exact) + cleanNumber(player.diff) + cleanNumber(player.outcome)) / played) * 100)
+      : 0;
+
+    const pointsPerMatch = played
+      ? (cleanNumber(player.points) / played).toFixed(1).replace(".",",")
+      : "0";
+
+    const statComment = getStatComment(player, ratings);
+    const playerCareerHistory = getPlayerHistory(careerHistoryRows, player.name);
+    const careerStats = getCareerStats(playerCareerHistory);
+
+    content.innerHTML = `
+      <div class="profile-layout">
+        <div>
+          <div class="fut-card">
+            <div class="fut-top">
+              <div>
+                <div class="ovr">${ratings.ovr}<span>OVR</span></div>
+                <div class="flag">🇳🇴</div>
+              </div>
+              <div class="card-logo">FCB</div>
+            </div>
+
+            <div class="player-photo-wrap">
+              <img
+                id="profilePhoto"
+                class="player-photo"
+                alt="${player.name}"
+                onerror="handlePhotoError(this,'${initials}')"
+              >
+            </div>
+
+            <div class="card-name">
+              ${nameParts.map(part => `<span>${part}</span>`).join("")}
+            </div>
+
+            ${renderCardCareerBadges(careerStats)}
+
+            <div class="card-stats">
+              <div class="card-stat"><strong>${ratings.tip}</strong><span>TIP</span></div>
+              <div class="card-stat"><strong>${ratings.out}</strong><span>OUT</span></div>
+              <div class="card-stat"><strong>${ratings.res}</strong><span>RES</span></div>
+              <div class="card-stat"><strong>${ratings.luk}</strong><span>LUK</span></div>
+            </div>
+
+            <div class="boot">⚽</div>
+          </div>
+        </div>
+
+        <div>
+          <div class="panel player-panel">
+            <div>
+              <div class="player-name">${player.name}</div>
+              <div class="info-line">🇳🇴 Norge</div>
+              <div class="info-line">🎯 Rolle: Tippinator</div>
+              <div class="info-line">🧊 Kjent for: kalde tips og store baller</div>
+            </div>
+
+            <div class="rank-shield">
+              <strong>${cleanNumber(player.rank)}.</strong>
+              <span>plassering av ${rows.length}</span>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="mini-grid">
+              <div class="mini-box">
+                <strong>${cleanNumber(player.points)}</strong>
+                <span>poeng</span>
+              </div>
+
+              <div class="mini-box">
+                <strong>${behindLeader}</strong>
+                <span>bak lederen</span>
+              </div>
+
+              <div class="mini-box">
+                <strong>${pointsPerMatch}</strong>
+                <span>poeng per kamp</span>
+              </div>
+            </div>
+          </div>
+
+          ${renderCareerPanel(careerHistoryRows, player, rows)}
+
+          <div class="panel">
+            <h2 class="section-title">Kortanalyse</h2>
+            <div class="note">${statComment}</div>
+          </div>
+          
+          ${renderLastResults(player)}
+          ${renderNextTips(player)}
+
+          <div class="panel">
+            <h2 class="section-title">Bonusvalg</h2>
+            <div class="bonus-grid">
+              ${renderBonusChoice("Toppscorer","⚽", player.top_scorer_all || player.top_scorer, player.top_scorer_points_all || player.top_scorer_points)}
+              ${renderBonusChoice("Beste spiller","⭐", player.best_player_all || player.best_player, player.best_player_points_all || player.best_player_points)}
+            </div>
+          </div>
+
+          <div class="panel">
+            <h2 class="section-title">Statistikk</h2>
+
+            <div class="mini-grid">
+              <div class="mini-box">
+                <strong>${hitPercent}%</strong>
+                <span>treffprosent</span>
+              </div>
+
+              <div class="mini-box">
+                <strong>${cleanNumber(player.underdog)}</strong>
+                <span>outsider-treff</span>
+              </div>
+
+              <div class="mini-box">
+                <strong>${cleanNumber(player.exact)}</strong>
+                <span>eksakte treff</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <h2 class="section-title">Egenskaper</h2>
+
+            <div class="attributes">
+              <div class="attr-row">
+                <div class="attr-name">Presisjon</div>
+                <div class="attr-bar"><div class="attr-fill" style="width:${ratings.tip}%"></div></div>
+                <div class="attr-value">${ratings.tip}</div>
+              </div>
+
+              <div class="attr-row">
+                <div class="attr-name">Outsider-talent</div>
+                <div class="attr-bar"><div class="attr-fill" style="width:${ratings.out}%"></div></div>
+                <div class="attr-value">${ratings.out}</div>
+              </div>
+
+              <div class="attr-row">
+                <div class="attr-name">Resultatorientert</div>
+                <div class="attr-bar"><div class="attr-fill" style="width:${ratings.res}%"></div></div>
+                <div class="attr-value">${ratings.res}</div>
+              </div>
+
+              <div class="attr-row">
+                <div class="attr-name">Flaksfaktor</div>
+                <div class="attr-bar"><div class="attr-fill" style="width:${ratings.luk}%"></div></div>
+                <div class="attr-value">${ratings.luk}</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <h2 class="section-title">Hva betyr statsene?</h2>
+
+            <div class="meaning-grid">
+              <div class="meaning-card">
+                <strong>TIP</strong>
+                <span>Presisjon. Eksakte treff og riktige målforskjeller løfter denne.</span>
+              </div>
+
+              <div class="meaning-card">
+                <strong>OUT</strong>
+                <span>Outsider-talent. Hvor godt du treffer på lag som gir bedre betalt.</span>
+              </div>
+
+              <div class="meaning-card">
+                <strong>RES</strong>
+                <span>Resultatstyrke. Basert på poengsummen din sammenlignet med feltet.</span>
+              </div>
+
+              <div class="meaning-card">
+                <strong>LUK</strong>
+                <span>Flaksfaktor. Målforskjell og litt jammy utfall. Ikke klag hvis den er høy.</span>
+              </div>
+            </div>
+          </div>
+
+${renderMatchHistory(historyRows, player)}
+
+          <div class="panel">
+            <a class="link-button" href="minetips.html">Se mine kamptips</a>
+          </div>
+        </div>
+      </div>
+    `;
+
+    const img = document.getElementById("profilePhoto");
+    setPhotoWithFallback(img, player.name, rows);
+
+  }catch(error){
+    console.error(error);
+    content.innerHTML = `<div class="error">Klarte ikke å laste profil.</div>`;
+  }
+}
+
+loadProfile();
+</script>
+
+</body>
+</html>
