@@ -382,6 +382,62 @@ body::before{
   .points{
     grid-column:2;
   }
+  .year-location{
+  color:var(--muted);
+  font-size:14px;
+  margin-top:6px;
+  font-weight:600;
+}
+
+.podium-list{
+  display:grid;
+  gap:7px;
+  margin-top:14px;
+}
+
+.podium-row{
+  width:fit-content;
+  padding:8px 12px;
+  border-radius:999px;
+  font-weight:900;
+  border:1px solid rgba(255,255,255,0.12);
+}
+
+.podium-row.gold{
+  background:rgba(255,209,102,0.16);
+  color:#ffd166;
+}
+
+.podium-row.silver{
+  background:rgba(255,255,255,0.10);
+  color:rgba(255,255,255,0.92);
+}
+
+.podium-row.bronze{
+  background:rgba(205,127,50,0.16);
+  color:#e8aa6b;
+}
+
+.tournament-vm{
+  border-left:6px solid #ffd166;
+  background:
+    radial-gradient(circle at top right, rgba(255,209,102,.10), transparent 35%),
+    var(--card);
+}
+
+.tournament-em{
+  border-left:6px solid #7cc7ff;
+  background:
+    radial-gradient(circle at top right, rgba(124,199,255,.10), transparent 35%),
+    var(--card);
+}
+
+.tournament-challenge{
+  border-left:6px solid #2ecc71;
+  background:
+    radial-gradient(circle at top right, rgba(46,204,113,.10), transparent 35%),
+    var(--card);
+}
 }
 </style>
 </head>
@@ -485,15 +541,6 @@ function getValue(row, keys, fallback = ""){
   }
   return fallback;
 }
-  function getTournamentClass(groupTitle){
-  const title = String(groupTitle || "").toLowerCase();
-
-  if(title.includes("vm")) return "tournament-vm";
-  if(title.includes("em")) return "tournament-em";
-  if(title.includes("challenge")) return "tournament-challenge";
-
-  return "";
-}
 
 function getTournamentName(row){
   const tournament = getValue(row, ["tournament","turnering","competition","mesterskap"], "");
@@ -568,6 +615,39 @@ function medal(rank){
   if(rank === 2) return "🥈";
   if(rank === 3) return "🥉";
   return rank ? `${rank}.` : "-";
+}
+  function getTournamentStyle(groupTitle){
+  const title = String(groupTitle || "").toLowerCase();
+
+  if(title.includes("vm")){
+    return { icon:"🌍", className:"tournament-vm" };
+  }
+
+  if(title.includes("em")){
+    return { icon:"🇪🇺", className:"tournament-em" };
+  }
+
+  if(title.includes("challenge")){
+    return { icon:"🏹", className:"tournament-challenge" };
+  }
+
+  return { icon:"🏆", className:"" };
+}
+
+function getHostInfo(groupTitle){
+  const title = String(groupTitle || "").toLowerCase();
+
+  if(title.includes("vm 2026")) return "🇺🇸🇨🇦🇲🇽 USA • Canada • Mexico";
+  if(title.includes("em 2024")) return "🇩🇪 Tyskland";
+  if(title.includes("vm 2022")) return "🇶🇦 Qatar";
+  if(title.includes("em 2021")) return "🇪🇺 Europa";
+  if(title.includes("vm 2018")) return "🇷🇺 Russland";
+  if(title.includes("em 2016")) return "🇫🇷 Frankrike";
+  if(title.includes("vm 2014")) return "🇧🇷 Brasil";
+  if(title.includes("em 2012")) return "🇵🇱🇺🇦 Polen • Ukraina";
+  if(title.includes("vm 2010")) return "🇿🇦 Sør-Afrika";
+
+  return "";
 }
 
 function renderRecords(rows){
@@ -690,29 +770,30 @@ function renderHistory(rows){
     const second = sortedRows.find(row => getRank(row) === 2);
     const third = sortedRows.find(row => getRank(row) === 3);
     const notes = [...new Set(sortedRows.map(getNotes).filter(Boolean))];
+
+    const style = getTournamentStyle(group.title);
     const hostInfo = getHostInfo(group.title);
 
-    const tournamentClass = getTournamentClass(group.title);
-    
     const podiumText = `
-  <div class="podium-list">
-    <div class="podium-row gold">🥇 ${winner ? getPlayer(winner) : "-"}</div>
-    <div class="podium-row silver">🥈 ${second ? getPlayer(second) : "-"}</div>
-    <div class="podium-row bronze">🥉 ${third ? getPlayer(third) : "-"}</div>
-  </div>
-`;
-   const tournamentClass = getTournamentClass(group.title);
+      <div class="podium-list">
+        <div class="podium-row gold">🥇 ${winner ? getPlayer(winner) : "-"}</div>
+        <div class="podium-row silver">🥈 ${second ? getPlayer(second) : "-"}</div>
+        <div class="podium-row bronze">🥉 ${third ? getPlayer(third) : "-"}</div>
+      </div>
+    `;
 
-return `
-  <details class="year-card ${tournamentClass}">
+    return `
+      <details class="year-card ${style.className}">
         <summary>
-        <div class="year-top">
-  <div class="year-title">${group.title}</div>
-</div>
-${hostInfo ? `<div class="year-location">${hostInfo}</div>` : ""}
+          <div class="year-top">
+            <div>
+              <div class="year-title">${style.icon} ${group.title}</div>
+              ${hostInfo ? `<div class="year-location">${hostInfo}</div>` : ""}
+            </div>
+          </div>
 
           <div class="year-podium">
-            ${podiumText || "Åpne for full oversikt."}
+            ${podiumText}
           </div>
 
           <div class="year-hint">
@@ -747,7 +828,6 @@ ${hostInfo ? `<div class="year-location">${hostInfo}</div>` : ""}
     `;
   }).join("");
 }
-
 async function init(){
   historyRows = await fetchSheet(HISTORY_URL);
   renderRecords(historyRows);
