@@ -1,0 +1,654 @@
+
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FC Barrios Arkivet</title>
+
+<style>
+:root{
+  --ink:#15110a;
+  --paper:#fff7df;
+  --paper2:#f4dfad;
+  --green:#0f5d35;
+  --green2:#0b3d24;
+  --gold:#d99b25;
+  --gold2:#ffd166;
+  --red:#b63b2f;
+  --muted:rgba(21,17,10,.68);
+  --line:rgba(21,17,10,.16);
+  --shadow:0 20px 55px rgba(35,24,7,.18);
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  color:var(--ink);
+  min-height:100vh;
+  background:
+    radial-gradient(circle at 12% 5%, rgba(255,209,102,.38), transparent 24%),
+    radial-gradient(circle at 90% 0%, rgba(15,93,53,.18), transparent 28%),
+    linear-gradient(135deg,#fff9e9,#ead29b 46%,#f8ecd1);
+}
+
+body:before{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  background:
+    repeating-linear-gradient(0deg, rgba(30,20,5,.035) 0 1px, transparent 1px 12px),
+    radial-gradient(circle at center, transparent 0 180px, rgba(15,93,53,.08) 181px 183px, transparent 184px);
+  opacity:.9;
+}
+
+.wrapper{
+  max-width:1180px;
+  margin:auto;
+  padding:24px;
+  position:relative;
+  z-index:1;
+}
+
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:16px;
+  margin-bottom:22px;
+}
+
+.back{
+  color:var(--green2);
+  font-weight:900;
+  text-decoration:none;
+  background:rgba(255,255,255,.45);
+  border:1px solid var(--line);
+  padding:12px 15px;
+  border-radius:999px;
+}
+
+.brand{
+  text-align:right;
+  font-weight:900;
+  color:var(--green2);
+  letter-spacing:.8px;
+}
+
+.hero{
+  position:relative;
+  overflow:hidden;
+  border-radius:32px;
+  background:
+    linear-gradient(135deg, rgba(15,93,53,.96), rgba(9,45,29,.96)),
+    repeating-linear-gradient(90deg,#0b3d24 0 90px,#0e4a2c 90px 180px);
+  color:white;
+  padding:34px;
+  box-shadow:var(--shadow);
+  border:1px solid rgba(255,255,255,.28);
+}
+
+.hero:after{
+  content:"FCB";
+  position:absolute;
+  right:-18px;
+  bottom:-46px;
+  font-size:170px;
+  font-weight:900;
+  color:rgba(255,255,255,.07);
+  letter-spacing:-12px;
+}
+
+.kicker{
+  display:inline-block;
+  background:rgba(255,209,102,.18);
+  border:1px solid rgba(255,209,102,.36);
+  color:var(--gold2);
+  padding:7px 12px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:900;
+  letter-spacing:1px;
+  margin-bottom:12px;
+}
+
+.hero h1{
+  margin:0;
+  font-size:54px;
+  line-height:.95;
+  letter-spacing:-2px;
+}
+
+.hero p{
+  max-width:650px;
+  color:rgba(255,255,255,.78);
+  line-height:1.55;
+  font-size:17px;
+  margin:14px 0 0;
+}
+
+.stat-strip{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:14px;
+  margin:18px 0;
+}
+
+.stat-card{
+  background:rgba(255,255,255,.58);
+  border:1px solid var(--line);
+  border-radius:22px;
+  padding:18px;
+  box-shadow:0 12px 30px rgba(35,24,7,.10);
+}
+
+.stat-card strong{
+  display:block;
+  font-size:34px;
+  color:var(--green2);
+  line-height:1;
+}
+
+.stat-card span{
+  display:block;
+  margin-top:7px;
+  color:var(--muted);
+  font-weight:700;
+  font-size:13px;
+}
+
+.panel{
+  background:rgba(255,255,255,.62);
+  border:1px solid var(--line);
+  border-radius:28px;
+  padding:22px;
+  margin-bottom:18px;
+  box-shadow:0 14px 35px rgba(35,24,7,.12);
+  backdrop-filter: blur(8px);
+}
+
+.section-title{
+  margin:0 0 16px;
+  font-size:25px;
+  color:var(--green2);
+  letter-spacing:-.5px;
+}
+
+.champions-grid{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:14px;
+}
+
+.champion-card{
+  min-height:178px;
+  border-radius:24px;
+  padding:18px;
+  background:
+    linear-gradient(145deg, rgba(255,209,102,.95), rgba(175,112,24,.92));
+  color:#231605;
+  border:1px solid rgba(107,64,0,.24);
+  box-shadow:0 16px 34px rgba(100,65,10,.22), inset 0 0 0 4px rgba(255,255,255,.18);
+  position:relative;
+  overflow:hidden;
+}
+
+.champion-card:after{
+  content:"🏆";
+  position:absolute;
+  right:-6px;
+  bottom:-20px;
+  font-size:82px;
+  opacity:.18;
+}
+
+.champion-year{
+  font-weight:900;
+  font-size:13px;
+  opacity:.75;
+}
+
+.champion-name{
+  margin-top:16px;
+  font-size:22px;
+  font-weight:900;
+  line-height:1.05;
+}
+
+.champion-meta{
+  margin-top:10px;
+  font-size:13px;
+  font-weight:800;
+  opacity:.75;
+}
+
+.hof-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+}
+
+.table{
+  display:grid;
+  gap:8px;
+}
+
+.hof-row{
+  display:grid;
+  grid-template-columns:42px 1fr auto;
+  gap:12px;
+  align-items:center;
+  background:rgba(255,255,255,.55);
+  border:1px solid var(--line);
+  border-radius:17px;
+  padding:11px 13px;
+}
+
+.rank-badge{
+  width:34px;
+  height:34px;
+  border-radius:13px;
+  display:grid;
+  place-items:center;
+  background:var(--green2);
+  color:white;
+  font-weight:900;
+}
+
+.hof-name{
+  font-weight:900;
+}
+
+.hof-sub{
+  color:var(--muted);
+  font-size:12px;
+  margin-top:2px;
+}
+
+.hof-value{
+  color:var(--green2);
+  font-weight:900;
+  white-space:nowrap;
+}
+
+.tourney-list{
+  display:grid;
+  gap:18px;
+}
+
+.tourney-card{
+  border-radius:26px;
+  overflow:hidden;
+  background:rgba(255,255,255,.56);
+  border:1px solid var(--line);
+}
+
+.tourney-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  padding:18px;
+  background:linear-gradient(135deg, rgba(15,93,53,.96), rgba(7,53,29,.92));
+  color:white;
+}
+
+.tourney-head h3{
+  margin:0;
+  font-size:25px;
+}
+
+.tourney-head span{
+  color:rgba(255,255,255,.72);
+  font-weight:800;
+}
+
+.podium{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+  padding:16px;
+  background:rgba(255,255,255,.36);
+}
+
+.podium-place{
+  border-radius:20px;
+  padding:15px;
+  background:rgba(255,255,255,.62);
+  border:1px solid var(--line);
+  text-align:center;
+}
+
+.podium-place.gold{ background:linear-gradient(145deg, rgba(255,209,102,.78), rgba(255,255,255,.58)); }
+.podium-place.silver{ background:linear-gradient(145deg, rgba(220,225,230,.82), rgba(255,255,255,.58)); }
+.podium-place.bronze{ background:linear-gradient(145deg, rgba(205,127,50,.48), rgba(255,255,255,.58)); }
+
+.podium-medal{
+  font-size:31px;
+}
+
+.podium-name{
+  font-weight:900;
+  margin-top:6px;
+}
+
+.full-table{
+  padding:0 16px 16px;
+  display:grid;
+  gap:7px;
+}
+
+.player-link{
+  color:inherit;
+  text-decoration:none;
+}
+
+.player-link:hover{
+  text-decoration:underline;
+}
+
+.empty{
+  color:var(--muted);
+  padding:20px;
+}
+
+@media(max-width:900px){
+  .hero h1{font-size:40px}
+  .stat-strip{grid-template-columns:1fr 1fr}
+  .champions-grid{grid-template-columns:1fr 1fr}
+  .hof-grid{grid-template-columns:1fr}
+}
+
+@media(max-width:600px){
+  .wrapper{padding:14px}
+  .topbar{display:block}
+  .brand{text-align:left;margin-top:12px}
+  .hero{padding:24px;border-radius:24px}
+  .hero h1{font-size:34px}
+  .stat-strip{grid-template-columns:1fr 1fr}
+  .champions-grid{grid-template-columns:1fr}
+  .podium{grid-template-columns:1fr}
+  .hof-row{grid-template-columns:36px 1fr auto}
+}
+</style>
+</head>
+
+<body>
+<div class="wrapper">
+  <div class="topbar">
+    <a class="back" href="index.html">← Til forsiden</a>
+    <div class="brand">FC BARRIOS · HISTORIEARKIV</div>
+  </div>
+
+  <section class="hero">
+    <div class="kicker">HALL OF FAME</div>
+    <h1>FC Barrios<br>Æresarkivet</h1>
+    <p>Ti år med gull, kollapser, nesten-menn, gamle bragder og historiske plasseringer. Dette er arkivet som beviser at FC Barrios ikke bare er et tippespill. Det er en institusjon.</p>
+  </section>
+
+  <section class="stat-strip" id="historyStats"></section>
+
+  <section class="panel">
+    <h2 class="section-title">🏆 Mesterrekken</h2>
+    <div id="championsGrid" class="champions-grid"></div>
+  </section>
+
+  <section class="hof-grid">
+    <div class="panel">
+      <h2 class="section-title">👑 Flest titler</h2>
+      <div id="titlesTable" class="table"></div>
+    </div>
+
+    <div class="panel">
+      <h2 class="section-title">🎖 Podiekonger</h2>
+      <div id="podiumTable" class="table"></div>
+    </div>
+  </section>
+
+  <section class="hof-grid">
+    <div class="panel">
+      <h2 class="section-title">📜 Flest mesterskap</h2>
+      <div id="appearancesTable" class="table"></div>
+    </div>
+
+    <div class="panel">
+      <h2 class="section-title">🎯 Flest riktige tips</h2>
+      <div id="correctTable" class="table"></div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2 class="section-title">📚 Mesterskapene</h2>
+    <div id="tourneyList" class="tourney-list"></div>
+  </section>
+</div>
+
+<script>
+const SHEET_ID = "1Ud5i11MEUXwvKDDsfyxvNIdyJgMbY_pS50BkecyzhDo";
+const HISTORY_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_HISTORY`;
+
+async function fetchSheet(url){
+  try{
+    const response = await fetch(url, { cache:"no-store" });
+    const data = await response.json();
+    if(!Array.isArray(data)) return [];
+    return data.map(normalizeRow);
+  }catch(error){
+    console.error(error);
+    return [];
+  }
+}
+
+function normalizeRow(row){
+  const clean = {};
+  Object.keys(row || {}).forEach(key => {
+    const cleanKey = String(key).trim().toLowerCase().replace(/\s+/g,"_").replace(/-/g,"_");
+    clean[cleanKey] = typeof row[key] === "string" ? row[key].trim() : row[key];
+  });
+  return clean;
+}
+
+function cleanNumber(value){
+  if(value === undefined || value === null || value === "") return 0;
+  return Number(String(value).replace(/\s/g,"").replace(",",".")) || 0;
+}
+
+function slugify(value){
+  return String(value || "")
+    .trim().toLowerCase()
+    .replace(/æ/g,"ae").replace(/ø/g,"o").replace(/å/g,"a")
+    .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+    .replace(/[^a-z0-9]/g,"");
+}
+
+function profileLink(name){
+  return `profil.html?name=${encodeURIComponent(name)}`;
+}
+
+function tournamentKey(row){
+  return `${row.year}-${row.tournament}`;
+}
+
+function medal(rank){
+  const n = cleanNumber(rank);
+  if(n === 1) return "🥇";
+  if(n === 2) return "🥈";
+  if(n === 3) return "🥉";
+  return `#${n}`;
+}
+
+function statCard(value,label){
+  return `<div class="stat-card"><strong>${value}</strong><span>${label}</span></div>`;
+}
+
+function aggregate(rows){
+  const map = new Map();
+
+  rows.forEach(row => {
+    const name = row.name || "Ukjent";
+    if(!map.has(name)){
+      map.set(name, {
+        name,
+        appearances:0,
+        titles:0,
+        silvers:0,
+        bronzes:0,
+        podiums:0,
+        correct:0,
+        bestRank:99
+      });
+    }
+
+    const item = map.get(name);
+    const rank = cleanNumber(row.rank);
+    item.appearances++;
+    item.correct += cleanNumber(row.correct_predictions);
+    item.bestRank = Math.min(item.bestRank, rank || 99);
+    if(rank === 1) item.titles++;
+    if(rank === 2) item.silvers++;
+    if(rank === 3) item.bronzes++;
+    if(rank >= 1 && rank <= 3) item.podiums++;
+  });
+
+  return [...map.values()];
+}
+
+function renderRanking(boxId, rows, valueFn, subFn){
+  const box = document.getElementById(boxId);
+  if(!box) return;
+
+  const top = rows
+    .filter(row => valueFn(row) > 0)
+    .sort((a,b) => valueFn(b) - valueFn(a) || a.name.localeCompare(b.name,"no"))
+    .slice(0,8);
+
+  if(top.length === 0){
+    box.innerHTML = `<div class="empty">Ingen data ennå.</div>`;
+    return;
+  }
+
+  box.innerHTML = top.map((row,index) => `
+    <div class="hof-row">
+      <div class="rank-badge">${index + 1}</div>
+      <div>
+        <a class="player-link hof-name" href="${profileLink(row.name)}">${row.name}</a>
+        <div class="hof-sub">${subFn(row)}</div>
+      </div>
+      <div class="hof-value">${valueFn(row)}</div>
+    </div>
+  `).join("");
+}
+
+function renderChampions(rows){
+  const box = document.getElementById("championsGrid");
+  const champions = rows
+    .filter(row => cleanNumber(row.rank) === 1)
+    .sort((a,b) => cleanNumber(a.year) - cleanNumber(b.year));
+
+  box.innerHTML = champions.map(row => `
+    <a class="player-link champion-card" href="${profileLink(row.name)}">
+      <div class="champion-year">${row.tournament} ${row.year}</div>
+      <div class="champion-name">${row.name}</div>
+      <div class="champion-meta">${cleanNumber(row.players)} deltakere</div>
+    </a>
+  `).join("");
+}
+
+function renderStats(rows){
+  const box = document.getElementById("historyStats");
+  const tournaments = new Set(rows.map(tournamentKey)).size;
+  const players = new Set(rows.map(row => row.name)).size;
+  const entries = rows.length;
+  const years = rows.map(row => cleanNumber(row.year)).filter(Boolean);
+  const span = years.length ? `${Math.min(...years)}–${Math.max(...years)}` : "-";
+
+  box.innerHTML = [
+    statCard(tournaments,"mesterskap i arkivet"),
+    statCard(players,"spillere i historikken"),
+    statCard(entries,"historiske plasseringer"),
+    statCard(span,"FC Barrios-æra")
+  ].join("");
+}
+
+function renderTournaments(rows){
+  const box = document.getElementById("tourneyList");
+  const groups = {};
+
+  rows.forEach(row => {
+    const key = tournamentKey(row);
+    if(!groups[key]) groups[key] = [];
+    groups[key].push(row);
+  });
+
+  const tournaments = Object.entries(groups)
+    .map(([key,items]) => ({ key, items: items.sort((a,b) => cleanNumber(a.rank) - cleanNumber(b.rank)) }))
+    .sort((a,b) => cleanNumber(a.items[0].year) - cleanNumber(b.items[0].year));
+
+  box.innerHTML = tournaments.map(t => {
+    const first = t.items[0];
+    const podium = t.items.slice(0,3);
+    const rest = t.items.slice(3);
+
+    return `
+      <div class="tourney-card">
+        <div class="tourney-head">
+          <h3>${first.tournament} ${first.year}</h3>
+          <span>${cleanNumber(first.players)} deltakere</span>
+        </div>
+
+        <div class="podium">
+          ${podium.map(row => {
+            const cls = cleanNumber(row.rank) === 1 ? "gold" : cleanNumber(row.rank) === 2 ? "silver" : "bronze";
+            return `
+              <a class="player-link podium-place ${cls}" href="${profileLink(row.name)}">
+                <div class="podium-medal">${medal(row.rank)}</div>
+                <div class="podium-name">${row.name}</div>
+                <div class="hof-sub">${row.correct_predictions ? `🎯 ${cleanNumber(row.correct_predictions)} riktige` : "Historisk podium"}</div>
+              </a>
+            `;
+          }).join("")}
+        </div>
+
+        <div class="full-table">
+          ${rest.map(row => `
+            <div class="hof-row">
+              <div class="rank-badge">${cleanNumber(row.rank)}</div>
+              <div>
+                <a class="player-link hof-name" href="${profileLink(row.name)}">${row.name}</a>
+                <div class="hof-sub">${row.correct_predictions ? `🎯 ${cleanNumber(row.correct_predictions)} riktige` : ""}</div>
+              </div>
+              <div class="hof-value">#${cleanNumber(row.rank)}</div>
+            </div>
+          `).join("")}
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+async function init(){
+  const rows = await fetchSheet(HISTORY_URL);
+
+  if(rows.length === 0){
+    document.getElementById("championsGrid").innerHTML = `<div class="empty">Fant ingen historikk. Sjekk API_HISTORY.</div>`;
+    return;
+  }
+
+  const people = aggregate(rows);
+
+  renderStats(rows);
+  renderChampions(rows);
+  renderRanking("titlesTable", people, row => row.titles, row => `${row.podiums} podier · beste #${row.bestRank}`);
+  renderRanking("podiumTable", people, row => row.podiums, row => `🥇${row.titles} 🥈${row.silvers} 🥉${row.bronzes}`);
+  renderRanking("appearancesTable", people, row => row.appearances, row => `beste plassering #${row.bestRank}`);
+  renderRanking("correctTable", people, row => row.correct, row => `${row.appearances} mesterskap registrert`);
+  renderTournaments(rows);
+}
+
+init();
+</script>
+</body>
+</html>
