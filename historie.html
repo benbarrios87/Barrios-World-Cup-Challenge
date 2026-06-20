@@ -536,13 +536,14 @@ function renderRecords(rows){
 
   rows.forEach(row => {
     const player = getPlayer(row);
-    const value = cleanNumber(getValue(row, [
-      "correct_bets",
-      "riktige_bets",
-      "riktige",
-      "hits",
-      "treff"
-    ], 0));
+   const value = cleanNumber(getValue(row, [
+  "correct_predictions",
+  "correct_bets",
+  "riktige_bets",
+  "riktige",
+  "hits",
+  "treff"
+], 0));
 
     correctBets[player] = (correctBets[player] || 0) + value;
   });
