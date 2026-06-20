@@ -522,7 +522,7 @@ function renderRecords(rows){
 
   const titles = {};
   const podiumCount = {};
-  const appearances = {};
+  const correctBets = {};
 
   winners.forEach(row => {
     const player = getPlayer(row);
@@ -536,12 +536,20 @@ function renderRecords(rows){
 
   rows.forEach(row => {
     const player = getPlayer(row);
-    appearances[player] = (appearances[player] || 0) + 1;
+    const value = cleanNumber(getValue(row, [
+      "correct_bets",
+      "riktige_bets",
+      "riktige",
+      "hits",
+      "treff"
+    ], 0));
+
+    correctBets[player] = (correctBets[player] || 0) + value;
   });
 
   const mostTitles = Object.entries(titles).sort((a,b) => b[1] - a[1])[0];
   const mostPodiums = Object.entries(podiumCount).sort((a,b) => b[1] - a[1])[0];
-  const mostAppearances = Object.entries(appearances).sort((a,b) => b[1] - a[1])[0];
+  const mostCorrectBets = Object.entries(correctBets).sort((a,b) => b[1] - a[1])[0];
 
   const latestGroup = groups[0];
   const latestWinner = latestGroup
@@ -561,14 +569,24 @@ function renderRecords(rows){
       <div class="record-sub">${mostPodiums ? mostPodiums[1] + " topp 3" : "Mangler data"}</div>
     </div>
 
-    <div class="record clickable-record" onclick="toggleCorrectBetsList()">
-  <div class="record-label">Flest riktige bets</div>
-  <div class="record-value">${mostCorrectBets ? mostCorrectBets[0] : "?"}</div>
-  <div class="record-sub">
-    ${mostCorrectBets ? mostCorrectBets[1] + " riktige totalt" : "Mangler data"}
-    <br>Trykk for full liste
-  </div>
-</div>
+    <details class="record record-details">
+      <summary>
+        <div class="record-label">Flest riktige bets</div>
+        <div class="record-value">${mostCorrectBets ? mostCorrectBets[0] : "?"}</div>
+        <div class="record-sub">${mostCorrectBets ? mostCorrectBets[1] + " riktige totalt" : "Mangler data"}<br>Trykk for full liste</div>
+      </summary>
+
+      <div class="mini-ranking">
+        ${Object.entries(correctBets)
+          .sort((a,b) => b[1] - a[1])
+          .map(([player,total],index) => `
+            <div class="mini-row">
+              <span>${index + 1}. ${player}</span>
+              <strong>${total}</strong>
+            </div>
+          `).join("")}
+      </div>
+    </details>
 
     <div class="record">
       <div class="record-label">Siste registrerte mester</div>
