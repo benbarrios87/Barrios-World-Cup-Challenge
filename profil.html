@@ -569,94 +569,350 @@ body::before{
   .attr-row{ grid-template-columns:115px 1fr 38px; }
 }
 
-/* === FC Barrios profil revamp – lysere Hall of Fame/sportsmagasin-stil === */
+
+/* === FC Barrios Profil Revamp v3: Hall of Fame / sticker album === */
 :root{
-  --page:#f4efe3;
-  --ink:#17231b;
-  --soft:#6c756d;
-  --paper:rgba(255,252,244,0.92);
-  --paper2:rgba(255,255,255,0.72);
-  --green:#176b3a;
-  --gold:#b98718;
-  --red:#d94d4d;
-  --line:rgba(23,35,27,0.12);
-  --card:rgba(255,252,244,0.92);
-  --muted:rgba(23,35,27,0.68);
+  --card:rgba(255,255,255,0.88);
+  --line:rgba(14,42,28,0.14);
+  --muted:rgba(20,42,31,0.64);
+  --green:#0b7a3b;
+  --gold:#b7791f;
+  --red:#d64545;
+  --ink:#102116;
+  --cream:#fff7e8;
+  --paper:#fffdf7;
 }
 
 body{
   color:var(--ink);
   background:
-    radial-gradient(circle at 14% 10%, rgba(255,209,102,0.34), transparent 28%),
-    radial-gradient(circle at 88% 8%, rgba(46,204,113,0.20), transparent 27%),
-    linear-gradient(180deg, rgba(255,255,255,0.82), rgba(244,239,227,0.94)),
-    repeating-linear-gradient(90deg,#ecf2e8 0px,#ecf2e8 90px,#e4eddf 90px,#e4eddf 180px);
+    radial-gradient(circle at 10% 0%, rgba(255,209,102,0.38), transparent 30%),
+    radial-gradient(circle at 92% 12%, rgba(46,204,113,0.22), transparent 28%),
+    linear-gradient(180deg, #fff7e8 0%, #f3ead7 55%, #e7dcc4 100%);
+  background-size:auto;
 }
 
 body::before{
-  opacity:.22;
+  opacity:.55;
   background:
-    radial-gradient(circle at center, transparent 0 142px, rgba(23,35,27,0.08) 143px 145px, transparent 146px),
-    linear-gradient(90deg, transparent 49.8%, rgba(23,35,27,0.08) 50%, transparent 50.2%);
+    linear-gradient(90deg, transparent 49.7%, rgba(11,122,59,0.08) 50%, transparent 50.3%),
+    repeating-linear-gradient(0deg, rgba(11,122,59,0.035) 0 1px, transparent 1px 42px),
+    radial-gradient(circle at center, transparent 0 140px, rgba(11,122,59,0.08) 141px 143px, transparent 144px);
 }
 
-.wrapper{ max-width:1240px; padding:26px; }
+.wrapper{
+  max-width:1220px;
+}
 
 .header{
   background:rgba(255,255,255,0.58);
-  border:1px solid rgba(23,35,27,0.10);
+  border:1px solid rgba(14,42,28,0.10);
   border-radius:24px;
   padding:14px 18px;
-  box-shadow:0 12px 30px rgba(23,35,27,0.08);
+  box-shadow:0 10px 30px rgba(27,44,31,0.10);
 }
 
 .back-link{
   color:var(--ink);
-  background:rgba(255,255,255,0.74);
-  border:1px solid rgba(23,35,27,0.12);
+  background:#fff;
+  border:1px solid rgba(14,42,28,0.12);
   border-radius:999px;
   padding:10px 14px;
+  box-shadow:0 8px 18px rgba(27,44,31,0.08);
 }
 
-.brand h1{ color:var(--ink); }
+.brand h1{ color:#0f331f; }
 .brand span{ color:var(--green); }
 
-.loading,.error,.panel{
-  background:var(--paper);
-  border:1px solid rgba(23,35,27,0.12);
-  color:var(--soft);
-  box-shadow:0 16px 38px rgba(23,35,27,0.10);
-  backdrop-filter:blur(12px);
+.loading,
+.error,
+.panel{
+  background:rgba(255,255,255,0.82);
+  border:1px solid rgba(14,42,28,0.12);
+  color:var(--ink);
+  box-shadow:0 18px 45px rgba(27,44,31,0.12);
+  backdrop-filter:blur(16px);
 }
 
-.profile-layout{ grid-template-columns:420px 1fr; gap:26px; }
-.profile-layout > div:first-child{ position:sticky; top:22px; }
-
-.fut-card{
-  box-shadow:
-    0 24px 55px rgba(111,75,22,0.26),
-    0 10px 26px rgba(23,35,27,0.14),
-    inset 0 0 0 3px rgba(255,255,255,0.30),
-    inset 0 0 0 8px rgba(80,45,0,0.18);
+.panel{
+  position:relative;
+  overflow:hidden;
 }
 
-.player-panel{ background:linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,248,229,0.86)); }
-.player-name{ color:var(--ink); }
-.info-line,.note,.mini-box span,.meaning-card span,.career-box span,.label{ color:var(--muted); }
-.rank-shield{ background:linear-gradient(145deg, rgba(255,209,102,0.35), rgba(255,255,255,0.78)); border:1px solid rgba(185,135,24,0.28); }
-.rank-shield strong,.mini-box strong,.career-box strong,.attr-value,.meaning-card strong,.compact-bonus-pill strong,.career-rank{ color:var(--gold); }
-.mini-box,.bonus-choice,.meaning-card,.career-box,.career-row{ background:rgba(255,255,255,0.66); border:1px solid rgba(23,35,27,0.10); }
-.section-title{ color:var(--green); border-bottom:1px solid rgba(23,35,27,0.10); padding-bottom:10px; }
-.compact-bonus-pill{ background:rgba(23,107,58,0.08); border:1px solid rgba(23,107,58,0.14); color:var(--ink); }
-.attr-bar{ background:rgba(23,35,27,0.10); }
-.attr-fill{ background:linear-gradient(90deg,#176b3a,#7ee35f); }
-.career-summary-grid{ margin-top:4px; }
-.career-row{ box-shadow:0 6px 18px rgba(23,35,27,0.05); }
-.career-year{ color:var(--green); }
-.link-button{ color:white; background:linear-gradient(135deg,#176b3a,#2ecc71); border:none; box-shadow:0 10px 20px rgba(23,107,58,0.18); }
-.card-career-badge{ background:rgba(255,255,255,0.40); border:1px solid rgba(80,45,0,0.18); }
+.panel::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:linear-gradient(135deg, rgba(255,255,255,.70), transparent 36%);
+  opacity:.75;
+}
 
-@media(max-width:980px){ .profile-layout > div:first-child{ position:static; } }
+.panel > *{ position:relative; z-index:1; }
+
+.player-name{ color:#0f331f; }
+.info-line,
+.note,
+.mini-box span,
+.meaning-card span,
+.label,
+.rank-shield span{ color:var(--muted); }
+
+.section-title{
+  color:#0b7a3b;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.section-title::after{
+  content:"";
+  flex:1;
+  height:1px;
+  background:linear-gradient(90deg, rgba(11,122,59,.25), transparent);
+}
+
+.rank-shield{
+  background:linear-gradient(145deg, #fff3c4, #ffffff 58%, #e6f6e8);
+  border:1px solid rgba(183,121,31,0.26);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.75), 0 12px 25px rgba(27,44,31,.10);
+}
+
+.rank-shield strong{ color:#b7791f; }
+
+.mini-box,
+.bonus-choice,
+.meaning-card,
+.compact-bonus-pill{
+  background:rgba(255,255,255,0.72);
+  border:1px solid rgba(14,42,28,0.10);
+  color:var(--ink);
+}
+
+.mini-box strong,
+.compact-bonus-pill strong,
+.meaning-card strong{ color:#b7791f; }
+
+.attr-bar{ background:rgba(14,42,28,0.10); }
+.attr-fill{ background:linear-gradient(90deg,#0b7a3b,#7ee35f); }
+.attr-name{ color:var(--muted); }
+.attr-value{ color:#b7791f; }
+
+.link-button{
+  color:#fff;
+  background:linear-gradient(135deg,#0b7a3b,#43b36b);
+  border:none;
+  box-shadow:0 12px 24px rgba(11,122,59,.22);
+}
+
+/* Hall of Fame history */
+.career-panel{
+  background:
+    radial-gradient(circle at top left, rgba(255,209,102,.28), transparent 35%),
+    linear-gradient(145deg, rgba(255,255,255,.92), rgba(255,250,238,.86));
+  border-color:rgba(183,121,31,.22);
+}
+
+.career-hero{
+  display:grid;
+  grid-template-columns:1.2fr .8fr;
+  gap:14px;
+  align-items:stretch;
+  margin-bottom:16px;
+}
+
+.career-main-card{
+  border-radius:22px;
+  padding:18px;
+  background:
+    linear-gradient(145deg, #0f331f, #145c32 58%, #0b7a3b);
+  color:white;
+  box-shadow:0 18px 35px rgba(11,122,59,.22);
+  position:relative;
+  overflow:hidden;
+}
+
+.career-main-card::after{
+  content:"";
+  position:absolute;
+  right:-45px;
+  top:-45px;
+  width:160px;
+  height:160px;
+  border-radius:50%;
+  background:rgba(255,209,102,.22);
+}
+
+.career-main-label{
+  font-size:12px;
+  letter-spacing:.9px;
+  text-transform:uppercase;
+  color:rgba(255,255,255,.72);
+  font-weight:900;
+}
+
+.career-main-title{
+  font-size:30px;
+  font-weight:1000;
+  margin-top:7px;
+  line-height:1;
+}
+
+.career-main-sub{
+  color:rgba(255,255,255,.78);
+  margin-top:9px;
+  line-height:1.4;
+}
+
+.trophy-shelf{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+}
+
+.trophy-box{
+  border-radius:18px;
+  padding:14px 10px;
+  text-align:center;
+  background:#fff;
+  border:1px solid rgba(14,42,28,.10);
+  box-shadow:0 10px 22px rgba(27,44,31,.08);
+}
+
+.trophy-box strong{
+  display:block;
+  font-size:25px;
+  line-height:1;
+}
+
+.trophy-box span{
+  display:block;
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:.6px;
+  color:var(--muted);
+  margin-top:5px;
+  font-weight:900;
+}
+
+.career-deck{
+  display:flex;
+  gap:12px;
+  overflow-x:auto;
+  padding:2px 2px 12px;
+  scroll-snap-type:x mandatory;
+}
+
+.career-deck::-webkit-scrollbar{ height:8px; }
+.career-deck::-webkit-scrollbar-thumb{ background:rgba(11,122,59,.25); border-radius:999px; }
+
+.season-card{
+  min-width:142px;
+  min-height:180px;
+  border-radius:22px;
+  padding:14px;
+  background:
+    linear-gradient(160deg, #fffdf7, #f1ead8),
+    radial-gradient(circle at top right, rgba(11,122,59,.08), transparent 40%);
+  border:1px solid rgba(14,42,28,.12);
+  box-shadow:0 14px 28px rgba(27,44,31,.11);
+  scroll-snap-align:start;
+  position:relative;
+  overflow:hidden;
+  transition:.18s ease;
+}
+
+.season-card:hover{
+  transform:translateY(-4px) rotate(-1deg);
+  box-shadow:0 18px 38px rgba(27,44,31,.16);
+}
+
+.season-card::before{
+  content:"";
+  position:absolute;
+  inset:9px;
+  border:1px dashed rgba(14,42,28,.16);
+  border-radius:17px;
+  pointer-events:none;
+}
+
+.season-card.gold{
+  background:linear-gradient(155deg, #fff4bf, #d59a2d 66%, #fff0a8);
+  border-color:rgba(183,121,31,.48);
+  color:#2d1e06;
+}
+
+.season-card.silver{
+  background:linear-gradient(155deg, #ffffff, #cfd6dc 68%, #f6f6f6);
+  border-color:rgba(120,130,140,.40);
+}
+
+.season-card.bronze{
+  background:linear-gradient(155deg, #ffe0bd, #bf7540 68%, #f7c08c);
+  border-color:rgba(154,86,38,.42);
+  color:#2d1607;
+}
+
+.season-card.live{
+  background:linear-gradient(155deg,#e6fff0,#ffffff 58%,#d9f7df);
+  border-color:rgba(11,122,59,.32);
+}
+
+.season-kicker{
+  position:relative;
+  z-index:1;
+  font-size:12px;
+  text-transform:uppercase;
+  letter-spacing:.8px;
+  font-weight:1000;
+  color:rgba(16,33,22,.66);
+}
+
+.season-rank-big{
+  position:relative;
+  z-index:1;
+  font-size:48px;
+  font-weight:1000;
+  line-height:.95;
+  margin-top:18px;
+  letter-spacing:-2px;
+}
+
+.season-meta{
+  position:relative;
+  z-index:1;
+  margin-top:12px;
+  font-size:12px;
+  color:rgba(16,33,22,.66);
+  line-height:1.4;
+  font-weight:800;
+}
+
+.season-stamp{
+  position:absolute;
+  right:10px;
+  bottom:10px;
+  z-index:1;
+  font-size:11px;
+  font-weight:1000;
+  letter-spacing:.8px;
+  text-transform:uppercase;
+  color:rgba(16,33,22,.28);
+  transform:rotate(-8deg);
+}
+
+.career-footnote{
+  margin-top:4px;
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.4;
+}
+
+@media(max-width:700px){
+  .career-hero{ grid-template-columns:1fr; }
+  .season-card{ min-width:132px; }
+  .career-main-title{ font-size:26px; }
+}
 
 </style>
 </head>
@@ -1005,76 +1261,105 @@ function renderCardCareerBadges(careerStats){
 
 function renderCareerPanel(historyRows, player, allRows){
   const playerHistory = getPlayerHistory(historyRows, player.name);
+  const currentRank = cleanNumber(player.rank);
+  const currentPlayers = allRows.length;
 
   if(playerHistory.length === 0){
     return `
-      <div class="panel">
-        <h2 class="section-title">FC Barrios-karriere</h2>
+      <div class="panel career-panel">
+        <h2 class="section-title">🏛 FC Barrios-karriere</h2>
         <div class="note">Ingen historiske mesterskap koblet til denne spilleren ennå.</div>
       </div>
     `;
   }
 
   const stats = getCareerStats(playerHistory);
+  const bestText = stats.bestRank ? `#${stats.bestRank}` : "-";
+  const debut = stats.firstYear ? stats.firstYear : "-";
 
-  const currentRank = cleanNumber(player.rank);
-  const currentPlayers = allRows.length;
+  const seasonClass = rank => {
+    const n = cleanNumber(rank);
+    if(n === 1) return "gold";
+    if(n === 2) return "silver";
+    if(n === 3) return "bronze";
+    return "";
+  };
+
+  const rankDisplay = rank => {
+    const n = cleanNumber(rank);
+    if(n === 1) return "🥇";
+    if(n === 2) return "🥈";
+    if(n === 3) return "🥉";
+    return `#${n}`;
+  };
 
   return `
-    <div class="panel">
+    <div class="panel career-panel">
       <h2 class="section-title">🏛 FC Barrios-karriere</h2>
 
-      <div class="career-summary-grid">
-        <div class="career-box">
-          <strong>${stats.tournaments}</strong>
-          <span>mesterskap</span>
+      <div class="career-hero">
+        <div class="career-main-card">
+          <div class="career-main-label">Historisk profil</div>
+          <div class="career-main-title">${stats.tournaments} mesterskap</div>
+          <div class="career-main-sub">
+            Debut ${debut} · Beste plassering ${bestText} · Snittplassering ${stats.avgRank}
+          </div>
         </div>
 
-        <div class="career-box">
-          <strong>#${stats.bestRank}</strong>
-          <span>beste plassering</span>
-        </div>
-
-        <div class="career-box">
-          <strong>${stats.avgRank}</strong>
-          <span>snittplassering</span>
-        </div>
-
-        <div class="career-box">
-          <strong>🥇${stats.gold} 🥈${stats.silver} 🥉${stats.bronze}</strong>
-          <span>podier</span>
+        <div class="trophy-shelf">
+          <div class="trophy-box">
+            <strong>🥇 ${stats.gold}</strong>
+            <span>gull</span>
+          </div>
+          <div class="trophy-box">
+            <strong>🥈 ${stats.silver}</strong>
+            <span>sølv</span>
+          </div>
+          <div class="trophy-box">
+            <strong>🥉 ${stats.bronze}</strong>
+            <span>bronse</span>
+          </div>
         </div>
       </div>
 
-      <div class="career-timeline">
+      <div class="career-deck">
         ${playerHistory.map(row => {
-          const medal = getMedalForRank(row.rank);
           const correct = row.correct_predictions !== undefined && row.correct_predictions !== ""
-            ? ` · 🎯 ${cleanNumber(row.correct_predictions)} riktige`
-            : "";
+            ? `🎯 ${cleanNumber(row.correct_predictions)} riktige`
+            : `${cleanNumber(row.players)} deltakere`;
+
+          const championStamp = cleanNumber(row.rank) === 1
+            ? "CHAMPION"
+            : cleanNumber(row.rank) <= 3
+              ? "PODIUM"
+              : "SEASON";
 
           return `
-            <div class="career-row">
-              <div class="career-year">${row.year}</div>
-              <div>
-                <strong>${row.tournament || "Mesterskap"}</strong>
-                <div class="note">${cleanNumber(row.players)} deltakere${correct}</div>
+            <div class="season-card ${seasonClass(row.rank)}">
+              <div class="season-kicker">${row.tournament || "Mesterskap"} ${row.year}</div>
+              <div class="season-rank-big">${rankDisplay(row.rank)}</div>
+              <div class="season-meta">
+                #${cleanNumber(row.rank)} av ${cleanNumber(row.players)}<br>
+                ${correct}
               </div>
-              <div class="career-rank">
-                <span class="career-medal">${medal}</span>#${cleanNumber(row.rank)}
-              </div>
+              <div class="season-stamp">${championStamp}</div>
             </div>
           `;
         }).join("")}
 
-        <div class="career-row" style="border-color:rgba(126,227,95,0.22);background:rgba(126,227,95,0.07);">
-          <div class="career-year">2026</div>
-          <div>
-            <strong>VM pågår</strong>
-            <div class="note">Live plassering akkurat nå</div>
+        <div class="season-card live">
+          <div class="season-kicker">VM 2026</div>
+          <div class="season-rank-big">#${currentRank}</div>
+          <div class="season-meta">
+            live av ${currentPlayers}<br>
+            turneringen pågår
           </div>
-          <div class="career-rank">#${currentRank}/${currentPlayers}</div>
+          <div class="season-stamp">LIVE</div>
         </div>
+      </div>
+
+      <div class="career-footnote">
+        Historikken viser tidligere FC Barrios-mesterskap. Poengsummer er ikke sammenlignet fordi gamle mesterskap hadde ulike poengsystemer.
       </div>
     </div>
   `;
