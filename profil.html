@@ -791,11 +791,7 @@ function renderLastResults(player){
 function renderMatchHistory(historyRows, player){
   const rows = historyRows
     .filter(row => String(row.phone || "").trim() === String(player.phone || "").trim())
-    .sort((a,b) => {
-      const pointDiff = cleanNumber(b.points) - cleanNumber(a.points);
-      if(pointDiff !== 0) return pointDiff;
-      return cleanNumber(b.match_id) - cleanNumber(a.match_id);
-    });
+   .sort((a,b) => cleanNumber(b.match_id) - cleanNumber(a.match_id));
 
   if(rows.length === 0) return "";
 
