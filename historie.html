@@ -65,6 +65,12 @@ body::before{
   align-items:center;
   margin:28px 0 22px;
 }
+  .year-location{
+  color:var(--muted);
+  font-size:14px;
+  margin-top:6px;
+  font-weight:600;
+}
 
 .hero-img{
   width:120px;
@@ -251,6 +257,17 @@ body::before{
 .standings{
   display:grid;
   gap:9px;
+}
+  .tournament-vm{
+  border-left:5px solid #ffd166;
+}
+
+.tournament-em{
+  border-left:5px solid #7cc7ff;
+}
+
+.tournament-challenge{
+  border-left:5px solid #2ecc71;
 }
 
 .position{
@@ -468,6 +485,15 @@ function getValue(row, keys, fallback = ""){
   }
   return fallback;
 }
+  function getTournamentClass(groupTitle){
+  const title = String(groupTitle || "").toLowerCase();
+
+  if(title.includes("vm")) return "tournament-vm";
+  if(title.includes("em")) return "tournament-em";
+  if(title.includes("challenge")) return "tournament-challenge";
+
+  return "";
+}
 
 function getTournamentName(row){
   const tournament = getValue(row, ["tournament","turnering","competition","mesterskap"], "");
@@ -484,6 +510,21 @@ function getTournamentName(row){
 
 function getSortYear(row){
   return cleanNumber(getValue(row, ["year","år"], 0));
+}
+  function getHostInfo(groupTitle){
+  const title = String(groupTitle || "").toLowerCase();
+
+  if(title.includes("vm 2026")) return "🇺🇸🇨🇦🇲🇽 USA • Canada • Mexico";
+  if(title.includes("em 2024")) return "🇩🇪 Tyskland";
+  if(title.includes("vm 2022")) return "🇶🇦 Qatar";
+  if(title.includes("em 2021")) return "🇪🇺 Europa";
+  if(title.includes("vm 2018")) return "🇷🇺 Russland";
+  if(title.includes("em 2016")) return "🇫🇷 Frankrike";
+  if(title.includes("vm 2014")) return "🇧🇷 Brasil";
+  if(title.includes("em 2012")) return "🇵🇱🇺🇦 Polen • Ukraina";
+  if(title.includes("vm 2010")) return "🇿🇦 Sør-Afrika";
+
+  return "";
 }
 
 function getRank(row){
@@ -649,7 +690,10 @@ function renderHistory(rows){
     const second = sortedRows.find(row => getRank(row) === 2);
     const third = sortedRows.find(row => getRank(row) === 3);
     const notes = [...new Set(sortedRows.map(getNotes).filter(Boolean))];
+    const hostInfo = getHostInfo(group.title);
 
+    const tournamentClass = getTournamentClass(group.title);
+    
     const podiumText = `
   <div class="podium-list">
     <div class="podium-row gold">🥇 ${winner ? getPlayer(winner) : "-"}</div>
@@ -657,12 +701,15 @@ function renderHistory(rows){
     <div class="podium-row bronze">🥉 ${third ? getPlayer(third) : "-"}</div>
   </div>
 `;
-    return `
-      <details class="year-card">
+   const tournamentClass = getTournamentClass(group.title);
+
+return `
+  <details class="year-card ${tournamentClass}">
         <summary>
         <div class="year-top">
   <div class="year-title">${group.title}</div>
 </div>
+${hostInfo ? `<div class="year-location">${hostInfo}</div>` : ""}
 
           <div class="year-podium">
             ${podiumText || "Åpne for full oversikt."}
