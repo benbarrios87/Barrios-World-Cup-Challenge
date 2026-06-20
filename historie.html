@@ -88,6 +88,36 @@ body::before{
   margin:0 0 10px;
   line-height:1.03;
 }
+  .podium-list{
+  display:grid;
+  gap:7px;
+  margin-top:14px;
+}
+
+.podium-row{
+  display:inline-flex;
+  align-items:center;
+  width:fit-content;
+  padding:8px 12px;
+  border-radius:999px;
+  font-weight:900;
+  border:1px solid rgba(255,255,255,0.12);
+}
+
+.podium-row.gold{
+  background:rgba(255,209,102,0.16);
+  color:#ffd166;
+}
+
+.podium-row.silver{
+  background:rgba(255,255,255,0.10);
+  color:rgba(255,255,255,0.92);
+}
+
+.podium-row.bronze{
+  background:rgba(205,127,50,0.16);
+  color:#e8aa6b;
+}
 
 .hero-subtitle{
   color:var(--muted);
@@ -620,20 +650,19 @@ function renderHistory(rows){
     const third = sortedRows.find(row => getRank(row) === 3);
     const notes = [...new Set(sortedRows.map(getNotes).filter(Boolean))];
 
-    const podiumText = [
-      second ? `🥈 ${getPlayer(second)}` : "",
-      third ? `🥉 ${getPlayer(third)}` : ""
-    ].filter(Boolean).join(" • ");
-
+    const podiumText = `
+  <div class="podium-list">
+    <div class="podium-row gold">🥇 ${winner ? getPlayer(winner) : "-"}</div>
+    <div class="podium-row silver">🥈 ${second ? getPlayer(second) : "-"}</div>
+    <div class="podium-row bronze">🥉 ${third ? getPlayer(third) : "-"}</div>
+  </div>
+`;
     return `
       <details class="year-card">
         <summary>
-          <div class="year-top">
-            <div class="year-title">${group.title}</div>
-            <div class="year-winner">
-              ${winner ? `🏆 ${getPlayer(winner)}` : "🏆 Ikke kåret"}
-            </div>
-          </div>
+        <div class="year-top">
+  <div class="year-title">${group.title}</div>
+</div>
 
           <div class="year-podium">
             ${podiumText || "Åpne for full oversikt."}
