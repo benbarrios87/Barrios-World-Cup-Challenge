@@ -772,6 +772,35 @@ body::before{
   color:var(--muted);
   line-height:1.5;
 }
+  .announcement-modal{
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  background:rgba(0,0,0,0.78);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+
+.announcement-modal-card{
+  max-width:520px;
+  width:100%;
+  background:var(--card);
+  border:1px solid rgba(255,209,102,0.35);
+  border-radius:24px;
+  padding:24px;
+  box-shadow:0 24px 80px rgba(0,0,0,0.55);
+}
+
+.announcement-modal-card h2{
+  margin:0 0 10px;
+}
+
+.announcement-modal-card p{
+  color:var(--muted);
+  line-height:1.55;
+}
 
 .last-bets-list{
   display:grid;
@@ -932,6 +961,7 @@ body::before{
 </head>
 
 <body>
+  <div id="announcementModal"></div>
 
 <div class="wrapper">
 
@@ -1259,6 +1289,7 @@ const DIFF_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_DIFF`;
 const EXACT_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_EXACT`;
 const PROFILE_CACHE_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_PROFILE_CACHE`;
 const FRONTPAGE_CACHE_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_FRONTPAGE_CACHE`;
+const ANNOUNCEMENTS_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_ANNOUNCEMENTS`;
 
 const BUY_IN = 600;
 const FREE_ENTRIES = 1;
@@ -2451,6 +2482,50 @@ function renderFrontForm(){
     `;
   }).join("");
 }
+  async function renderAnnouncementModal(){
+  const box = document.getElementById("announcementModal");
+  if(!box) return;
+
+  const rows = await fetchSheet(ANNOUNCEMENTS_URL);
+
+  const active = rows.find(row =>
+    String(row.active || "").toLowerCase() === "true" &&
+    String(row.modal || "").toLowerCase() === "true"
+  );
+
+  if(!active){
+    box.innerHTML = "";
+    return;
+  }
+
+  const id = String(active.id || active.title || "announcement");
+  const seenKey = `fcbarrios_seen_${id}`;
+
+  if(localStorage.getItem(seenKey) === "true"){
+    box.innerHTML = "";
+    return;
+  }
+
+  box.innerHTML = `
+    <div class="announcement-modal">
+      <div class="announcement-modal-card">
+        <div style="color:var(--gold);font-weight:bold;margin-bottom:8px;">
+          📣 Viktig beskjed
+        </div>
+
+        <h2>${active.title || "Oppdatering"}</h2>
+        <p>${active.message || ""}</p>
+
+        <button class="cta-main" onclick="
+          localStorage.setItem('${seenKey}', 'true');
+          document.getElementById('announcementModal').innerHTML = '';
+        ">
+          Jeg har lest
+        </button>
+      </div>
+    </div>
+  `;
+}
   
 function renderFrontpageWidgets(){
   renderCommunityPredictions();
@@ -2577,10 +2652,13 @@ async function initVmHub(){
     const id = String(result.id || result.match_id || "").trim();
     if(id) resultsById[id] = result;
   });
+  
+loadLivePool();
 
-  loadLivePool();
-  renderLatestNews();
-  renderFrontpageWidgets();
+await renderAnnouncementModal();
+
+renderLatestNews();
+renderFrontpageWidgets();
 
   const savedPhone = getSavedPhone();
 
