@@ -2456,6 +2456,59 @@ function renderFrontpageWidgets(){
   renderCommunityPredictions();
   renderFrontTop3();
   renderFrontForm();
+  renderFrontSlump();
+}
+
+  function renderFrontSlump(){
+  const box = document.getElementById("frontSlump");
+  if(!box) return;
+
+  const rows = frontpageCache
+    .filter(row => String(row.type || "").trim().toLowerCase() === "slump")
+    .sort((a,b) => cleanNumber(a.slot) - cleanNumber(b.slot))
+    .slice(0,3);
+
+  if(rows.length === 0){
+    box.innerHTML = `<div class="front-empty">Ingen store formdupp ennå.</div>`;
+    return;
+  }
+
+  box.innerHTML = rows.map(row => {
+    const playerName = row.home || row.name || "Ukjent";
+    const fall = cleanNumber(row.total || row.points);
+    const rank = cleanNumber(row.home_pct);
+
+    return `
+      <div class="front-top3-row">
+        <div class="front-medal">${cleanNumber(row.slot)}.</div>
+
+        <img
+          class="front-top3-avatar"
+          src="${getAvatarFile(playerName)}"
+          alt="${playerName}"
+          onerror="handleTop3AvatarError(this,'${String(playerName || "").replace(/'/g,"&#39;")}')"
+        >
+
+        <div>
+          <a class="front-top3-name" href="profil.html?name=${encodeURIComponent(playerName)}">
+            ${playerName}
+          </a>
+
+          <div style="display:flex;gap:8px;align-items:center;margin-top:4px;font-size:12px;">
+            <span style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);color:var(--muted);padding:2px 8px;border-radius:999px;font-weight:600;">
+              🏅 #${rank}
+            </span>
+
+            <span style="color:#ff8f8f;font-weight:700;">
+              📉 -${fall}
+            </span>
+          </div>
+        </div>
+
+        <div class="front-top3-points" style="color:#ff8f8f;">-${fall}</div>
+      </div>
+    `;
+  }).join("");
 }
 
 
