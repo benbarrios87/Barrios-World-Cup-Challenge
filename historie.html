@@ -561,11 +561,14 @@ function renderRecords(rows){
       <div class="record-sub">${mostPodiums ? mostPodiums[1] + " topp 3" : "Mangler data"}</div>
     </div>
 
-    <div class="record">
-      <div class="record-label">Flest registrerte deltakelser</div>
-      <div class="record-value">${mostAppearances ? mostAppearances[0] : "?"}</div>
-      <div class="record-sub">${mostAppearances ? mostAppearances[1] + " resultater i arkivet" : "Mangler data"}</div>
-    </div>
+    <div class="record clickable-record" onclick="toggleCorrectBetsList()">
+  <div class="record-label">Flest riktige bets</div>
+  <div class="record-value">${mostCorrectBets ? mostCorrectBets[0] : "?"}</div>
+  <div class="record-sub">
+    ${mostCorrectBets ? mostCorrectBets[1] + " riktige totalt" : "Mangler data"}
+    <br>Trykk for full liste
+  </div>
+</div>
 
     <div class="record">
       <div class="record-label">Siste registrerte mester</div>
