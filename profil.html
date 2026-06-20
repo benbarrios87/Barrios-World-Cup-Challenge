@@ -1,4 +1,6 @@
 
+
+
 <!DOCTYPE html>
 <html lang="no">
 <head>
@@ -382,6 +384,92 @@ body::before{
 
 .compact-bonus-pill strong{ color:var(--gold); }
 
+.card-career-badges{
+  position:relative;
+  z-index:2;
+  display:flex;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:7px;
+  margin-top:12px;
+}
+
+.card-career-badge{
+  background:rgba(0,0,0,0.18);
+  border:1px solid rgba(0,0,0,0.20);
+  border-radius:999px;
+  padding:6px 9px;
+  font-size:12px;
+  font-weight:900;
+  color:#211805;
+}
+
+.career-summary-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+  margin-bottom:14px;
+}
+
+.career-box{
+  background:rgba(255,255,255,0.065);
+  border:1px solid rgba(255,255,255,0.10);
+  border-radius:16px;
+  padding:12px;
+  text-align:center;
+}
+
+.career-box strong{
+  display:block;
+  color:var(--gold);
+  font-size:24px;
+  line-height:1;
+}
+
+.career-box span{
+  display:block;
+  color:var(--muted);
+  font-size:12px;
+  margin-top:5px;
+}
+
+.career-timeline{
+  display:grid;
+  gap:8px;
+}
+
+.career-row{
+  display:grid;
+  grid-template-columns:72px 1fr auto;
+  gap:10px;
+  align-items:center;
+  background:rgba(255,255,255,0.055);
+  border:1px solid rgba(255,255,255,0.09);
+  border-radius:14px;
+  padding:10px 12px;
+}
+
+.career-year{
+  color:var(--green);
+  font-weight:900;
+}
+
+.career-rank{
+  color:var(--gold);
+  font-weight:900;
+  white-space:nowrap;
+}
+
+.career-medal{
+  font-size:18px;
+  margin-right:4px;
+}
+
+@media(max-width:700px){
+  .career-summary-grid{ grid-template-columns:1fr 1fr; }
+  .career-row{ grid-template-columns:58px 1fr auto; }
+}
+
 .attributes{
   display:grid;
   gap:12px;
@@ -480,6 +568,96 @@ body::before{
   .card-name{ font-size:31px; }
   .attr-row{ grid-template-columns:115px 1fr 38px; }
 }
+
+/* === FC Barrios profil revamp – lysere Hall of Fame/sportsmagasin-stil === */
+:root{
+  --page:#f4efe3;
+  --ink:#17231b;
+  --soft:#6c756d;
+  --paper:rgba(255,252,244,0.92);
+  --paper2:rgba(255,255,255,0.72);
+  --green:#176b3a;
+  --gold:#b98718;
+  --red:#d94d4d;
+  --line:rgba(23,35,27,0.12);
+  --card:rgba(255,252,244,0.92);
+  --muted:rgba(23,35,27,0.68);
+}
+
+body{
+  color:var(--ink);
+  background:
+    radial-gradient(circle at 14% 10%, rgba(255,209,102,0.34), transparent 28%),
+    radial-gradient(circle at 88% 8%, rgba(46,204,113,0.20), transparent 27%),
+    linear-gradient(180deg, rgba(255,255,255,0.82), rgba(244,239,227,0.94)),
+    repeating-linear-gradient(90deg,#ecf2e8 0px,#ecf2e8 90px,#e4eddf 90px,#e4eddf 180px);
+}
+
+body::before{
+  opacity:.22;
+  background:
+    radial-gradient(circle at center, transparent 0 142px, rgba(23,35,27,0.08) 143px 145px, transparent 146px),
+    linear-gradient(90deg, transparent 49.8%, rgba(23,35,27,0.08) 50%, transparent 50.2%);
+}
+
+.wrapper{ max-width:1240px; padding:26px; }
+
+.header{
+  background:rgba(255,255,255,0.58);
+  border:1px solid rgba(23,35,27,0.10);
+  border-radius:24px;
+  padding:14px 18px;
+  box-shadow:0 12px 30px rgba(23,35,27,0.08);
+}
+
+.back-link{
+  color:var(--ink);
+  background:rgba(255,255,255,0.74);
+  border:1px solid rgba(23,35,27,0.12);
+  border-radius:999px;
+  padding:10px 14px;
+}
+
+.brand h1{ color:var(--ink); }
+.brand span{ color:var(--green); }
+
+.loading,.error,.panel{
+  background:var(--paper);
+  border:1px solid rgba(23,35,27,0.12);
+  color:var(--soft);
+  box-shadow:0 16px 38px rgba(23,35,27,0.10);
+  backdrop-filter:blur(12px);
+}
+
+.profile-layout{ grid-template-columns:420px 1fr; gap:26px; }
+.profile-layout > div:first-child{ position:sticky; top:22px; }
+
+.fut-card{
+  box-shadow:
+    0 24px 55px rgba(111,75,22,0.26),
+    0 10px 26px rgba(23,35,27,0.14),
+    inset 0 0 0 3px rgba(255,255,255,0.30),
+    inset 0 0 0 8px rgba(80,45,0,0.18);
+}
+
+.player-panel{ background:linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,248,229,0.86)); }
+.player-name{ color:var(--ink); }
+.info-line,.note,.mini-box span,.meaning-card span,.career-box span,.label{ color:var(--muted); }
+.rank-shield{ background:linear-gradient(145deg, rgba(255,209,102,0.35), rgba(255,255,255,0.78)); border:1px solid rgba(185,135,24,0.28); }
+.rank-shield strong,.mini-box strong,.career-box strong,.attr-value,.meaning-card strong,.compact-bonus-pill strong,.career-rank{ color:var(--gold); }
+.mini-box,.bonus-choice,.meaning-card,.career-box,.career-row{ background:rgba(255,255,255,0.66); border:1px solid rgba(23,35,27,0.10); }
+.section-title{ color:var(--green); border-bottom:1px solid rgba(23,35,27,0.10); padding-bottom:10px; }
+.compact-bonus-pill{ background:rgba(23,107,58,0.08); border:1px solid rgba(23,107,58,0.14); color:var(--ink); }
+.attr-bar{ background:rgba(23,35,27,0.10); }
+.attr-fill{ background:linear-gradient(90deg,#176b3a,#7ee35f); }
+.career-summary-grid{ margin-top:4px; }
+.career-row{ box-shadow:0 6px 18px rgba(23,35,27,0.05); }
+.career-year{ color:var(--green); }
+.link-button{ color:white; background:linear-gradient(135deg,#176b3a,#2ecc71); border:none; box-shadow:0 10px 20px rgba(23,107,58,0.18); }
+.card-career-badge{ background:rgba(255,255,255,0.40); border:1px solid rgba(80,45,0,0.18); }
+
+@media(max-width:980px){ .profile-layout > div:first-child{ position:static; } }
+
 </style>
 </head>
 
@@ -505,7 +683,8 @@ body::before{
 <script>
 const SHEET_ID = "1Ud5i11MEUXwvKDDsfyxvNIdyJgMbY_pS50BkecyzhDo";
 const PROFILE_CACHE_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_PROFILE_CACHE`;
-const MATCH_HISTORY_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_MATCH_HISTORY`;  
+const MATCH_HISTORY_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_MATCH_HISTORY`;
+const HISTORY_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_HISTORY`;
 
 async function fetchSheet(url){
   try{
@@ -734,20 +913,190 @@ function getStatComment(player, ratings){
 
   return comments.join(" ");
 }
+function normalizeNameKey(value){
+  return slugify(value || "");
+}
+
+function getHistoryAliases(name){
+  const aliases = {
+    "benjaminbarrios":["Benjamin"],
+    "kristoffermerker":["Merker","Basse","Kristoffer"],
+    "kristoffereckhoff":["Kristoffer E.","Kristoffer E"],
+    "mattiasandersson":["Mattias"],
+    "larsharaldsen":["Lars H","Lars"],
+    "andreasstraete":["Andreas"],
+    "orjanknutsen":["Ørjan","Orjan"],
+    "jannikberg":["Jannik"],
+    "edwardeikland":["Edward"],
+    "mariusmartinsen":["Marius"],
+    "martinhildonenmarum":["Martin Marum","Martin"],
+    "andersuldalenbrosstad":["Anders UB","Anders Ub","Anders U.B.","Anders U.B"],
+    "andersulvestad":["Anders Ulv","Anders U. og Ingrid Helene"],
+    "oyvindrefsnes":["Øyvind","Øyvind R.","Øyvind R"],
+    "oleandreas":["Ole"],
+    "frederikskoe":["Frederik"],
+    "silvia":["Silvia"],
+    "eirik":["Eirik"]
+  };
+
+  const key = normalizeNameKey(name);
+  return [name, ...(aliases[key] || [])].map(normalizeNameKey);
+}
+
+function getPlayerHistory(historyRows, playerName){
+  const keys = new Set(getHistoryAliases(playerName));
+
+  return historyRows
+    .filter(row => keys.has(normalizeNameKey(row.name)))
+    .sort((a,b) => cleanNumber(a.year) - cleanNumber(b.year));
+}
+
+function getMedalForRank(rank){
+  const n = cleanNumber(rank);
+  if(n === 1) return "🥇";
+  if(n === 2) return "🥈";
+  if(n === 3) return "🥉";
+  return "";
+}
+
+function getCareerStats(historyRows){
+  const tournaments = historyRows.length;
+  const ranks = historyRows.map(row => cleanNumber(row.rank)).filter(Boolean);
+  const bestRank = ranks.length ? Math.min(...ranks) : 0;
+  const avgRank = ranks.length
+    ? (ranks.reduce((sum,value) => sum + value, 0) / ranks.length).toFixed(1).replace(".",",")
+    : "-";
+
+  const gold = historyRows.filter(row => cleanNumber(row.rank) === 1).length;
+  const silver = historyRows.filter(row => cleanNumber(row.rank) === 2).length;
+  const bronze = historyRows.filter(row => cleanNumber(row.rank) === 3).length;
+  const podiums = gold + silver + bronze;
+  const totalCorrect = historyRows.reduce((sum,row) => sum + cleanNumber(row.correct_predictions), 0);
+  const firstYear = historyRows.length ? cleanNumber(historyRows[0].year) : "";
+
+  return { tournaments, bestRank, avgRank, gold, silver, bronze, podiums, totalCorrect, firstYear };
+}
+
+function renderCardCareerBadges(careerStats){
+  if(!careerStats || careerStats.tournaments === 0) return "";
+
+  const badges = [];
+
+  if(careerStats.gold > 0){
+    badges.push(`🏆 ${careerStats.gold}x mester`);
+  }
+
+  if(careerStats.podiums > 0){
+    badges.push(`🎖 ${careerStats.podiums} podier`);
+  }
+
+  badges.push(`📜 ${careerStats.tournaments} mesterskap`);
+
+  if(careerStats.firstYear){
+    badges.push(`Siden ${careerStats.firstYear}`);
+  }
+
+  return `
+    <div class="card-career-badges">
+      ${badges.slice(0,3).map(badge => `<span class="card-career-badge">${badge}</span>`).join("")}
+    </div>
+  `;
+}
+
+function renderCareerPanel(historyRows, player, allRows){
+  const playerHistory = getPlayerHistory(historyRows, player.name);
+
+  if(playerHistory.length === 0){
+    return `
+      <div class="panel">
+        <h2 class="section-title">FC Barrios-karriere</h2>
+        <div class="note">Ingen historiske mesterskap koblet til denne spilleren ennå.</div>
+      </div>
+    `;
+  }
+
+  const stats = getCareerStats(playerHistory);
+
+  const currentRank = cleanNumber(player.rank);
+  const currentPlayers = allRows.length;
+
+  return `
+    <div class="panel">
+      <h2 class="section-title">🏛 FC Barrios-karriere</h2>
+
+      <div class="career-summary-grid">
+        <div class="career-box">
+          <strong>${stats.tournaments}</strong>
+          <span>mesterskap</span>
+        </div>
+
+        <div class="career-box">
+          <strong>#${stats.bestRank}</strong>
+          <span>beste plassering</span>
+        </div>
+
+        <div class="career-box">
+          <strong>${stats.avgRank}</strong>
+          <span>snittplassering</span>
+        </div>
+
+        <div class="career-box">
+          <strong>🥇${stats.gold} 🥈${stats.silver} 🥉${stats.bronze}</strong>
+          <span>podier</span>
+        </div>
+      </div>
+
+      <div class="career-timeline">
+        ${playerHistory.map(row => {
+          const medal = getMedalForRank(row.rank);
+          const correct = row.correct_predictions !== undefined && row.correct_predictions !== ""
+            ? ` · 🎯 ${cleanNumber(row.correct_predictions)} riktige`
+            : "";
+
+          return `
+            <div class="career-row">
+              <div class="career-year">${row.year}</div>
+              <div>
+                <strong>${row.tournament || "Mesterskap"}</strong>
+                <div class="note">${cleanNumber(row.players)} deltakere${correct}</div>
+              </div>
+              <div class="career-rank">
+                <span class="career-medal">${medal}</span>#${cleanNumber(row.rank)}
+              </div>
+            </div>
+          `;
+        }).join("")}
+
+        <div class="career-row" style="border-color:rgba(126,227,95,0.22);background:rgba(126,227,95,0.07);">
+          <div class="career-year">2026</div>
+          <div>
+            <strong>VM pågår</strong>
+            <div class="note">Live plassering akkurat nå</div>
+          </div>
+          <div class="career-rank">#${currentRank}/${currentPlayers}</div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
 function renderLastResults(player){
   const rows = [
     player.last_1,
     player.last_2,
     player.last_3,
     player.last_4,
-    player.last_5
+    player.last_5,
+    player.last_6,
+    player.last_7,
+    player.last_8
   ].filter(Boolean);
 
   if(rows.length === 0) return "";
 
   return `
     <div class="panel">
-      <h2 class="section-title">Siste 5 resultater</h2>
+      <h2 class="section-title">Siste 8 resultater</h2>
       <div class="compact-bonus-list">
         ${rows.map(row => `
           <span class="compact-bonus-pill">${row}</span>
@@ -849,10 +1198,11 @@ async function loadProfile(){
   }
 
   try{
-    const [rows, historyRows] = await Promise.all([
-  fetchSheet(PROFILE_CACHE_URL),
-  fetchSheet(MATCH_HISTORY_URL)
-]);
+    const [rows, historyRows, careerHistoryRows] = await Promise.all([
+      fetchSheet(PROFILE_CACHE_URL),
+      fetchSheet(MATCH_HISTORY_URL),
+      fetchSheet(HISTORY_URL)
+    ]);
 
     rows.sort((a,b) =>
       cleanNumber(a.rank) - cleanNumber(b.rank) ||
@@ -886,6 +1236,8 @@ async function loadProfile(){
       : "0";
 
     const statComment = getStatComment(player, ratings);
+    const playerCareerHistory = getPlayerHistory(careerHistoryRows, player.name);
+    const careerStats = getCareerStats(playerCareerHistory);
 
     content.innerHTML = `
       <div class="profile-layout">
@@ -911,6 +1263,8 @@ async function loadProfile(){
             <div class="card-name">
               ${nameParts.map(part => `<span>${part}</span>`).join("")}
             </div>
+
+            ${renderCardCareerBadges(careerStats)}
 
             <div class="card-stats">
               <div class="card-stat"><strong>${ratings.tip}</strong><span>TIP</span></div>
@@ -956,6 +1310,8 @@ async function loadProfile(){
               </div>
             </div>
           </div>
+
+          ${renderCareerPanel(careerHistoryRows, player, rows)}
 
           <div class="panel">
             <h2 class="section-title">Kortanalyse</h2>
