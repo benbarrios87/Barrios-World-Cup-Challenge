@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 <html lang="no">
 <head>
@@ -7,12 +6,12 @@
 <link rel="icon" type="image/png" href="favicon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Sluttspilltips | FC Barrios World Cup Challenge 2026</title>
+<title>Sluttspill | FC Barrios World Cup Challenge 2026</title>
 
 <style>
 :root{
-  --bg:#07111f;
   --card:rgba(7,14,28,0.86);
+  --card2:rgba(255,255,255,0.08);
   --line:rgba(255,255,255,0.14);
   --text:#fff;
   --muted:rgba(255,255,255,0.70);
@@ -20,6 +19,8 @@
   --gold:#ffd166;
   --red:#ff5e5e;
   --blue:#7cc7ff;
+  --lime:#c8e63c;
+  --orange:#ffb347;
 }
 
 *{ box-sizing:border-box; }
@@ -48,7 +49,7 @@ body::before{
 }
 
 .wrapper{
-  max-width:1120px;
+  max-width:1700px;
   margin:auto;
   padding:18px;
   position:relative;
@@ -91,19 +92,39 @@ body::before{
   margin-bottom:18px;
 }
 
-.nav a{
+.nav a,
+.nav button,
+.btn{
   color:white;
   text-decoration:none;
+  border:none;
   border-radius:999px;
   padding:11px 15px;
   background:rgba(255,255,255,0.09);
   border:1px solid rgba(255,255,255,0.12);
   font-weight:bold;
+  cursor:pointer;
+  font-family:inherit;
 }
 
-.nav a.primary{
+.nav a.primary,
+.nav button.primary,
+.btn.primary{
   background:rgba(46,204,113,0.20);
   border-color:rgba(46,204,113,0.35);
+  color:#9dffc7;
+}
+
+.btn.solid{
+  background:linear-gradient(135deg,var(--green),#7dffba);
+  color:#07111f;
+  border:none;
+}
+
+.btn.danger{
+  background:rgba(255,94,94,0.14);
+  border-color:rgba(255,94,94,0.28);
+  color:#ffb4b4;
 }
 
 .card,
@@ -119,7 +140,7 @@ body::before{
 
 .info-grid{
   display:grid;
-  grid-template-columns:1.25fr 0.75fr;
+  grid-template-columns:1.2fr 0.8fr;
   gap:16px;
 }
 
@@ -134,7 +155,7 @@ body::before{
   line-height:1.6;
 }
 
-.deadline-box{
+.status-box{
   background:rgba(255,209,102,0.10);
   border:1px solid rgba(255,209,102,0.20);
   border-radius:20px;
@@ -142,19 +163,25 @@ body::before{
   line-height:1.5;
 }
 
-.deadline-box strong{
-  color:var(--gold);
+.status-box strong{ color:var(--gold); }
+
+.phone-input,
+.admin-input,
+.modal-input,
+.select-input{
+  width:100%;
+  min-height:48px;
+  border:none;
+  border-radius:15px;
+  padding:0 14px;
+  font-size:16px;
+  outline:none;
 }
 
-.phone-input{
-  width:100%;
-  height:52px;
-  border:none;
-  border-radius:16px;
-  padding:0 15px;
-  font-size:17px;
-  margin-top:8px;
-  outline:none;
+.small-text{
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.45;
 }
 
 .action-row{
@@ -164,148 +191,368 @@ body::before{
   margin-top:12px;
 }
 
-.btn{
-  border:none;
-  border-radius:16px;
-  padding:13px 16px;
-  background:rgba(255,255,255,0.09);
+.mode-pill{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:7px 11px;
+  border-radius:999px;
+  background:rgba(255,255,255,0.08);
   border:1px solid rgba(255,255,255,0.12);
+  color:var(--muted);
+  font-weight:bold;
+  font-size:13px;
+}
+
+.mode-pill.admin{
+  background:rgba(255,209,102,0.12);
+  border-color:rgba(255,209,102,0.28);
+  color:var(--gold);
+}
+
+.bracket-scroll{
+  overflow-x:auto;
+  padding:18px 0 22px;
+}
+
+.bracket{
+  min-width:1580px;
+  display:grid;
+  grid-template-columns:280px 280px 280px 280px 280px;
+  gap:40px;
+  align-items:center;
+}
+
+.round{
+  display:flex;
+  flex-direction:column;
+}
+
+.round h2{
+  text-align:center;
+  color:var(--gold);
+  margin:0 0 20px;
+  font-size:20px;
+  letter-spacing:1px;
+}
+
+.round-sub{
+  display:block;
+  color:var(--muted);
+  font-size:13px;
+  margin-top:4px;
+  font-weight:normal;
+}
+
+.round-32{ gap:18px; }
+.round-16{ gap:58px; }
+.quarters{ gap:136px; }
+.semis{ gap:310px; }
+.final-round{ gap:28px; }
+
+.match{
+  position:relative;
+  background:var(--card);
+  border:1px solid rgba(255,255,255,0.14);
+  border-radius:16px;
+  overflow:visible;
+  padding-top:12px;
+  box-shadow:0 12px 32px rgba(0,0,0,0.28);
+  cursor:pointer;
+  transition:.18s;
+}
+
+.match:hover{
+  transform:translateY(-2px);
+  border-color:rgba(255,209,102,0.35);
+}
+
+.match.open{
+  border-color:rgba(124,199,255,0.45);
+  box-shadow:0 0 22px rgba(124,199,255,0.12);
+}
+
+.match.completed{
+  border-color:rgba(46,204,113,0.65);
+  box-shadow:0 0 24px rgba(46,204,113,0.14);
+}
+
+.match.locked{
+  opacity:.62;
+}
+
+.match.empty-slot{
+  opacity:.55;
+}
+
+.match.gold{
+  border-color:rgba(255,209,102,0.75);
+  box-shadow:0 0 28px rgba(255,209,102,0.16);
+  transform:scale(1.03);
+}
+
+.match-label{
+  position:absolute;
+  top:-13px;
+  left:14px;
+  background:#07111f;
+  border:1px solid rgba(255,255,255,0.14);
+  color:var(--muted);
+  border-radius:999px;
+  padding:4px 9px;
+  font-size:11px;
+  white-space:nowrap;
+}
+
+.match-status-dot{
+  position:absolute;
+  top:-11px;
+  right:12px;
+  padding:4px 8px;
+  border-radius:999px;
+  font-size:11px;
+  font-weight:bold;
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.12);
+  color:var(--muted);
+}
+
+.match.completed .match-status-dot{
+  background:rgba(46,204,113,0.18);
+  border-color:rgba(46,204,113,0.38);
+  color:#9dffc7;
+}
+
+.match.open .match-status-dot{
+  background:rgba(124,199,255,0.16);
+  border-color:rgba(124,199,255,0.32);
+  color:#bde5ff;
+}
+
+.team-row{
+  display:grid;
+  grid-template-columns:1fr 42px;
+  align-items:center;
+  min-height:42px;
+  border-bottom:1px solid rgba(255,255,255,0.10);
+}
+
+.team-row:last-child{ border-bottom:none; }
+
+.team-name{
+  padding:10px 12px;
+  font-weight:bold;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.score{
+  height:42px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-left:1px solid rgba(255,255,255,0.10);
+  color:var(--gold);
+  font-weight:bold;
+}
+
+.team-tier{
+  display:inline-block;
+  margin-left:6px;
+  color:var(--muted);
+  font-size:11px;
+  font-weight:normal;
+}
+
+.info{
+  max-width:900px;
+  margin:10px auto 0;
+  text-align:center;
+  color:var(--muted);
+  background:rgba(7,14,28,0.76);
+  border:1px solid rgba(255,255,255,0.13);
+  border-radius:18px;
+  padding:16px;
+  line-height:1.5;
+}
+
+.bonus-section{
+  max-width:1120px;
+  margin:0 auto;
+}
+
+.bonus-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+}
+
+.bonus-list{
+  display:grid;
+  gap:10px;
+  margin-top:14px;
+}
+
+.bonus-row{
+  display:grid;
+  grid-template-columns:1fr auto 78px;
+  gap:10px;
+  align-items:center;
+  padding:12px;
+  border-radius:16px;
+  background:rgba(255,255,255,0.07);
+  border:1px solid rgba(255,255,255,0.10);
+}
+
+.multiplier{
+  font-size:12px;
+  font-weight:bold;
+  padding:5px 8px;
+  border-radius:999px;
+  background:rgba(255,209,102,0.13);
+  color:var(--gold);
+  white-space:nowrap;
+}
+
+.bonus-row input{
+  width:78px;
+  height:40px;
+  border:none;
+  border-radius:12px;
+  text-align:center;
+  font-size:16px;
+  font-weight:bold;
+}
+
+.modal-backdrop{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.78);
+  z-index:9999;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+}
+
+.modal{
+  width:min(760px,100%);
+  max-height:92vh;
+  overflow:auto;
+  background:rgba(7,14,28,0.98);
+  border:1px solid rgba(255,255,255,0.18);
+  border-radius:26px;
+  padding:22px;
+  box-shadow:0 24px 90px rgba(0,0,0,0.65);
+}
+
+.modal-head{
+  display:flex;
+  justify-content:space-between;
+  gap:14px;
+  align-items:flex-start;
+  margin-bottom:16px;
+}
+
+.modal h2{
+  margin:0 0 6px;
+  font-size:27px;
+}
+
+.close-btn{
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  border:1px solid rgba(255,255,255,0.14);
+  background:rgba(255,255,255,0.08);
   color:white;
   font-weight:bold;
   cursor:pointer;
 }
 
-.btn.primary{
-  background:linear-gradient(135deg,var(--green),#7dffba);
-  color:#07111f;
-  border:none;
-}
-
-.btn:disabled{
-  opacity:.5;
-  cursor:not-allowed;
-}
-
-.status-line{
-  margin-top:12px;
-  color:var(--muted);
-  font-size:14px;
-  line-height:1.5;
-}
-
-.round-title{
-  margin:28px 0 12px;
-  font-size:26px;
-}
-
-.round-sub{
-  color:var(--muted);
-  font-size:13px;
-  margin-top:4px;
-}
-
-.match-card{
-  background:rgba(7,14,28,0.82);
-  border:1px solid rgba(255,255,255,0.12);
-  border-radius:22px;
-  padding:18px;
-  margin-bottom:14px;
-}
-
-.match-card.locked{
-  opacity:0.68;
-}
-
-.match-header{
+.modal-tabs{
   display:flex;
-  justify-content:space-between;
-  gap:12px;
-  align-items:flex-start;
-  margin-bottom:14px;
+  gap:8px;
+  flex-wrap:wrap;
+  margin:12px 0 16px;
 }
 
-.match-title{
-  font-weight:bold;
-  font-size:20px;
-}
-
-.match-meta{
-  color:var(--muted);
-  font-size:13px;
-  margin-top:4px;
-  line-height:1.4;
-}
-
-.match-number{
-  color:var(--muted);
-  font-size:12px;
-  white-space:nowrap;
-  background:rgba(255,255,255,0.08);
-  padding:5px 9px;
+.modal-tab{
+  border:none;
+  cursor:pointer;
   border-radius:999px;
+  padding:9px 13px;
+  background:rgba(255,255,255,0.08);
+  color:white;
+  font-weight:bold;
 }
 
-.teams{
+.modal-tab.active{
+  background:var(--green);
+  color:#07111f;
+}
+
+.modal-section{
+  display:none;
+}
+
+.modal-section.active{
+  display:block;
+}
+
+.teams-large{
   display:grid;
   grid-template-columns:1fr auto 1fr;
   gap:12px;
   align-items:stretch;
+  margin-bottom:14px;
 }
 
-.team{
+.team-card{
   border-radius:18px;
   padding:14px;
   border:2px solid transparent;
   min-width:0;
 }
 
-.team-name{
-  font-size:19px;
-  font-weight:bold;
-  word-break:break-word;
-}
-
-.tier-label{
-  display:inline-block;
-  margin-top:7px;
-  padding:4px 9px;
-  border-radius:999px;
-  font-size:12px;
-  font-weight:bold;
-  background:rgba(0,0,0,0.24);
-}
-
-.team.tier-1{
+.team-card.tier-1{
   background:linear-gradient(135deg, rgba(46,204,113,0.34), rgba(46,204,113,0.12));
   border-color:var(--green);
 }
 
-.team.tier-2{
+.team-card.tier-2{
   background:linear-gradient(135deg, rgba(200,230,60,0.32), rgba(200,230,60,0.11));
-  border-color:#c8e63c;
+  border-color:var(--lime);
 }
 
-.team.tier-3{
+.team-card.tier-3{
   background:linear-gradient(135deg, rgba(255,179,71,0.34), rgba(255,179,71,0.11));
-  border-color:#ffb347;
+  border-color:var(--orange);
 }
 
-.team.tier-4{
+.team-card.tier-4{
   background:linear-gradient(135deg, rgba(255,71,87,0.36), rgba(255,71,87,0.12));
   border-color:#ff4757;
 }
 
+.team-card-name{
+  font-size:20px;
+  font-weight:bold;
+  word-break:break-word;
+}
+
 .score-zone{
   display:grid;
-  grid-template-columns:70px 16px 70px;
+  grid-template-columns:78px 16px 78px;
   gap:8px;
   align-items:center;
   justify-content:center;
 }
 
 .team-score{
-  width:70px;
-  height:56px;
+  width:78px;
+  height:58px;
   border:none;
   border-radius:15px;
   font-size:24px;
@@ -316,118 +563,96 @@ body::before{
   outline:none;
 }
 
-.team-score:disabled{
-  background:rgba(255,255,255,0.45);
-  color:#333;
-}
-
 .score-dash{
   color:var(--muted);
   font-weight:bold;
   text-align:center;
 }
 
-.result-box{
-  margin-top:12px;
-  padding:10px 12px;
-  border-radius:14px;
-  background:rgba(124,199,255,0.12);
-  border:1px solid rgba(124,199,255,0.22);
-  color:#bde5ff;
+.points-block{
+  display:grid;
+  gap:12px;
+  margin-top:14px;
+}
+
+.points-heading{
+  color:var(--gold);
+  font-weight:bold;
   font-size:13px;
-  font-weight:bold;
 }
 
-.locked-box{
-  margin-top:12px;
-  padding:10px 12px;
+.points-grid{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:6px 12px;
+  padding:10px;
   border-radius:14px;
-  background:rgba(255,94,94,0.12);
-  border:1px solid rgba(255,94,94,0.24);
-  color:#ffb4b4;
+  background:rgba(0,0,0,0.18);
+}
+
+.points-grid div{ color:var(--muted); }
+.points-grid strong{ color:white; }
+
+.admin-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
+.admin-field label{
+  display:block;
   font-size:13px;
-  font-weight:bold;
+  color:var(--muted);
+  margin:0 0 6px;
 }
 
-.submit-panel{
-  position:sticky;
-  bottom:12px;
-  z-index:5;
-  background:rgba(7,14,28,0.94);
-  border:1px solid rgba(255,255,255,0.14);
-  border-radius:22px;
-  padding:14px;
-  backdrop-filter:blur(10px);
-  box-shadow:0 16px 40px rgba(0,0,0,0.35);
+.admin-warning{
+  background:rgba(255,209,102,0.10);
+  border:1px solid rgba(255,209,102,0.20);
+  color:var(--muted);
+  border-radius:16px;
+  padding:12px;
+  margin:12px 0;
+  line-height:1.45;
 }
 
-.submit-btn{
-  width:100%;
-  min-height:58px;
-  border:none;
-  border-radius:17px;
-  background:linear-gradient(135deg,var(--green),#7dffba);
-  color:#07111f;
-  font-size:20px;
-  font-weight:bold;
-  cursor:pointer;
-}
-
-.submit-note{
-  margin-top:9px;
+.footer-note{
+  text-align:center;
   color:var(--muted);
   font-size:13px;
-  text-align:center;
-  line-height:1.4;
+  margin-top:22px;
 }
 
-.loading,
-.empty{
-  color:var(--muted);
-  text-align:center;
-  padding:30px;
-}
-
-.error-box{
-  background:rgba(255,71,87,0.14);
-  border:1px solid rgba(255,71,87,0.35);
-  border-radius:18px;
-  padding:18px;
-  line-height:1.5;
-}
-
-@media(max-width:780px){
+@media(max-width:850px){
   .wrapper{ padding:13px; }
   .hero h1{ font-size:31px; }
-  .info-grid{ grid-template-columns:1fr; }
+  .info-grid,
+  .bonus-grid{
+    grid-template-columns:1fr;
+  }
   .nav{
     justify-content:flex-start;
     overflow-x:auto;
     flex-wrap:nowrap;
     padding-bottom:5px;
   }
-  .nav a{ white-space:nowrap; }
+  .nav a,.nav button{ white-space:nowrap; }
   .card,.top-box{
     padding:15px;
     border-radius:20px;
   }
-  .teams{
+  .bracket{
+    min-width:1450px;
+    grid-template-columns:250px 250px 250px 250px 250px;
+    gap:32px;
+  }
+  .teams-large{
     grid-template-columns:1fr 1fr;
-    gap:10px;
-  }
-  .teams .team:first-child{
-    grid-column:1;
-    grid-row:1;
-  }
-  .teams .team:last-child{
-    grid-column:2;
-    grid-row:1;
   }
   .score-zone{
     grid-column:1 / -1;
     grid-row:2;
     grid-template-columns:1fr auto 1fr;
-    gap:10px;
     background:rgba(255,255,255,0.06);
     padding:12px;
     border-radius:18px;
@@ -437,53 +662,69 @@ body::before{
     max-width:110px;
     justify-self:center;
   }
-  .team{ min-height:96px; }
-  .match-header{ display:block; }
-  .match-number{
-    display:inline-block;
-    margin-top:8px;
+  .admin-grid{
+    grid-template-columns:1fr;
   }
 }
 </style>
 </head>
 
 <body>
+
 <div class="wrapper">
 
-  <div class="hero">
-    <div class="badge">FC BARRIOS • SLUTTSPILL</div>
-    <h1>Innlevering av sluttspilltips</h1>
-    <p>Tips åpne sluttspillkamper. Tips gjelder resultat etter 90 minutter + tilleggstid.</p>
-  </div>
-
   <div class="nav">
-    <a href="index.html">Forside</a>
+    <a href="index.html">Hjem</a>
+    <a href="tips.html">Tips</a>
     <a href="leaderboard.html">Leaderboard</a>
     <a href="minetips.html">Mine tips</a>
-    <a href="sluttspill.html">Sluttspilltre</a>
-    <a class="primary" href="sluttspilltips.html">Sluttspilltips</a>
+    <a href="stats.html">Stats</a>
+    <a class="primary" href="sluttspill.html">Sluttspill</a>
+    <button onclick="toggleAdminBox()">Admin</button>
+  </div>
+
+  <div class="hero">
+    <div class="badge">FC BARRIOS • VM 2026</div>
+    <h1>🏆 Sluttspilltre og tips</h1>
+    <p>Klikk på en kamp i treet. Legg inn tips. Se mulige poeng. La nervene gjøre resten.</p>
   </div>
 
   <div class="info-grid">
     <div class="top-box info-card">
-      <h2>Runde for runde.</h2>
-      <p>Sluttspilltips åpnes når kampene er klare. Du tipper bare kampene som er aktive akkurat nå.</p>
-      <p>Uavgjort er lov, fordi tipsene gjelder ordinær tid. Ekstraomganger og straffer teller ikke i resultatet.</p>
-      <p><span style="color:var(--gold);font-weight:bold;">Siste innsending gjelder.</span> Du kan sende inn på nytt frem til fristen for runden.</p>
+      <h2>Playoff tree, men med puls.</h2>
+      <p>Sluttspillet åpnes gradvis når lagene blir klare. Åpne kamper kan tippes direkte fra treet.</p>
+      <p>Tips gjelder resultat etter ordinær tid. Uavgjort er derfor lov.</p>
+      <p><span style="color:var(--gold);font-weight:bold;">Grønn kamp</span> betyr at du har lagt inn tips på kampen.</p>
     </div>
 
-    <div class="deadline-box">
+    <div class="status-box">
       <strong>Status</strong><br><br>
-      <span id="roundStatus">Laster aktive kamper...</span>
+      <span id="roundStatus">Laster sluttspill...</span>
+      <div style="margin-top:12px;">
+        <span id="modePill" class="mode-pill">Spillermodus</span>
+      </div>
     </div>
+  </div>
+
+  <div id="adminBox" class="top-box" style="display:none;">
+    <h2 style="margin-top:0;">Adminmodus</h2>
+    <p class="small-text">
+      PIN her skjuler panelet på siden, men ekte sikkerhet må ligge i Apps Script. Scriptet må sjekke PIN før det skriver til Google Sheet.
+    </p>
+
+    <div class="action-row">
+      <input id="adminPinInput" class="admin-input" type="password" placeholder="PIN-kode" style="max-width:220px;">
+      <button class="btn solid" onclick="unlockAdmin()">Lås opp admin</button>
+      <button class="btn danger" onclick="lockAdmin()">Lås admin</button>
+    </div>
+
+    <div id="adminStatus" class="small-text" style="margin-top:10px;">Admin er låst.</div>
   </div>
 
   <div class="top-box">
     <label for="playerPhone">
       <strong>Telefonnummer</strong><br>
-      <span style="color:rgba(255,255,255,0.7);font-size:13px;">
-        Bruk samme nummer som ved registrering. Dette kobler sluttspilltipsene dine til deg.
-      </span>
+      <span class="small-text">Bruk samme nummer som ved registrering. Dette kobler tipsene dine til deg.</span>
     </label>
 
     <input
@@ -493,82 +734,148 @@ body::before{
       placeholder="F.eks. 90000000"
       maxlength="8"
       inputmode="numeric"
-      oninput="onlyDigits(this); saveLocally();"
+      oninput="onlyDigits(this); saveLocalState(); renderBracket();"
     >
 
     <div class="action-row">
-      <button class="btn" onclick="loadSavedFromSheet()">
-        Hent lagrede sluttspilltips
-      </button>
-
-      <button class="btn" onclick="clearLocalDraft()">
-        Tøm lokal kladd
-      </button>
+      <button class="btn" onclick="loadSavedFromSheet()">Hent lagrede sluttspilltips</button>
+      <button class="btn" onclick="clearLocalTips()">Tøm lokal kladd</button>
+      <button class="btn" onclick="scrollToBonus()">Lagbonus</button>
     </div>
 
-    <div id="progressText" class="status-line">0 / 0 aktive kamper fylt ut</div>
+    <div id="progressText" class="small-text" style="margin-top:10px;">0 / 0 åpne kamper tippet</div>
   </div>
 
-  <div id="matches">
-    <div class="loading">Laster sluttspillkamper...</div>
-  </div>
-
-  <div class="submit-panel">
-    <button id="submitBtn" class="submit-btn" onclick="submitKnockoutTips()">
-      Send inn sluttspilltips
-    </button>
-
-    <div class="submit-note">
-      Sluttspilltips lagres som egen type i submissions. Siste innsending før frist gjelder.
+  <div class="bracket-scroll">
+    <div id="bracket" class="bracket">
+      <div class="empty">Laster sluttspilltre...</div>
     </div>
   </div>
 
+  <div class="info">
+    Klikk kampene i treet for å tippe. Hvis adminmodus er låst opp kan du også legge inn lag, tiers, frist, aktiv-status og resultat direkte fra kampmodalen.
+  </div>
+
+  <section id="bonusSection" class="bonus-section">
+    <div class="card">
+      <h2 style="margin-top:0;">🧨 Lagbonus</h2>
+      <p class="small-text">
+        Fordel inntil <strong>15 poeng</strong> på lag. Bonusen er krydder, ikke hele kaka.
+        Forslag til scoring: innsats × multiplikator / 10.
+      </p>
+
+      <div class="bonus-grid">
+        <div>
+          <h3>Velg lag</h3>
+          <div id="bonusList" class="bonus-list">
+            <div class="small-text">Laster kvalifiserte lag...</div>
+          </div>
+        </div>
+
+        <div>
+          <h3>Din bonus</h3>
+          <div id="bonusStatus" class="status-box">
+            0 / 15 poeng brukt
+          </div>
+
+          <div class="action-row">
+            <button class="btn solid" onclick="submitBonus()">Send inn lagbonus</button>
+          </div>
+
+          <p class="small-text">
+            Siste innsending gjelder. Bonus sendes som egen type til Apps Script.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="footer-note">
+    FC Barrios World Cup Challenge 2026
+  </div>
+
+</div>
+
+<div id="matchModalBackdrop" class="modal-backdrop">
+  <div class="modal">
+    <div class="modal-head">
+      <div>
+        <h2 id="modalTitle">Kamp</h2>
+        <div id="modalMeta" class="small-text"></div>
+      </div>
+      <button class="close-btn" onclick="closeMatchModal()">×</button>
+    </div>
+
+    <div class="modal-tabs">
+      <button id="playerTabBtn" class="modal-tab active" onclick="showModalTab('player')">Tips</button>
+      <button id="pointsTabBtn" class="modal-tab" onclick="showModalTab('points')">Mulige poeng</button>
+      <button id="adminTabBtn" class="modal-tab" onclick="showModalTab('admin')" style="display:none;">Admin</button>
+    </div>
+
+    <div id="playerSection" class="modal-section active"></div>
+    <div id="pointsSection" class="modal-section"></div>
+    <div id="adminSection" class="modal-section"></div>
+  </div>
 </div>
 
 <script>
 const SHEET_ID = "1Ud5i11MEUXwvKDDsfyxvNIdyJgMbY_pS50BkecyzhDo";
 
-const KNOCKOUT_API_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_KNOCKOUT_MATCHES`;
+const KNOCKOUT_MATCHES_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_KNOCKOUT_MATCHES`;
+const KNOCKOUT_TEAMS_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_KNOCKOUT_TEAMS`;
+const KNOCKOUT_OUTCOME_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_KNOCKOUT_OUTCOME`;
+const KNOCKOUT_DIFF_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_KNOCKOUT_DIFF`;
+const KNOCKOUT_EXACT_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_KNOCKOUT_EXACT`;
 const SUBMISSIONS_API_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_SUBMISSIONS`;
 
 const SUBMIT_URL = "https://script.google.com/macros/s/AKfycbzBtq_RURHeZJ7hq1ECkHt4Tn5hN3tdmPaa29MwRcbiJzsdzKyAggQgNf_OGKS1cFXfSg/exec";
 
+const ADMIN_PIN_LOCAL = "2026"; // Kun visuell lås. Apps Script må validere ekte PIN.
+const BONUS_MAX = 15;
+const BONUS_DIVIDER = 10;
+
 let allMatches = [];
+let knockoutTeams = [];
+let outcomeRules = [];
+let diffRules = [];
+let exactRules = [];
+let localTips = {};
+let localBonus = {};
+let adminUnlocked = false;
+let currentMatchId = "";
+
+const ROUND_CONFIG = [
+  { key:"Round of 32", label:"ROUND OF 32", sub:"Kamp 73–88", className:"round-32", ids:range(73,88) },
+  { key:"Round of 16", label:"ROUND OF 16", sub:"Kamp 89–96", className:"round-16", ids:range(89,96) },
+  { key:"Quarterfinals", label:"QUARTERFINALS", sub:"Kamp 97–100", className:"quarters", ids:range(97,100) },
+  { key:"Semifinals", label:"SEMIFINALS", sub:"Kamp 101–102", className:"semis", ids:range(101,102) },
+  { key:"Finals", label:"FINALER", sub:"Bronsefinale + finale", className:"final-round", ids:[103,104] }
+];
+
+function range(from,to){
+  const arr = [];
+  for(let i=from;i<=to;i++) arr.push(i);
+  return arr;
+}
 
 function normalizeRow(row){
   const clean = {};
-
   Object.keys(row || {}).forEach(key => {
-    const cleanKey = String(key)
-      .trim()
-      .toLowerCase()
-      .replace(/\s+/g,"_")
-      .replace(/-/g,"_");
-
-    clean[cleanKey] = typeof row[key] === "string"
-      ? row[key].trim()
-      : row[key];
+    const cleanKey = String(key).trim().toLowerCase().replace(/\s+/g,"_").replace(/-/g,"_");
+    clean[cleanKey] = typeof row[key] === "string" ? row[key].trim() : row[key];
   });
-
   return clean;
 }
 
 async function fetchSheet(url){
   try{
     const response = await fetch(url, { cache:"no-store" });
-
-    if(!response.ok){
-      throw new Error(`HTTP ${response.status}`);
-    }
-
+    if(!response.ok) throw new Error(`HTTP ${response.status}`);
     const data = await response.json();
-
-    if(!Array.isArray(data)){
-      console.error("OpenSheet returnerte ikke array:", url, data);
-      return [];
-    }
-
-    return data.map(normalizeRow);
+    if(!Array.isArray(data)) return [];
+    return data.map(normalizeRow).filter(row =>
+      Object.values(row).some(value => String(value || "").trim() !== "")
+    );
   }catch(error){
     console.error("fetchSheet-feil:", url, error);
     return [];
@@ -584,10 +891,10 @@ function safeNumber(value){
   return Number(String(value).replace(/\s/g,"").replace(",",".")) || 0;
 }
 
-function parseTier(value){
-  if(value === undefined || value === null || value === "") return 4;
-  const found = String(value).match(/[1-4]/);
-  return found ? Number(found[0]) : 4;
+function prettyNumber(value){
+  const n = safeNumber(value);
+  if(Number.isInteger(n)) return String(n);
+  return n.toFixed(2).replace(/\.?0+$/,"");
 }
 
 function isActive(value){
@@ -595,26 +902,60 @@ function isActive(value){
   return ["true","1","yes","ja","open","åpen","active"].includes(v);
 }
 
-function hasResult(match){
-  return match &&
-    match.actual_home !== "" &&
-    match.actual_home !== undefined &&
-    match.actual_away !== "" &&
-    match.actual_away !== undefined;
+function parseTier(value){
+  if(value === undefined || value === null || value === "") return 4;
+  const found = String(value).match(/[1-4]/);
+  return found ? Number(found[0]) : 4;
+}
+
+function getMatchId(match){
+  return String(match.match_id || match.id || "").trim();
+}
+
+function getRound(match){
+  return String(match.round || match.runde || "").trim();
+}
+
+function getTeamName(row){
+  return String(row.team || row.name || row.lag || "").trim();
+}
+
+function getTeamTier(teamName){
+  const found = knockoutTeams.find(team =>
+    getTeamName(team).toLowerCase() === String(teamName || "").toLowerCase()
+  );
+  return parseTier(found?.tier || found?.seed || 4);
+}
+
+function getMatchById(id){
+  return allMatches.find(match => getMatchId(match) === String(id));
+}
+
+function getPlaceholder(id, side){
+  if(id >= 73 && id <= 88) return side === "home" ? "Lag 1" : "Lag 2";
+
+  const prevA = {
+    89:[73,74], 90:[75,76], 91:[77,78], 92:[79,80],
+    93:[81,82], 94:[83,84], 95:[85,86], 96:[87,88],
+    97:[89,90], 98:[91,92], 99:[93,94], 100:[95,96],
+    101:[97,98], 102:[99,100],
+    103:[101,102], 104:[101,102]
+  };
+
+  const pair = prevA[id] || [];
+  if(id === 103) return side === "home" ? "Taper kamp 101" : "Taper kamp 102";
+  if(id === 104) return side === "home" ? "Vinner kamp 101" : "Vinner kamp 102";
+
+  return side === "home" ? `Vinner kamp ${pair[0] || "?"}` : `Vinner kamp ${pair[1] || "?"}`;
 }
 
 function parseDeadline(value){
   if(!value) return null;
-
-  if(value instanceof Date) return value;
-
   const raw = String(value).trim();
 
-  // Supports ISO-like values from Sheets: 2026-07-01T18:00:00+02:00 or 2026-07-01 18:00
   let d = new Date(raw);
   if(!Number.isNaN(d.getTime())) return d;
 
-  // Supports norwegian-ish: 01.07.2026 18:00
   const match = raw.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})(?:\s+(\d{1,2}):(\d{2}))?$/);
   if(match){
     const [,dd,mm,yyyy,hh="00",min="00"] = match;
@@ -625,7 +966,7 @@ function parseDeadline(value){
 }
 
 function deadlinePassed(match){
-  const deadline = parseDeadline(match.deadline);
+  const deadline = parseDeadline(match?.deadline);
   if(!deadline) return false;
   return new Date() > deadline;
 }
@@ -643,240 +984,518 @@ function formatDeadline(value){
   });
 }
 
-function getMatchId(match){
-  return String(match.match_id || match.id || "").trim();
+function hasTeams(match){
+  return !!(match && String(match.home || "").trim() && String(match.away || "").trim());
 }
 
-function getActiveMatches(){
-  return allMatches
-    .filter(match => isActive(match.active))
-    .sort((a,b) => {
-      const roundA = String(a.round || "").localeCompare(String(b.round || ""), "no");
-      if(roundA !== 0) return roundA;
-      return String(getMatchId(a)).localeCompare(String(getMatchId(b)), "no", { numeric:true });
-    });
+function hasTip(matchId){
+  const tip = localTips[String(matchId)];
+  return tip && tip.tips_home !== "" && tip.tips_away !== "";
 }
 
-function getGroupedActiveMatches(){
-  const grouped = {};
+function getOutcome(home, away){
+  home = safeNumber(home);
+  away = safeNumber(away);
+  if(home > away) return "home";
+  if(away > home) return "away";
+  return "draw";
+}
 
-  getActiveMatches().forEach(match => {
-    const round = match.round || "Sluttspill";
-    if(!grouped[round]) grouped[round] = [];
-    grouped[round].push(match);
-  });
+function getTierType(match, outcome){
+  if(outcome === "draw") return "draw";
 
-  return grouped;
+  const homeTier = parseTier(match.tier_home || getTeamTier(match.home));
+  const awayTier = parseTier(match.tier_away || getTeamTier(match.away));
+
+  if(outcome === "home") return homeTier <= awayTier ? "favorite" : "underdog";
+  if(outcome === "away") return awayTier <= homeTier ? "favorite" : "underdog";
+
+  return "draw";
+}
+
+function getRule(rules, tierDiff){
+  return rules.find(row => safeNumber(row.tier_diff) === safeNumber(tierDiff));
+}
+
+function getPoint(row, key){
+  if(!row) return "";
+  if(key === "favorite") return row.favorite ?? row.favoritt ?? "";
+  if(key === "draw") return row.draw ?? row.uavgjort ?? "";
+  if(key === "underdog") return row.underdog ?? row.outsider ?? "";
+  return "";
+}
+
+function getScoringPreview(match){
+  if(!match || !hasTeams(match)) return null;
+
+  const homeTier = parseTier(match.tier_home || getTeamTier(match.home));
+  const awayTier = parseTier(match.tier_away || getTeamTier(match.away));
+  const tierDiff = Math.abs(homeTier - awayTier);
+
+  const outcomeRow = getRule(outcomeRules, tierDiff);
+  const diffRow = getRule(diffRules, tierDiff);
+  const exactRow = getRule(exactRules, tierDiff);
+
+  function ordered(row){
+    const favorite = prettyNumber(getPoint(row,"favorite"));
+    const draw = prettyNumber(getPoint(row,"draw"));
+    const underdog = prettyNumber(getPoint(row,"underdog"));
+
+    if(homeTier < awayTier){
+      return `
+        <div>${match.home}</div><strong>${favorite}</strong>
+        <div>Uavgjort</div><strong>${draw}</strong>
+        <div>${match.away}</div><strong>${underdog}</strong>
+      `;
+    }
+
+    if(homeTier > awayTier){
+      return `
+        <div>${match.home}</div><strong>${underdog}</strong>
+        <div>Uavgjort</div><strong>${draw}</strong>
+        <div>${match.away}</div><strong>${favorite}</strong>
+      `;
+    }
+
+    return `
+      <div>${match.home}</div><strong>${favorite}</strong>
+      <div>Uavgjort</div><strong>${draw}</strong>
+      <div>${match.away}</div><strong>${underdog}</strong>
+    `;
+  }
+
+  return {
+    outcome: ordered(outcomeRow),
+    diff: ordered(diffRow),
+    exact: ordered(exactRow)
+  };
+}
+
+function loadLocalState(){
+  try{
+    const saved = JSON.parse(localStorage.getItem("vm2026_playoff_state") || "{}");
+    if(saved.phone) document.getElementById("playerPhone").value = saved.phone;
+    localTips = saved.tips || {};
+    localBonus = saved.bonus || {};
+  }catch(error){
+    localTips = {};
+    localBonus = {};
+  }
+}
+
+function saveLocalState(){
+  const phone = document.getElementById("playerPhone").value.trim();
+  localStorage.setItem("vm2026_playoff_state", JSON.stringify({
+    phone,
+    tips:localTips,
+    bonus:localBonus
+  }));
+  updateProgress();
+  updateBonusStatus();
+}
+
+function clearLocalTips(){
+  if(!confirm("Tømme lokale sluttspilltips på denne enheten?")) return;
+  localTips = {};
+  saveLocalState();
+  renderBracket();
+}
+
+function getAllOpenMatches(){
+  return allMatches.filter(match => isActive(match.active) && hasTeams(match) && !deadlinePassed(match));
+}
+
+function updateProgress(){
+  const open = getAllOpenMatches();
+  const completed = open.filter(match => hasTip(getMatchId(match))).length;
+  document.getElementById("progressText").textContent = `${completed} / ${open.length} åpne kamper tippet`;
 }
 
 function updateRoundStatus(){
-  const status = document.getElementById("roundStatus");
-  const active = getActiveMatches();
+  const active = allMatches.filter(match => isActive(match.active) && hasTeams(match));
+  const open = active.filter(match => !deadlinePassed(match));
+  const tipped = open.filter(match => hasTip(getMatchId(match))).length;
 
-  if(active.length === 0){
-    status.innerHTML = "Ingen aktive sluttspillkamper akkurat nå.";
-    return;
-  }
-
-  const rounds = [...new Set(active.map(match => match.round || "Sluttspill"))];
-
-  const deadlines = active
+  const deadlines = open
     .map(match => parseDeadline(match.deadline))
     .filter(Boolean)
-    .sort((a,b) => a - b);
+    .sort((a,b) => a-b);
 
   const firstDeadline = deadlines[0];
 
-  status.innerHTML = `
-    <strong>${active.length}</strong> aktive kamper<br>
-    Runde: ${rounds.join(", ")}<br>
-    ${firstDeadline ? `Første frist: ${formatDeadline(firstDeadline.toISOString())}` : "Frist styres per kamp."}
+  document.getElementById("roundStatus").innerHTML = `
+    <strong>${open.length}</strong> åpne kamper<br>
+    ${tipped} av ${open.length} tippet<br>
+    ${firstDeadline ? `Neste frist: ${formatDeadline(firstDeadline.toISOString())}` : "Frist styres per kamp."}
   `;
 }
 
-function renderMatches(){
-  const container = document.getElementById("matches");
-  const grouped = getGroupedActiveMatches();
+function renderBracket(){
+  const bracket = document.getElementById("bracket");
 
-  container.innerHTML = "";
-
-  if(getActiveMatches().length === 0){
-    container.innerHTML = `
-      <div class="empty">
-        Ingen åpne sluttspillkamper akkurat nå.
-      </div>
-    `;
-    updateProgress();
-    updateRoundStatus();
-    return;
-  }
-
-  Object.keys(grouped).forEach(round => {
-    container.innerHTML += `
-      <h2 class="round-title">${round}</h2>
-      <div class="round-sub">Tips gjelder resultat etter ordinær tid.</div>
-    `;
-
-    grouped[round].forEach(match => {
-      const matchId = getMatchId(match);
-      const locked = deadlinePassed(match);
-      const homeTier = parseTier(match.tier_home);
-      const awayTier = parseTier(match.tier_away);
-
-      container.innerHTML += `
-        <div class="match-card ${locked ? "locked" : ""}">
-          <div class="match-header">
-            <div>
-              <div class="match-title">${match.home || "TBD"} vs ${match.away || "TBD"}</div>
-              <div class="match-meta">
-                ${match.round || ""}<br>
-                Frist: ${formatDeadline(match.deadline)}
-              </div>
-            </div>
-
-            <div class="match-number">${matchId}</div>
-          </div>
-
-          <div class="teams">
-            <div class="team tier-${homeTier}">
-              <div class="team-name">${match.home || "TBD"}</div>
-              <div class="tier-label">Tier ${homeTier}</div>
-            </div>
-
-            <div class="score-zone">
-              <input
-                class="team-score"
-                type="number"
-                min="0"
-                inputmode="numeric"
-                data-match-id="${matchId}"
-                data-side="home"
-                ${locked ? "disabled" : ""}
-                oninput="saveLocally(); updateProgress();"
-              >
-
-              <div class="score-dash">–</div>
-
-              <input
-                class="team-score"
-                type="number"
-                min="0"
-                inputmode="numeric"
-                data-match-id="${matchId}"
-                data-side="away"
-                ${locked ? "disabled" : ""}
-                oninput="saveLocally(); updateProgress();"
-              >
-            </div>
-
-            <div class="team tier-${awayTier}">
-              <div class="team-name">${match.away || "TBD"}</div>
-              <div class="tier-label">Tier ${awayTier}</div>
-            </div>
-          </div>
-
-          ${hasResult(match) ? `
-            <div class="result-box">
-              Sluttresultat etter 90 min: ${match.actual_home} - ${match.actual_away}
-            </div>
-          ` : ""}
-
-          ${locked ? `
-            <div class="locked-box">
-              Fristen for denne kampen har gått ut.
-            </div>
-          ` : ""}
-        </div>
-      `;
-    });
-  });
+  bracket.innerHTML = ROUND_CONFIG.map(round => `
+    <div class="round ${round.className}">
+      <h2>${round.label}<span class="round-sub">${round.sub}</span></h2>
+      ${round.ids.map(id => renderMatchCard(id)).join("")}
+    </div>
+  `).join("");
 
   updateProgress();
   updateRoundStatus();
 }
 
-function getTipsData(){
-  return getActiveMatches().map(match => {
-    const matchId = getMatchId(match);
+function renderMatchCard(id){
+  const match = getMatchById(id) || { match_id:String(id), round:getRoundFromId(id) };
+  const matchId = String(id);
+  const home = match.home || getPlaceholder(id,"home");
+  const away = match.away || getPlaceholder(id,"away");
+  const homeTier = parseTier(match.tier_home || getTeamTier(match.home));
+  const awayTier = parseTier(match.tier_away || getTeamTier(match.away));
+  const active = isActive(match.active) && hasTeams(match);
+  const locked = active && deadlinePassed(match);
+  const completed = hasTip(matchId);
+  const empty = !hasTeams(match);
+  const gold = id === 104;
 
-    const homeInput = document.querySelector(`input[data-match-id="${matchId}"][data-side="home"]`);
-    const awayInput = document.querySelector(`input[data-match-id="${matchId}"][data-side="away"]`);
+  const classes = [
+    "match",
+    active ? "open" : "",
+    completed ? "completed" : "",
+    locked ? "locked" : "",
+    empty ? "empty-slot" : "",
+    gold ? "gold" : ""
+  ].filter(Boolean).join(" ");
 
-    return {
-      id: matchId,
-      home: match.home || "",
-      away: match.away || "",
-      tips_home: homeInput ? homeInput.value : "",
-      tips_away: awayInput ? awayInput.value : ""
-    };
+  let status = "Ikke klar";
+  if(active) status = "Åpen";
+  if(locked) status = "Låst";
+  if(completed) status = "Tippet";
+
+  const tip = localTips[matchId];
+
+  return `
+    <div class="${classes}" onclick="openMatchModal('${matchId}')">
+      <div class="match-label">Kamp ${matchId}</div>
+      <div class="match-status-dot">${status}</div>
+
+      <div class="team-row">
+        <div class="team-name">
+          ${home}
+          ${match.home ? `<span class="team-tier">T${homeTier}</span>` : ""}
+        </div>
+        <div class="score">${tip ? tip.tips_home || "–" : match.actual_home || "–"}</div>
+      </div>
+
+      <div class="team-row">
+        <div class="team-name">
+          ${away}
+          ${match.away ? `<span class="team-tier">T${awayTier}</span>` : ""}
+        </div>
+        <div class="score">${tip ? tip.tips_away || "–" : match.actual_away || "–"}</div>
+      </div>
+    </div>
+  `;
+}
+
+function getRoundFromId(id){
+  if(id <= 88) return "Round of 32";
+  if(id <= 96) return "Round of 16";
+  if(id <= 100) return "Quarterfinals";
+  if(id <= 102) return "Semifinals";
+  return id === 103 ? "Bronsefinale" : "Finale";
+}
+
+function openMatchModal(matchId){
+  currentMatchId = String(matchId);
+  const match = getMatchById(matchId) || { match_id:matchId, round:getRoundFromId(Number(matchId)) };
+
+  document.getElementById("modalTitle").textContent = `Kamp ${matchId}: ${match.home || "TBD"} vs ${match.away || "TBD"}`;
+  document.getElementById("modalMeta").textContent = `${match.round || getRoundFromId(Number(matchId))} • Frist: ${formatDeadline(match.deadline)}`;
+
+  document.getElementById("adminTabBtn").style.display = adminUnlocked ? "inline-block" : "none";
+
+  renderPlayerModal(match);
+  renderPointsModal(match);
+  renderAdminModal(match);
+  showModalTab("player");
+
+  document.getElementById("matchModalBackdrop").style.display = "flex";
+}
+
+function closeMatchModal(){
+  document.getElementById("matchModalBackdrop").style.display = "none";
+  currentMatchId = "";
+}
+
+function showModalTab(tab){
+  ["player","points","admin"].forEach(name => {
+    document.getElementById(`${name}Section`).classList.toggle("active", name === tab);
+    document.getElementById(`${name}TabBtn`).classList.toggle("active", name === tab);
   });
 }
 
-function saveLocally(){
-  const phone = document.getElementById("playerPhone").value.trim();
+function renderPlayerModal(match){
+  const section = document.getElementById("playerSection");
+  const matchId = getMatchId(match) || currentMatchId;
+  const locked = deadlinePassed(match);
+  const open = isActive(match.active) && hasTeams(match) && !locked;
+  const tip = localTips[matchId] || {};
 
-  localStorage.setItem("vm2026_knockout_tips", JSON.stringify({
-    phone,
-    tips:getTipsData()
-  }));
-}
+  const homeTier = parseTier(match.tier_home || getTeamTier(match.home));
+  const awayTier = parseTier(match.tier_away || getTeamTier(match.away));
 
-function loadLocalDraft(){
-  const saved = localStorage.getItem("vm2026_knockout_tips");
-  if(!saved) return;
-
-  let data;
-
-  try{
-    data = JSON.parse(saved);
-  }catch(error){
+  if(!hasTeams(match)){
+    section.innerHTML = `
+      <div class="admin-warning">
+        Kampen er ikke klar ennå. Lagene må legges inn før spillere kan tippe.
+      </div>
+    `;
     return;
   }
 
-  if(data.phone){
-    document.getElementById("playerPhone").value = data.phone;
+  if(!isActive(match.active)){
+    section.innerHTML = `
+      <div class="admin-warning">
+        Denne kampen er ikke åpnet for tips ennå.
+      </div>
+    `;
+    return;
   }
 
-  if(Array.isArray(data.tips)){
-    data.tips.forEach(tip => {
-      const matchId = String(tip.id || tip.match_id || "").trim();
+  section.innerHTML = `
+    ${locked ? `<div class="admin-warning">Fristen for denne kampen har gått ut.</div>` : ""}
 
-      const homeInput = document.querySelector(`input[data-match-id="${matchId}"][data-side="home"]`);
-      const awayInput = document.querySelector(`input[data-match-id="${matchId}"][data-side="away"]`);
+    <div class="teams-large">
+      <div class="team-card tier-${homeTier}">
+        <div class="team-card-name">${match.home}</div>
+        <div class="small-text">Tier ${homeTier}</div>
+      </div>
 
-      if(homeInput) homeInput.value = tip.tips_home || "";
-      if(awayInput) awayInput.value = tip.tips_away || "";
+      <div class="score-zone">
+        <input id="modalHomeScore" class="team-score" type="number" min="0" inputmode="numeric" value="${tip.tips_home || ""}" ${!open ? "disabled" : ""}>
+        <div class="score-dash">–</div>
+        <input id="modalAwayScore" class="team-score" type="number" min="0" inputmode="numeric" value="${tip.tips_away || ""}" ${!open ? "disabled" : ""}>
+      </div>
+
+      <div class="team-card tier-${awayTier}">
+        <div class="team-card-name">${match.away}</div>
+        <div class="small-text">Tier ${awayTier}</div>
+      </div>
+    </div>
+
+    <div class="action-row">
+      <button class="btn solid" onclick="saveTipFromModal()" ${!open ? "disabled" : ""}>Lagre tips på denne kampen</button>
+      <button class="btn" onclick="submitKnockoutTips()" ${!open ? "disabled" : ""}>Send inn alle åpne tips</button>
+    </div>
+
+    <p class="small-text">
+      Tips gjelder ordinær tid. Uavgjort er lov. Siste innsending gjelder.
+    </p>
+  `;
+}
+
+function renderPointsModal(match){
+  const section = document.getElementById("pointsSection");
+  const scoring = getScoringPreview(match);
+
+  if(!scoring){
+    section.innerHTML = `
+      <div class="admin-warning">
+        Kan ikke vise poeng ennå. Kampen må ha lag og tier, og poengarkene må være fylt ut.
+      </div>
+    `;
+    return;
+  }
+
+  section.innerHTML = `
+    <div class="points-block">
+      <div>
+        <div class="points-heading">Riktig vinner/uavgjort</div>
+        <div class="points-grid">${scoring.outcome}</div>
+      </div>
+
+      <div>
+        <div class="points-heading">Riktig målforskjell</div>
+        <div class="points-grid">${scoring.diff}</div>
+      </div>
+
+      <div>
+        <div class="points-heading">Eksakt resultat</div>
+        <div class="points-grid">${scoring.exact}</div>
+      </div>
+    </div>
+
+    <p class="small-text">
+      Merk: Uavgjort outcome og uavgjort diff overlapper i praksis. Beregningen bør fortsatt bare gi høyeste relevante kategori.
+    </p>
+  `;
+}
+
+function getTeamOptions(selected){
+  const rows = knockoutTeams
+    .filter(team => isActive(team.qualified) || String(team.qualified || "").trim() === "")
+    .sort((a,b) => getTeamName(a).localeCompare(getTeamName(b),"no"));
+
+  return `
+    <option value="">TBD</option>
+    ${rows.map(team => {
+      const name = getTeamName(team);
+      return `<option value="${escapeHtml(name)}" ${name === selected ? "selected" : ""}>${name}</option>`;
+    }).join("")}
+  `;
+}
+
+function renderAdminModal(match){
+  const section = document.getElementById("adminSection");
+
+  if(!adminUnlocked){
+    section.innerHTML = `<div class="admin-warning">Adminmodus er låst.</div>`;
+    return;
+  }
+
+  const matchId = getMatchId(match) || currentMatchId;
+  const home = match.home || "";
+  const away = match.away || "";
+
+  section.innerHTML = `
+    <div class="admin-warning">
+      Dette sender en admin-oppdatering til Apps Script. Apps Script må støtte action <strong>admin_knockout_match</strong>.
+    </div>
+
+    <div class="admin-grid">
+      <div class="admin-field">
+        <label>Kamp-ID</label>
+        <input id="adminMatchId" class="modal-input" value="${matchId}" readonly>
+      </div>
+
+      <div class="admin-field">
+        <label>Runde</label>
+        <input id="adminRound" class="modal-input" value="${match.round || getRoundFromId(Number(matchId))}">
+      </div>
+
+      <div class="admin-field">
+        <label>Hjemmelag</label>
+        <select id="adminHome" class="select-input">${getTeamOptions(home)}</select>
+      </div>
+
+      <div class="admin-field">
+        <label>Bortelag</label>
+        <select id="adminAway" class="select-input">${getTeamOptions(away)}</select>
+      </div>
+
+      <div class="admin-field">
+        <label>Tier hjemmelag</label>
+        <input id="adminTierHome" class="modal-input" type="number" min="1" max="4" value="${match.tier_home || getTeamTier(home)}">
+      </div>
+
+      <div class="admin-field">
+        <label>Tier bortelag</label>
+        <input id="adminTierAway" class="modal-input" type="number" min="1" max="4" value="${match.tier_away || getTeamTier(away)}">
+      </div>
+
+      <div class="admin-field">
+        <label>Active</label>
+        <select id="adminActive" class="select-input">
+          <option value="TRUE" ${isActive(match.active) ? "selected" : ""}>TRUE</option>
+          <option value="FALSE" ${!isActive(match.active) ? "selected" : ""}>FALSE</option>
+        </select>
+      </div>
+
+      <div class="admin-field">
+        <label>Frist</label>
+        <input id="adminDeadline" class="modal-input" value="${match.deadline || "2026-06-28T21:00:00+02:00"}">
+      </div>
+
+      <div class="admin-field">
+        <label>Resultat hjemmelag</label>
+        <input id="adminActualHome" class="modal-input" type="number" min="0" value="${match.actual_home || ""}">
+      </div>
+
+      <div class="admin-field">
+        <label>Resultat bortelag</label>
+        <input id="adminActualAway" class="modal-input" type="number" min="0" value="${match.actual_away || ""}">
+      </div>
+    </div>
+
+    <div class="action-row">
+      <button class="btn solid" onclick="saveAdminMatch()">Lagre kamp</button>
+    </div>
+  `;
+}
+
+function saveTipFromModal(){
+  const matchId = currentMatchId;
+  const home = document.getElementById("modalHomeScore").value;
+  const away = document.getElementById("modalAwayScore").value;
+
+  if(home === "" || away === ""){
+    alert("Fyll inn begge scoringene.");
+    return;
+  }
+
+  localTips[matchId] = {
+    match_id:matchId,
+    tips_home:home,
+    tips_away:away
+  };
+
+  saveLocalState();
+  renderBracket();
+  closeMatchModal();
+}
+
+function getTipsPayload(){
+  const phone = document.getElementById("playerPhone").value.trim();
+
+  return Object.values(localTips)
+    .filter(tip => tip.tips_home !== "" && tip.tips_away !== "")
+    .map(tip => {
+      const match = getMatchById(tip.match_id) || {};
+      return {
+        timestamp:new Date().toISOString(),
+        phone,
+        type:"knockout",
+        match_id:tip.match_id,
+        home:match.home || "",
+        away:match.away || "",
+        tips_home:tip.tips_home,
+        tips_away:tip.tips_away
+      };
     });
+}
+
+async function submitKnockoutTips(){
+  const phone = document.getElementById("playerPhone").value.trim();
+
+  if(!/^\d{8}$/.test(phone)){
+    alert("Skriv inn gyldig telefonnummer først.");
+    return;
   }
 
-  updateProgress();
-}
+  const rows = getTipsPayload();
 
-function clearLocalDraft(){
-  localStorage.removeItem("vm2026_knockout_tips");
-  document.querySelectorAll(".team-score").forEach(input => {
-    if(!input.disabled) input.value = "";
-  });
-  updateProgress();
-}
+  if(rows.length === 0){
+    alert("Du har ingen sluttspilltips å sende inn.");
+    return;
+  }
 
-function updateProgress(){
-  const activeUnlocked = getActiveMatches().filter(match => !deadlinePassed(match));
-  let completed = 0;
-
-  activeUnlocked.forEach(match => {
-    const matchId = getMatchId(match);
-
-    const homeInput = document.querySelector(`input[data-match-id="${matchId}"][data-side="home"]`);
-    const awayInput = document.querySelector(`input[data-match-id="${matchId}"][data-side="away"]`);
-
-    if(homeInput && awayInput && homeInput.value !== "" && awayInput.value !== ""){
-      completed++;
-    }
+  const response = await fetch(SUBMIT_URL, {
+    method:"POST",
+    body:JSON.stringify({
+      tipType:"knockout",
+      action:"submit_knockout_tips",
+      phone,
+      rows
+    })
   });
 
-  document.getElementById("progressText").textContent =
-    `${completed} / ${activeUnlocked.length} åpne kamper fylt ut`;
+  const text = await response.text();
+
+  if(!response.ok){
+    throw new Error(text || "Innsending feilet.");
+  }
+
+  alert("Sluttspilltips sendt inn!");
 }
 
 async function loadSavedFromSheet(){
@@ -904,144 +1523,275 @@ async function loadSavedFromSheet(){
 
   latestRows.forEach(row => {
     const matchId = String(row.match_id || row.id || "").trim();
+    if(!matchId) return;
 
-    const homeInput = document.querySelector(`input[data-match-id="${matchId}"][data-side="home"]`);
-    const awayInput = document.querySelector(`input[data-match-id="${matchId}"][data-side="away"]`);
-
-    if(homeInput) homeInput.value = row.tips_home || "";
-    if(awayInput) awayInput.value = row.tips_away || "";
+    localTips[matchId] = {
+      match_id:matchId,
+      tips_home:row.tips_home || "",
+      tips_away:row.tips_away || ""
+    };
   });
 
-  saveLocally();
-  updateProgress();
+  saveLocalState();
+  renderBracket();
 
   alert("Lagrede sluttspilltips hentet.");
 }
 
-function validateBeforeSubmit(){
+function scrollToBonus(){
+  document.getElementById("bonusSection").scrollIntoView({ behavior:"smooth", block:"start" });
+}
+
+function getBonusMultiplier(team){
+  return safeNumber(team.multiplier || team.multiplier_win || team.vinner || 1);
+}
+
+function renderBonus(){
+  const box = document.getElementById("bonusList");
+
+  const teams = knockoutTeams
+    .filter(team => isActive(team.qualified) || String(team.qualified || "").trim() === "")
+    .sort((a,b) => getTeamName(a).localeCompare(getTeamName(b), "no"));
+
+  if(teams.length === 0){
+    box.innerHTML = `<div class="small-text">Ingen lag i API_KNOCKOUT_TEAMS ennå.</div>`;
+    updateBonusStatus();
+    return;
+  }
+
+  box.innerHTML = teams.map(team => {
+    const name = getTeamName(team);
+    const multiplier = getBonusMultiplier(team);
+    const value = localBonus[name] || "";
+
+    return `
+      <div class="bonus-row">
+        <div>
+          <strong>${name}</strong>
+          <div class="small-text">Tier ${parseTier(team.tier)}</div>
+        </div>
+        <div class="multiplier">x${prettyNumber(multiplier)}</div>
+        <input
+          type="number"
+          min="0"
+          max="${BONUS_MAX}"
+          value="${value}"
+          data-bonus-team="${escapeHtml(name)}"
+          data-multiplier="${multiplier}"
+          oninput="updateLocalBonus(this)"
+        >
+      </div>
+    `;
+  }).join("");
+
+  updateBonusStatus();
+}
+
+function updateLocalBonus(input){
+  const team = input.dataset.bonusTeam;
+  const value = safeNumber(input.value);
+
+  if(value <= 0){
+    delete localBonus[team];
+  }else{
+    localBonus[team] = value;
+  }
+
+  saveLocalState();
+}
+
+function updateBonusStatus(){
+  const total = Object.values(localBonus).reduce((sum,value) => sum + safeNumber(value), 0);
+  const box = document.getElementById("bonusStatus");
+  if(!box) return;
+
+  const over = total > BONUS_MAX;
+
+  box.innerHTML = `
+    <strong style="color:${over ? "var(--red)" : "var(--gold)"}">${prettyNumber(total)} / ${BONUS_MAX}</strong> poeng brukt<br>
+    <span class="small-text">
+      ${over ? "Du har brukt for mange bonuspoeng." : "Bonusen er klar når du er innenfor grensen."}
+    </span>
+  `;
+}
+
+async function submitBonus(){
   const phone = document.getElementById("playerPhone").value.trim();
 
   if(!/^\d{8}$/.test(phone)){
-    alert("Skriv inn et gyldig telefonnummer.");
-    return null;
+    alert("Skriv inn gyldig telefonnummer først.");
+    return;
   }
 
-  const activeUnlocked = getActiveMatches().filter(match => !deadlinePassed(match));
+  const total = Object.values(localBonus).reduce((sum,value) => sum + safeNumber(value), 0);
 
-  if(activeUnlocked.length === 0){
-    alert("Ingen åpne sluttspillkamper å levere tips på akkurat nå.");
-    return null;
+  if(total <= 0){
+    alert("Du har ikke fordelt noen bonuspoeng.");
+    return;
   }
 
-  const allTips = getTipsData();
-
-  const tips = allTips.filter(tip =>
-    activeUnlocked.some(match => getMatchId(match) === String(tip.id))
-  );
-
-  const missing = tips.filter(tip =>
-    tip.tips_home === "" || tip.tips_away === ""
-  );
-
-  if(missing.length > 0){
-    alert(`Du mangler tips på ${missing.length} åpne kamper.`);
-    return null;
+  if(total > BONUS_MAX){
+    alert(`Du kan maks bruke ${BONUS_MAX} bonuspoeng.`);
+    return;
   }
 
-  return { phone, tips };
+  const rows = Object.entries(localBonus).map(([team,stake]) => {
+    const teamRow = knockoutTeams.find(row => getTeamName(row) === team) || {};
+    const multiplier = getBonusMultiplier(teamRow);
+
+    return {
+      timestamp:new Date().toISOString(),
+      phone,
+      type:"knockout_team_bonus",
+      team,
+      stake,
+      multiplier,
+      potential_points:safeNumber(stake) * multiplier / BONUS_DIVIDER
+    };
+  });
+
+  const response = await fetch(SUBMIT_URL, {
+    method:"POST",
+    body:JSON.stringify({
+      tipType:"knockout_team_bonus",
+      action:"submit_knockout_bonus",
+      phone,
+      rows
+    })
+  });
+
+  const text = await response.text();
+
+  if(!response.ok){
+    throw new Error(text || "Bonusinnsending feilet.");
+  }
+
+  alert("Lagbonus sendt inn!");
 }
 
-async function submitKnockoutTips(){
-  const validated = validateBeforeSubmit();
-  if(!validated) return;
+function toggleAdminBox(){
+  const box = document.getElementById("adminBox");
+  box.style.display = box.style.display === "none" || box.style.display === "" ? "block" : "none";
+}
 
-  const button = document.getElementById("submitBtn");
-  const originalText = button.textContent;
+function unlockAdmin(){
+  const pin = document.getElementById("adminPinInput").value.trim();
 
-  button.disabled = true;
-  button.textContent = "Sender inn...";
-
-  try{
-    const hiddenFrame = document.createElement("iframe");
-    hiddenFrame.name = "hiddenKnockoutFrame_" + Date.now();
-    hiddenFrame.style.display = "none";
-    document.body.appendChild(hiddenFrame);
-
-    const hiddenForm = document.createElement("form");
-    hiddenForm.method = "POST";
-    hiddenForm.action = SUBMIT_URL;
-    hiddenForm.target = hiddenFrame.name;
-    hiddenForm.style.display = "none";
-
-    const input = document.createElement("input");
-    input.type = "hidden";
-    input.name = "payload";
-    input.value = JSON.stringify({
-      action:"submitTips",
-      tipType:"knockout",
-      phone:validated.phone,
-      tips:validated.tips,
-      bestPlayer:[],
-      topScorer:[]
-    });
-
-    hiddenForm.appendChild(input);
-    document.body.appendChild(hiddenForm);
-    hiddenForm.submit();
-
-    saveLocally();
-
-    button.textContent = "Sluttspilltips sendt inn ✅";
-
-    setTimeout(() => {
-      button.disabled = false;
-      button.textContent = originalText;
-    }, 1800);
-
-    alert("Sluttspilltips sendt inn! Siste innsending før frist gjelder.");
-  }catch(error){
-    console.error(error);
-    alert("Feil ved innsending: " + error.message);
-
-    button.disabled = false;
-    button.textContent = originalText;
+  if(pin !== ADMIN_PIN_LOCAL){
+    alert("Feil PIN.");
+    return;
   }
+
+  adminUnlocked = true;
+  document.getElementById("adminStatus").textContent = "Admin er låst opp.";
+  document.getElementById("modePill").textContent = "Adminmodus";
+  document.getElementById("modePill").classList.add("admin");
+  renderBracket();
+}
+
+function lockAdmin(){
+  adminUnlocked = false;
+  document.getElementById("adminStatus").textContent = "Admin er låst.";
+  document.getElementById("modePill").textContent = "Spillermodus";
+  document.getElementById("modePill").classList.remove("admin");
+  renderBracket();
+}
+
+async function saveAdminMatch(){
+  const pin = document.getElementById("adminPinInput").value.trim();
+
+  const payload = {
+    action:"admin_knockout_match",
+    pin,
+    match_id:document.getElementById("adminMatchId").value.trim(),
+    round:document.getElementById("adminRound").value.trim(),
+    home:document.getElementById("adminHome").value.trim(),
+    away:document.getElementById("adminAway").value.trim(),
+    tier_home:document.getElementById("adminTierHome").value.trim(),
+    tier_away:document.getElementById("adminTierAway").value.trim(),
+    active:document.getElementById("adminActive").value.trim(),
+    deadline:document.getElementById("adminDeadline").value.trim(),
+    actual_home:document.getElementById("adminActualHome").value.trim(),
+    actual_away:document.getElementById("adminActualAway").value.trim()
+  };
+
+  const response = await fetch(SUBMIT_URL, {
+    method:"POST",
+    body:JSON.stringify(payload)
+  });
+
+  const text = await response.text();
+
+  if(!response.ok){
+    throw new Error(text || "Adminlagring feilet.");
+  }
+
+  const existing = allMatches.find(match => getMatchId(match) === payload.match_id);
+  if(existing){
+    Object.assign(existing, payload);
+  }else{
+    allMatches.push(payload);
+  }
+
+  renderBracket();
+  closeMatchModal();
+
+  alert("Kamp lagret.");
+}
+
+function escapeHtml(value){
+  return String(value || "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
 }
 
 async function loadAll(){
-  const container = document.getElementById("matches");
-  container.innerHTML = `<div class="loading">Laster sluttspillkamper...</div>`;
+  loadLocalState();
 
-  const rows = await fetchSheet(KNOCKOUT_API_URL);
+  const [
+    matchRows,
+    teamRows,
+    outcomeRows,
+    diffRows,
+    exactRows
+  ] = await Promise.all([
+    fetchSheet(KNOCKOUT_MATCHES_URL),
+    fetchSheet(KNOCKOUT_TEAMS_URL),
+    fetchSheet(KNOCKOUT_OUTCOME_URL),
+    fetchSheet(KNOCKOUT_DIFF_URL),
+    fetchSheet(KNOCKOUT_EXACT_URL)
+  ]);
 
-  allMatches = rows
+  allMatches = matchRows.map(row => ({
+    ...row,
+    match_id:String(row.match_id || row.id || "").trim()
+  })).filter(row => row.match_id);
+
+  knockoutTeams = teamRows
     .map(row => ({
       ...row,
-      match_id:String(row.match_id || row.id || "").trim()
+      team:getTeamName(row),
+      tier:row.tier || row.seed || 4
     }))
-    .filter(row => row.match_id);
+    .filter(row => row.team);
 
-  renderMatches();
-  loadLocalDraft();
+  outcomeRules = outcomeRows;
+  diffRules = diffRows;
+  exactRules = exactRows;
+
+  renderBracket();
+  renderBonus();
 }
 
-document.addEventListener("keydown", e => {
-  if(e.key !== "Tab") return;
+document.addEventListener("keydown", event => {
+  if(event.key === "Escape") closeMatchModal();
+});
 
-  const active = document.activeElement;
-
-  if(!active.classList.contains("team-score")) return;
-
-  e.preventDefault();
-
-  const inputs = [...document.querySelectorAll(".team-score")].filter(input => !input.disabled);
-  const currentIndex = inputs.indexOf(active);
-  const next = inputs[currentIndex + 1];
-
-  if(next){
-    next.focus();
-    next.select();
-  }
+document.getElementById("matchModalBackdrop").addEventListener("click", event => {
+  if(event.target.id === "matchModalBackdrop") closeMatchModal();
 });
 
 loadAll();
