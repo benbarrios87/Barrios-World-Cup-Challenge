@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="no">
 <head>
@@ -383,6 +384,43 @@ body::before{
   color:var(--muted);
   font-size:11px;
   font-weight:normal;
+}
+
+.team-pill{
+  display:inline-flex;
+  align-items:center;
+  width:max-content;
+  max-width:100%;
+  padding:3px 8px;
+  border-radius:999px;
+  font-weight:900;
+  font-size:.95em;
+  border:1px solid rgba(255,255,255,0.14);
+}
+
+.team-pill.tier-1{
+  background:rgba(46,204,113,0.18);
+  color:#9dffc7;
+}
+
+.team-pill.tier-2{
+  background:rgba(255,209,102,0.18);
+  color:#ffd166;
+}
+
+.team-pill.tier-3{
+  background:rgba(255,145,77,0.18);
+  color:#ffb06b;
+}
+
+.team-pill.tier-4{
+  background:rgba(255,94,94,0.18);
+  color:#ff8f8f;
+}
+
+.team-pill.slot{
+  background:rgba(255,255,255,0.07);
+  color:rgba(255,255,255,0.76);
 }
 
 .mobile-round{
@@ -825,8 +863,8 @@ body::before{
     <div class="card">
       <h2 style="margin-top:0;">🧨 Lagbonus</h2>
       <p class="small-text">
-        Fordel inntil <strong>15 poeng</strong> på lag. Bonusen er krydder, ikke hele kaka.
-        Forslag til scoring: innsats × multiplikator / 10.
+        Fordel inntil <strong>10 poeng</strong> på lag. Maks 5 poeng på ett lag.
+        Jo høyere odds og jo lenger laget går, jo mer får du.
       </p>
 
       <div class="bonus-grid">
@@ -896,8 +934,16 @@ const SUBMISSIONS_API_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_SUBMISSION
 const SUBMIT_URL = "https://script.google.com/macros/s/AKfycbzBtq_RURHeZJ7hq1ECkHt4Tn5hN3tdmPaa29MwRcbiJzsdzKyAggQgNf_OGKS1cFXfSg/exec";
 
 const ADMIN_PIN_LOCAL = "2026"; // Kun visuell lås. Apps Script må validere ekte PIN.
-const BONUS_MAX = 15;
-const BONUS_DIVIDER = 10;
+const BONUS_MAX = 10;
+const BONUS_TEAM_MAX = 5;
+
+const BONUS_STAGE_MULTIPLIERS = {
+  quarterfinal:0.25,
+  semifinal:0.50,
+  bronze:0.75,
+  finalist:1.00,
+  winner:2.50
+};
 
 // Juster disse når du vet flere sikre lag.
 // NB: Mexico er lagt inn som Group A Winner basert på offisiell slotlogikk.
@@ -1315,7 +1361,7 @@ function renderMatchCard(id){
 
       <div class="team-row">
         <div class="team-name">
-          ${home.name}
+          ${renderTeamPill(home.name, homeTier, home.isRealTeam)}
           ${home.isRealTeam ? `<span class="team-tier">T${homeTier}</span>` : ""}
           ${home.slot && home.slot !== home.name ? `<span class="slot-label">${home.slot}</span>` : ""}
         </div>
@@ -1324,7 +1370,7 @@ function renderMatchCard(id){
 
       <div class="team-row">
         <div class="team-name">
-          ${away.name}
+          ${renderTeamPill(away.name, awayTier, away.isRealTeam)}
           ${away.isRealTeam ? `<span class="team-tier">T${awayTier}</span>` : ""}
           ${away.slot && away.slot !== away.name ? `<span class="slot-label">${away.slot}</span>` : ""}
         </div>
@@ -1426,7 +1472,7 @@ function renderPlayerModal(match){
 
     <div class="teams-large">
       <div class="team-card tier-${homeTier}">
-        <div class="team-card-name">${match.home}</div>
+        <div class="team-card-name">${renderTeamPill(match.home, homeTier, true)}</div>
         <div class="small-text">Tier ${homeTier}</div>
       </div>
 
@@ -1437,7 +1483,7 @@ function renderPlayerModal(match){
       </div>
 
       <div class="team-card tier-${awayTier}">
-        <div class="team-card-name">${match.away}</div>
+        <div class="team-card-name">${renderTeamPill(match.away, awayTier, true)}</div>
         <div class="small-text">Tier ${awayTier}</div>
       </div>
     </div>
@@ -1714,8 +1760,24 @@ function scrollToBonus(){
   document.getElementById("bonusSection").scrollIntoView({ behavior:"smooth", block:"start" });
 }
 
-function getBonusMultiplier(team){
-  return safeNumber(team.multiplier || team.multiplier_win || team.vinner || 1);
+function getBonusOdds(team){
+  return safeNumber(team.odds || team.multiplier || team.multiplier_win || team.vinner || 1);
+}
+
+function calcBonusPoints(stake, odds, stage){
+  return safeNumber(stake) * safeNumber(odds) * safeNumber(stage);
+}
+
+function renderTeamPill(name, tier, isRealTeam = true){
+  if(!name) return "";
+  const safeName = escapeHtml(name);
+  const tierNum = parseTier(tier);
+
+  if(!isRealTeam){
+    return `<span class="team-pill slot">${safeName}</span>`;
+  }
+
+  return `<span class="team-pill tier-${tierNum}">${safeName}</span>`;
 }
 
 function renderBonus(){
@@ -1733,23 +1795,39 @@ function renderBonus(){
 
   box.innerHTML = teams.map(team => {
     const name = getTeamName(team);
-    const multiplier = getBonusMultiplier(team);
+    const tier = parseTier(team.tier);
+    const odds = getBonusOdds(team);
     const value = localBonus[name] || "";
+    const maxWinner = calcBonusPoints(BONUS_TEAM_MAX, odds, BONUS_STAGE_MULTIPLIERS.winner);
 
     return `
       <div class="bonus-row">
         <div>
-          <strong>${name}</strong>
-          <div class="small-text">Tier ${parseTier(team.tier)}</div>
+          <strong>${renderTeamPill(name, tier, true)}</strong>
+          <div class="small-text">
+            Odds x${prettyNumber(odds)} · maks ${prettyNumber(maxWinner)}p ved VM-gull
+          </div>
+          <details class="small-text" style="margin-top:6px;">
+            <summary style="cursor:pointer;color:var(--gold);font-weight:bold;">Se mulig uttelling per poeng</summary>
+            <div style="margin-top:6px;line-height:1.55;">
+              Kvart: ${prettyNumber(calcBonusPoints(1, odds, BONUS_STAGE_MULTIPLIERS.quarterfinal))}p ·
+              Semi: ${prettyNumber(calcBonusPoints(1, odds, BONUS_STAGE_MULTIPLIERS.semifinal))}p ·
+              Bronse: ${prettyNumber(calcBonusPoints(1, odds, BONUS_STAGE_MULTIPLIERS.bronze))}p ·
+              Finale: ${prettyNumber(calcBonusPoints(1, odds, BONUS_STAGE_MULTIPLIERS.finalist))}p ·
+              Vinner: ${prettyNumber(calcBonusPoints(1, odds, BONUS_STAGE_MULTIPLIERS.winner))}p
+            </div>
+          </details>
         </div>
-        <div class="multiplier">x${prettyNumber(multiplier)}</div>
+
+        <div class="multiplier">x${prettyNumber(odds)}</div>
+
         <input
           type="number"
           min="0"
-          max="${BONUS_MAX}"
+          max="${BONUS_TEAM_MAX}"
           value="${value}"
           data-bonus-team="${escapeHtml(name)}"
-          data-multiplier="${multiplier}"
+          data-odds="${odds}"
           oninput="updateLocalBonus(this)"
         >
       </div>
@@ -1758,10 +1836,14 @@ function renderBonus(){
 
   updateBonusStatus();
 }
-
 function updateLocalBonus(input){
   const team = input.dataset.bonusTeam;
-  const value = safeNumber(input.value);
+  let value = safeNumber(input.value);
+
+  if(value > BONUS_TEAM_MAX){
+    value = BONUS_TEAM_MAX;
+    input.value = BONUS_TEAM_MAX;
+  }
 
   if(value <= 0){
     delete localBonus[team];
@@ -1771,7 +1853,6 @@ function updateLocalBonus(input){
 
   saveLocalState();
 }
-
 function updateBonusStatus(){
   const total = Object.values(localBonus).reduce((sum,value) => sum + safeNumber(value), 0);
   const box = document.getElementById("bonusStatus");
@@ -1779,14 +1860,22 @@ function updateBonusStatus(){
 
   const over = total > BONUS_MAX;
 
+  const maxPotential = Object.entries(localBonus).reduce((sum,[team,stake]) => {
+    const teamRow = knockoutTeams.find(row => getTeamName(row) === team) || {};
+    const odds = getBonusOdds(teamRow);
+    return sum + calcBonusPoints(stake, odds, BONUS_STAGE_MULTIPLIERS.winner);
+  }, 0);
+
   box.innerHTML = `
     <strong style="color:${over ? "var(--red)" : "var(--gold)"}">${prettyNumber(total)} / ${BONUS_MAX}</strong> poeng brukt<br>
     <span class="small-text">
-      ${over ? "Du har brukt for mange bonuspoeng." : "Bonusen er klar når du er innenfor grensen."}
+      ${over ? "Du har brukt for mange bonuspoeng." : "Maks mulig hvis alle dine lag vinner VM: " + prettyNumber(maxPotential) + "p"}
     </span>
+    <div class="small-text" style="margin-top:8px;">
+      Uttelling: Kvart 25% · Semi 50% · Bronse 75% · Finale 100% · Vinner 250%
+    </div>
   `;
 }
-
 async function submitBonus(){
   const phone = document.getElementById("playerPhone").value.trim();
 
@@ -1809,7 +1898,7 @@ async function submitBonus(){
 
   const rows = Object.entries(localBonus).map(([team,stake]) => {
     const teamRow = knockoutTeams.find(row => getTeamName(row) === team) || {};
-    const multiplier = getBonusMultiplier(teamRow);
+    const odds = getBonusOdds(teamRow);
 
     return {
       timestamp:new Date().toISOString(),
@@ -1817,8 +1906,12 @@ async function submitBonus(){
       type:"knockout_team_bonus",
       team,
       stake,
-      multiplier,
-      potential_points:safeNumber(stake) * multiplier / BONUS_DIVIDER
+      odds,
+      potential_quarterfinal:calcBonusPoints(stake, odds, BONUS_STAGE_MULTIPLIERS.quarterfinal),
+      potential_semifinal:calcBonusPoints(stake, odds, BONUS_STAGE_MULTIPLIERS.semifinal),
+      potential_bronze:calcBonusPoints(stake, odds, BONUS_STAGE_MULTIPLIERS.bronze),
+      potential_finalist:calcBonusPoints(stake, odds, BONUS_STAGE_MULTIPLIERS.finalist),
+      potential_winner:calcBonusPoints(stake, odds, BONUS_STAGE_MULTIPLIERS.winner)
     };
   });
 
