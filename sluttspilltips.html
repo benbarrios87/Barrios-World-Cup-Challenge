@@ -210,6 +210,14 @@ body::before{
   color:var(--gold);
 }
 
+.desktop-bracket{
+  display:block;
+}
+
+.mobile-list{
+  display:none;
+}
+
 .bracket-scroll{
   overflow-x:auto;
   padding:18px 0 22px;
@@ -228,7 +236,8 @@ body::before{
   flex-direction:column;
 }
 
-.round h2{
+.round h2,
+.mobile-round-title{
   text-align:center;
   color:var(--gold);
   margin:0 0 20px;
@@ -242,6 +251,7 @@ body::before{
   font-size:13px;
   margin-top:4px;
   font-weight:normal;
+  letter-spacing:0;
 }
 
 .round-32{ gap:18px; }
@@ -282,7 +292,7 @@ body::before{
 }
 
 .match.empty-slot{
-  opacity:.55;
+  opacity:.72;
 }
 
 .match.gold{
@@ -347,6 +357,16 @@ body::before{
   text-overflow:ellipsis;
 }
 
+.slot-label{
+  display:block;
+  margin-top:3px;
+  color:rgba(255,255,255,0.52);
+  font-size:10px;
+  font-weight:normal;
+  line-height:1.2;
+  white-space:normal;
+}
+
 .score{
   height:42px;
   display:flex;
@@ -363,6 +383,14 @@ body::before{
   color:var(--muted);
   font-size:11px;
   font-weight:normal;
+}
+
+.mobile-round{
+  margin-bottom:22px;
+}
+
+.mobile-match-card{
+  margin-bottom:12px;
 }
 
 .info{
@@ -493,13 +521,8 @@ body::before{
   color:#07111f;
 }
 
-.modal-section{
-  display:none;
-}
-
-.modal-section.active{
-  display:block;
-}
+.modal-section{ display:none; }
+.modal-section.active{ display:block; }
 
 .teams-large{
   display:grid;
@@ -641,14 +664,37 @@ body::before{
     padding:15px;
     border-radius:20px;
   }
-  .bracket{
-    min-width:1450px;
-    grid-template-columns:250px 250px 250px 250px 250px;
-    gap:32px;
+
+  .desktop-bracket{
+    display:none;
   }
+
+  .mobile-list{
+    display:block;
+  }
+
+  .mobile-round-title{
+    text-align:left;
+    margin:22px 0 12px;
+  }
+
+  .match{
+    padding-top:16px;
+  }
+
+  .team-row{
+    min-height:52px;
+  }
+
+  .team-name{
+    white-space:normal;
+    line-height:1.2;
+  }
+
   .teams-large{
     grid-template-columns:1fr 1fr;
   }
+
   .score-zone{
     grid-column:1 / -1;
     grid-row:2;
@@ -657,13 +703,24 @@ body::before{
     padding:12px;
     border-radius:18px;
   }
+
   .team-score{
     width:100%;
     max-width:110px;
     justify-self:center;
   }
+
   .admin-grid{
     grid-template-columns:1fr;
+  }
+
+  .bonus-row{
+    grid-template-columns:1fr 78px;
+  }
+
+  .multiplier{
+    grid-column:1;
+    width:max-content;
   }
 }
 </style>
@@ -686,13 +743,13 @@ body::before{
   <div class="hero">
     <div class="badge">FC BARRIOS • VM 2026</div>
     <h1>🏆 Sluttspilltre og tips</h1>
-    <p>Klikk på en kamp i treet. Legg inn tips. Se mulige poeng. La nervene gjøre resten.</p>
+    <p>Klikk på en kamp i treet. På mobil får du en enklere kampliste.</p>
   </div>
 
   <div class="info-grid">
     <div class="top-box info-card">
-      <h2>Playoff tree, men med puls.</h2>
-      <p>Sluttspillet åpnes gradvis når lagene blir klare. Åpne kamper kan tippes direkte fra treet.</p>
+      <h2>Offisiell playoff-logikk.</h2>
+      <p>Round of 32 viser FIFA-slotene før alle lag er klare. Når lag kvalifiserer, fylles de inn gradvis.</p>
       <p>Tips gjelder resultat etter ordinær tid. Uavgjort er derfor lov.</p>
       <p><span style="color:var(--gold);font-weight:bold;">Grønn kamp</span> betyr at du har lagt inn tips på kampen.</p>
     </div>
@@ -734,7 +791,7 @@ body::before{
       placeholder="F.eks. 90000000"
       maxlength="8"
       inputmode="numeric"
-      oninput="onlyDigits(this); saveLocalState(); renderBracket();"
+      oninput="onlyDigits(this); saveLocalState(); renderAllViews();"
     >
 
     <div class="action-row">
@@ -746,14 +803,22 @@ body::before{
     <div id="progressText" class="small-text" style="margin-top:10px;">0 / 0 åpne kamper tippet</div>
   </div>
 
-  <div class="bracket-scroll">
-    <div id="bracket" class="bracket">
-      <div class="empty">Laster sluttspilltre...</div>
+  <div class="desktop-bracket">
+    <div class="bracket-scroll">
+      <div id="bracket" class="bracket">
+        <div class="small-text">Laster sluttspilltre...</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mobile-list">
+    <div id="mobileMatches">
+      <div class="small-text">Laster mobilvisning...</div>
     </div>
   </div>
 
   <div class="info">
-    Klikk kampene i treet for å tippe. Hvis adminmodus er låst opp kan du også legge inn lag, tiers, frist, aktiv-status og resultat direkte fra kampmodalen.
+    Desktop viser hele sluttspilltreet. Mobil viser runde-for-runde som klikkbare kampkort. Samme modal, samme tips, samme lagring.
   </div>
 
   <section id="bonusSection" class="bonus-section">
@@ -834,6 +899,14 @@ const ADMIN_PIN_LOCAL = "2026"; // Kun visuell lås. Apps Script må validere ek
 const BONUS_MAX = 15;
 const BONUS_DIVIDER = 10;
 
+// Juster disse når du vet flere sikre lag.
+// NB: Mexico er lagt inn som Group A Winner basert på offisiell slotlogikk.
+// Germany er lagt inn som Group E Winner. Ikke legg inn USA før du vet hvilken gruppe-slot de faktisk eier.
+const KNOWN_SLOT_WINNERS = {
+  "Winner Group A":"Mexico",
+  "Winner Group E":"Germany"
+};
+
 let allMatches = [];
 let knockoutTeams = [];
 let outcomeRules = [];
@@ -843,6 +916,44 @@ let localTips = {};
 let localBonus = {};
 let adminUnlocked = false;
 let currentMatchId = "";
+
+const ROUND_32_SLOTS = {
+  73:["Runner-up Group A","Runner-up Group B"],
+  74:["Winner Group E","Best 3rd place Group A/B/C/D/F"],
+  75:["Winner Group F","Runner-up Group C"],
+  76:["Winner Group C","Runner-up Group F"],
+  77:["Winner Group I","Best 3rd place Group C/D/F/G/H"],
+  78:["Runner-up Group E","Runner-up Group I"],
+  79:["Winner Group A","Best 3rd place Group C/E/F/H/I"],
+  80:["Winner Group L","Best 3rd place Group E/H/I/J/K"],
+  81:["Winner Group D","Best 3rd place Group B/E/F/I/J"],
+  82:["Winner Group G","Best 3rd place Group A/E/H/I/J"],
+  83:["Runner-up Group K","Runner-up Group L"],
+  84:["Winner Group H","Runner-up Group J"],
+  85:["Winner Group B","Best 3rd place Group E/F/G/I/J"],
+  86:["Winner Group J","Runner-up Group H"],
+  87:["Winner Group K","Best 3rd place Group D/E/I/J/L"],
+  88:["Runner-up Group D","Runner-up Group G"]
+};
+
+const NEXT_ROUND_SLOTS = {
+  89:["Winner Match 73","Winner Match 75"],
+  90:["Winner Match 74","Winner Match 77"],
+  91:["Winner Match 76","Winner Match 78"],
+  92:["Winner Match 79","Winner Match 80"],
+  93:["Winner Match 83","Winner Match 84"],
+  94:["Winner Match 81","Winner Match 82"],
+  95:["Winner Match 86","Winner Match 88"],
+  96:["Winner Match 85","Winner Match 87"],
+  97:["Winner Match 89","Winner Match 90"],
+  98:["Winner Match 93","Winner Match 94"],
+  99:["Winner Match 91","Winner Match 92"],
+  100:["Winner Match 95","Winner Match 96"],
+  101:["Winner Match 97","Winner Match 98"],
+  102:["Winner Match 99","Winner Match 100"],
+  103:["Loser Match 101","Loser Match 102"],
+  104:["Winner Match 101","Winner Match 102"]
+};
 
 const ROUND_CONFIG = [
   { key:"Round of 32", label:"ROUND OF 32", sub:"Kamp 73–88", className:"round-32", ids:range(73,88) },
@@ -931,22 +1042,22 @@ function getMatchById(id){
   return allMatches.find(match => getMatchId(match) === String(id));
 }
 
-function getPlaceholder(id, side){
-  if(id >= 73 && id <= 88) return side === "home" ? "Lag 1" : "Lag 2";
+function getSlotLabels(id){
+  return ROUND_32_SLOTS[id] || NEXT_ROUND_SLOTS[id] || ["TBD","TBD"];
+}
 
-  const prevA = {
-    89:[73,74], 90:[75,76], 91:[77,78], 92:[79,80],
-    93:[81,82], 94:[83,84], 95:[85,86], 96:[87,88],
-    97:[89,90], 98:[91,92], 99:[93,94], 100:[95,96],
-    101:[97,98], 102:[99,100],
-    103:[101,102], 104:[101,102]
+function getDisplayTeam(match, id, side){
+  const sideKey = side === "home" ? "home" : "away";
+  const slotKey = side === "home" ? "home_slot" : "away_slot";
+  const labels = getSlotLabels(Number(id));
+  const slot = match?.[slotKey] || labels[side === "home" ? 0 : 1] || "TBD";
+  const fromKnown = KNOWN_SLOT_WINNERS[slot] || "";
+
+  return {
+    name: match?.[sideKey] || fromKnown || slot,
+    slot,
+    isRealTeam: !!(match?.[sideKey] || fromKnown)
   };
-
-  const pair = prevA[id] || [];
-  if(id === 103) return side === "home" ? "Taper kamp 101" : "Taper kamp 102";
-  if(id === 104) return side === "home" ? "Vinner kamp 101" : "Vinner kamp 102";
-
-  return side === "home" ? `Vinner kamp ${pair[0] || "?"}` : `Vinner kamp ${pair[1] || "?"}`;
 }
 
 function parseDeadline(value){
@@ -984,8 +1095,10 @@ function formatDeadline(value){
   });
 }
 
-function hasTeams(match){
-  return !!(match && String(match.home || "").trim() && String(match.away || "").trim());
+function hasTeams(match, id){
+  const home = getDisplayTeam(match, id, "home");
+  const away = getDisplayTeam(match, id, "away");
+  return !!(home.isRealTeam && away.isRealTeam);
 }
 
 function hasTip(matchId){
@@ -1026,7 +1139,7 @@ function getPoint(row, key){
 }
 
 function getScoringPreview(match){
-  if(!match || !hasTeams(match)) return null;
+  if(!match || !match.home || !match.away) return null;
 
   const homeTier = parseTier(match.tier_home || getTeamTier(match.home));
   const awayTier = parseTier(match.tier_away || getTeamTier(match.away));
@@ -1098,11 +1211,14 @@ function clearLocalTips(){
   if(!confirm("Tømme lokale sluttspilltips på denne enheten?")) return;
   localTips = {};
   saveLocalState();
-  renderBracket();
+  renderAllViews();
 }
 
 function getAllOpenMatches(){
-  return allMatches.filter(match => isActive(match.active) && hasTeams(match) && !deadlinePassed(match));
+  return allMatches.filter(match => {
+    const id = getMatchId(match);
+    return isActive(match.active) && hasTeams(match, id) && !deadlinePassed(match);
+  });
 }
 
 function updateProgress(){
@@ -1112,7 +1228,10 @@ function updateProgress(){
 }
 
 function updateRoundStatus(){
-  const active = allMatches.filter(match => isActive(match.active) && hasTeams(match));
+  const active = allMatches.filter(match => {
+    const id = getMatchId(match);
+    return isActive(match.active) && hasTeams(match, id);
+  });
   const open = active.filter(match => !deadlinePassed(match));
   const tipped = open.filter(match => hasTip(getMatchId(match))).length;
 
@@ -1130,6 +1249,11 @@ function updateRoundStatus(){
   `;
 }
 
+function renderAllViews(){
+  renderBracket();
+  renderMobileList();
+}
+
 function renderBracket(){
   const bracket = document.getElementById("bracket");
 
@@ -1144,17 +1268,28 @@ function renderBracket(){
   updateRoundStatus();
 }
 
+function renderMobileList(){
+  const box = document.getElementById("mobileMatches");
+
+  box.innerHTML = ROUND_CONFIG.map(round => `
+    <div class="mobile-round">
+      <h2 class="mobile-round-title">${round.label}<span class="round-sub">${round.sub}</span></h2>
+      ${round.ids.map(id => `<div class="mobile-match-card">${renderMatchCard(id)}</div>`).join("")}
+    </div>
+  `).join("");
+}
+
 function renderMatchCard(id){
   const match = getMatchById(id) || { match_id:String(id), round:getRoundFromId(id) };
   const matchId = String(id);
-  const home = match.home || getPlaceholder(id,"home");
-  const away = match.away || getPlaceholder(id,"away");
-  const homeTier = parseTier(match.tier_home || getTeamTier(match.home));
-  const awayTier = parseTier(match.tier_away || getTeamTier(match.away));
-  const active = isActive(match.active) && hasTeams(match);
+  const home = getDisplayTeam(match, id, "home");
+  const away = getDisplayTeam(match, id, "away");
+  const homeTier = parseTier(match.tier_home || getTeamTier(match.home || home.name));
+  const awayTier = parseTier(match.tier_away || getTeamTier(match.away || away.name));
+  const active = isActive(match.active) && hasTeams(match, id);
   const locked = active && deadlinePassed(match);
   const completed = hasTip(matchId);
-  const empty = !hasTeams(match);
+  const empty = !hasTeams(match, id);
   const gold = id === 104;
 
   const classes = [
@@ -1166,7 +1301,7 @@ function renderMatchCard(id){
     gold ? "gold" : ""
   ].filter(Boolean).join(" ");
 
-  let status = "Ikke klar";
+  let status = "Slot";
   if(active) status = "Åpen";
   if(locked) status = "Låst";
   if(completed) status = "Tippet";
@@ -1180,16 +1315,18 @@ function renderMatchCard(id){
 
       <div class="team-row">
         <div class="team-name">
-          ${home}
-          ${match.home ? `<span class="team-tier">T${homeTier}</span>` : ""}
+          ${home.name}
+          ${home.isRealTeam ? `<span class="team-tier">T${homeTier}</span>` : ""}
+          ${home.slot && home.slot !== home.name ? `<span class="slot-label">${home.slot}</span>` : ""}
         </div>
         <div class="score">${tip ? tip.tips_home || "–" : match.actual_home || "–"}</div>
       </div>
 
       <div class="team-row">
         <div class="team-name">
-          ${away}
-          ${match.away ? `<span class="team-tier">T${awayTier}</span>` : ""}
+          ${away.name}
+          ${away.isRealTeam ? `<span class="team-tier">T${awayTier}</span>` : ""}
+          ${away.slot && away.slot !== away.name ? `<span class="slot-label">${away.slot}</span>` : ""}
         </div>
         <div class="score">${tip ? tip.tips_away || "–" : match.actual_away || "–"}</div>
       </div>
@@ -1205,11 +1342,30 @@ function getRoundFromId(id){
   return id === 103 ? "Bronsefinale" : "Finale";
 }
 
+function hydrateKnownSlotsIntoMatch(match){
+  const id = getMatchId(match);
+  const home = getDisplayTeam(match, id, "home");
+  const away = getDisplayTeam(match, id, "away");
+
+  return {
+    ...match,
+    home:match.home || (home.isRealTeam ? home.name : ""),
+    away:match.away || (away.isRealTeam ? away.name : ""),
+    home_slot:match.home_slot || home.slot,
+    away_slot:match.away_slot || away.slot,
+    tier_home:match.tier_home || getTeamTier(match.home || home.name),
+    tier_away:match.tier_away || getTeamTier(match.away || away.name)
+  };
+}
+
 function openMatchModal(matchId){
   currentMatchId = String(matchId);
-  const match = getMatchById(matchId) || { match_id:matchId, round:getRoundFromId(Number(matchId)) };
+  const rawMatch = getMatchById(matchId) || { match_id:matchId, round:getRoundFromId(Number(matchId)) };
+  const match = hydrateKnownSlotsIntoMatch(rawMatch);
+  const homeDisplay = getDisplayTeam(match, matchId, "home");
+  const awayDisplay = getDisplayTeam(match, matchId, "away");
 
-  document.getElementById("modalTitle").textContent = `Kamp ${matchId}: ${match.home || "TBD"} vs ${match.away || "TBD"}`;
+  document.getElementById("modalTitle").textContent = `Kamp ${matchId}: ${homeDisplay.name} vs ${awayDisplay.name}`;
   document.getElementById("modalMeta").textContent = `${match.round || getRoundFromId(Number(matchId))} • Frist: ${formatDeadline(match.deadline)}`;
 
   document.getElementById("adminTabBtn").style.display = adminUnlocked ? "inline-block" : "none";
@@ -1238,16 +1394,19 @@ function renderPlayerModal(match){
   const section = document.getElementById("playerSection");
   const matchId = getMatchId(match) || currentMatchId;
   const locked = deadlinePassed(match);
-  const open = isActive(match.active) && hasTeams(match) && !locked;
+  const open = isActive(match.active) && match.home && match.away && !locked;
   const tip = localTips[matchId] || {};
 
   const homeTier = parseTier(match.tier_home || getTeamTier(match.home));
   const awayTier = parseTier(match.tier_away || getTeamTier(match.away));
 
-  if(!hasTeams(match)){
+  if(!match.home || !match.away){
     section.innerHTML = `
       <div class="admin-warning">
-        Kampen er ikke klar ennå. Lagene må legges inn før spillere kan tippe.
+        Kampen er ikke klar ennå. Foreløpig slot:<br><br>
+        <strong>${getDisplayTeam(match, matchId, "home").slot}</strong><br>
+        mot<br>
+        <strong>${getDisplayTeam(match, matchId, "away").slot}</strong>
       </div>
     `;
     return;
@@ -1301,7 +1460,7 @@ function renderPointsModal(match){
   if(!scoring){
     section.innerHTML = `
       <div class="admin-warning">
-        Kan ikke vise poeng ennå. Kampen må ha lag og tier, og poengarkene må være fylt ut.
+        Kan ikke vise poeng ennå. Kampen må ha to konkrete lag og tier, og poengarkene må være fylt ut.
       </div>
     `;
     return;
@@ -1326,7 +1485,7 @@ function renderPointsModal(match){
     </div>
 
     <p class="small-text">
-      Merk: Uavgjort outcome og uavgjort diff overlapper i praksis. Beregningen bør fortsatt bare gi høyeste relevante kategori.
+      Merk: Uavgjort outcome og uavgjort diff overlapper i praksis. Beregningen bør bare gi høyeste relevante kategori.
     </p>
   `;
 }
@@ -1356,6 +1515,9 @@ function renderAdminModal(match){
   const matchId = getMatchId(match) || currentMatchId;
   const home = match.home || "";
   const away = match.away || "";
+  const labels = getSlotLabels(Number(matchId));
+  const homeSlot = match.home_slot || labels[0] || "";
+  const awaySlot = match.away_slot || labels[1] || "";
 
   section.innerHTML = `
     <div class="admin-warning">
@@ -1371,6 +1533,16 @@ function renderAdminModal(match){
       <div class="admin-field">
         <label>Runde</label>
         <input id="adminRound" class="modal-input" value="${match.round || getRoundFromId(Number(matchId))}">
+      </div>
+
+      <div class="admin-field">
+        <label>Hjemme-slot</label>
+        <input id="adminHomeSlot" class="modal-input" value="${homeSlot}">
+      </div>
+
+      <div class="admin-field">
+        <label>Borte-slot</label>
+        <input id="adminAwaySlot" class="modal-input" value="${awaySlot}">
       </div>
 
       <div class="admin-field">
@@ -1440,7 +1612,7 @@ function saveTipFromModal(){
   };
 
   saveLocalState();
-  renderBracket();
+  renderAllViews();
   closeMatchModal();
 }
 
@@ -1533,7 +1705,7 @@ async function loadSavedFromSheet(){
   });
 
   saveLocalState();
-  renderBracket();
+  renderAllViews();
 
   alert("Lagrede sluttspilltips hentet.");
 }
@@ -1686,7 +1858,7 @@ function unlockAdmin(){
   document.getElementById("adminStatus").textContent = "Admin er låst opp.";
   document.getElementById("modePill").textContent = "Adminmodus";
   document.getElementById("modePill").classList.add("admin");
-  renderBracket();
+  renderAllViews();
 }
 
 function lockAdmin(){
@@ -1694,7 +1866,7 @@ function lockAdmin(){
   document.getElementById("adminStatus").textContent = "Admin er låst.";
   document.getElementById("modePill").textContent = "Spillermodus";
   document.getElementById("modePill").classList.remove("admin");
-  renderBracket();
+  renderAllViews();
 }
 
 async function saveAdminMatch(){
@@ -1705,6 +1877,8 @@ async function saveAdminMatch(){
     pin,
     match_id:document.getElementById("adminMatchId").value.trim(),
     round:document.getElementById("adminRound").value.trim(),
+    home_slot:document.getElementById("adminHomeSlot").value.trim(),
+    away_slot:document.getElementById("adminAwaySlot").value.trim(),
     home:document.getElementById("adminHome").value.trim(),
     away:document.getElementById("adminAway").value.trim(),
     tier_home:document.getElementById("adminTierHome").value.trim(),
@@ -1733,7 +1907,7 @@ async function saveAdminMatch(){
     allMatches.push(payload);
   }
 
-  renderBracket();
+  renderAllViews();
   closeMatchModal();
 
   alert("Kamp lagret.");
@@ -1746,6 +1920,40 @@ function escapeHtml(value){
     .replace(/>/g,"&gt;")
     .replace(/"/g,"&quot;")
     .replace(/'/g,"&#039;");
+}
+
+function seedSkeletonMatches(existingRows){
+  const map = new Map();
+  existingRows.forEach(row => map.set(String(row.match_id || row.id || "").trim(), row));
+
+  ROUND_CONFIG.forEach(round => {
+    round.ids.forEach(id => {
+      const key = String(id);
+      const labels = getSlotLabels(id);
+
+      if(!map.has(key)){
+        map.set(key, {
+          match_id:key,
+          round:round.key,
+          home_slot:labels[0],
+          away_slot:labels[1],
+          home:"",
+          away:"",
+          tier_home:"",
+          tier_away:"",
+          active:"FALSE",
+          deadline:""
+        });
+      }else{
+        const row = map.get(key);
+        row.round = row.round || round.key;
+        row.home_slot = row.home_slot || labels[0];
+        row.away_slot = row.away_slot || labels[1];
+      }
+    });
+  });
+
+  return [...map.values()].sort((a,b) => safeNumber(a.match_id) - safeNumber(b.match_id));
 }
 
 async function loadAll(){
@@ -1765,11 +1973,6 @@ async function loadAll(){
     fetchSheet(KNOCKOUT_EXACT_URL)
   ]);
 
-  allMatches = matchRows.map(row => ({
-    ...row,
-    match_id:String(row.match_id || row.id || "").trim()
-  })).filter(row => row.match_id);
-
   knockoutTeams = teamRows
     .map(row => ({
       ...row,
@@ -1778,11 +1981,16 @@ async function loadAll(){
     }))
     .filter(row => row.team);
 
+  allMatches = seedSkeletonMatches(matchRows.map(row => ({
+    ...row,
+    match_id:String(row.match_id || row.id || "").trim()
+  })).filter(row => row.match_id));
+
   outcomeRules = outcomeRows;
   diffRules = diffRows;
   exactRules = exactRows;
 
-  renderBracket();
+  renderAllViews();
   renderBonus();
 }
 
