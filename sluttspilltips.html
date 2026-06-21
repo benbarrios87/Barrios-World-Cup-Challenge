@@ -1,5 +1,6 @@
 
 
+
 <!DOCTYPE html>
 <html lang="no">
 <head>
@@ -863,22 +864,16 @@ body::before{
     <div class="card">
       <h2 style="margin-top:0;">🧨 Lagbonus</h2>
       <p class="small-text">
-        Fordel inntil <strong>10 poeng</strong> på lag. Maks 5 poeng på ett lag.
-        Fordel 10 poeng på lagene du har troa på.
-Maks 5 poeng på ett lag.
-
-Poeng = Innsats × Odds × Runde.
+        Ny bet: <strong>Hvilke lag tror du kommer langt?</strong><br>
+        Fordel <strong>10 poeng</strong> på lagene du har mest tro på.
+        Maks <strong>5 poeng</strong> på samme lag.
       </p>
-      <div class="admin-warning">
-💡 Eksempel:
-3 poeng på Norge (odds x4.5)
 
-8-delsfinale = 3.4 poeng
-Kvartfinale = 6.8 poeng
-Semifinale = 13.5 poeng
-Finale = 27 poeng
-VM-gull = 40.5 poeng
-</div>
+      <div class="admin-warning">
+        <strong>Road to Glory:</strong>
+        Sett poeng på lag før sluttspillet. Jo lenger lagene dine går, desto mer bonus får du.
+        Du ser maks gevinst på hvert lag før du velger.
+      </div>
 
       <div class="bonus-grid">
         <div>
@@ -899,8 +894,7 @@ VM-gull = 40.5 poeng
           </div>
 
           <p class="small-text">
-           Siste innsending gjelder.
-Bonuspoeng deles ut fortløpende gjennom sluttspillet etter hvert som lagene avanserer.
+            Siste innsending gjelder. Bonus sendes som egen type til Apps Script.
           </p>
         </div>
       </div>
@@ -952,13 +946,12 @@ const BONUS_MAX = 10;
 const BONUS_TEAM_MAX = 5;
 
 const BONUS_STAGE_MULTIPLIERS = {
-  round32: 0,
-  round16: 0.25,
-  quarterfinal: 0.5,
-  semifinal: 1,
-  bronze: 1.5,
-  finalist: 2,
-  winner: 3
+  round16:0.25,
+  quarterfinal:0.5,
+  semifinal:1,
+  bronze:1.5,
+  finalist:2,
+  winner:3
 };
 
 // Juster disse når du vet flere sikre lag.
@@ -1821,11 +1814,13 @@ function renderBonus(){
         <div>
           <strong>${renderTeamPill(name, tier, true)}</strong>
           <div class="small-text">
-            Odds x${prettyNumber(odds)} · maks ${prettyNumber(maxWinner)}p ved VM-gull
+            Odds x${prettyNumber(odds)} · maks ${prettyNumber(maxWinner)} poeng
           </div>
           <details class="small-text" style="margin-top:6px;">
-            <summary style="cursor:pointer;color:var(--gold);font-weight:bold;">Se mulig uttelling per poeng</summary>
+            <summary style="cursor:pointer;color:var(--gold);font-weight:bold;">Se mulig uttelling</summary>
             <div style="margin-top:6px;line-height:1.55;">
+              Per poeng du setter på dette laget:<br>
+              8-dels: ${prettyNumber(calcBonusPoints(1, odds, BONUS_STAGE_MULTIPLIERS.round16))}p ·
               Kvart: ${prettyNumber(calcBonusPoints(1, odds, BONUS_STAGE_MULTIPLIERS.quarterfinal))}p ·
               Semi: ${prettyNumber(calcBonusPoints(1, odds, BONUS_STAGE_MULTIPLIERS.semifinal))}p ·
               Bronse: ${prettyNumber(calcBonusPoints(1, odds, BONUS_STAGE_MULTIPLIERS.bronze))}p ·
@@ -1882,13 +1877,30 @@ function updateBonusStatus(){
     return sum + calcBonusPoints(stake, odds, BONUS_STAGE_MULTIPLIERS.winner);
   }, 0);
 
+  const choiceLines = Object.entries(localBonus)
+    .filter(([team,stake]) => safeNumber(stake) > 0)
+    .map(([team,stake]) => `${escapeHtml(team)} • ${prettyNumber(stake)} poeng`);
+
   box.innerHTML = `
     <strong style="color:${over ? "var(--red)" : "var(--gold)"}">${prettyNumber(total)} / ${BONUS_MAX}</strong> poeng brukt<br>
-    <span class="small-text">
-      ${over ? "Du har brukt for mange bonuspoeng." : "Maks mulig hvis alle dine lag vinner VM: " + prettyNumber(maxPotential) + "p"}
-    </span>
+
+    ${choiceLines.length ? `
+      <div class="small-text" style="margin-top:8px;line-height:1.55;">
+        <strong>Dine valg:</strong><br>
+        ${choiceLines.join("<br>")}
+      </div>
+    ` : `
+      <div class="small-text" style="margin-top:8px;">
+        Velg lagene du har troa på.
+      </div>
+    `}
+
     <div class="small-text" style="margin-top:8px;">
-      Uttelling: 8-dels x0.25 · Kvart x0.5 · Semi x1 · Bronse x1.5 · Finale x2 · Vinner x3
+      ${over ? "Du har brukt for mange bonuspoeng." : "Maks mulig gevinst: " + prettyNumber(maxPotential) + "p"}
+    </div>
+
+    <div class="small-text" style="margin-top:8px;">
+      Poengene oppdateres underveis når lagene dine går videre.
     </div>
   `;
 }
@@ -1923,6 +1935,7 @@ async function submitBonus(){
       team,
       stake,
       odds,
+      potential_round16:calcBonusPoints(stake, odds, BONUS_STAGE_MULTIPLIERS.round16),
       potential_quarterfinal:calcBonusPoints(stake, odds, BONUS_STAGE_MULTIPLIERS.quarterfinal),
       potential_semifinal:calcBonusPoints(stake, odds, BONUS_STAGE_MULTIPLIERS.semifinal),
       potential_bronze:calcBonusPoints(stake, odds, BONUS_STAGE_MULTIPLIERS.bronze),
