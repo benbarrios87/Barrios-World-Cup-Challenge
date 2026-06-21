@@ -864,7 +864,10 @@ body::before{
       <h2 style="margin-top:0;">🧨 Lagbonus</h2>
       <p class="small-text">
         Fordel inntil <strong>10 poeng</strong> på lag. Maks 5 poeng på ett lag.
-        Jo høyere odds og jo lenger laget går, jo mer får du.
+        Fordel 10 poeng på lagene du har troa på.
+Maks 5 poeng på ett lag.
+
+Poeng = Innsats × Odds × Runde.
       </p>
 
       <div class="bonus-grid">
@@ -938,11 +941,11 @@ const BONUS_MAX = 10;
 const BONUS_TEAM_MAX = 5;
 
 const BONUS_STAGE_MULTIPLIERS = {
-  quarterfinal:0.25,
-  semifinal:0.50,
-  bronze:0.75,
-  finalist:1.00,
-  winner:2.50
+  quarterfinal:0.5,
+  semifinal:1,
+  bronze:1.5,
+  finalist:2,
+  winner:3
 };
 
 // Juster disse når du vet flere sikre lag.
@@ -1872,7 +1875,7 @@ function updateBonusStatus(){
       ${over ? "Du har brukt for mange bonuspoeng." : "Maks mulig hvis alle dine lag vinner VM: " + prettyNumber(maxPotential) + "p"}
     </span>
     <div class="small-text" style="margin-top:8px;">
-      Uttelling: Kvart 25% · Semi 50% · Bronse 75% · Finale 100% · Vinner 250%
+      Uttelling: Kvart x0.5 · Semi x1 · Bronse x1.5 · Finale x2 · Vinner x3
     </div>
   `;
 }
