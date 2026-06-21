@@ -869,6 +869,16 @@ Maks 5 poeng på ett lag.
 
 Poeng = Innsats × Odds × Runde.
       </p>
+      <div class="admin-warning">
+💡 Eksempel:
+3 poeng på Norge (odds x4.5)
+
+8-delsfinale = 3.4 poeng
+Kvartfinale = 6.8 poeng
+Semifinale = 13.5 poeng
+Finale = 27 poeng
+VM-gull = 40.5 poeng
+</div>
 
       <div class="bonus-grid">
         <div>
@@ -889,7 +899,8 @@ Poeng = Innsats × Odds × Runde.
           </div>
 
           <p class="small-text">
-            Siste innsending gjelder. Bonus sendes som egen type til Apps Script.
+           Siste innsending gjelder.
+Bonuspoeng deles ut fortløpende gjennom sluttspillet etter hvert som lagene avanserer.
           </p>
         </div>
       </div>
@@ -941,11 +952,13 @@ const BONUS_MAX = 10;
 const BONUS_TEAM_MAX = 5;
 
 const BONUS_STAGE_MULTIPLIERS = {
-  quarterfinal:0.5,
-  semifinal:1,
-  bronze:1.5,
-  finalist:2,
-  winner:3
+  round32: 0,
+  round16: 0.25,
+  quarterfinal: 0.5,
+  semifinal: 1,
+  bronze: 1.5,
+  finalist: 2,
+  winner: 3
 };
 
 // Juster disse når du vet flere sikre lag.
@@ -1875,7 +1888,7 @@ function updateBonusStatus(){
       ${over ? "Du har brukt for mange bonuspoeng." : "Maks mulig hvis alle dine lag vinner VM: " + prettyNumber(maxPotential) + "p"}
     </span>
     <div class="small-text" style="margin-top:8px;">
-      Uttelling: Kvart x0.5 · Semi x1 · Bronse x1.5 · Finale x2 · Vinner x3
+      Uttelling: 8-dels x0.25 · Kvart x0.5 · Semi x1 · Bronse x1.5 · Finale x2 · Vinner x3
     </div>
   `;
 }
