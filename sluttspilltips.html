@@ -765,10 +765,9 @@ body::before{
 }
 
 
+
 /* SPLITTET PLAYOFF-TRE - MØTES I MIDTEN */
-.desktop-bracket{
-  display:block;
-}
+.desktop-bracket{ display:block; }
 
 .split-bracket{
   display:grid;
@@ -840,11 +839,6 @@ body::before{
   font-size:16px;
   font-weight:900;
   margin-bottom:2px;
-}
-
-.center-finals .match{
-  transform:scale(.96);
-  transform-origin:center;
 }
 
 .desktop-bracket .match{
@@ -1150,7 +1144,9 @@ const BONUS_STAGE_MULTIPLIERS = {
 // Tyskland er lagt inn som Group E Winner. Ikke legg inn USA før du vet hvilken gruppe-slot de faktisk eier.
 const KNOWN_SLOT_WINNERS = {
   "Winner Group A":"Mexico",
-  "Winner Group E":"Tyskland"
+  "Winner Group D":"USA",
+  "Winner Group E":"Tyskland",
+  "Winner Group J":"Argentina"
 };
 
 let allMatches = [];
@@ -1183,8 +1179,8 @@ const ROUND_32_SLOTS = {
 };
 
 const NEXT_ROUND_SLOTS = {
-  89:["Winner Match 73","Winner Match 75"],
-  90:["Winner Match 74","Winner Match 77"],
+  89:["Winner Match 74","Winner Match 77"],
+  90:["Winner Match 73","Winner Match 75"],
   91:["Winner Match 76","Winner Match 78"],
   92:["Winner Match 79","Winner Match 80"],
   93:["Winner Match 83","Winner Match 84"],
@@ -1213,9 +1209,9 @@ const BRACKET_SIDES = {
   left:{
     title:"VENSTRE SIDE",
     rounds:[
-      { label:"ROUND OF 32", sub:"Kamp 73, 75, 74, 77, 76, 78, 79, 80", className:"side-r32", ids:[73,75,74,77,76,78,79,80] },
-      { label:"ROUND OF 16", sub:"Kamp 89–92", className:"side-r16", ids:[89,90,91,92] },
-      { label:"KVARTFINALER", sub:"Kamp 97 og 99", className:"side-qf", ids:[97,99] },
+      { label:"ROUND OF 32", sub:"Kamp 74, 77, 73, 75, 83, 84, 81, 82", className:"side-r32", ids:[74,77,73,75,83,84,81,82] },
+      { label:"ROUND OF 16", sub:"Kamp 89, 90, 93, 94", className:"side-r16", ids:[89,90,93,94] },
+      { label:"KVARTFINALER", sub:"Kamp 97 og 98", className:"side-qf", ids:[97,98] },
       { label:"SEMIFINALE", sub:"Kamp 101", className:"side-sf", ids:[101] }
     ]
   },
@@ -1223,9 +1219,9 @@ const BRACKET_SIDES = {
     title:"HØYRE SIDE",
     rounds:[
       { label:"SEMIFINALE", sub:"Kamp 102", className:"side-sf", ids:[102] },
-      { label:"KVARTFINALER", sub:"Kamp 98 og 100", className:"side-qf", ids:[98,100] },
-      { label:"ROUND OF 16", sub:"Kamp 93–96", className:"side-r16", ids:[93,94,95,96] },
-      { label:"ROUND OF 32", sub:"Kamp 83, 84, 81, 82, 86, 88, 85, 87", className:"side-r32", ids:[83,84,81,82,86,88,85,87] }
+      { label:"KVARTFINALER", sub:"Kamp 99 og 100", className:"side-qf", ids:[99,100] },
+      { label:"ROUND OF 16", sub:"Kamp 91, 92, 95, 96", className:"side-r16", ids:[91,92,95,96] },
+      { label:"ROUND OF 32", sub:"Kamp 76, 78, 79, 80, 86, 88, 85, 87", className:"side-r32", ids:[76,78,79,80,86,88,85,87] }
     ]
   }
 };
