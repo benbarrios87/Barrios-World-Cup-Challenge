@@ -1,6 +1,7 @@
 
 
 
+
 <!DOCTYPE html>
 <html lang="no">
 <head>
@@ -762,6 +763,82 @@ body::before{
     width:max-content;
   }
 }
+
+/* SPLITTET PLAYOFF-TRE */
+.split-bracket{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:22px;
+  margin-top:18px;
+}
+
+.bracket-side{
+  background:rgba(7,14,28,0.54);
+  border:1px solid rgba(255,255,255,0.11);
+  border-radius:24px;
+  padding:16px;
+  min-width:0;
+}
+
+.side-title{
+  text-align:center;
+  color:var(--gold);
+  font-weight:900;
+  letter-spacing:.7px;
+  margin:0 0 14px;
+}
+
+.side-grid{
+  display:grid;
+  grid-template-columns:260px 260px 260px 260px;
+  gap:28px;
+  align-items:center;
+  min-width:1120px;
+}
+
+.side-round{
+  display:flex;
+  flex-direction:column;
+}
+
+.side-round h2{
+  text-align:center;
+  color:var(--gold);
+  margin:0 0 18px;
+  font-size:17px;
+  letter-spacing:.8px;
+}
+
+.side-r32{ gap:16px; }
+.side-r16{ gap:56px; }
+.side-qf{ gap:132px; }
+.side-sf{ gap:0; }
+
+.finals-box{
+  max-width:760px;
+  margin:18px auto 0;
+}
+
+.finals-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+  align-items:start;
+}
+
+@media(max-width:1200px){
+  .split-bracket{
+    grid-template-columns:1fr;
+  }
+}
+
+@media(max-width:850px){
+  .split-bracket,
+  .finals-box{
+    display:none;
+  }
+}
+
 </style>
 </head>
 
@@ -801,12 +878,7 @@ body::before{
       </div>
     </div>
   </div>
-<div class="top-box">
-  <h2 style="margin-top:0;">⏰ Frister</h2>
-  <div id="deadlineOverview" class="small-text">
-    Laster frister...
-  </div>
-</div>
+
   <div id="adminBox" class="top-box" style="display:none;">
     <h2 style="margin-top:0;">Adminmodus</h2>
     <p class="small-text">
@@ -847,10 +919,38 @@ body::before{
     <div id="progressText" class="small-text" style="margin-top:10px;">0 / 0 åpne kamper tippet</div>
   </div>
 
+  <div class="top-box">
+    <h2 style="margin-top:0;">⏰ Frister</h2>
+    <div id="deadlineOverview" class="small-text">
+      Laster frister...
+    </div>
+  </div>
+
   <div class="desktop-bracket">
-    <div class="bracket-scroll">
-      <div id="bracket" class="bracket">
-        <div class="small-text">Laster sluttspilltre...</div>
+    <div class="split-bracket">
+      <div class="bracket-side">
+        <div class="side-title">VENSTRE SIDE AV TREET</div>
+        <div class="bracket-scroll">
+          <div id="leftBracket" class="side-grid">
+            <div class="small-text">Laster venstre side...</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bracket-side">
+        <div class="side-title">HØYRE SIDE AV TREET</div>
+        <div class="bracket-scroll">
+          <div id="rightBracket" class="side-grid">
+            <div class="small-text">Laster høyre side...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="finals-box top-box">
+      <h2 style="margin-top:0;text-align:center;color:var(--gold);">FINALER</h2>
+      <div id="finalsBracket" class="finals-grid">
+        <div class="small-text">Laster finaler...</div>
       </div>
     </div>
   </div>
@@ -862,7 +962,8 @@ body::before{
   </div>
 
   <div class="info">
-    Desktop viser hele sluttspilltreet. Mobil viser runde-for-runde som klikkbare kampkort. Jeg anbefaler desktop om du kan.
+    Desktop viser hele sluttspilltreet. Mobil viser runde-for-runde som klikkbare kampkort. Samme modal, samme tips, samme lagring.
+  </div>
 
   <section id="bonusSection" class="bonus-section">
     <div class="card">
@@ -1020,6 +1121,32 @@ const ROUND_CONFIG = [
   { key:"Quarterfinals", label:"QUARTERFINALS", sub:"Kamp 97–100", className:"quarters", ids:range(97,100) },
   { key:"Semifinals", label:"SEMIFINALS", sub:"Kamp 101–102", className:"semis", ids:range(101,102) },
   { key:"Finals", label:"FINALER", sub:"Bronsefinale + finale", className:"final-round", ids:[103,104] }
+];
+
+const BRACKET_SIDES = {
+  left:{
+    title:"VENSTRE SIDE",
+    rounds:[
+      { label:"ROUND OF 32", sub:"Kamp 73, 75, 74, 77, 76, 78, 79, 80", className:"side-r32", ids:[73,75,74,77,76,78,79,80] },
+      { label:"ROUND OF 16", sub:"Kamp 89–92", className:"side-r16", ids:[89,90,91,92] },
+      { label:"KVARTFINALER", sub:"Kamp 97 og 99", className:"side-qf", ids:[97,99] },
+      { label:"SEMIFINALE", sub:"Kamp 101", className:"side-sf", ids:[101] }
+    ]
+  },
+  right:{
+    title:"HØYRE SIDE",
+    rounds:[
+      { label:"ROUND OF 32", sub:"Kamp 83, 84, 81, 82, 86, 88, 85, 87", className:"side-r32", ids:[83,84,81,82,86,88,85,87] },
+      { label:"ROUND OF 16", sub:"Kamp 93–96", className:"side-r16", ids:[93,94,95,96] },
+      { label:"KVARTFINALER", sub:"Kamp 98 og 100", className:"side-qf", ids:[98,100] },
+      { label:"SEMIFINALE", sub:"Kamp 102", className:"side-sf", ids:[102] }
+    ]
+  }
+};
+
+const FINALS_CONFIG = [
+  { label:"BRONSEFINALE", sub:"Kamp 103", ids:[103] },
+  { label:"FINALE", sub:"Kamp 104", ids:[104] }
 ];
 
 function range(from,to){
@@ -1308,12 +1435,8 @@ function updateRoundStatus(){
   `;
 }
 
-function renderAllViews(){
-  renderBracket();
-  renderMobileList();
-  renderDeadlineOverview();
-}
-  function renderDeadlineOverview(){
+
+function renderDeadlineOverview(){
   const box = document.getElementById("deadlineOverview");
   if(!box) return;
 
@@ -1356,18 +1479,45 @@ function renderAllViews(){
   }).join("");
 }
 
-function renderBracket(){
-  const bracket = document.getElementById("bracket");
+function renderAllViews(){
+  renderBracket();
+  renderMobileList();
+  renderDeadlineOverview();
+}
 
-  bracket.innerHTML = ROUND_CONFIG.map(round => `
-    <div class="round ${round.className}">
+function renderBracket(){
+  renderSplitBracket("leftBracket", BRACKET_SIDES.left);
+  renderSplitBracket("rightBracket", BRACKET_SIDES.right);
+  renderFinalsBracket();
+
+  updateProgress();
+  updateRoundStatus();
+}
+
+function renderSplitBracket(elementId, side){
+  const box = document.getElementById(elementId);
+  if(!box) return;
+
+  box.innerHTML = side.rounds.map(round => `
+    <div class="side-round ${round.className}">
       <h2>${round.label}<span class="round-sub">${round.sub}</span></h2>
       ${round.ids.map(id => renderMatchCard(id)).join("")}
     </div>
   `).join("");
+}
 
-  updateProgress();
-  updateRoundStatus();
+function renderFinalsBracket(){
+  const box = document.getElementById("finalsBracket");
+  if(!box) return;
+
+  box.innerHTML = FINALS_CONFIG.map(round => `
+    <div>
+      <h2 style="text-align:center;color:var(--gold);margin:0 0 14px;font-size:18px;">
+        ${round.label}<span class="round-sub">${round.sub}</span>
+      </h2>
+      ${round.ids.map(id => renderMatchCard(id)).join("")}
+    </div>
+  `).join("");
 }
 
 function renderMobileList(){
