@@ -1198,37 +1198,37 @@ const NEXT_ROUND_SLOTS = {
 };
 
 const ROUND_CONFIG = [
-  { key:"Round of 32", label:"ROUND OF 32", sub:"Kamp 73–88", className:"round-32", ids:range(73,88) },
-  { key:"Round of 16", label:"ROUND OF 16", sub:"Kamp 89–96", className:"round-16", ids:range(89,96) },
-  { key:"Quarterfinals", label:"QUARTERFINALS", sub:"Kamp 97–100", className:"quarters", ids:range(97,100) },
-  { key:"Semifinals", label:"SEMIFINALS", sub:"Kamp 101–102", className:"semis", ids:range(101,102) },
-  { key:"Finals", label:"FINALER", sub:"Bronsefinale + finale", className:"final-round", ids:[103,104] }
+  { key:"Round of 32", label:"ROUND OF 32", sub:"M73–M88", className:"round-32", ids:[74,77,73,75,83,84,81,82,76,78,79,80,86,88,85,87] },
+  { key:"Round of 16", label:"ROUND OF 16", sub:"M89–M96", className:"round-16", ids:[89,90,93,94,91,92,95,96] },
+  { key:"Quarterfinals", label:"QUARTERFINALS", sub:"M97–M100", className:"quarters", ids:[97,98,99,100] },
+  { key:"Semifinals", label:"SEMIFINALS", sub:"M101–M102", className:"semis", ids:[101,102] },
+  { key:"Finals", label:"FINALER", sub:"Bronsefinale + finale", className:"final-round", ids:[104,103] }
 ];
 
 const BRACKET_SIDES = {
   left:{
     title:"VENSTRE SIDE",
     rounds:[
-      { label:"ROUND OF 32", sub:"Kamp 74, 77, 73, 75, 83, 84, 81, 82", className:"side-r32", ids:[74,77,73,75,83,84,81,82] },
-      { label:"ROUND OF 16", sub:"Kamp 89, 90, 93, 94", className:"side-r16", ids:[89,90,93,94] },
-      { label:"KVARTFINALER", sub:"Kamp 97 og 98", className:"side-qf", ids:[97,98] },
-      { label:"SEMIFINALE", sub:"Kamp 101", className:"side-sf", ids:[101] }
+      { label:"ROUND OF 32", sub:"M74, M77, M73, M75, M83, M84, M81, M82", className:"side-r32", ids:[74,77,73,75,83,84,81,82] },
+      { label:"ROUND OF 16", sub:"M89, M90, M93, M94", className:"side-r16", ids:[89,90,93,94] },
+      { label:"KVARTFINALER", sub:"M97 og M98", className:"side-qf", ids:[97,98] },
+      { label:"SEMIFINALE", sub:"M101", className:"side-sf", ids:[101] }
     ]
   },
   right:{
     title:"HØYRE SIDE",
     rounds:[
-      { label:"SEMIFINALE", sub:"Kamp 102", className:"side-sf", ids:[102] },
-      { label:"KVARTFINALER", sub:"Kamp 99 og 100", className:"side-qf", ids:[99,100] },
-      { label:"ROUND OF 16", sub:"Kamp 91, 92, 95, 96", className:"side-r16", ids:[91,92,95,96] },
-      { label:"ROUND OF 32", sub:"Kamp 76, 78, 79, 80, 86, 88, 85, 87", className:"side-r32", ids:[76,78,79,80,86,88,85,87] }
+      { label:"SEMIFINALE", sub:"M102", className:"side-sf", ids:[102] },
+      { label:"KVARTFINALER", sub:"M99 og M100", className:"side-qf", ids:[99,100] },
+      { label:"ROUND OF 16", sub:"M91, M92, M95, M96", className:"side-r16", ids:[91,92,95,96] },
+      { label:"ROUND OF 32", sub:"M76, M78, M79, M80, M86, M88, M85, M87", className:"side-r32", ids:[76,78,79,80,86,88,85,87] }
     ]
   }
 };
 
 const FINALS_CONFIG = [
-  { label:"BRONSEFINALE", sub:"Kamp 103", ids:[103] },
-  { label:"FINALE", sub:"Kamp 104", ids:[104] }
+  { label:"FINALE", sub:"M104", ids:[104] },
+  { label:"BRONSEFINALE", sub:"M103", ids:[103] }
 ];
 
 function range(from,to){
@@ -1593,8 +1593,6 @@ function renderFinalsBracket(){
   if(!box) return;
 
   box.innerHTML = FINALS_CONFIG
-    .slice()
-    .reverse()
     .map(round => `
       <div style="margin-bottom:14px;">
         <h2 style="text-align:center;color:var(--gold);margin:0 0 12px;font-size:13px;">
@@ -1647,7 +1645,7 @@ function renderMatchCard(id){
 
   return `
     <div class="${classes}" onclick="openMatchModal('${matchId}')">
-      <div class="match-label">Kamp ${matchId}</div>
+      <div class="match-label">M${matchId}</div>
       <div class="match-status-dot">${status}</div>
 
       <div class="team-row">
@@ -1702,7 +1700,7 @@ function openMatchModal(matchId){
   const homeDisplay = getDisplayTeam(match, matchId, "home");
   const awayDisplay = getDisplayTeam(match, matchId, "away");
 
-  document.getElementById("modalTitle").textContent = `Kamp ${matchId}: ${homeDisplay.name} vs ${awayDisplay.name}`;
+  document.getElementById("modalTitle").textContent = `M${matchId}: ${homeDisplay.name} vs ${awayDisplay.name}`;
   document.getElementById("modalMeta").textContent = `${match.round || getRoundFromId(Number(matchId))} • Frist: ${formatDeadline(match.deadline)}`;
 
   document.getElementById("adminTabBtn").style.display = adminUnlocked ? "inline-block" : "none";
