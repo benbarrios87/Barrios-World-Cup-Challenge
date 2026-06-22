@@ -1505,6 +1505,37 @@ function renderBonusChoice(title, icon, names, points){
   `;
 }
 
+  function renderRtgChoice(player){
+  const picks = String(player.rtg_picks || "")
+    .split("|")
+    .map(item => item.trim())
+    .filter(Boolean);
+
+  if(picks.length === 0 && cleanNumber(player.rtg_points) === 0){
+    return "";
+  }
+
+  return `
+    <div class="bonus-choice" style="grid-column:1 / -1;">
+      <div class="label">🧨 Road to Glory</div>
+
+      <div class="compact-bonus-list">
+        ${picks.map(item => `
+          <span class="compact-bonus-pill">${item}</span>
+        `).join("")}
+
+        <span class="compact-bonus-pill">
+          RTG-poeng <strong>+${cleanNumber(player.rtg_points)}</strong>
+        </span>
+
+        ${String(player.rtg_alive || "").toLowerCase() === "true" ? `
+          <span class="compact-bonus-pill">🟢 Lever fortsatt</span>
+        ` : ""}
+      </div>
+    </div>
+  `;
+}
+
 function getRatings(player, allRows){
   const maxPoints = Math.max(...allRows.map(row => cleanNumber(row.points)), 1);
   const maxExact = Math.max(...allRows.map(row => cleanNumber(row.exact)), 1);
@@ -1989,6 +2020,7 @@ async function loadProfile(){
           <div class="panel">
             <h2 class="section-title">Bonusvalg</h2>
             <div class="bonus-grid">
+            ${renderRtgChoice(player)}
               ${renderBonusChoice("Toppscorer","⚽", player.top_scorer_all || player.top_scorer, player.top_scorer_points_all || player.top_scorer_points)}
               ${renderBonusChoice("Beste spiller","⭐", player.best_player_all || player.best_player, player.best_player_points_all || player.best_player_points)}
             </div>
