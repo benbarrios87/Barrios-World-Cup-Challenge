@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="no">
 <head>
@@ -802,6 +803,46 @@ body::before{
   line-height:1.55;
 }
 
+.homepage-announcements{
+  display:grid;
+  gap:14px;
+}
+
+.homepage-announcement-card{
+  background:
+    radial-gradient(circle at top left, rgba(255,209,102,0.18), transparent 35%),
+    rgba(7,14,28,0.88);
+  border:1px solid rgba(255,209,102,0.30);
+}
+
+.homepage-announcement-card h2{
+  margin:0 0 10px;
+}
+
+.homepage-announcement-card p{
+  color:var(--muted);
+  line-height:1.58;
+  margin:0 0 10px;
+}
+
+.homepage-announcement-card p:last-child{
+  margin-bottom:0;
+}
+
+.homepage-announcement-meta{
+  display:inline-block;
+  margin-bottom:10px;
+  padding:5px 9px;
+  border-radius:999px;
+  background:rgba(255,209,102,0.12);
+  border:1px solid rgba(255,209,102,0.22);
+  color:var(--gold);
+  font-size:11px;
+  font-weight:bold;
+  text-transform:uppercase;
+  letter-spacing:.6px;
+}
+
 .last-bets-list{
   display:grid;
   gap:10px;
@@ -1101,6 +1142,8 @@ Målet er enkelt: samle flest poeng før finalen er spilt.
       </p>
     </div>
     
+    <div id="homepageAnnouncements" class="homepage-announcements"></div>
+
     <div id="latestNewsCard" class="card latest-news-card">
       <h2 style="margin-top:0;">🔥 Siste nytt</h2>
       <div id="latestNewsIntro" class="hub-text">
@@ -1108,6 +1151,8 @@ Målet er enkelt: samle flest poeng før finalen er spilt.
       </div>
       <div id="latestNewsList" class="news-list"></div>
     </div>
+
+    
 
     <div class="hub-grid">
       <div class="card">
@@ -2487,15 +2532,69 @@ function renderFrontForm(){
     `;
   }).join("");
 }
-  async function renderAnnouncementModal(){
+  
+function announcementIsTrue(value){
+  return String(value || "").trim().toLowerCase() === "true";
+}
+
+function formatAnnouncementMessage(message){
+  return String(message || "")
+    .split(/\n+/)
+    .map(part => part.trim())
+    .filter(Boolean)
+    .map(part => `<p>${part}</p>`)
+    .join("");
+}
+
+async function renderHomepageAnnouncements(){
+  const box = document.getElementById("homepageAnnouncements");
+  if(!box) return;
+
+  const rows = await fetchSheet(ANNOUNCEMENTS_URL);
+
+  const activeRows = rows.filter(row =>
+    announcementIsTrue(row.active) &&
+    announcementIsTrue(row.homepage)
+  );
+
+  if(activeRows.length === 0){
+    box.innerHTML = "";
+    return;
+  }
+
+  box.innerHTML = activeRows.map(row => {
+    const title = row.title || "Oppdatering";
+    const message = formatAnnouncementMessage(row.message || "");
+    const buttonText = row.button_text || row.button || "";
+    const buttonLink = row.button_link || row.link || "";
+
+    return `
+      <div class="card homepage-announcement-card">
+        <div class="homepage-announcement-meta">📣 Info fra VM-komiteen</div>
+        <h2>${title}</h2>
+        ${message}
+
+        ${buttonLink ? `
+          <div class="cta-row">
+            <a class="cta-main" href="${buttonLink}">
+              ${buttonText || "Les mer"}
+            </a>
+          </div>
+        ` : ""}
+      </div>
+    `;
+  }).join("");
+}
+
+async function renderAnnouncementModal(){
   const box = document.getElementById("announcementModal");
   if(!box) return;
 
   const rows = await fetchSheet(ANNOUNCEMENTS_URL);
 
   const active = rows.find(row =>
-    String(row.active || "").toLowerCase() === "true" &&
-    String(row.modal || "").toLowerCase() === "true"
+    announcementIsTrue(row.active) &&
+    announcementIsTrue(row.modal)
   );
 
   if(!active){
@@ -2519,7 +2618,7 @@ function renderFrontForm(){
         </div>
 
         <h2>${active.title || "Oppdatering"}</h2>
-        <p>${active.message || ""}</p>
+        ${formatAnnouncementMessage(active.message || "")}
 
         <button class="cta-main" onclick="
           localStorage.setItem('${seenKey}', 'true');
@@ -2661,6 +2760,7 @@ async function initVmHub(){
 loadLivePool();
 
 await renderAnnouncementModal();
+await renderHomepageAnnouncements();
 
 renderLatestNews();
 renderFrontpageWidgets();
