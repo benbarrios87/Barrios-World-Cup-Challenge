@@ -801,7 +801,12 @@ body::before{
       </div>
     </div>
   </div>
-
+<div class="top-box">
+  <h2 style="margin-top:0;">⏰ Frister</h2>
+  <div id="deadlineOverview" class="small-text">
+    Laster frister...
+  </div>
+</div>
   <div id="adminBox" class="top-box" style="display:none;">
     <h2 style="margin-top:0;">Adminmodus</h2>
     <p class="small-text">
@@ -1306,6 +1311,49 @@ function updateRoundStatus(){
 function renderAllViews(){
   renderBracket();
   renderMobileList();
+  renderDeadlineOverview();
+}
+  function renderDeadlineOverview(){
+  const box = document.getElementById("deadlineOverview");
+  if(!box) return;
+
+  const rows = allMatches
+    .filter(match => isActive(match.active) && match.deadline)
+    .sort((a,b) => {
+      const da = parseDeadline(a.deadline);
+      const db = parseDeadline(b.deadline);
+      return (da || 0) - (db || 0);
+    });
+
+  if(rows.length === 0){
+    box.innerHTML = "Ingen frister satt ennå.";
+    return;
+  }
+
+  box.innerHTML = rows.map(match => {
+    const id = getMatchId(match);
+    const locked = deadlinePassed(match);
+    const home = match.home || getDisplayTeam(match, id, "home").name;
+    const away = match.away || getDisplayTeam(match, id, "away").name;
+
+    return `
+      <div style="
+        display:flex;
+        justify-content:space-between;
+        gap:12px;
+        padding:10px 0;
+        border-bottom:1px solid rgba(255,255,255,0.10);
+      ">
+        <div>
+          <strong>Kamp ${id}</strong><br>
+          ${home} – ${away}
+        </div>
+        <div style="text-align:right;color:${locked ? "var(--red)" : "var(--gold)"};">
+          ${locked ? "Låst" : formatDeadline(match.deadline)}
+        </div>
+      </div>
+    `;
+  }).join("");
 }
 
 function renderBracket(){
