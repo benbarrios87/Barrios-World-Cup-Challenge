@@ -683,6 +683,14 @@ function handleAvatarError(img, name){
 function renderBonusTags(row){
   const tags = [];
 
+  const rtg = cleanNumber(row.rtg_points);
+
+  if(rtg > 0){
+    tags.push(`<div class="tag" style="background:rgba(255,79,216,0.16);border-color:rgba(255,79,216,0.35);color:#ffb8ef;font-weight:bold;">🧨 RTG +${rtg}</div>`);
+  }else if(String(row.rtg_alive || "").toLowerCase() === "true"){
+    tags.push(`<div class="tag" style="background:rgba(255,79,216,0.16);border-color:rgba(255,79,216,0.35);color:#ffb8ef;font-weight:bold;">🧨 RTG lever</div>`);
+  }
+
   if(row.top_scorer){
     tags.push(`<div class="tag">⚽ ${row.top_scorer} +${cleanNumber(row.top_scorer_points)}</div>`);
   }
@@ -693,6 +701,7 @@ function renderBonusTags(row){
 
   return tags.join("");
 }
+  
 function shortMatch(match){
 
   return String(match || "")
@@ -756,6 +765,7 @@ async function loadLeaderboard(){
     const prizePool = paidPlayers * BUY_IN;
     const playedCount = Math.max(0, ...rows.map(row => cleanNumber(row.played)));
     const totalExact = rows.reduce((sum,row) => sum + cleanNumber(row.exact),0);
+    const totalRtg = rows.reduce((sum,row) => sum + cleanNumber(row.rtg_points),0);
     const leaderPoints = rows[0] ? cleanNumber(rows[0].points) : 0;
 
     statusBox.innerHTML = `
@@ -783,6 +793,11 @@ async function loadLeaderboard(){
         <strong>${totalExact}</strong>
         <span>Eksakte treff totalt</span>
       </div>
+
+      <div class="status-card" style="background:rgba(255,79,216,0.12);border-color:rgba(255,79,216,0.25);">
+  <strong style="color:#ffb8ef;">${totalRtg}</strong>
+  <span>RTG-poeng</span>
+</div>
     `;
 
     missingBox.style.display = "none";
