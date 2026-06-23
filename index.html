@@ -1513,7 +1513,7 @@ function getLatestMatchRowsForPhone(rows, phone){
 
   if(userRows.length === 0) return [];
 
-  const latestTimestamp = userRows[userRows.length - 1].timestamp;
+  const latestTimestamp = userRows[0].timestamp;
 
   return userRows.filter(row =>
     String(row.timestamp || "") === String(latestTimestamp || "")
