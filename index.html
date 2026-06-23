@@ -1496,7 +1496,16 @@ function getLatestRowsForPhone(rows, phone){
     String(row.phone || "").trim() === phone
   );
 
-  function getLatestMatchRowsForPhone(rows, phone){
+  if(userRows.length === 0) return [];
+
+  const latestTimestamp = userRows[userRows.length - 1].timestamp;
+
+  return userRows.filter(row =>
+    String(row.timestamp || "") === String(latestTimestamp || "")
+  );
+}
+
+function getLatestMatchRowsForPhone(rows, phone){
   const userRows = rows.filter(row =>
     String(row.phone || "").trim() === String(phone || "").trim() &&
     String(row.type || "").trim().toLowerCase() === "match"
@@ -1508,15 +1517,6 @@ function getLatestRowsForPhone(rows, phone){
 
   return userRows.filter(row =>
     String(row.timestamp || "") === String(latestTimestamp || "")
-  );
-}
-
-  if(userRows.length === 0) return [];
-
-  const latestTimestamp = userRows[userRows.length - 1].timestamp;
-
-  return userRows.filter(row =>
-    row.timestamp === latestTimestamp
   );
 }
 
