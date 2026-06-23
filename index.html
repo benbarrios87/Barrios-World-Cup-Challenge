@@ -1496,6 +1496,21 @@ function getLatestRowsForPhone(rows, phone){
     String(row.phone || "").trim() === phone
   );
 
+  function getLatestMatchRowsForPhone(rows, phone){
+  const userRows = rows.filter(row =>
+    String(row.phone || "").trim() === String(phone || "").trim() &&
+    String(row.type || "").trim().toLowerCase() === "match"
+  );
+
+  if(userRows.length === 0) return [];
+
+  const latestTimestamp = userRows[userRows.length - 1].timestamp;
+
+  return userRows.filter(row =>
+    String(row.timestamp || "") === String(latestTimestamp || "")
+  );
+}
+
   if(userRows.length === 0) return [];
 
   const latestTimestamp = userRows[userRows.length - 1].timestamp;
@@ -2074,9 +2089,7 @@ function renderNextTips(phone){
   const nextIntro = document.getElementById("nextIntro");
   const phoneBox = document.getElementById("phoneBox");
   const greeting = document.getElementById("hubGreeting");
-
-  const latestRows = getLatestRowsForPhone(submissionsCache, phone);
-  const matchTips = latestRows.filter(row => row.type === "match");
+const matchTips = getLatestMatchRowsForPhone(submissionsCache, phone);
   const nextMatches = getNextThreeMatches();
   const displayName = getNameForPhone(phone);
 
