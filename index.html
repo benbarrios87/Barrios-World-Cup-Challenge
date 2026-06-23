@@ -2134,8 +2134,8 @@ console.log("sample tip", matchTips[0]);
     );
     console.log("found tip", tip);
 
-const homeTip = tip?.tips_home ?? tip?.home_goals ?? tip?.tip_home ?? "";
-const awayTip = tip?.tips_away ?? tip?.away_goals ?? tip?.tip_away ?? "";
+const homeTip = String(tip?.tips_home ?? "").trim();
+const awayTip = String(tip?.tips_away ?? "").trim();
 
 const tipText = homeTip !== "" && awayTip !== ""
   ? `${homeTip} - ${awayTip}`
