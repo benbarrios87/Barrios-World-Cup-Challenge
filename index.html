@@ -2132,7 +2132,6 @@ console.log("sample tip", matchTips[0]);
     const tip = matchTips.find(row =>
       String(row.match_id || row.id || "").trim() === matchId
     );
-    console.log("found tip", tip);
 
 const homeTip = String(tip?.tips_home ?? "").trim();
 const awayTip = String(tip?.tips_away ?? "").trim();
