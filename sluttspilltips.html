@@ -1696,7 +1696,7 @@ function renderMatchCard(id){
           ${away.isRealTeam ? `<span class="team-tier">T${awayTier}</span>` : ""}
           ${away.slot && away.slot !== away.name ? `<span class="slot-label">${away.slot}</span>` : ""}
         </div>
-        <div class="score">${tip ? tip.tips_away || "–" : match.actual_away || "–"}</div>
+        <div class="score">${match.actual_away || "–"}</div>
       </div>
     </div>
   `;
