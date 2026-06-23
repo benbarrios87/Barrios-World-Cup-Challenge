@@ -2136,7 +2136,7 @@ console.log("sample tip", matchTips[0]);
 
 const homeTip = String(tip?.tips_home ?? "").trim();
 const awayTip = String(tip?.tips_away ?? "").trim();
-    console.log("homeTip/awayTip", homeTip, awayTip, tip);
+   console.log(JSON.stringify(tip, null, 2));
 
 const tipText = homeTip !== "" && awayTip !== ""
   ? `${homeTip} - ${awayTip}`
