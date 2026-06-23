@@ -418,18 +418,47 @@ function getMatchLabel(match){
 
 function getLatestRowsForPhone(rows, phone){
   const userRows = rows.filter(row =>
-    String(row.phone || "").trim() === phone
+    String(row.phone || "").trim() === String(phone || "").trim() &&
+    String(row.type || "").trim().toLowerCase() !== "knockout"
   );
 
   if(userRows.length === 0) return [];
 
-  const latestTimestamp = userRows[userRows.length - 1].timestamp;
+  const latestTime = Math.max(...userRows.map(row => getTimeKey(row.timestamp)));
 
   return userRows.filter(row =>
-    row.timestamp === latestTimestamp
+    getTimeKey(row.timestamp) === latestTime
   );
 }
 
+function getTimeKey(value){
+  if(value instanceof Date){
+    return value.getTime();
+  }
+
+  const parsed = new Date(value).getTime();
+
+  if(!Number.isNaN(parsed)){
+    return parsed;
+  }
+
+  const text = String(value || "").trim();
+  const match = text.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4}) kl\. (\d{1,2})\.(\d{2})\.(\d{2})$/);
+
+  if(match){
+    const [,dd,mm,yyyy,hh,min,sec] = match;
+    return new Date(
+      Number(yyyy),
+      Number(mm) - 1,
+      Number(dd),
+      Number(hh),
+      Number(min),
+      Number(sec)
+    ).getTime();
+  }
+
+  return 0;
+}
 function getRegisteredName(registrations, phone){
   const person = registrations.find(row =>
     String(row.phone || "").trim() === phone
