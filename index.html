@@ -1470,9 +1470,12 @@ function getRulePoint(rules, tierDiff, type){
 }
 
 function getMaxPossiblePoints(tip, match){
-  if(!tip || !match || tip.tips_home === "" || tip.tips_away === "") return 0;
+  const homeTip = tip?.tips_home ?? tip?.home_goals ?? tip?.home ?? tip?.tip_home ?? "";
+  const awayTip = tip?.tips_away ?? tip?.away_goals ?? tip?.away ?? tip?.tip_away ?? "";
 
-  const tipOutcome = getOutcome(tip.tips_home, tip.tips_away);
+  if(!tip || !match || homeTip === "" || awayTip === "") return 0;
+
+  const tipOutcome = getOutcome(homeTip, awayTip);
   const tierDiff = Math.abs(parseTier(match.tier_home) - parseTier(match.tier_away));
   const tierType = getTierType(match, tipOutcome);
 
@@ -2115,9 +2118,12 @@ if(displayName){
       String(row.match_id || row.id || "").trim() === matchId
     );
 
-    const tipText = tip && tip.tips_home !== "" && tip.tips_away !== ""
-      ? `${tip.tips_home} - ${tip.tips_away}`
-      : "Mangler tips";
+    const homeTip = tip?.tips_home ?? tip?.home_goals ?? tip?.home ?? tip?.tip_home ?? "";
+const awayTip = tip?.tips_away ?? tip?.away_goals ?? tip?.away ?? tip?.tip_away ?? "";
+
+const tipText = homeTip !== "" && awayTip !== ""
+  ? `${homeTip} - ${awayTip}`
+  : "Mangler tips";
 
     const maxPoints = tip ? getMaxPossiblePoints(tip, match) : 0;
 
