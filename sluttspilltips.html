@@ -1055,10 +1055,25 @@ body::before{
       </p>
 
       <div class="admin-warning">
-        <strong>Road to Glory:</strong>
-        Sett poeng på lag før sluttspillet. Jo lenger lagene dine går, desto mer bonus får du.
-        Du ser maks gevinst på hvert lag før du velger.
-      </div>
+  <strong>Road to Glory</strong><br><br>
+
+  Du har <strong>10 poeng</strong> å fordele på lagene du tror gjør det bra i sluttspillet.
+  Du kan sette maks <strong>5 poeng</strong> på samme lag.
+
+  <br><br>
+
+  Favoritter gir færre poeng. Outsidere gir flere poeng.
+
+  <br><br>
+
+  Eksempel:
+  5 poeng på Argentina (1,4x) gir opptil 21 poeng ved VM-gull.
+  5 poeng på et lag med 5x verdi kan gi opptil 75 poeng ved VM-gull.
+
+  <br><br>
+
+  Målet er ikke bare å finne VM-vinneren. Målet er å finne lagene som gir best verdi.
+</div>
 
       <div class="bonus-grid">
         <div>
@@ -2094,12 +2109,12 @@ function renderBonus(){
         <div>
           <strong>${renderTeamPill(name, tier, true)}</strong>
           <div class="small-text">
-            Odds x${prettyNumber(odds)} · maks ${prettyNumber(maxWinner)} poeng
+            Odds x${prettyNumber(odds)} · maks ${prettyNumber(maxWinner)} poeng ved 5 poeng + VM-seier
           </div>
           <details class="small-text" style="margin-top:6px;">
             <summary style="cursor:pointer;color:var(--gold);font-weight:bold;">Se mulig uttelling</summary>
             <div style="margin-top:6px;line-height:1.55;">
-              Per poeng du setter på dette laget:<br>
+              Uttelling per innsatte poeng::<br>
               8-dels: ${prettyNumber(calcBonusPoints(1, odds, BONUS_STAGE_MULTIPLIERS.round16))}p ·
               Kvart: ${prettyNumber(calcBonusPoints(1, odds, BONUS_STAGE_MULTIPLIERS.quarterfinal))}p ·
               Semi: ${prettyNumber(calcBonusPoints(1, odds, BONUS_STAGE_MULTIPLIERS.semifinal))}p ·
