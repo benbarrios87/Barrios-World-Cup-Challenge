@@ -2129,18 +2129,12 @@ function renderBonus(){
           <div class="small-text">
             Odds x${prettyNumber(odds)} · maks ${prettyNumber(maxWinner)} poeng ved 5 poeng + VM-seier
           </div>
-          <details class="small-text" style="margin-top:6px;">
-            <summary style="cursor:pointer;color:var(--gold);font-weight:bold;">Se mulig uttelling</summary>
-            <div style="margin-top:6px;line-height:1.55;">
-              Uttelling per innsatte poeng::<br>
-              8-dels: ${prettyNumber(calcBonusPoints(1, odds, BONUS_STAGE_MULTIPLIERS.round16))}p ·
-              Kvart: ${prettyNumber(calcBonusPoints(1, odds, BONUS_STAGE_MULTIPLIERS.quarterfinal))}p ·
-              Semi: ${prettyNumber(calcBonusPoints(1, odds, BONUS_STAGE_MULTIPLIERS.semifinal))}p ·
-              Bronse: ${prettyNumber(calcBonusPoints(1, odds, BONUS_STAGE_MULTIPLIERS.bronze))}p ·
-              Finale: ${prettyNumber(calcBonusPoints(1, odds, BONUS_STAGE_MULTIPLIERS.finalist))}p ·
-              Vinner: ${prettyNumber(calcBonusPoints(1, odds, BONUS_STAGE_MULTIPLIERS.winner))}p
-            </div>
-          </details>
+          <div class="small-text" style="margin-top:8px;line-height:1.55;">
+  <strong style="color:var(--gold);">Din mulige uttelling:</strong><br>
+  <span id="bonusPreview-${slugifyBonusName(name)}">
+    Skriv inn poeng for å se uttelling.
+  </span>
+</div>
         </div>
 
         <div class="multiplier">x${prettyNumber(odds)}</div>
@@ -2152,14 +2146,21 @@ function renderBonus(){
           value="${value}"
           data-bonus-team="${escapeHtml(name)}"
           data-odds="${odds}"
-          oninput="updateLocalBonus(this)"
+          oninput="updateLocalBonus(this); updateBonusPreview(this)"
         >
       </div>
     `;
-  }).join("");
+   }).join("");
 
   updateBonusStatus();
+
+  setTimeout(() => {
+    document.querySelectorAll("[data-bonus-team]").forEach(input => {
+      updateBonusPreview(input);
+    });
+  }, 0);
 }
+  
 function updateLocalBonus(input){
   const team = input.dataset.bonusTeam;
   let value = safeNumber(input.value);
@@ -2177,6 +2178,41 @@ function updateLocalBonus(input){
 
   saveLocalState();
 }
+  function slugifyBonusName(name){
+  return String(name || "")
+    .trim()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g,"")
+    .replace(/æ/g,"ae")
+    .replace(/ø/g,"o")
+    .replace(/å/g,"a")
+    .replace(/[^a-z0-9]/g,"");
+}
+
+function updateBonusPreview(input){
+  const team = input.dataset.bonusTeam;
+  const odds = safeNumber(input.dataset.odds);
+  const stake = safeNumber(input.value);
+
+  const box = document.getElementById(`bonusPreview-${slugifyBonusName(team)}`);
+  if(!box) return;
+
+  if(stake <= 0){
+    box.innerHTML = "Skriv inn poeng for å se uttelling.";
+    return;
+  }
+
+  box.innerHTML = `
+    8-dels: ${prettyNumber(calcBonusPoints(stake, odds, BONUS_STAGE_MULTIPLIERS.round16))}p ·
+    Kvart: ${prettyNumber(calcBonusPoints(stake, odds, BONUS_STAGE_MULTIPLIERS.quarterfinal))}p ·
+    Semi: ${prettyNumber(calcBonusPoints(stake, odds, BONUS_STAGE_MULTIPLIERS.semifinal))}p ·
+    Bronse: ${prettyNumber(calcBonusPoints(stake, odds, BONUS_STAGE_MULTIPLIERS.bronze))}p ·
+    Finale: ${prettyNumber(calcBonusPoints(stake, odds, BONUS_STAGE_MULTIPLIERS.finalist))}p ·
+    Vinner: ${prettyNumber(calcBonusPoints(stake, odds, BONUS_STAGE_MULTIPLIERS.winner))}p
+  `;
+}
+  
 function updateBonusStatus(){
   const total = Object.values(localBonus).reduce((sum,value) => sum + safeNumber(value), 0);
   const box = document.getElementById("bonusStatus");
