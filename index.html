@@ -2127,9 +2127,12 @@ if(displayName){
   nextBox.innerHTML = nextMatches.map(match => {
     const matchId = String(match.id || match.match_id || "").trim();
 
+    console.log("match.id", match.id);
+console.log("sample tip", matchTips[0]);
     const tip = matchTips.find(row =>
       String(row.match_id || row.id || "").trim() === matchId
     );
+    console.log("found tip", tip);
 
 const homeTip = tip?.tips_home ?? tip?.home_goals ?? tip?.tip_home ?? "";
 const awayTip = tip?.tips_away ?? tip?.away_goals ?? tip?.tip_away ?? "";
