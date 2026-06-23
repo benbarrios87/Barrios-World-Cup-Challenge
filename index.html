@@ -2131,8 +2131,8 @@ if(displayName){
       String(row.match_id || row.id || "").trim() === matchId
     );
 
-    const homeTip = tip?.tips_home ?? tip?.home_goals ?? tip?.home ?? tip?.tip_home ?? "";
-const awayTip = tip?.tips_away ?? tip?.away_goals ?? tip?.away ?? tip?.tip_away ?? "";
+const homeTip = tip?.tips_home ?? tip?.home_goals ?? tip?.tip_home ?? "";
+const awayTip = tip?.tips_away ?? tip?.away_goals ?? tip?.tip_away ?? "";
 
 const tipText = homeTip !== "" && awayTip !== ""
   ? `${homeTip} - ${awayTip}`
