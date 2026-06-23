@@ -1470,8 +1470,8 @@ function getRulePoint(rules, tierDiff, type){
 }
 
 function getMaxPossiblePoints(tip, match){
-  const homeTip = tip?.tips_home ?? tip?.home_goals ?? tip?.home ?? tip?.tip_home ?? "";
-  const awayTip = tip?.tips_away ?? tip?.away_goals ?? tip?.away ?? tip?.tip_away ?? "";
+const homeTip = tip?.tips_home ?? tip?.tip_home ?? "";
+const awayTip = tip?.tips_away ?? tip?.tip_away ?? "";
 
   if(!tip || !match || homeTip === "" || awayTip === "") return 0;
 
