@@ -2107,7 +2107,7 @@ function renderBonus(){
 
   const teams = knockoutTeams
     .filter(team => isActive(team.qualified) || String(team.qualified || "").trim() === "")
-    .sort((a,b) => getTeamName(a).localeCompare(getTeamName(b), "no"));
+    .sort((a,b) =>   getBonusOdds(a) - getBonusOdds(b) ||   getTeamName(a).localeCompare(getTeamName(b), "no") );
 
   if(teams.length === 0){
     box.innerHTML = `<div class="small-text">Ingen lag i API_KNOCKOUT_TEAMS ennå.</div>`;
