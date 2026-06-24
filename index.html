@@ -1,5 +1,6 @@
 
 
+
 <!DOCTYPE html>
 <html lang="no">
 <head>
@@ -912,6 +913,174 @@ body::before{
 }
 
 
+
+/* UI-polering: kun layout/visning. API, cache og poenglogikk er urørt. */
+.personal-hero-grid{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:18px;
+  align-items:end;
+}
+
+.hero-mini-stats{
+  display:flex;
+  flex-wrap:wrap;
+  gap:9px;
+  justify-content:flex-end;
+}
+
+.hero-stat-pill{
+  min-width:116px;
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.12);
+  border-radius:16px;
+  padding:10px 12px;
+}
+
+.hero-stat-pill strong{
+  display:block;
+  color:var(--gold);
+  font-size:18px;
+  line-height:1.1;
+}
+
+.hero-stat-pill span{
+  display:block;
+  margin-top:3px;
+  color:var(--muted);
+  font-size:11px;
+  line-height:1.25;
+}
+
+.priority-grid{
+  display:grid;
+  grid-template-columns:1.35fr 0.65fr;
+  gap:18px;
+  align-items:start;
+}
+
+.next-tips-card{
+  border-color:rgba(46,204,113,0.28);
+  background:
+    radial-gradient(circle at top right, rgba(46,204,113,0.16), transparent 36%),
+    var(--card);
+}
+
+.section-topline{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  align-items:flex-start;
+  margin-bottom:10px;
+}
+
+.section-topline h2{
+  margin:0;
+}
+
+.section-kicker{
+  display:inline-block;
+  margin-bottom:7px;
+  padding:4px 8px;
+  border-radius:999px;
+  background:rgba(46,204,113,0.12);
+  border:1px solid rgba(46,204,113,0.22);
+  color:#9dffc7;
+  font-size:11px;
+  font-weight:bold;
+  text-transform:uppercase;
+  letter-spacing:.5px;
+}
+
+.quick-action-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+  margin-top:14px;
+}
+
+.quick-action{
+  display:block;
+  min-height:86px;
+  padding:14px;
+  border-radius:16px;
+  text-decoration:none;
+  color:white;
+  background:rgba(255,255,255,0.075);
+  border:1px solid rgba(255,255,255,0.12);
+  transition:.2s;
+}
+
+.quick-action:hover{
+  transform:translateY(-2px);
+  background:rgba(255,255,255,0.13);
+}
+
+.quick-action strong{
+  display:block;
+  font-size:17px;
+  margin-bottom:6px;
+}
+
+.quick-action span{
+  display:block;
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.35;
+}
+
+.profile-lookup-card.compact-profile{
+  margin-top:14px;
+}
+
+.dashboard-grid{
+  display:grid;
+  grid-template-columns:1.2fr .8fr;
+  gap:18px;
+  align-items:start;
+}
+
+.standings-card h2:not(:first-child){
+  margin-top:18px !important;
+}
+
+.standings-block{
+  padding-top:2px;
+}
+
+.standings-block + .standings-block{
+  margin-top:16px;
+  padding-top:16px;
+  border-top:1px solid rgba(255,255,255,0.10);
+}
+
+@media(max-width:900px){
+  .priority-grid,
+  .dashboard-grid,
+  .personal-hero-grid{
+    grid-template-columns:1fr;
+  }
+
+  .hero-mini-stats{
+    justify-content:flex-start;
+  }
+}
+
+@media(max-width:520px){
+  .quick-action-grid{
+    grid-template-columns:1fr;
+  }
+
+  .hero-mini-stats{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+  }
+
+  .hero-stat-pill{
+    min-width:0;
+  }
+}
+
 @media(max-width:800px){
   .front-live-grid{
     grid-template-columns:1fr;
@@ -1135,30 +1304,44 @@ Målet er enkelt: samle flest poeng før finalen er spilt.
   <div id="vmHub" class="vm-hub">
 
     <div class="card hub-hero">
-      <div class="hub-kicker">VM-MODUS ER I GANG</div>
-      <h2 id="hubGreeting" class="hub-title">Velkommen til kampdag.</h2>
-      <p class="hub-text">
-        Nå kan du gradvis begynne å følge med på sluttspillssiden, og legge inn bets før deadline til 16 delsrunden. 28.06 kl 21. 
-      </p>
+      <div class="personal-hero-grid">
+        <div>
+          <div class="hub-kicker">VM-MODUS ER I GANG</div>
+          <h2 id="hubGreeting" class="hub-title">Velkommen til kampdag.</h2>
+          <p class="hub-text" id="hubSubline">
+            Nå kan du gradvis begynne å følge med på sluttspillssiden, og legge inn bets før deadline til 16 delsrunden. 28.06 kl 21.
+          </p>
+        </div>
+
+        <div class="hero-mini-stats" id="heroMiniStats" aria-label="Personlig status">
+          <div class="hero-stat-pill">
+            <strong>--</strong>
+            <span>plassering</span>
+          </div>
+          <div class="hero-stat-pill">
+            <strong>--</strong>
+            <span>opp til pallen</span>
+          </div>
+          <div class="hero-stat-pill">
+            <strong>--</strong>
+            <span>mulig neste kamp</span>
+          </div>
+        </div>
+      </div>
     </div>
     
     <div id="homepageAnnouncements" class="homepage-announcements"></div>
 
-    <div id="latestNewsCard" class="card latest-news-card">
-      <h2 style="margin-top:0;">🔥 Siste nytt</h2>
-      <div id="latestNewsIntro" class="hub-text">
-        Laster siste nytt fra VM-kaoset...
-      </div>
-      <div id="latestNewsList" class="news-list"></div>
-    </div>
-
-    
-
-    <div class="hub-grid">
-      <div class="card">
+    <div class="priority-grid">
+      <div class="card next-tips-card">
         <div id="lastBetsBox"></div>
 
-        <h2 style="margin-top:24px;">🔥 Dine neste 4 tips</h2>
+        <div class="section-topline">
+          <div>
+            <div class="section-kicker">Viktigst akkurat nå</div>
+            <h2>🔥 Dine neste 4 tips</h2>
+          </div>
+        </div>
 
         <div id="nextIntro" class="hub-text">
           Laster neste kamper...
@@ -1182,10 +1365,38 @@ Målet er enkelt: samle flest poeng før finalen er spilt.
         <div id="nextMatches"></div>
       </div>
 
-      <div class="card">
+      <div class="card quick-card">
         <h2 style="margin-top:0;">⚡ Kjapp tilgang</h2>
+        <div class="hub-text">De viktigste snarveiene samlet litt tettere.</div>
 
-        <div class="profile-lookup-card">
+        <div class="quick-action-grid">
+          <a class="quick-action" href="leaderboard.html">
+            <strong>🏆 Leaderboard</strong>
+            <span>Stilling, profiler og poeng.</span>
+          </a>
+
+          <a class="quick-action" href="minetips.html">
+            <strong>🧠 Mine tips</strong>
+            <span>Alt du har levert.</span>
+          </a>
+
+          <a class="quick-action" href="stats.html">
+            <strong>📊 Stats</strong>
+            <span>Treff, outsidere og nerding.</span>
+          </a>
+
+          <a class="quick-action" href="sluttspilltips.html">
+            <strong>🏆 Sluttspill</strong>
+            <span>Bets før neste deadline.</span>
+          </a>
+
+          <a class="quick-action" href="historie.html">
+            <strong>📚 Historie</strong>
+            <span>Hall of Fame og kollapser.</span>
+          </a>
+        </div>
+
+        <div class="profile-lookup-card compact-profile">
           <strong>👤 Min profil</strong>
           <div class="profile-result">
             Skriv telefonnummeret ditt og hopp rett til FUT-kortet ditt.
@@ -1207,38 +1418,18 @@ Målet er enkelt: samle flest poeng før finalen er spilt.
 
           <div id="profileLookupResult" class="profile-result"></div>
         </div>
-
-        <div class="hub-links" style="margin-top:12px;">
-          <a class="hub-link" href="leaderboard.html">
-            <strong>🏆 Leaderboard</strong>
-            <span>Se hvem som leder, hvem som jager og hvem som allerede angrer.</span>
-          </a>
-
-          <a class="hub-link" href="minetips.html">
-            <strong>🧠 Mine tips</strong>
-            <span>Se hele innleveringen din og status på kampene.</span>
-          </a>
-
-          <a class="hub-link" href="stats.html">
-            <strong>📊 Stats</strong>
-            <span>Eksakte treff, outsider-konger og annen deilig VM-nerding.</span>
-          </a>
-
-          <a class="hub-link" href="sluttspilltips.html">
-            <strong>🏆 Sluttspill</strong>
-            <span>Veien fra Round of 32 til finalen.</span>
-          </a>
-
-           <a class="hub-link" href="historie.html">
-  <strong>📚 Historiebøkene</strong>
-  <span>Tidligere vinnere, gamle bragder, kollapser og Hall of Fame.</span>
-</a>
-        </div>
       </div>
     </div>
 
+    <div id="latestNewsCard" class="card latest-news-card">
+      <h2 style="margin-top:0;">🔥 Siste nytt</h2>
+      <div id="latestNewsIntro" class="hub-text">
+        Laster siste nytt fra VM-kaoset...
+      </div>
+      <div id="latestNewsList" class="news-list"></div>
+    </div>
 
-    <div class="front-live-grid">
+    <div class="dashboard-grid">
       <div class="card">
         <h2 style="margin-top:0;">📊 Folkets tips</h2>
         <div class="hub-text">
@@ -1249,22 +1440,27 @@ Målet er enkelt: samle flest poeng før finalen er spilt.
         </div>
       </div>
 
-      <div class="card">
-        <h2 style="margin-top:0;">🏆 Topp 3 akkurat nå</h2>
-        <div id="frontTop3" class="front-top3-list">
-          <div class="front-empty">Laster topp 3...</div>
+      <div class="card standings-card">
+        <div class="standings-block">
+          <h2 style="margin-top:0;">🏆 Topp 3 akkurat nå</h2>
+          <div id="frontTop3" class="front-top3-list">
+            <div class="front-empty">Laster topp 3...</div>
+          </div>
         </div>
         
-        <h2 style="margin-top:20px;">🔥 Formspillere siste 8</h2>
-<div id="frontForm" class="front-top3-list">
-  <div class="front-empty">Laster form...</div>
-</div>
+        <div class="standings-block">
+          <h2>🔥 Formspillere siste 8</h2>
+          <div id="frontForm" class="front-top3-list">
+            <div class="front-empty">Laster form...</div>
+          </div>
+        </div>
 
-        <h2 style="margin-top:20px;">🧊 Formdupp siste 8</h2>
-
-<div id="frontSlump" class="front-top3-list">
-  <div class="front-empty">Laster formdupp...</div>
-</div>
+        <div class="standings-block">
+          <h2>🧊 Formdupp siste 8</h2>
+          <div id="frontSlump" class="front-top3-list">
+            <div class="front-empty">Laster formdupp...</div>
+          </div>
+        </div>
         
         <a class="hub-link" href="leaderboard.html" style="margin-top:12px;">
           <strong>Se hele leaderboardet →</strong>
@@ -2084,6 +2280,61 @@ function renderLastBets(phone){
 }
 
 
+
+function renderHeroMiniStats(profile, nextMatches, matchTips){
+  const box = document.getElementById("heroMiniStats");
+  const subline = document.getElementById("hubSubline");
+  if(!box) return;
+
+  const rank = profile ? cleanNumber(profile.rank) : 0;
+  const points = profile ? cleanNumber(profile.points || profile.score) : 0;
+
+  const sorted = [...leaderboardCache]
+    .filter(row => cleanNumber(row.rank) > 0)
+    .sort((a,b) => cleanNumber(a.rank) - cleanNumber(b.rank));
+
+  const third = sorted.find(row => cleanNumber(row.rank) === 3) || sorted[2];
+  const pointsToPodium = third && rank > 3
+    ? Math.max(0, cleanNumber(third.points || third.score) - points + 1)
+    : 0;
+
+  const nextMatch = nextMatches && nextMatches[0];
+  let nextMax = 0;
+
+  if(nextMatch){
+    const matchId = String(nextMatch.id || nextMatch.match_id || "").trim();
+    const tip = matchTips.find(row =>
+      String(row.match_id || row.id || "").trim() === matchId
+    );
+    nextMax = tip ? getMaxPossiblePoints(tip, nextMatch) : 0;
+  }
+
+  box.innerHTML = `
+    <div class="hero-stat-pill">
+      <strong>${rank ? rank + "." : "--"}</strong>
+      <span>plassering</span>
+    </div>
+    <div class="hero-stat-pill">
+      <strong>${rank && rank <= 3 ? "På pall" : pointsToPodium ? pointsToPodium + " p" : "--"}</strong>
+      <span>opp til pallen</span>
+    </div>
+    <div class="hero-stat-pill">
+      <strong>${nextMax ? nextMax + " p" : "--"}</strong>
+      <span>mulig neste kamp</span>
+    </div>
+  `;
+
+  if(subline && profile){
+    if(rank && rank <= 3){
+      subline.textContent = `Du er på pallen akkurat nå. Neste kamp kan fortsatt vippe alt.`;
+    }else if(pointsToPodium){
+      subline.textContent = `${pointsToPodium} poeng opp til pallen. Neste kamp kan gi opptil ${nextMax || "flere"} poeng.`;
+    }else{
+      subline.textContent = `Følg neste kamp, siste bets, folkets tips og live leaderboard.`;
+    }
+  }
+}
+
 function renderNextTips(phone){
   const nextBox = document.getElementById("nextMatches");
   const nextIntro = document.getElementById("nextIntro");
@@ -2095,17 +2346,21 @@ const matchTips = getLatestMatchRowsForPhone(submissionsCache, phone);
 
   renderLastBets(phone);
 
+const profile = leaderboardCache.find(
+    row => String(row.phone || "").trim() === String(phone || "").trim()
+  );
+
+  renderHeroMiniStats(profile, nextMatches, matchTips);
+
 if(displayName){
 
   const firstName = displayName.split(" ")[0];
 
-  const profile = leaderboardCache.find(
-    row => String(row.phone || "").trim() === String(phone || "").trim()
-  );
-
   if(profile){
+    const rank = cleanNumber(profile.rank);
+    const points = cleanNumber(profile.points || profile.score);
     greeting.textContent =
-      `Hei ${firstName}! Du ligger på ${profile.rank}. plass akkurat nå.`;
+      `Hei ${firstName}! ${rank ? rank + ". plass" : "Du er inne"}${points ? " · " + points + " poeng" : ""}.`;
   }else{
     greeting.textContent = `Hei ${firstName}!`;
   }
