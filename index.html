@@ -2007,7 +2007,11 @@ function getLastThreeBets(phone){
   const matchTips = submissionsCache
     .filter(row =>
       String(row.phone || "").trim() === String(phone || "").trim() &&
-      String(row.type || "").trim().toLowerCase() === "match"
+      String(row.type || "").trim().toLowerCase() === "match" &&
+      row.tips_home !== "" &&
+      row.tips_home !== undefined &&
+      row.tips_away !== "" &&
+      row.tips_away !== undefined
     );
 
   const latestByMatch = new Map();
