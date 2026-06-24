@@ -2155,26 +2155,45 @@ function getLatestMatchTipsForPhone(phone){
   );
 }
 
-function calculateTipPoints(tip, match, result){
-  if(!tip || !match || !result) return 0;
+function getTipHomeValue(tip){
+  return tip?.tips_home ?? tip?.tip_home ?? tip?.home_tip ?? tip?.home ?? "";
+}
 
-  if(
-    tip.tips_home === "" ||
-    tip.tips_home === undefined ||
-    tip.tips_away === "" ||
-    tip.tips_away === undefined ||
-    result.actual_home === "" ||
-    result.actual_home === undefined ||
-    result.actual_away === "" ||
-    result.actual_away === undefined
-  ){
-    return 0;
+function getTipAwayValue(tip){
+  return tip?.tips_away ?? tip?.tip_away ?? tip?.away_tip ?? tip?.away ?? "";
+}
+
+function getActualHomeValue(result){
+  return result?.actual_home ?? result?.result_home ?? result?.home_score ?? result?.score_home ?? "";
+}
+
+function getActualAwayValue(result){
+  return result?.actual_away ?? result?.result_away ?? result?.away_score ?? result?.score_away ?? "";
+}
+
+function getTipVerdict(tip, match, result){
+  if(!tip || !match || !result){
+    return { points:0, label:"Bom", type:"miss" };
   }
 
-  const tipHome = cleanNumber(tip.tips_home);
-  const tipAway = cleanNumber(tip.tips_away);
-  const actualHome = cleanNumber(result.actual_home);
-  const actualAway = cleanNumber(result.actual_away);
+  const rawTipHome = getTipHomeValue(tip);
+  const rawTipAway = getTipAwayValue(tip);
+  const rawActualHome = getActualHomeValue(result);
+  const rawActualAway = getActualAwayValue(result);
+
+  if(
+    rawTipHome === "" || rawTipHome === undefined || rawTipHome === null ||
+    rawTipAway === "" || rawTipAway === undefined || rawTipAway === null ||
+    rawActualHome === "" || rawActualHome === undefined || rawActualHome === null ||
+    rawActualAway === "" || rawActualAway === undefined || rawActualAway === null
+  ){
+    return { points:0, label:"Bom", type:"miss" };
+  }
+
+  const tipHome = cleanNumber(rawTipHome);
+  const tipAway = cleanNumber(rawTipAway);
+  const actualHome = cleanNumber(rawActualHome);
+  const actualAway = cleanNumber(rawActualAway);
 
   const tipOutcome = getOutcome(tipHome, tipAway);
   const actualOutcome = getOutcome(actualHome, actualAway);
@@ -2186,18 +2205,34 @@ function calculateTipPoints(tip, match, result){
   const tierType = getTierType(match, tipOutcome);
 
   if(tipHome === actualHome && tipAway === actualAway){
-    return getRulePoint(exactRules, tierDiff, tierType);
+    return {
+      points:getRulePoint(exactRules, tierDiff, tierType),
+      label:"Eksakt",
+      type:"hit"
+    };
   }
 
   if(tipDiff === actualDiff){
-    return getRulePoint(diffRules, tierDiff, tierType);
+    return {
+      points:getRulePoint(diffRules, tierDiff, tierType),
+      label:"Målforskjell",
+      type:"hit"
+    };
   }
 
   if(tipOutcome === actualOutcome){
-    return getRulePoint(outcomeRules, tierDiff, tierType);
+    return {
+      points:getRulePoint(outcomeRules, tierDiff, tierType),
+      label:"Utfall",
+      type:"hit"
+    };
   }
 
-  return 0;
+  return { points:0, label:"Bom", type:"miss" };
+}
+
+function calculateTipPoints(tip, match, result){
+  return getTipVerdict(tip, match, result).points;
 }
 
 function getLastThreeBets(phone){
@@ -2252,9 +2287,10 @@ function renderLastBets(phone){
     <h2 style="margin:0 0 10px;">🧾 Dine siste 3 bets</h2>
 
     ${bets.map(item => {
-      const hit = item.points > 0;
-      const resultText = `${item.result.actual_home}-${item.result.actual_away}`;
-      const tipText = `${item.tip.tips_home}-${item.tip.tips_away}`;
+      const verdict = getTipVerdict(item.tip, item.match, item.result);
+      const hit = verdict.points > 0;
+      const resultText = `${getActualHomeValue(item.result)}-${getActualAwayValue(item.result)}`;
+      const tipText = `${getTipHomeValue(item.tip)}-${getTipAwayValue(item.tip)}`;
 
       return `
         <div class="last-bet-card ${hit ? "hit" : "miss"}">
@@ -2268,10 +2304,10 @@ function renderLastBets(phone){
               <div class="last-bet-sub">
                 Du: ${tipText} · Resultat: ${resultText}
               </div>
-              <span class="last-bet-badge">${hit ? "Treff" : "Bom"}</span>
+              <span class="last-bet-badge">${verdict.label}</span>
             </div>
 
-            <div class="last-bet-points">+${item.points} p</div>
+            <div class="last-bet-points">+${verdict.points} p</div>
           </div>
         </div>
       `;
