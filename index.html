@@ -2034,6 +2034,47 @@ function getLastThreeBets(phone){
     .sort((a,b) => cleanNumber(b.matchId) - cleanNumber(a.matchId))
     .slice(0,3);
 }
+  function renderLastBets(phone){
+  const box = document.getElementById("lastBetsBox");
+  if(!box) return;
+
+  const bets = getLastThreeBets(phone);
+
+  if(bets.length === 0){
+    box.innerHTML = "";
+    return;
+  }
+
+  box.innerHTML = `
+    <h2 style="margin:0 0 10px;">🧾 Dine siste 3 bets</h2>
+
+    ${bets.map(item => {
+      const hit = item.points > 0;
+      const resultText = `${item.result.actual_home}-${item.result.actual_away}`;
+      const tipText = `${item.tip.tips_home}-${item.tip.tips_away}`;
+
+      return `
+        <div class="last-bet-card ${hit ? "hit" : "miss"}">
+          <div class="last-bet-top">
+            <div>
+              <div class="last-bet-match">
+                ${renderTeamWithTier(item.match.home, item.match.tier_home)}
+                -
+                ${renderTeamWithTier(item.match.away, item.match.tier_away)}
+              </div>
+              <div class="last-bet-sub">
+                Du: ${tipText} · Resultat: ${resultText}
+              </div>
+              <span class="last-bet-badge">${hit ? "Treff" : "Bom"}</span>
+            </div>
+
+            <div class="last-bet-points">+${item.points} p</div>
+          </div>
+        </div>
+      `;
+    }).join("")}
+  `;
+}
 
 function renderNextTips(phone){
   const nextBox = document.getElementById("nextMatches");
