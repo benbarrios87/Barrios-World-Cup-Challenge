@@ -43,8 +43,32 @@ function renderRtgChoice(player){const picks=String(player.rtg_picks||"").split(
 function getRatings(player,allRows){const maxPoints=Math.max(...allRows.map(row=>cleanNumber(row.points)),1),maxExact=Math.max(...allRows.map(row=>cleanNumber(row.exact)),1),maxUnderdog=Math.max(...allRows.map(row=>cleanNumber(row.underdog)),1),maxDiff=Math.max(...allRows.map(row=>cleanNumber(row.diff)),1),maxOutcome=Math.max(...allRows.map(row=>cleanNumber(row.outcome)),1);const tip=toRating(cleanNumber(player.exact)+cleanNumber(player.diff)*.6,maxExact+maxDiff*.6),out=toRating(cleanNumber(player.underdog),maxUnderdog),res=toRating(cleanNumber(player.points),maxPoints),luk=toRating(cleanNumber(player.diff)+cleanNumber(player.outcome)*.25,maxDiff+maxOutcome*.25),ovr=Math.round((tip+out+res+luk)/4);return{tip,out,res,luk,ovr}}
 function getStatComment(player,ratings){if(cleanNumber(player.rank)<=3)return"Topp 3 akkurat nå. Dette er skjermdump-materiale.";if(ratings.out>=90)return"Outsider-radaren blinker. Her har det kommet noen modige treff.";if(ratings.tip>=90)return"Høy presisjon. Eksakte treff og målforskjell har løftet kortet.";if(cleanNumber(player.rtg_points)>0)return"Road to Glory har begynt å betale. Nå handler det om å holde lagene levende.";return"Solid turnering så langt. Fortsatt mye poeng å spille om."}
 function normalizeNameKey(value){return slugify(value||"")}
-function getHistoryAliases(name){const aliases={"benjaminbarrios":["Benjamin"],"kristoffermerker":["Merker","Basse","Kristoffer"],"kristoffereckhoff":["Kristoffer E.","Kristoffer E"],"mattiasandersson":["Mattias"],"larsharaldsen":["Lars H","Lars"],"andreasstraete":["Andreas"],"orjanknutsen":["Ørjan","Orjan"],"jannikberg":["Jannik"],"edwardeikland":["Edward"],"mariusmartinsen":["Marius"],"martinhildonenmarum":["Martin Marum","Martin"],"andersuldalenbrosstad":["Anders UB","Anders Ub","Anders U.B.","Anders U.B"],"andersulvestad":["andersbergulvestad":["Anders Ulv","Anders U. og Ingrid Helene"], ""oyvindrefsnes":["Øyvind","Øyvind R.","Øyvind R"],"oleandreas":["Ole"],"frederikskoe":["Frederik"],"silvia":["Silvia"],"eirik":["Eirik"]};const key=normalizeNameKey(name);return[name,...(aliases[key]||[])].map(normalizeNameKey)}
-function getHistoryAliases(name){const aliases={"benjaminbarrios":["Benjamin"],"kristoffermerker":["Merker","Basse","Kristoffer"],"kristoffereckhoff":["Kristoffer E.","Kristoffer E"],"mattiasandersson":["Mattias"],"larsharaldsen":["Lars H","Lars"],"andreasstraete":["Andreas"],"orjanknutsen":["Ørjan","Orjan"],"jannikberg":["Jannik"],"edwardeikland":["Edward"],"mariusmartinsen":["Marius"],"martinhildonenmarum":["Martin Marum","Martin"],"andersuldalenbrosstad":["Anders UB","Anders Ub","Anders U.B.","Anders U.B"],"andersulvestad":["andersbergulvestad":["Anders Ulv","Anders U. og Ingrid Helene"], ""oyvindrefsnes":["Øyvind","Øyvind R.","Øyvind R"],"oleandreas":["Ole"],"frederikskoe":["Frederik"],"silvia":["Silvia"],"eirik":["Eirik"]};const key=normalizeNameKey(name);return[name,...(aliases[key]||[])].map(normalizeNameKey)}
+function getHistoryAliases(name){
+  const aliases = {
+    "benjaminbarrios":["Benjamin"],
+    "kristoffermerker":["Merker","Basse","Kristoffer"],
+    "kristoffereckhoff":["Kristoffer E.","Kristoffer E"],
+    "mattiasandersson":["Mattias"],
+    "larsharaldsen":["Lars H","Lars"],
+    "andreasstraete":["Andreas"],
+    "orjanknutsen":["Ørjan","Orjan"],
+    "jannikberg":["Jannik"],
+    "edwardeikland":["Edward"],
+    "mariusmartinsen":["Marius"],
+    "martinhildonenmarum":["Martin Marum","Martin"],
+    "andersuldalenbrosstad":["Anders UB","Anders Ub","Anders U.B.","Anders U.B"],
+    "andersulvestad":["Anders Ulv","Anders U. og Ingrid Helene"],
+    "andersbergulvestad":["Anders Ulvestad"],
+    "oyvindrefsnes":["Øyvind","Øyvind R.","Øyvind R"],
+    "oleandreas":["Ole"],
+    "frederikskoe":["Frederik"],
+    "silvia":["Silvia"],
+    "eirik":["Eirik"]
+  };
+
+  const key = normalizeNameKey(name);
+  return [name, ...(aliases[key] || [])].map(normalizeNameKey);
+}
 function getPlayerHistory(historyRows,playerName){const keys=new Set(getHistoryAliases(playerName));return historyRows.filter(row=>keys.has(normalizeNameKey(row.name))).sort((a,b)=>cleanNumber(a.year)-cleanNumber(b.year))}
 function getCareerStats(historyRows){const tournaments=historyRows.length,ranks=historyRows.map(row=>cleanNumber(row.rank)).filter(Boolean),bestRank=ranks.length?Math.min(...ranks):0,avgRank=ranks.length?(ranks.reduce((s,v)=>s+v,0)/ranks.length).toFixed(1).replace(".",","):"-",gold=historyRows.filter(row=>cleanNumber(row.rank)===1).length,silver=historyRows.filter(row=>cleanNumber(row.rank)===2).length,bronze=historyRows.filter(row=>cleanNumber(row.rank)===3).length,podiums=gold+silver+bronze,firstYear=historyRows.length?cleanNumber(historyRows[0].year):"";return{tournaments,bestRank,avgRank,gold,silver,bronze,podiums,firstYear}}
 function renderCardCareerBadges(careerStats){if(!careerStats||careerStats.tournaments===0)return"";const badges=[];if(careerStats.gold>0)badges.push(`🏆 ${careerStats.gold}x mester`);if(careerStats.podiums>0)badges.push(`🎖 ${careerStats.podiums} podier`);badges.push(`📜 ${careerStats.tournaments} mesterskap`);if(careerStats.firstYear)badges.push(`Siden ${careerStats.firstYear}`);return`<div class="card-career-badges">${badges.slice(0,3).map(badge=>`<span class="card-career-badge">${badge}</span>`).join("")}</div>`}
