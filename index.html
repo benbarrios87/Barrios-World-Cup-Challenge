@@ -2129,10 +2129,17 @@ function renderNextTips(phone){
   const nextIntro = document.getElementById("nextIntro");
   const phoneBox = document.getElementById("phoneBox");
   const greeting = document.getElementById("hubGreeting");
-const matchTips = submissionsCache.filter(row =>
-  String(row.phone || "").trim() === String(phone || "").trim() &&
-  ["match","knockout"].includes(String(row.type || "").trim().toLowerCase())
-);
+const latestTipByMatchId = {};
+
+submissionsCache
+  .filter(row =>
+    String(row.phone || "").trim() === String(phone || "").trim() &&
+    ["match","knockout"].includes(String(row.type || "").trim().toLowerCase())
+  )
+  .forEach(row => {
+    const id = cleanNumber(row.match_id || row.id);
+    if(id) latestTipByMatchId[id] = row;
+  });
   const nextMatches = getNextThreeMatches();
   const displayName = getNameForPhone(phone);
 
@@ -2172,9 +2179,7 @@ if(displayName){
 
     console.log("match.id", match.id);
 console.log("sample tip", matchTips[0]);
-    const tip = matchTips.find(row =>
-      String(row.match_id || row.id || "").trim() === matchId
-    );
+  const tip = latestTipByMatchId[cleanNumber(matchId)];
 
 const homeTip = String(tip?.tips_home ?? "").trim();
 const awayTip = String(tip?.tips_away ?? "").trim();
