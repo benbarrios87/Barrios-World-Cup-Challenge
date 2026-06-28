@@ -2266,7 +2266,15 @@ function updateBonusStatus(){
     `}
 
     <div class="small-text" style="margin-top:8px;">
-      ${over ? "Du har brukt for mange RTG-poeng." : complete ? "Klar til innsending ✅" : "Du har ikke brukt alle RTG-poengene ennå."}
+      ${
+  over
+    ? "Du har brukt for mange RTG-poeng."
+    : complete
+      ? (rtgLastSavedAt
+          ? "✅ Lagret. Du kan fortsatt endre og sende inn på nytt frem til fristen."
+          : "Klar til innsending.")
+      : "Du har ikke brukt alle RTG-poengene ennå."
+}
     </div>
   `;
 
