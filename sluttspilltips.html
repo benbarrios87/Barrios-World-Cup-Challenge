@@ -1839,15 +1839,16 @@ function updateRtgVisibility(){
   const status = document.getElementById("rtgDeliveredStatus");
   if(!editor) return;
 
+  const total = Object.values(localBonus).reduce((sum,value) => sum + safeNumber(value), 0);
+  const lines = Object.entries(localBonus)
+    .filter(([team,stake]) => safeNumber(stake) > 0)
+    .map(([team,stake]) => `${escapeHtml(team)} • ${prettyNumber(stake)}p`);
+
   if(isRtgLocked()){
     editor.style.display = "none";
+
     if(status){
       status.style.display = "block";
-      const total = Object.values(localBonus).reduce((sum,value) => sum + safeNumber(value), 0);
-      const lines = Object.entries(localBonus)
-        .filter(([team,stake]) => safeNumber(stake) > 0)
-        .map(([team,stake]) => `${escapeHtml(team)} • ${prettyNumber(stake)}p`);
-
       status.innerHTML = `
         <h2 style="margin-top:0;color:var(--green);">🔒 Road to Glory er låst</h2>
         <div class="rtg-locked-summary">
@@ -1856,9 +1857,29 @@ function updateRtgVisibility(){
         </div>
       `;
     }
-  }else{
-    editor.style.display = "block";
-    content.style.display = "none";
+
+    return;
+  }
+
+  // FØR DEADLINE: alltid vis editor, også for de som har levert
+  editor.style.display = "block";
+  if(content) content.style.display = "grid";
+
+  if(status){
+    status.style.display = rtgLastSavedAt ? "block" : "none";
+
+    if(rtgLastSavedAt){
+      status.innerHTML = `
+        <h2 style="margin-top:0;color:var(--green);">✅ Road to Glory er levert</h2>
+        <p class="small-text">
+          Sist sendt inn: <strong>${rtgLastSavedAt}</strong><br>
+          ${prettyNumber(total)} / ${BONUS_MAX} RTG-poeng brukt.
+        </p>
+        <p class="small-text">
+          Du kan endre og sende inn på nytt frem til fristen. Siste innsending gjelder.
+        </p>
+      `;
+    }
   }
 }
 
