@@ -323,6 +323,7 @@ const REGISTRATIONS_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_REGISTRATION
 const OUTCOME_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_OUTCOME`;
 const DIFF_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_DIFF`;
 const EXACT_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_EXACT`;
+const KNOCKOUT_MATCHES_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_KNOCKOUT_MATCHES`;
 
 async function fetchSheet(url){
   try{
@@ -418,8 +419,7 @@ function getMatchLabel(match){
 
 function getLatestRowsForPhone(rows, phone){
   const userRows = rows.filter(row =>
-    String(row.phone || "").trim() === String(phone || "").trim() &&
-    String(row.type || "").trim().toLowerCase() !== "knockout"
+    String(row.phone || "").trim() === String(phone || "").trim()
   );
 
   if(userRows.length === 0) return [];
@@ -596,16 +596,18 @@ async function findTips(){
 
   try{
     const [
-      submissions,
-      matches,
-      results,
-      registrations,
-      outcomeRules,
-      diffRules,
-      exactRules
-    ] = await Promise.all([
+  submissions,
+  matches,
+  knockoutMatches,
+  results,
+  registrations,
+  outcomeRules,
+  diffRules,
+  exactRules
+] = await Promise.all([
       fetchSheet(SUBMISSIONS_URL),
       fetchSheet(MATCHES_URL),
+      fetchSheet(KNOCKOUT_MATCHES_URL),
       fetchSheet(RESULTS_URL),
       fetchSheet(REGISTRATIONS_URL),
       fetchSheet(OUTCOME_URL),
@@ -627,10 +629,10 @@ async function findTips(){
     }
 
     const matchMap = {};
-    matches.forEach(match => {
-      const id = String(match.id || match.match_id || "").trim();
-      if(id) matchMap[id] = match;
-    });
+   [...matches, ...knockoutMatches].forEach(match => {
+    const id = String(match.id || match.match_id || "").trim();
+    if(id) matchMap[id] = match;
+});
 
     const resultMap = {};
     results.forEach(row => {
@@ -638,7 +640,10 @@ async function findTips(){
       if(id) resultMap[id] = row;
     });
 
-    const matchRows = latestRows.filter(row => row.type === "match");
+  const matchRows = latestRows.filter(row =>
+    row.type === "match" ||
+    row.type === "knockout"
+);
     const bestPlayerRows = latestRows.filter(row => row.type === "bestplayer");
     const topScorerRows = latestRows.filter(row => row.type === "topscorer");
 
