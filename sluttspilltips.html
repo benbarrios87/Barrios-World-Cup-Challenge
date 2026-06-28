@@ -1216,7 +1216,7 @@ body::before{
     </div>
   </details>
 </div>
-      <div class="bonus-grid">
+      <div id="rtgEditorContent" class="bonus-grid">
         <div>
           <h3>Velg lag</h3>
           <div id="bonusList" class="bonus-list">
@@ -1835,6 +1835,7 @@ function getBracketScoreClass(tipValue, actualValue){
 
 function updateRtgVisibility(){
   const editor = document.getElementById("rtgEditorCard");
+  const content = document.getElementById("rtgEditorContent");
   const status = document.getElementById("rtgDeliveredStatus");
   if(!editor) return;
 
@@ -1857,6 +1858,7 @@ function updateRtgVisibility(){
     }
   }else{
     editor.style.display = "block";
+    content.style.display = "none";
   }
 }
 
@@ -1937,10 +1939,17 @@ function renderMatchCard(id){
     gold ? "gold" : ""
   ].filter(Boolean).join(" ");
 
-  let status = "Slot";
-  if(active) status = "Åpen";
-  if(locked) status = "Låst";
-  if(completed) status = "Tippet";
+let status = "Slot";
+
+if(active) status = "Åpen";
+
+if(locked) status = "🔒 Låst";
+
+if(completed){
+  status = locked
+    ? "🔒 Ferdig"
+    : "✅ Lagret";
+}
 
   const tip = localTips[matchId];
 
