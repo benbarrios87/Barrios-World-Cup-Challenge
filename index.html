@@ -1352,11 +1352,13 @@ const EXACT_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_EXACT`;
 const PROFILE_CACHE_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_PROFILE_CACHE`;
 const FRONTPAGE_CACHE_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_FRONTPAGE_CACHE`;
 const ANNOUNCEMENTS_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_ANNOUNCEMENTS`;
+const KNOCKOUT_MATCHES_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_KNOCKOUT_MATCHES`;
 
 const BUY_IN = 600;
 const FREE_ENTRIES = 1;
 
 let matchesCache = [];
+let knockoutMatchesCache = [];
 let submissionsCache = [];
 let resultsById = {};
 let outcomeRules = [];
@@ -1442,6 +1444,14 @@ function parseTier(value){
   if(value === "" || value === null || value === undefined) return 4;
   const found = String(value).match(/[1-4]/);
   return found ? Number(found[0]) : 4;
+}
+  function getAllMatches(){
+  return [
+    ...matchesCache.map(match => ({ ...match, source: "group" })),
+    ...knockoutMatchesCache
+      .filter(match => String(match.active || "").toLowerCase() === "true")
+      .map(match => ({ ...match, source: "knockout" }))
+  ];
 }
 
 function getOutcome(home, away){
@@ -1569,7 +1579,7 @@ function hasResult(matchId){
 }
 
 function getNextThreeMatches(){
-  return [...matchesCache]
+  return getAllMatches()
     .sort((a,b) => cleanNumber(a.id || a.match_id) - cleanNumber(b.id || b.match_id))
     .filter(match => {
       const matchId = String(match.id || match.match_id || "").trim();
@@ -1590,7 +1600,7 @@ function getPlayedResults(){
 }
 
 function getMatchById(matchId){
-  return matchesCache.find(match =>
+  return getAllMatches().find(match =>
     String(match.id || match.match_id || "").trim() === String(matchId || "").trim()
   );
 }
@@ -2748,29 +2758,32 @@ async function initVmHub(){
   }
 
   const [
-    registrations,
-    matches,
-    submissions,
-    results,
-    outcome,
-    diff,
-    exact,
-    leaderboard,
-    frontpage
-  ] = await Promise.all([
-    fetchSheet(REGISTRATIONS_URL),
-    fetchSheet(MATCHES_URL),
-    fetchSheet(SUBMISSIONS_URL),
-    fetchSheet(RESULTS_URL),
-    fetchSheet(OUTCOME_URL),
-    fetchSheet(DIFF_URL),
-    fetchSheet(EXACT_URL),
-    fetchSheet(PROFILE_CACHE_URL),
-    fetchSheet(FRONTPAGE_CACHE_URL)
-  ]);
+  registrations,
+  matches,
+  knockoutMatches,
+  submissions,
+  results,
+  outcome,
+  diff,
+  exact,
+  leaderboard,
+  frontpage
+] = await Promise.all([
+  fetchSheet(REGISTRATIONS_URL),
+  fetchSheet(MATCHES_URL),
+  fetchSheet(KNOCKOUT_MATCHES_URL),
+  fetchSheet(SUBMISSIONS_URL),
+  fetchSheet(RESULTS_URL),
+  fetchSheet(OUTCOME_URL),
+  fetchSheet(DIFF_URL),
+  fetchSheet(EXACT_URL),
+  fetchSheet(PROFILE_CACHE_URL),
+  fetchSheet(FRONTPAGE_CACHE_URL)
+]);
 
   registrationsCache = registrations;
-  matchesCache = matches;
+ matchesCache = matches;
+knockoutMatchesCache = knockoutMatches;
   submissionsCache = submissions;
   outcomeRules = outcome;
   diffRules = diff;
