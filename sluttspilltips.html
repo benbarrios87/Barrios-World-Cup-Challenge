@@ -2098,8 +2098,9 @@ function renderPlayerModal(match){
     </div>
 
     <div class="action-row">
-      <button class="btn solid" onclick="saveTipFromModal()" ${!open ? "disabled" : ""}>Lagre tips på denne kampen</button>
-      <button class="btn" onclick="submitKnockoutTips()" ${!open ? "disabled" : ""}>Send inn alle åpne tips</button>
+    <button class="btn solid" onclick="submitCurrentMatchTip()" ${!open ? "disabled" : ""}>
+  💾 Send inn dette tipset
+</button>
     </div>
 
     <p class="small-text">
@@ -2270,12 +2271,87 @@ function saveTipFromModal(){
   renderAllViews();
   closeMatchModal();
 }
+  async function submitCurrentMatchTip(){
+  const phone = document.getElementById("playerPhone").value.trim();
+
+  if(!/^\d{8}$/.test(phone)){
+    alert("Skriv inn gyldig telefonnummer først.");
+    return;
+  }
+
+  const matchId = currentMatchId;
+  const match = getMatchById(matchId);
+
+  if(!match || deadlinePassed(match)){
+    alert("Fristen for denne kampen har gått ut.");
+    return;
+  }
+
+  const home = document.getElementById("modalHomeScore").value;
+  const away = document.getElementById("modalAwayScore").value;
+
+  if(home === "" || away === ""){
+    alert("Fyll inn begge scoringene.");
+    return;
+  }
+
+  const row = {
+    timestamp:new Date().toISOString(),
+    phone,
+    type:"knockout",
+    match_id:matchId,
+    home:match.home || "",
+    away:match.away || "",
+    tips_home:home,
+    tips_away:away
+  };
+
+  const response = await fetch(SUBMIT_URL, {
+    method:"POST",
+    body:JSON.stringify({
+      tipType:"knockout",
+      action:"submit_knockout_tips",
+      phone,
+      rows:[row]
+    })
+  });
+
+  const text = await response.text();
+
+  if(!response.ok){
+    alert("Innsending feilet.");
+    return;
+  }
+
+  localTips[matchId] = {
+    match_id:matchId,
+    tips_home:home,
+    tips_away:away
+  };
+
+  saveLocalState();
+  renderAllViews();
+  closeMatchModal();
+
+  alert(`✅ Tipset på ${match.home} – ${match.away} er sendt inn.`);
+}
 
 function getTipsPayload(){
   const phone = document.getElementById("playerPhone").value.trim();
 
   return Object.values(localTips)
-    .filter(tip => tip.tips_home !== "" && tip.tips_away !== "")
+    .filter(tip => {
+      if(!tip || tip.tips_home === "" || tip.tips_away === "") return false;
+
+      const match = getMatchById(tip.match_id);
+      if(!match) return false;
+
+      const active = isActive(match.active);
+      const locked = deadlinePassed(match);
+      const ready = match.home && match.away;
+
+      return active && ready && !locked;
+    })
     .map(tip => {
       const match = getMatchById(tip.match_id) || {};
       return {
