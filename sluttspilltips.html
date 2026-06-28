@@ -1046,6 +1046,7 @@ body::before{
   </div>
 
   <section id="bonusSection" class="bonus-section">
+    <div id="rtgDeliveredStatus" class="card" style="display:none;"></div>
     <div class="card">
       <h2 style="margin-top:0;">🧨 Lagbonus</h2>
       <p class="small-text">
@@ -1124,7 +1125,7 @@ body::before{
         <div>
           <h3>Din bonus</h3>
           <div id="bonusStatus" class="status-box">
-            0 / 15 poeng brukt
+            0 / 10 poeng brukt
           </div>
 
           <div class="action-row">
@@ -1209,6 +1210,7 @@ let diffRules = [];
 let exactRules = [];
 let localTips = {};
 let localBonus = {};
+let rtgLastSavedAt = "";
 let adminUnlocked = false;
 let currentMatchId = "";
 
@@ -2236,26 +2238,25 @@ function updateBonusPreview(input){
 function updateBonusStatus(){
   const total = Object.values(localBonus).reduce((sum,value) => sum + safeNumber(value), 0);
   const box = document.getElementById("bonusStatus");
+  const deliveredBox = document.getElementById("rtgDeliveredStatus");
+
   if(!box) return;
 
   const over = total > BONUS_MAX;
-
-  const maxPotential = Object.entries(localBonus).reduce((sum,[team,stake]) => {
-    const teamRow = knockoutTeams.find(row => getTeamName(row) === team) || {};
-    const odds = getBonusOdds(teamRow);
-    return sum + calcBonusPoints(stake, odds, BONUS_STAGE_MULTIPLIERS.winner);
-  }, 0);
+  const complete = total === BONUS_MAX && !over;
 
   const choiceLines = Object.entries(localBonus)
     .filter(([team,stake]) => safeNumber(stake) > 0)
     .map(([team,stake]) => `${escapeHtml(team)} • ${prettyNumber(stake)} poeng`);
 
   box.innerHTML = `
-    <strong style="color:${over ? "var(--red)" : "var(--gold)"}">${prettyNumber(total)} / ${BONUS_MAX}</strong> poeng brukt<br>
+    <strong style="color:${over ? "var(--red)" : complete ? "var(--green)" : "var(--gold)"}">
+      ${prettyNumber(total)} / ${BONUS_MAX}
+    </strong> poeng brukt<br>
 
     ${choiceLines.length ? `
       <div class="small-text" style="margin-top:8px;line-height:1.55;">
-        <strong>Dine valg:</strong><br>
+        <strong>Dine RTG-valg:</strong><br>
         ${choiceLines.join("<br>")}
       </div>
     ` : `
@@ -2265,14 +2266,36 @@ function updateBonusStatus(){
     `}
 
     <div class="small-text" style="margin-top:8px;">
-      ${over ? "Du har brukt for mange bonuspoeng." : "Maks mulig gevinst: " + prettyNumber(maxPotential) + "p"}
-    </div>
-
-    <div class="small-text" style="margin-top:8px;">
-      Poengene oppdateres underveis når lagene dine går videre.
+      ${over ? "Du har brukt for mange RTG-poeng." : complete ? "Klar til innsending ✅" : "Du har ikke brukt alle RTG-poengene ennå."}
     </div>
   `;
+
+  if(deliveredBox){
+    deliveredBox.style.display = "block";
+
+    if(rtgLastSavedAt){
+      deliveredBox.innerHTML = `
+        <h2 style="margin-top:0;color:var(--green);">✅ Road to Glory er levert</h2>
+        <p class="small-text">
+          Sist sendt inn: <strong>${rtgLastSavedAt}</strong><br>
+          ${prettyNumber(total)} / ${BONUS_MAX} RTG-poeng brukt.
+        </p>
+        <p class="small-text">
+          Du kan endre og sende inn på nytt frem til fristen. Siste innsending gjelder.
+        </p>
+      `;
+    }else{
+      deliveredBox.innerHTML = `
+        <h2 style="margin-top:0;color:var(--gold);">🧨 Road to Glory</h2>
+        <p class="small-text">
+          Ikke sendt inn ennå på denne enheten.<br>
+          ${prettyNumber(total)} / ${BONUS_MAX} RTG-poeng brukt.
+        </p>
+      `;
+    }
+  }
 }
+  
 async function submitBonus(){
   const phone = document.getElementById("playerPhone").value.trim();
 
@@ -2328,8 +2351,15 @@ async function submitBonus(){
   if(!response.ok){
     throw new Error(text || "Bonusinnsending feilet.");
   }
+rtgLastSavedAt = new Date().toLocaleString("no-NO", {
+  day:"2-digit",
+  month:"2-digit",
+  hour:"2-digit",
+  minute:"2-digit"
+});
 
-  alert("Lagbonus sendt inn!");
+updateBonusStatus();
+  alert("Road to Glory er sendt inn!");
 }
 
 function toggleAdminBox(){
