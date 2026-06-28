@@ -2101,6 +2101,28 @@ function getLastThreeBets(phone){
     }).join("")}
   `;
 }
+  function getLatestTipsForUpcomingMatches(phone){
+  const validTypes = ["match", "knockout"];
+
+  const userRows = submissionsCache.filter(row =>
+    String(row.phone || "").trim() === String(phone || "").trim() &&
+    validTypes.includes(String(row.type || "").trim().toLowerCase())
+  );
+
+  if(userRows.length === 0) return [];
+
+  const latestByType = {};
+
+  userRows.forEach(row => {
+    const type = String(row.type || "").trim().toLowerCase();
+    latestByType[type] = row.timestamp;
+  });
+
+  return userRows.filter(row => {
+    const type = String(row.type || "").trim().toLowerCase();
+    return String(row.timestamp || "") === String(latestByType[type] || "");
+  });
+}
 
 function renderNextTips(phone){
   const nextBox = document.getElementById("nextMatches");
