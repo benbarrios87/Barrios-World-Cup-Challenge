@@ -1629,7 +1629,7 @@ function getScoringPreview(match){
 
 function loadLocalState(){
   try{
-    const saved = JSON.parse(localStorage.getItem("vm2026_playoff_state") || "{}");
+    const saved = JSON.parse(localStorage.getItem("vm2026_playoff_state_v2") || "{}");
     if(saved.phone) document.getElementById("playerPhone").value = saved.phone;
     localTips = saved.tips || {};
     localBonus = saved.bonus || {};
@@ -1641,7 +1641,7 @@ function loadLocalState(){
 
 function saveLocalState(){
   const phone = document.getElementById("playerPhone").value.trim();
-  localStorage.setItem("vm2026_playoff_state", JSON.stringify({
+  localStorage.setItem("vm2026_playoff_state_v2", JSON.stringify({
     phone,
     tips:localTips,
     bonus:localBonus
@@ -1957,8 +1957,8 @@ if(locked) status = "🔒 Låst";
 
 if(completed){
   status = locked
-    ? "🔒 Ferdig"
-    : "✅ Lagret";
+    ? "🔒 Sendt inn"
+    : "✅ Sendt inn";
 }
 
   const tip = localTips[matchId];
