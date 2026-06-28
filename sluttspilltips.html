@@ -2313,8 +2313,10 @@ async function submitKnockoutTips(){
   }
 
   alert("Sluttspilltips sendt inn!");
-}
 
+  rtgLastSavedAt = new Date().toLocaleString("no-NO");
+renderFocusDashboard();
+}
 async function loadSavedFromSheet(){
   const phone = document.getElementById("playerPhone").value.trim();
 
@@ -2323,36 +2325,54 @@ async function loadSavedFromSheet(){
     return;
   }
 
-  const rows = await fetchSheet(SUBMISSIONS_API_URL);
+  try{
 
-  const userRows = rows.filter(row =>
-    String(row.phone || "").trim() === phone &&
-    String(row.type || "").trim().toLowerCase() === "knockout"
-  );
+    const rows = await fetchSheet(SUBMISSIONS_API_URL);
 
-  if(userRows.length === 0){
-    alert("Fant ingen lagrede sluttspilltips.");
-    return;
+    if(!rows.length){
+      alert("Kunne ikke hente data fra serveren. Prøv igjen om noen sekunder.");
+      return;
+    }
+
+    const userRows = rows.filter(row =>
+      String(row.phone || "").trim() === phone &&
+      String(row.type || "").trim().toLowerCase() === "knockout"
+    );
+
+    if(userRows.length === 0){
+      alert("Fant ingen lagrede sluttspilltips på dette telefonnummeret.");
+      return;
+    }
+
+    // Finn SISTE timestamp
+    const latestTimestamp = userRows
+      .map(r => String(r.timestamp))
+      .sort()
+      .pop();
+
+    const latestRows = userRows.filter(r => r.timestamp === latestTimestamp);
+
+    localTips = {};
+
+    latestRows.forEach(row=>{
+      const id = String(row.match_id || "").trim();
+
+      localTips[id] = {
+        match_id:id,
+        tips_home:row.tips_home,
+        tips_away:row.tips_away
+      };
+    });
+
+    saveLocalState();
+    renderAllViews();
+
+    alert(`✅ Hentet ${latestRows.length} sluttspilltips.`);
+
+  }catch(err){
+    console.error(err);
+    alert("Kunne ikke laste sluttspilltips.");
   }
-
-  const latestTimestamp = userRows[userRows.length - 1].timestamp;
-  const latestRows = userRows.filter(row => row.timestamp === latestTimestamp);
-
-  latestRows.forEach(row => {
-    const matchId = String(row.match_id || row.id || "").trim();
-    if(!matchId) return;
-
-    localTips[matchId] = {
-      match_id:matchId,
-      tips_home:row.tips_home || "",
-      tips_away:row.tips_away || ""
-    };
-  });
-
-  saveLocalState();
-  renderAllViews();
-
-  alert("Lagrede sluttspilltips hentet.");
 }
 
 function scrollToBonus(){
