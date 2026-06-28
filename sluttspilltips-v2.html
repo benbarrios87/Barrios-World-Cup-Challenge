@@ -1,1 +1,331 @@
 
+
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" href="favicon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sluttspill v2 | FC Barrios World Cup Challenge 2026</title>
+<style>
+:root{
+  --bg:#07111f;
+  --card:rgba(7,14,28,.88);
+  --soft:rgba(255,255,255,.075);
+  --soft2:rgba(255,255,255,.11);
+  --line:rgba(255,255,255,.14);
+  --text:#fff;
+  --muted:rgba(255,255,255,.70);
+  --green:#2ecc71;
+  --gold:#ffd166;
+  --red:#ff5e5e;
+  --blue:#7cc7ff;
+  --orange:#ffb347;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  color:var(--text);
+  min-height:100vh;
+  background:
+    radial-gradient(circle at top left, rgba(46,204,113,.22), transparent 30%),
+    radial-gradient(circle at bottom right, rgba(255,209,102,.13), transparent 28%),
+    linear-gradient(rgba(0,0,0,.68), rgba(0,0,0,.88)),
+    repeating-linear-gradient(90deg,#0b3d24 0,#0b3d24 90px,#0e4a2c 90px,#0e4a2c 180px);
+}
+body:before{
+  content:"";
+  position:fixed;inset:0;pointer-events:none;opacity:.42;
+  background:linear-gradient(90deg,transparent 49.8%,rgba(255,255,255,.08) 50%,transparent 50.2%);
+}
+.wrapper{max-width:1240px;margin:auto;padding:16px;position:relative;z-index:1}
+.nav{display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin:0 0 16px}
+.nav a,.nav button,.btn{
+  color:white;text-decoration:none;border:1px solid var(--line);border-radius:999px;
+  padding:10px 13px;background:rgba(255,255,255,.08);font-weight:800;cursor:pointer;font-family:inherit;
+}
+.nav .primary,.btn.primary{background:rgba(46,204,113,.18);border-color:rgba(46,204,113,.35);color:#9dffc7}
+.btn.solid{background:linear-gradient(135deg,var(--green),#7dffba);color:#07111f;border:0}
+.btn.danger{background:rgba(255,94,94,.13);border-color:rgba(255,94,94,.28);color:#ffb4b4}
+button:disabled,.btn:disabled{opacity:.45;cursor:not-allowed}
+.hero{margin:14px 0 16px;text-align:center}
+.badge{display:inline-block;margin-bottom:10px;padding:6px 11px;border-radius:999px;background:rgba(46,204,113,.18);color:#9dffc7;font-size:12px;font-weight:900;letter-spacing:.5px}
+h1{font-size:36px;line-height:1.05;margin:0 0 8px}.hero p{margin:0;color:var(--muted);line-height:1.45}
+.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:18px;margin-bottom:14px;box-shadow:0 14px 38px rgba(0,0,0,.30);backdrop-filter:blur(10px)}
+.grid-2{display:grid;grid-template-columns:1.05fr .95fr;gap:14px}.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.small{color:var(--muted);font-size:13px;line-height:1.45}.title{margin:0 0 12px;font-size:22px}.section-kicker{color:#9dffc7;font-weight:900;font-size:12px;letter-spacing:.7px;margin-bottom:7px;text-transform:uppercase}
+input,select{width:100%;border:0;outline:0;border-radius:14px;min-height:46px;padding:0 13px;font-size:16px;background:white;color:#111}
+.phone-row{display:grid;grid-template-columns:1fr auto;gap:10px}.stat-card{background:var(--soft);border:1px solid rgba(255,255,255,.10);border-radius:16px;padding:13px;text-align:center}.stat-card strong{display:block;font-size:23px;color:var(--gold);margin-bottom:4px}.stat-card span{font-size:12px;color:var(--muted)}
+.focus-card{background:linear-gradient(135deg,rgba(46,204,113,.17),rgba(124,199,255,.08));border-color:rgba(46,204,113,.35)}
+.focus-match{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center}.focus-teams{font-size:24px;font-weight:900}.focus-deadline{color:var(--gold);font-weight:900}.your-tip{display:inline-flex;gap:6px;align-items:center;border-radius:999px;background:rgba(255,209,102,.13);border:1px solid rgba(255,209,102,.25);color:var(--gold);padding:7px 11px;font-weight:900}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}.tab{border:1px solid var(--line);background:rgba(255,255,255,.08);color:white;border-radius:999px;padding:9px 12px;font-weight:900}.tab.active{background:var(--green);color:#07111f;border-color:transparent}
+.match-list{display:grid;gap:10px}.match-card{background:var(--soft);border:1px solid rgba(255,255,255,.10);border-radius:17px;padding:13px;cursor:pointer;transition:.15s}.match-card:hover{transform:translateY(-1px);border-color:rgba(255,209,102,.30)}.match-card.open{border-color:rgba(124,199,255,.34)}.match-card.tipped{border-color:rgba(46,204,113,.50);background:rgba(46,204,113,.075)}.match-card.locked{opacity:.65}.match-card.result{border-color:rgba(255,209,102,.24)}
+.match-top{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:start}.match-name{font-weight:900;font-size:16px;line-height:1.35}.match-meta{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px}.pill{display:inline-flex;align-items:center;gap:4px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.10);padding:5px 9px;font-size:12px;color:var(--muted);font-weight:800}.pill.green{background:rgba(46,204,113,.14);border-color:rgba(46,204,113,.25);color:#9dffc7}.pill.gold{background:rgba(255,209,102,.13);border-color:rgba(255,209,102,.25);color:var(--gold)}.pill.red{background:rgba(255,94,94,.12);border-color:rgba(255,94,94,.25);color:#ffb4b4}.score-box{text-align:right;color:var(--gold);font-weight:900;font-size:18px;white-space:nowrap}.dual{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}.dual-box{border-radius:14px;background:rgba(0,0,0,.18);border:1px solid rgba(255,255,255,.08);padding:10px}.dual-box strong{display:block;margin-bottom:4px}.dual-box .big{font-size:19px;color:var(--gold);font-weight:900}
+.team-pill{display:inline-flex;align-items:center;width:max-content;max-width:100%;padding:3px 8px;border-radius:999px;font-weight:900;font-size:.95em;border:1px solid rgba(255,255,255,.14)}.tier-1{background:rgba(46,204,113,.18);color:#9dffc7}.tier-2{background:rgba(255,209,102,.18);color:#ffd166}.tier-3{background:rgba(255,145,77,.18);color:#ffb06b}.tier-4{background:rgba(255,94,94,.18);color:#ff8f8f}.slot{background:rgba(255,255,255,.07);color:rgba(255,255,255,.76)}
+.round-block{border:1px solid rgba(255,255,255,.10);border-radius:18px;margin-bottom:10px;overflow:hidden;background:rgba(255,255,255,.04)}.round-head{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:13px 14px;cursor:pointer}.round-head strong{color:var(--gold)}.round-content{display:none;padding:0 12px 12px}.round-block.open .round-content{display:grid;gap:9px}.round-block.open .chev{transform:rotate(90deg)}.chev{transition:.15s}
+.rtg-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:14px}.bonus-list{display:grid;gap:9px;max-height:560px;overflow:auto;padding-right:3px}.bonus-row{display:grid;grid-template-columns:1fr 74px;gap:10px;align-items:center;background:var(--soft);border:1px solid rgba(255,255,255,.10);border-radius:16px;padding:11px}.bonus-row input{text-align:center;font-weight:900}.bonus-summary{background:rgba(255,209,102,.10);border:1px solid rgba(255,209,102,.20);border-radius:18px;padding:14px}.rtg-compact-row{display:grid;grid-template-columns:1fr auto;gap:8px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.08)}.rtg-compact-row:last-child{border-bottom:0}.bar{height:7px;border-radius:999px;background:rgba(255,255,255,.12);overflow:hidden;margin-top:6px}.bar span{display:block;height:100%;background:linear-gradient(90deg,var(--green),#9dffc7)}
+.notice-ok{border-color:rgba(46,204,113,.38);background:rgba(46,204,113,.10)}.notice-warn{border-color:rgba(255,209,102,.32);background:rgba(255,209,102,.10)}
+.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:999;display:none;align-items:center;justify-content:center;padding:14px}.modal{width:min(760px,100%);max-height:92vh;overflow:auto;background:rgba(7,14,28,.98);border:1px solid rgba(255,255,255,.18);border-radius:24px;padding:19px;box-shadow:0 24px 90px rgba(0,0,0,.65)}.modal-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.close{width:40px;height:40px;border-radius:50%;padding:0;background:rgba(255,255,255,.08);border:1px solid var(--line);color:white}.score-zone{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;margin:14px 0}.score-zone input{height:58px;text-align:center;font-size:25px;font-weight:900}.admin-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.admin-field label{display:block;color:var(--muted);font-size:12px;margin:0 0 5px}.footer{text-align:center;color:var(--muted);font-size:12px;margin:18px 0 8px}
+@media(max-width:850px){.wrapper{padding:12px}h1{font-size:30px}.grid-2,.grid-3,.rtg-grid{grid-template-columns:1fr}.grid-4{grid-template-columns:1fr 1fr}.phone-row{grid-template-columns:1fr}.focus-match,.match-top{grid-template-columns:1fr}.score-box{text-align:left}.dual{grid-template-columns:1fr}.nav{overflow-x:auto;flex-wrap:nowrap;padding-bottom:5px}.nav a,.nav button{white-space:nowrap}.admin-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrapper">
+  <div class="nav">
+    <a href="index.html">Hjem</a>
+    <a href="leaderboard.html">Leaderboard</a>
+    <a href="minetips.html">Mine tips</a>
+    <a href="stats.html">Stats</a>
+    <a class="primary" href="sluttspilltips-v2.html">Sluttspill v2</a>
+    <button onclick="toggleAdmin()">Admin</button>
+  </div>
+
+  <div class="hero">
+    <div class="badge">FC BARRIOS • VM 2026</div>
+    <h1>🏆 Sluttspill</h1>
+    <p>Se neste kamp, egne tips, Road to Glory og faktisk sluttspillstatus.</p>
+  </div>
+
+  <div class="card">
+    <div class="phone-row">
+      <input id="playerPhone" type="tel" maxlength="8" inputmode="numeric" placeholder="Telefonnummer, 8 siffer" oninput="onlyDigits(this); saveLocalState(); renderAll();">
+      <button class="btn solid" onclick="loadSavedFromSheet()">Hent lagrede tips</button>
+    </div>
+    <div class="small" id="phoneHelp" style="margin-top:9px;">Bruk samme nummer som ved registrering. Tips lagres lokalt først, og sendes inn når du trykker send.</div>
+  </div>
+
+  <section id="nextFocus" class="card focus-card"></section>
+  <section id="userStatus" class="grid-4"></section>
+
+  <section id="openTipsSection" class="card">
+    <div class="section-kicker">Akkurat nå</div>
+    <h2 class="title">Åpne tips</h2>
+    <div id="openTipsList" class="match-list"></div>
+  </section>
+
+  <section id="rtgSection"></section>
+
+  <section class="card">
+    <div class="section-kicker">Sluttspilltre</div>
+    <h2 class="title">Mine tips og faktisk utvikling</h2>
+    <div class="tabs">
+      <button id="tabBoth" class="tab active" onclick="setBracketMode('both')">Begge</button>
+      <button id="tabMine" class="tab" onclick="setBracketMode('mine')">Mine tips</button>
+      <button id="tabActual" class="tab" onclick="setBracketMode('actual')">Faktisk</button>
+    </div>
+    <div id="bracketView"></div>
+  </section>
+
+  <section class="card">
+    <div class="section-kicker">Arkiv</div>
+    <h2 class="title">Ferdige og låste kamper</h2>
+    <div id="finishedView"></div>
+  </section>
+
+  <div class="footer">FC Barrios World Cup Challenge 2026</div>
+</div>
+
+<div id="matchModalBackdrop" class="modal-backdrop">
+  <div class="modal">
+    <div class="modal-head">
+      <div>
+        <h2 id="modalTitle" style="margin:0 0 5px;">Kamp</h2>
+        <div id="modalMeta" class="small"></div>
+      </div>
+      <button class="close" onclick="closeMatchModal()">×</button>
+    </div>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+const SHEET_ID = "1Ud5i11MEUXwvKDDsfyxvNIdyJgMbY_pS50BkecyzhDo";
+const KNOCKOUT_MATCHES_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_KNOCKOUT_MATCHES`;
+const KNOCKOUT_TEAMS_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_KNOCKOUT_TEAMS`;
+const KNOCKOUT_BONUS_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_KNOCKOUT_BONUS`;
+const SUBMISSIONS_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_SUBMISSIONS`;
+const KNOCKOUT_OUTCOME_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_KNOCKOUT_OUTCOME`;
+const KNOCKOUT_DIFF_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_KNOCKOUT_DIFF`;
+const KNOCKOUT_EXACT_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_KNOCKOUT_EXACT`;
+const SUBMIT_URL = "https://script.google.com/macros/s/AKfycbz5qmCFs2y9Uw6bePoXdp-uGaicEhZJtfFcni3oqlOO0hEWct6yxWqQqCcYzZFJ1v49VQ/exec";
+
+const RTG_DEADLINE = new Date("2026-06-28T21:00:00+02:00");
+const BONUS_MAX = 10;
+const BONUS_TEAM_MAX = 5;
+const ADMIN_PIN_LOCAL = "2026";
+const BONUS_STAGE_MULTIPLIERS = { round16:.4, quarterfinal:.8, semifinal:1.3, bronze:1.8, finalist:2.4, winner:3 };
+
+const KNOWN_SLOT_WINNERS = {
+  "Winner Group A":"Mexico",
+  "Winner Group D":"USA",
+  "Winner Group E":"Tyskland",
+  "Winner Group J":"Argentina"
+};
+
+const ROUND_32_SLOTS = {
+  73:["Runner-up Group A","Runner-up Group B"], 74:["Winner Group E","Best 3rd place Group A/B/C/D/F"],
+  75:["Winner Group F","Runner-up Group C"], 76:["Winner Group C","Runner-up Group F"],
+  77:["Winner Group I","Best 3rd place Group C/D/F/G/H"], 78:["Runner-up Group E","Runner-up Group I"],
+  79:["Winner Group A","Best 3rd place Group C/E/F/H/I"], 80:["Winner Group L","Best 3rd place Group E/H/I/J/K"],
+  81:["Winner Group D","Best 3rd place Group B/E/F/I/J"], 82:["Winner Group G","Best 3rd place Group A/E/H/I/J"],
+  83:["Runner-up Group K","Runner-up Group L"], 84:["Winner Group H","Runner-up Group J"],
+  85:["Winner Group B","Best 3rd place Group E/F/G/I/J"], 86:["Winner Group J","Runner-up Group H"],
+  87:["Winner Group K","Best 3rd place Group D/E/I/J/L"], 88:["Runner-up Group D","Runner-up Group G"]
+};
+const NEXT_ROUND_SLOTS = {
+  89:["Winner Match 74","Winner Match 77"], 90:["Winner Match 73","Winner Match 75"],
+  91:["Winner Match 76","Winner Match 78"], 92:["Winner Match 79","Winner Match 80"],
+  93:["Winner Match 83","Winner Match 84"], 94:["Winner Match 81","Winner Match 82"],
+  95:["Winner Match 86","Winner Match 88"], 96:["Winner Match 85","Winner Match 87"],
+  97:["Winner Match 89","Winner Match 90"], 98:["Winner Match 93","Winner Match 94"],
+  99:["Winner Match 91","Winner Match 92"], 100:["Winner Match 95","Winner Match 96"],
+  101:["Winner Match 97","Winner Match 98"], 102:["Winner Match 99","Winner Match 100"],
+  103:["Loser Match 101","Loser Match 102"], 104:["Winner Match 101","Winner Match 102"]
+};
+const ROUND_CONFIG = [
+  {key:"Round of 32", label:"Round of 32", ids:[74,77,73,75,83,84,81,82,76,78,79,80,86,88,85,87]},
+  {key:"Round of 16", label:"8-delsfinaler", ids:[89,90,93,94,91,92,95,96]},
+  {key:"Quarterfinals", label:"Kvartfinaler", ids:[97,98,99,100]},
+  {key:"Semifinals", label:"Semifinaler", ids:[101,102]},
+  {key:"Finals", label:"Finaler", ids:[104,103]}
+];
+
+let allMatches = [], knockoutTeams = [], outcomeRules = [], diffRules = [], exactRules = [], savedBonusRows = [];
+let localTips = {}, localBonus = {}, rtgLastSavedAt = "", currentMatchId = "", bracketMode = "both", adminUnlocked = false;
+
+async function fetchSheet(url){
+  try{ const r = await fetch(url,{cache:"no-store"}); const data = await r.json(); return Array.isArray(data) ? data.map(normalizeRow).filter(row => Object.values(row).some(v => String(v||"").trim() !== "")) : []; }
+  catch(e){ console.error("fetchSheet",url,e); return []; }
+}
+function normalizeRow(row){ const clean={}; Object.keys(row||{}).forEach(k=>{ const ck=String(k).trim().toLowerCase().replace(/\s+/g,"_").replace(/-/g,"_"); clean[ck]=typeof row[k]==="string"?row[k].trim():row[k]; }); return clean; }
+function onlyDigits(input){ input.value = input.value.replace(/\D/g,"").slice(0,8); }
+function safeNumber(v){ if(v===""||v===null||v===undefined) return 0; return Number(String(v).replace(/\s/g,"").replace(",",".")) || 0; }
+function prettyNumber(v){ const n=safeNumber(v); return Number.isInteger(n) ? String(n) : n.toFixed(2).replace(/\.?0+$/,""); }
+function isBlank(v){ return v===""||v===null||v===undefined; }
+function isActive(v){ return ["true","1","yes","ja","open","åpen","active"].includes(String(v||"").trim().toLowerCase()); }
+function parseTier(v){ if(isBlank(v)) return 4; const f=String(v).match(/[1-4]/); return f ? Number(f[0]) : 4; }
+function getMatchId(m){ return String(m?.match_id || m?.id || "").trim(); }
+function getRoundFromId(id){ id=Number(id); if(id<=88) return "Round of 32"; if(id<=96) return "Round of 16"; if(id<=100) return "Quarterfinals"; if(id<=102) return "Semifinals"; return "Finals"; }
+function getSlotLabels(id){ return ROUND_32_SLOTS[id] || NEXT_ROUND_SLOTS[id] || ["TBD","TBD"]; }
+function getTeamName(row){ return String(row.team || row.name || row.lag || "").trim(); }
+function getBonusOdds(team){ return safeNumber(team.odds || team.multiplier || team.multiplier_win || team.vinner || 1); }
+function getTeamTier(name){ const f = knockoutTeams.find(t => getTeamName(t).toLowerCase() === String(name||"").toLowerCase()); return parseTier(f?.tier || f?.seed || 4); }
+function getMatchById(id){ return allMatches.find(m => getMatchId(m) === String(id)); }
+function getDisplayTeam(match,id,side){ const sideKey=side==="home"?"home":"away"; const slotKey=side==="home"?"home_slot":"away_slot"; const labels=getSlotLabels(Number(id)); const slot=match?.[slotKey] || labels[side==="home"?0:1] || "TBD"; const known=KNOWN_SLOT_WINNERS[slot] || ""; return {name:match?.[sideKey] || known || slot, slot, isRealTeam:!!(match?.[sideKey] || known)}; }
+function hydrateMatch(raw){ const id=getMatchId(raw); const home=getDisplayTeam(raw,id,"home"), away=getDisplayTeam(raw,id,"away"); return {...raw, home:raw.home || (home.isRealTeam?home.name:""), away:raw.away || (away.isRealTeam?away.name:""), home_slot:raw.home_slot || home.slot, away_slot:raw.away_slot || away.slot, tier_home:raw.tier_home || getTeamTier(raw.home || home.name), tier_away:raw.tier_away || getTeamTier(raw.away || away.name)}; }
+function hasTeams(m){ const id=getMatchId(m); return getDisplayTeam(m,id,"home").isRealTeam && getDisplayTeam(m,id,"away").isRealTeam; }
+function parseDeadline(v){ if(!v) return null; const raw=String(v).trim(); let d=new Date(raw); if(!Number.isNaN(d.getTime())) return d; const m=raw.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})(?:\s+(\d{1,2}):(\d{2}))?$/); if(m){ const [,dd,mm,yyyy,hh="00",min="00"]=m; return new Date(`${yyyy}-${mm.padStart(2,"0")}-${dd.padStart(2,"0")}T${hh.padStart(2,"0")}:${min}:00+02:00`); } return null; }
+function deadlinePassed(m){ const d=parseDeadline(m?.deadline); return d ? new Date() > d : false; }
+function formatTime(v){ const d=parseDeadline(v); if(!d) return v || "Ingen frist"; return d.toLocaleString("no-NO",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"}); }
+function formatShortTime(v){ const d=parseDeadline(v); if(!d) return v || "Ingen frist"; return d.toLocaleTimeString("no-NO",{hour:"2-digit",minute:"2-digit"}); }
+function escapeHtml(s){ return String(s||"").replace(/[&<>'"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c])); }
+function teamPill(name,tier,isReal=true){ if(!name) return ""; return `<span class="team-pill ${isReal?`tier-${parseTier(tier)}`:"slot"}">${escapeHtml(name)}</span>`; }
+function getOutcome(h,a){ h=safeNumber(h); a=safeNumber(a); if(h>a) return "home"; if(a>h) return "away"; return "draw"; }
+function getWinnerFromScore(match, homeScore, awayScore){ if(isBlank(homeScore)||isBlank(awayScore)||safeNumber(homeScore)===safeNumber(awayScore)) return ""; return safeNumber(homeScore)>safeNumber(awayScore) ? match.home : match.away; }
+function hasResult(m){ return m && !isBlank(m.actual_home) && !isBlank(m.actual_away); }
+function hasTip(id){ const t=localTips[String(id)]; return t && !isBlank(t.tips_home) && !isBlank(t.tips_away); }
+function calcBonusPoints(stake,odds,stage){ return safeNumber(stake)*safeNumber(odds)*safeNumber(stage); }
+function rtgLocked(){ return new Date() > RTG_DEADLINE; }
+
+function loadLocalState(){ try{ const saved=JSON.parse(localStorage.getItem("vm2026_playoff_v2")||"{}"); if(saved.phone) document.getElementById("playerPhone").value=saved.phone; localTips=saved.tips||{}; localBonus=saved.bonus||{}; rtgLastSavedAt=saved.rtgLastSavedAt||""; }catch(e){} }
+function saveLocalState(){ const phone=document.getElementById("playerPhone").value.trim(); localStorage.setItem("vm2026_playoff_v2",JSON.stringify({phone,tips:localTips,bonus:localBonus,rtgLastSavedAt})); renderAll(); }
+
+function getOpenMatches(){ return allMatches.map(hydrateMatch).filter(m => isActive(m.active) && hasTeams(m) && !deadlinePassed(m)).sort((a,b)=>(parseDeadline(a.deadline)||0)-(parseDeadline(b.deadline)||0) || safeNumber(getMatchId(a))-safeNumber(getMatchId(b))); }
+function getFinishedOrLocked(){ return allMatches.map(hydrateMatch).filter(m => (hasResult(m) || deadlinePassed(m)) && hasTeams(m)).sort((a,b)=>safeNumber(getMatchId(b))-safeNumber(getMatchId(a))); }
+function getCompletedOpenCount(){ return getOpenMatches().filter(m => hasTip(getMatchId(m))).length; }
+
+function renderAll(){ if(!allMatches.length) return; renderFocus(); renderStatus(); renderOpenTips(); renderRtg(); renderBracket(); renderFinished(); }
+function renderFocus(){ const box=document.getElementById("nextFocus"); const open=getOpenMatches(); const next=open[0]; if(!next){ box.innerHTML=`<div class="section-kicker">Neste steg</div><h2 class="title">Ingen åpne tips akkurat nå</h2><div class="small">Neste kamp åpner når begge lag er bekreftet. RTG-status og ferdige kamper ligger under.</div>`; return; } const id=getMatchId(next); const tip=localTips[id]; box.innerHTML=`
+  <div class="section-kicker">Neste frist</div>
+  <div class="focus-match">
+    <div>
+      <div class="focus-teams">${teamPill(next.home,next.tier_home,true)} – ${teamPill(next.away,next.tier_away,true)}</div>
+      <div class="small" style="margin-top:8px;">Kamp ${id} · ${next.round || getRoundFromId(id)}</div>
+      <div class="focus-deadline" style="margin-top:8px;">⏰ ${formatTime(next.deadline)}</div>
+    </div>
+    <div style="text-align:right;">
+      <div class="your-tip">${tip ? `Du: ${tip.tips_home}-${tip.tips_away}` : "Mangler tips"}</div>
+      <div style="margin-top:10px;"><button class="btn solid" onclick="openMatchModal('${id}')">${tip ? "Endre tips" : "Legg inn tips"}</button></div>
+    </div>
+  </div>`; }
+function renderStatus(){ const open=getOpenMatches(); const tipped=getCompletedOpenCount(); const rtgUsed=Object.values(localBonus).reduce((s,v)=>s+safeNumber(v),0); const rtgAlive=Object.keys(localBonus).filter(t=>safeNumber(localBonus[t])>0).length; const finished=getFinishedOrLocked().length; document.getElementById("userStatus").innerHTML=`
+  <div class="stat-card"><strong>${tipped}/${open.length}</strong><span>Åpne tips</span></div>
+  <div class="stat-card"><strong>${prettyNumber(rtgUsed)}/${BONUS_MAX}</strong><span>RTG brukt</span></div>
+  <div class="stat-card"><strong>${rtgAlive}</strong><span>RTG-lag</span></div>
+  <div class="stat-card"><strong>${finished}</strong><span>Ferdige/låste</span></div>`; }
+function renderOpenTips(){ const box=document.getElementById("openTipsList"); const rows=getOpenMatches(); if(!rows.length){ box.innerHTML=`<div class="small">Ingen åpne kamper nå.</div>`; return; } box.innerHTML=rows.map(m=>renderMatchCard(m,{compact:false})).join(""); }
+function renderMatchCard(match,{compact=false}={}){ const id=getMatchId(match); const tip=localTips[id]; const locked=deadlinePassed(match); const result=hasResult(match); const classes=["match-card",isActive(match.active)?"open":"",tip?"tipped":"",locked?"locked":"",result?"result":""].filter(Boolean).join(" "); const home=match.home || getDisplayTeam(match,id,"home").name; const away=match.away || getDisplayTeam(match,id,"away").name; const actualText=result?`${match.actual_home}-${match.actual_away}`:"Ikke spilt"; const tipText=tip?`${tip.tips_home}-${tip.tips_away}`:"Mangler"; const actualWinner=result?getWinnerFromScore(match,match.actual_home,match.actual_away):""; const tipWinner=tip?getWinnerFromScore(match,tip.tips_home,tip.tips_away):""; const hit=tipWinner && actualWinner && tipWinner===actualWinner; return `
+  <div class="${classes}" onclick="openMatchModal('${id}')">
+    <div class="match-top">
+      <div><div class="match-name">${teamPill(home,match.tier_home,true)} – ${teamPill(away,match.tier_away,true)}</div><div class="small" style="margin-top:5px;">Kamp ${id} · ${match.round || getRoundFromId(id)}</div></div>
+      <div class="score-box">${tipText}</div>
+    </div>
+    ${!compact ? `<div class="dual"><div class="dual-box"><strong>Ditt tips</strong><div class="big">${tipText}</div></div><div class="dual-box"><strong>Faktisk</strong><div class="big">${actualText}</div></div></div>` : ""}
+    <div class="match-meta">
+      <span class="pill ${tip?"green":"red"}">${tip?"Tippet":"Mangler"}</span>
+      <span class="pill ${locked?"red":"gold"}">${locked?"Låst":`Frist ${formatShortTime(match.deadline)}`}</span>
+      ${result?`<span class="pill ${hit?"green":"red"}">${hit?"Riktig vei":"Bom/ikke sjekket"}</span>`:""}
+    </div>
+  </div>`; }
+
+function renderRtg(){ const section=document.getElementById("rtgSection"); const used=Object.values(localBonus).reduce((s,v)=>s+safeNumber(v),0); const over=used>BONUS_MAX; const complete=used===BONUS_MAX; const choices=Object.entries(localBonus).filter(([,v])=>safeNumber(v)>0); const isLocked=rtgLocked();
+  if(isLocked){ section.innerHTML=`<div class="card notice-ok"><div class="section-kicker">Road to Glory</div><h2 class="title">🧨 RTG er låst</h2>${renderRtgSummary(true)}</div>`; return; }
+  section.innerHTML=`<div class="card ${rtgLastSavedAt?"notice-ok":"notice-warn"}">
+    <div class="section-kicker">Road to Glory</div>
+    <h2 class="title">${rtgLastSavedAt?"✅ Road to Glory er sendt inn":"🧨 Road to Glory"}</h2>
+    <div class="small">${rtgLastSavedAt?`Sist sendt inn: <strong>${rtgLastSavedAt}</strong>. Du kan endre og sende inn på nytt frem til fristen.`:`Frist: <strong>${formatTime(RTG_DEADLINE.toISOString())}</strong>. Siste innsending gjelder.`}</div>
+    <div class="rtg-grid" style="margin-top:14px;">
+      <div><h3 style="margin:0 0 10px;">Velg lag</h3><div id="bonusList" class="bonus-list">${renderBonusRows()}</div></div>
+      <div><h3 style="margin:0 0 10px;">Din RTG</h3><div class="bonus-summary">${renderRtgSummary(false)}</div><div style="margin-top:12px;"><button class="btn solid" onclick="submitBonus()" ${over||!complete?"disabled":""}>${rtgLastSavedAt?"Send inn endringer":"Send inn Road to Glory"}</button></div></div>
+    </div>
+  </div>`; }
+function renderBonusRows(){ const teams=knockoutTeams.filter(t=>isActive(t.qualified)||String(t.qualified||"").trim()==="").sort((a,b)=>getBonusOdds(a)-getBonusOdds(b)||getTeamName(a).localeCompare(getTeamName(b),"no")); if(!teams.length) return `<div class="small">Ingen lag funnet.</div>`; return teams.map(team=>{ const name=getTeamName(team); const tier=parseTier(team.tier); const odds=getBonusOdds(team); const value=localBonus[name]||""; const maxWinner=calcBonusPoints(BONUS_TEAM_MAX,odds,BONUS_STAGE_MULTIPLIERS.winner); return `<div class="bonus-row"><div><strong>${teamPill(name,tier,true)}</strong><div class="small">x${prettyNumber(odds)} · maks ${prettyNumber(maxWinner)} ved 5p + VM-seier</div></div><input type="number" min="0" max="5" value="${value}" oninput="setBonus('${escapeHtml(name)}',this.value)"></div>`; }).join(""); }
+function renderRtgSummary(compact){ const used=Object.values(localBonus).reduce((s,v)=>s+safeNumber(v),0); const choices=Object.entries(localBonus).filter(([,v])=>safeNumber(v)>0); const over=used>BONUS_MAX; const complete=used===BONUS_MAX; if(!choices.length) return `<div class="small">Ingen RTG-valg lagt inn ennå.</div><div class="pill gold" style="margin-top:10px;">0/${BONUS_MAX} brukt</div>`; const lines=choices.map(([team,stake])=>{ const t=knockoutTeams.find(x=>getTeamName(x)===team)||{}; const pct=Math.min(100,(safeNumber(stake)/BONUS_TEAM_MAX)*100); return `<div class="rtg-compact-row"><div><strong>${escapeHtml(team)}</strong><div class="bar"><span style="width:${pct}%"></span></div></div><div><strong>${prettyNumber(stake)}p</strong></div></div>`; }).join(""); return `${lines}<div style="margin-top:12px;"><span class="pill ${over?"red":complete?"green":"gold"}">${prettyNumber(used)}/${BONUS_MAX} brukt</span></div><div class="small" style="margin-top:9px;">${over?"Du har brukt for mange RTG-poeng.":complete?(rtgLastSavedAt||compact?"✅ Road to Glory er sendt inn.":"Klar til innsending."):"Du har ikke brukt alle RTG-poengene ennå."}</div>`; }
+function setBonus(team,value){ value=Math.max(0,Math.min(BONUS_TEAM_MAX,safeNumber(value))); if(value>0) localBonus[team]=value; else delete localBonus[team]; const phone=document.getElementById("playerPhone").value.trim(); localStorage.setItem("vm2026_playoff_v2",JSON.stringify({phone,tips:localTips,bonus:localBonus,rtgLastSavedAt})); renderAll(); }
+
+function setBracketMode(mode){ bracketMode=mode; ["Both","Mine","Actual"].forEach(x=>document.getElementById(`tab${x}`).classList.toggle("active",mode===x.toLowerCase())); renderBracket(); }
+function renderBracket(){ const box=document.getElementById("bracketView"); box.innerHTML=ROUND_CONFIG.map((round,idx)=>{ const open=idx>=1?"":" open"; const cards=round.ids.map(id=>{ const m=hydrateMatch(getMatchById(id)||{match_id:String(id),round:round.key}); return renderBracketItem(m); }).join(""); return `<div class="round-block${open}"><div class="round-head" onclick="this.parentElement.classList.toggle('open')"><strong>${round.label}</strong><span class="pill">${round.ids.length} kamper <span class="chev">›</span></span></div><div class="round-content">${cards}</div></div>`; }).join(""); }
+function renderBracketItem(match){ const id=getMatchId(match); const home=match.home || getDisplayTeam(match,id,"home").name; const away=match.away || getDisplayTeam(match,id,"away").name; const tip=localTips[id]; const tipText=tip?`${tip.tips_home}-${tip.tips_away}`:"–"; const actualText=hasResult(match)?`${match.actual_home}-${match.actual_away}`:"–"; if(bracketMode==="mine") return `<div class="match-card ${tip?"tipped":""}" onclick="openMatchModal('${id}')"><div class="match-top"><div><div class="match-name">M${id}: ${escapeHtml(home)} – ${escapeHtml(away)}</div></div><div class="score-box">${tipText}</div></div></div>`; if(bracketMode==="actual") return `<div class="match-card ${hasResult(match)?"result":""}" onclick="openMatchModal('${id}')"><div class="match-top"><div><div class="match-name">M${id}: ${escapeHtml(home)} – ${escapeHtml(away)}</div></div><div class="score-box">${actualText}</div></div></div>`; return renderMatchCard(match,{compact:false}); }
+function renderFinished(){ const box=document.getElementById("finishedView"); const rows=getFinishedOrLocked(); if(!rows.length){ box.innerHTML=`<div class="small">Ingen låste/ferdige kamper ennå.</div>`; return; } const byRound={}; rows.forEach(m=>{ const r=m.round || getRoundFromId(getMatchId(m)); if(!byRound[r]) byRound[r]=[]; byRound[r].push(m); }); box.innerHTML=Object.entries(byRound).map(([round,ms])=>`<div class="round-block"><div class="round-head" onclick="this.parentElement.classList.toggle('open')"><strong>${round}</strong><span class="pill">${ms.length} kamper <span class="chev">›</span></span></div><div class="round-content">${ms.map(m=>renderMatchCard(m,{compact:true})).join("")}</div></div>`).join(""); }
+
+function openMatchModal(matchId){ currentMatchId=String(matchId); const raw=getMatchById(matchId)||{match_id:matchId,round:getRoundFromId(matchId)}; const match=hydrateMatch(raw); const id=getMatchId(match); const tip=localTips[id]||{}; const open=isActive(match.active)&&hasTeams(match)&&!deadlinePassed(match); document.getElementById("modalTitle").textContent=`M${id}: ${match.home||getDisplayTeam(match,id,"home").name} vs ${match.away||getDisplayTeam(match,id,"away").name}`; document.getElementById("modalMeta").textContent=`${match.round||getRoundFromId(id)} · Frist ${formatTime(match.deadline)}`; const adminHtml=adminUnlocked?renderAdminFields(match):"";
+  document.getElementById("modalBody").innerHTML=`${!hasTeams(match)?`<div class="card notice-warn small">Kampen er ikke klar ennå.</div>`:""}${deadlinePassed(match)?`<div class="card notice-warn small">Fristen for denne kampen har gått ut.</div>`:""}
+  <div class="score-zone"><input id="modalHomeScore" type="number" min="0" value="${tip.tips_home||""}" ${!open?"disabled":""}><strong>–</strong><input id="modalAwayScore" type="number" min="0" value="${tip.tips_away||""}" ${!open?"disabled":""}></div>
+  <div style="display:flex;gap:9px;flex-wrap:wrap;"><button class="btn solid" onclick="saveTipFromModal()" ${!open?"disabled":""}>Lagre tips</button><button class="btn" onclick="submitKnockoutTips()" ${!open?"disabled":""}>Send inn alle åpne tips</button></div>
+  <div class="small" style="margin-top:10px;">Tips gjelder ordinær tid. Uavgjort er lov. Siste innsending gjelder.</div>${adminHtml}`; document.getElementById("matchModalBackdrop").style.display="flex"; }
+function closeMatchModal(){ document.getElementById("matchModalBackdrop").style.display="none"; currentMatchId=""; }
+function saveTipFromModal(){ const h=document.getElementById("modalHomeScore").value; const a=document.getElementById("modalAwayScore").value; if(h===""||a===""){alert("Fyll inn begge scoringene.");return;} localTips[currentMatchId]={match_id:currentMatchId,tips_home:h,tips_away:a}; closeMatchModal(); saveLocalState(); }
+function getTipsPayload(){ const phone=document.getElementById("playerPhone").value.trim(); return Object.values(localTips).filter(t=>!isBlank(t.tips_home)&&!isBlank(t.tips_away)).map(t=>{ const m=hydrateMatch(getMatchById(t.match_id)||{}); return {timestamp:new Date().toISOString(),phone,type:"knockout",match_id:t.match_id,home:m.home||"",away:m.away||"",tips_home:t.tips_home,tips_away:t.tips_away}; }); }
+async function submitKnockoutTips(){ const phone=document.getElementById("playerPhone").value.trim(); if(!/^\d{8}$/.test(phone)){alert("Skriv inn gyldig telefonnummer først.");return;} const rows=getTipsPayload(); if(!rows.length){alert("Du har ingen sluttspilltips å sende inn.");return;} const res=await fetch(SUBMIT_URL,{method:"POST",body:JSON.stringify({action:"submit_knockout_tips",tipType:"knockout",phone,rows})}); const text=await res.text(); if(!res.ok) throw new Error(text||"Innsending feilet"); alert("Sluttspilltips sendt inn!"); }
+async function submitBonus(){ const phone=document.getElementById("playerPhone").value.trim(); if(!/^\d{8}$/.test(phone)){alert("Skriv inn gyldig telefonnummer først.");return;} const used=Object.values(localBonus).reduce((s,v)=>s+safeNumber(v),0); if(used!==BONUS_MAX){alert(`Du må bruke akkurat ${BONUS_MAX} RTG-poeng.`);return;} const rows=Object.entries(localBonus).filter(([,stake])=>safeNumber(stake)>0).map(([team,stake])=>{ const t=knockoutTeams.find(x=>getTeamName(x)===team)||{}; const odds=getBonusOdds(t); return {team,stake:safeNumber(stake),odds,potential_round16:calcBonusPoints(stake,odds,BONUS_STAGE_MULTIPLIERS.round16),potential_quarterfinal:calcBonusPoints(stake,odds,BONUS_STAGE_MULTIPLIERS.quarterfinal),potential_semifinal:calcBonusPoints(stake,odds,BONUS_STAGE_MULTIPLIERS.semifinal),potential_bronze:calcBonusPoints(stake,odds,BONUS_STAGE_MULTIPLIERS.bronze),potential_finalist:calcBonusPoints(stake,odds,BONUS_STAGE_MULTIPLIERS.finalist),potential_winner:calcBonusPoints(stake,odds,BONUS_STAGE_MULTIPLIERS.winner)}; }); const res=await fetch(SUBMIT_URL,{method:"POST",body:JSON.stringify({action:"submit_knockout_bonus",phone,rows})}); const text=await res.text(); if(!res.ok) throw new Error(text||"RTG feilet"); rtgLastSavedAt=new Date().toLocaleString("no-NO",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"}); saveLocalState(); alert("Road to Glory er sendt inn!"); }
+
+async function loadSavedFromSheet(){ const phone=document.getElementById("playerPhone").value.trim(); if(!/^\d{8}$/.test(phone)){alert("Skriv inn telefonnummer først.");return;} const [subs,bonus]=await Promise.all([fetchSheet(SUBMISSIONS_URL),fetchSheet(KNOCKOUT_BONUS_URL)]); const user=subs.filter(r=>String(r.phone||"").trim()===phone && String(r.type||"").trim().toLowerCase()==="knockout"); if(user.length){ const latest=Math.max(...user.map(r=>getTimeKey(r.timestamp))); user.filter(r=>getTimeKey(r.timestamp)===latest).forEach(r=>{ const id=String(r.match_id||r.id||"").trim(); if(id) localTips[id]={match_id:id,tips_home:r.tips_home||"",tips_away:r.tips_away||""}; }); }
+  const bRows=bonus.filter(r=>String(r.phone||"").trim()===phone); if(bRows.length){ const latest=Math.max(...bRows.map(r=>getTimeKey(r.timestamp))); localBonus={}; bRows.filter(r=>getTimeKey(r.timestamp)===latest).forEach(r=>{ const team=String(r.team||"").trim(); if(team && safeNumber(r.stake)>0) localBonus[team]=safeNumber(r.stake); }); rtgLastSavedAt="Hentet fra ark"; }
+  saveLocalState(); alert(user.length||bRows.length?"Lagrede tips hentet.":"Fant ingen lagrede sluttspilltips/RTG."); }
+function getTimeKey(v){ if(v instanceof Date) return v.getTime(); const d=new Date(v).getTime(); if(!Number.isNaN(d)) return d; const txt=String(v||"").trim(); const m=txt.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4}) kl\. (\d{1,2})\.(\d{2})\.(\d{2})$/); if(m){ const [,dd,mm,yyyy,hh,min,sec]=m; return new Date(Number(yyyy),Number(mm)-1,Number(dd),Number(hh),Number(min),Number(sec)).getTime(); } return 0; }
+
+function toggleAdmin(){ if(adminUnlocked){adminUnlocked=false; alert("Admin låst."); return;} const pin=prompt("PIN-kode"); if(pin===ADMIN_PIN_LOCAL){adminUnlocked=true; alert("Admin åpnet. Klikk på en kamp.");} }
+function renderAdminFields(match){ const id=getMatchId(match); return `<div class="card" style="margin-top:14px;"><div class="section-kicker">Admin</div><div class="admin-grid">
+  <div class="admin-field"><label>Kamp-ID</label><input id="adminMatchId" value="${id}" readonly></div>
+  <div class="admin-field"><label>Runde</label><input id="adminRound" value="${match.round||getRoundFromId(id)}"></div>
+  <div class="admin-field"><label>Hjemmelag</label><select id="adminHome">${teamOptions(match.home)}</select></div>
+  <div class="admin-field"><label>Bortelag</label><select id="adminAway">${teamOptions(match.away)}</select></div>
+  <div class="admin-field"><label>Tier home</label><input id="adminTierHome" type="number" min="1" max="4" value="${match.tier_home||getTeamTier(match.home)}"></div>
+  <div class="admin-field"><label>Tier away</label><input id="adminTierAway" type="number" min="1" max="4" value="${match.tier_away||getTeamTier(match.away)}"></div>
+  <div class="admin-field"><label>Active</label><select id="adminActive"><option value="TRUE" ${isActive(match.active)?"selected":""}>TRUE</option><option value="FALSE" ${!isActive(match.active)?"selected":""}>FALSE</option></select></div>
+  <div class="admin-field"><label>Frist</label><input id="adminDeadline" value="${match.deadline||"2026-06-28T21:00:00+02:00"}"></div>
+  <div class="admin-field"><label>Resultat home</label><input id="adminActualHome" type="number" min="0" value="${match.actual_home||""}"></div>
+  <div class="admin-field"><label>Resultat away</label><input id="adminActualAway" type="number" min="0" value="${match.actual_away||""}"></div>
+  </div><div style="margin-top:12px;"><button class="btn solid" onclick="saveAdminMatch()">Lagre kamp</button></div></div>`; }
+function teamOptions(selected){ const rows=knockoutTeams.filter(t=>isActive(t.qualified)||String(t.qualified||"").trim()==="").sort((a,b)=>getTeamName(a).localeCompare(getTeamName(b),"no")); return `<option value="">TBD</option>${rows.map(t=>{const n=getTeamName(t);return `<option value="${escapeHtml(n)}" ${n===selected?"selected":""}>${escapeHtml(n)}</option>`;}).join("")}`; }
+async function saveAdminMatch(){ const payload={action:"admin_knockout_match",match_id:document.getElementById("adminMatchId").value,round:document.getElementById("adminRound").value,home:document.getElementById("adminHome").value,away:document.getElementById("adminAway").value,tier_home:document.getElementById("adminTierHome").value,tier_away:document.getElementById("adminTierAway").value,active:document.getElementById("adminActive").value,deadline:document.getElementById("adminDeadline").value,actual_home:document.getElementById("adminActualHome").value,actual_away:document.getElementById("adminActualAway").value}; const res=await fetch(SUBMIT_URL,{method:"POST",body:JSON.stringify(payload)}); const text=await res.text(); if(!res.ok) throw new Error(text||"Admin lagring feilet"); alert("Kamp lagret. Refresh siden for å hente ny data."); }
+
+document.getElementById("matchModalBackdrop").addEventListener("click",e=>{ if(e.target.id==="matchModalBackdrop") closeMatchModal(); });
+document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeMatchModal(); });
+
+async function loadAll(){ loadLocalState(); const [matchRows,teamRows,outcome,diff,exact,bonusRows]=await Promise.all([fetchSheet(KNOCKOUT_MATCHES_URL),fetchSheet(KNOCKOUT_TEAMS_URL),fetchSheet(KNOCKOUT_OUTCOME_URL),fetchSheet(KNOCKOUT_DIFF_URL),fetchSheet(KNOCKOUT_EXACT_URL),fetchSheet(KNOCKOUT_BONUS_URL)]); knockoutTeams=teamRows.map(r=>({...r,team:getTeamName(r),tier:r.tier||r.seed||4})).filter(r=>r.team); allMatches=matchRows.map(r=>({...r,match_id:String(r.match_id||r.id||"").trim()})).filter(r=>r.match_id); outcomeRules=outcome; diffRules=diff; exactRules=exact; savedBonusRows=bonusRows; renderAll(); }
+loadAll();
+</script>
+</body>
+</html>
