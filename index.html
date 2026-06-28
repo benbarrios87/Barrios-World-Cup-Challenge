@@ -1970,14 +1970,17 @@ function latestTimestampForPhone(phone){
 }
 
 function getLatestMatchTipsForPhone(phone){
-  const latestTimestamp = latestTimestampForPhone(phone);
-
-  if(!latestTimestamp) return [];
-
-  return submissionsCache.filter(row =>
+  const userMatchRows = submissionsCache.filter(row =>
     String(row.phone || "").trim() === String(phone || "").trim() &&
-    String(row.timestamp || "") === String(latestTimestamp || "") &&
     String(row.type || "").trim().toLowerCase() === "match"
+  );
+
+  if(userMatchRows.length === 0) return [];
+
+  const latestTimestamp = userMatchRows[userMatchRows.length - 1].timestamp;
+
+  return userMatchRows.filter(row =>
+    String(row.timestamp || "") === String(latestTimestamp || "")
   );
 }
 
@@ -2027,7 +2030,7 @@ function calculateTipPoints(tip, match, result){
 }
 
 function getLastThreeBets(phone){
-  const matchTips = getLatestMatchRowsForPhone(submissionsCache, phone);
+  const matchTips = getLatestMatchTipsForPhone(phone);
 
   return matchTips
     .filter(tip =>
