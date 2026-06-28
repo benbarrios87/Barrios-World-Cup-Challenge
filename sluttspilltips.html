@@ -1837,17 +1837,18 @@ function updateRtgVisibility(){
   const editor = document.getElementById("rtgEditorCard");
   const content = document.getElementById("rtgEditorContent");
   const status = document.getElementById("rtgDeliveredStatus");
-  if(!editor) return;
 
-  const total = Object.values(localBonus).reduce((sum,value) => sum + safeNumber(value), 0);
-  const lines = Object.entries(localBonus)
-    .filter(([team,stake]) => safeNumber(stake) > 0)
-    .map(([team,stake]) => `${escapeHtml(team)} • ${prettyNumber(stake)}p`);
+  if(!editor) return;
 
   if(isRtgLocked()){
     editor.style.display = "none";
 
     if(status){
+      const total = Object.values(localBonus).reduce((sum,value) => sum + safeNumber(value), 0);
+      const lines = Object.entries(localBonus)
+        .filter(([team,stake]) => safeNumber(stake) > 0)
+        .map(([team,stake]) => `${escapeHtml(team)} • ${prettyNumber(stake)}p`);
+
       status.style.display = "block";
       status.innerHTML = `
         <h2 style="margin-top:0;color:var(--green);">🔒 Road to Glory er låst</h2>
@@ -1857,47 +1858,25 @@ function updateRtgVisibility(){
         </div>
       `;
     }
-
     return;
   }
 
   editor.style.display = "block";
   if(content) content.style.display = "grid";
 
-  // FØR DEADLINE: ikke vis låse-/leveringsboksen over editoren
   if(status){
     status.style.display = "none";
     status.innerHTML = "";
   }
-}
-  function forceShowRTG(){
-  const section = document.getElementById("bonusSection");
-  const editor = document.getElementById("rtgEditorCard");
-  const content = document.getElementById("rtgEditorContent");
-  const list = document.getElementById("bonusList");
-  const status = document.getElementById("rtgDeliveredStatus");
-
-  if(section) section.style.display = "block";
-  if(editor) editor.style.display = "block";
-  if(content) content.style.display = "grid";
-  if(list) list.style.display = "grid";
-
-  if(status){
-    status.style.display = "none";
-    status.innerHTML = "";
-  }
-
-  renderBonus();
-  updateBonusStatus();
 }
   
-
 function renderAllViews(){
   renderBracket();
   renderMobileList();
   renderDeadlineOverview();
   renderFocusDashboard();
-  forceShowRTG();
+  renderBonus();
+  updateRtgVisibility();
 }
 
 function renderBracket(){
