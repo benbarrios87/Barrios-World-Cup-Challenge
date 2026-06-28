@@ -1430,7 +1430,7 @@ async function fetchSheet(url){
 
     return data.map(normalizeRow);
   }catch(error){
-    console.log("Kunne ikke hente data:", error);
+    ("Kunne ikke hente data:", error);
     return [];
   }
 }
@@ -2177,13 +2177,10 @@ if(displayName){
   nextBox.innerHTML = nextMatches.map(match => {
     const matchId = String(match.id || match.match_id || "").trim();
 
-    console.log("match.id", match.id);
-console.log("sample tip", matchTips[0]);
   const tip = latestTipByMatchId[cleanNumber(matchId)];
 
 const homeTip = String(tip?.tips_home ?? "").trim();
 const awayTip = String(tip?.tips_away ?? "").trim();
-   console.log(JSON.stringify(tip, null, 2));
 
 const tipText = homeTip !== "" && awayTip !== ""
   ? `${homeTip} - ${awayTip}`
@@ -2290,7 +2287,7 @@ async function loadLivePool(){
     });
 
   }catch(err){
-    console.log("Kunne ikke hente live status:", err);
+    ("Kunne ikke hente live status:", err);
 
     targets.forEach(target => {
       if(target.players) target.players.textContent = "Kunne ikke hente";
