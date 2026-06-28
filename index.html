@@ -1728,7 +1728,9 @@ function getCommunityStories(){
     const drawPct = cleanNumber(row.draw_pct);
     const awayPct = cleanNumber(row.away_pct);
 
-    const match = getMatchById(row.match_id);
+    const match = getAllMatches().find(m =>
+  String(m.id || m.match_id || "").trim() === String(row.match_id || "").trim()
+);
     
     if(total <= 0) return;
 
