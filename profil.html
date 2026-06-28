@@ -39,7 +39,86 @@ function handlePhotoError(img,initials){let candidates=[];try{candidates=JSON.pa
 function getShortNameParts(name){const parts=String(name||"").trim().split(/\s+/);if(parts.length<=1)return[parts[0]||""];return[parts[0],parts[parts.length-1]]}
 function splitBonus(names,points){const nameArr=String(names||"").split("|").map(i=>i.trim()).filter(Boolean);const pointArr=String(points||"").split("|").map(i=>i.trim());return nameArr.map((name,index)=>({name,points:cleanNumber(pointArr[index])}))}
 function renderBonusChoice(title,icon,names,points){const items=splitBonus(names,points);if(items.length===0)return`<div class="bonus-choice"><div class="label">${icon} ${title}</div><div class="note">Ikke fylt ut</div></div>`;return`<div class="bonus-choice"><div class="label">${icon} ${title}</div><div class="compact-bonus-list">${items.map(item=>`<span class="compact-bonus-pill">${item.name} <strong>+${prettyPoints(item.points)}</strong></span>`).join("")}</div></div>`}
-function renderRtgChoice(player){const picks=String(player.rtg_picks||"").split("|").map(i=>i.trim()).filter(Boolean);const rtgPoints=cleanNumber(player.rtg_points);const alive=String(player.rtg_alive||"").toLowerCase()==="true";if(picks.length===0&&rtgPoints===0&&!alive)return"";return`<div class="bonus-choice" style="grid-column:1 / -1;"><div class="label">🧨 Road to Glory</div><div class="compact-bonus-list">${picks.map(item=>`<span class="compact-bonus-pill rtg-pill">${item}</span>`).join("")}<span class="compact-bonus-pill rtg-pill">RTG-poeng <strong>+${prettyPoints(rtgPoints)}</strong></span>${alive?`<span class="compact-bonus-pill rtg-pill">🟢 Lever fortsatt</span>`:""}</div></div>`}
+function renderRtgChoice(player){
+  const rawPicks = String(player.rtg_picks || "")
+    .split("|")
+    .map(i => i.trim())
+    .filter(Boolean);
+
+  const rtgPoints = cleanNumber(player.rtg_points);
+  const alive = String(player.rtg_alive || "").toLowerCase() === "true";
+
+  if(rawPicks.length === 0 && rtgPoints === 0 && !alive) return "";
+
+  const picks = rawPicks.map(item => {
+    const parts = item.split("~");
+
+    if(parts.length >= 5){
+      return {
+        team: parts[0],
+        stake: cleanNumber(parts[1]),
+        current: cleanNumber(parts[2]),
+        next: cleanNumber(parts[3]),
+        status: parts[4]
+      };
+    }
+
+    return {
+      team: item,
+      stake: "",
+      current: 0,
+      next: 0,
+      status: alive ? "alive" : "out"
+    };
+  });
+
+  return `
+    <div class="bonus-choice" style="grid-column:1 / -1;">
+      <div class="label">🧨 Road to Glory</div>
+
+      <div class="compact-bonus-list">
+        ${picks.map(pick => {
+          const isAlive = pick.status === "alive";
+          return `
+            <span class="compact-bonus-pill rtg-pill" style="position:relative;padding-right:58px;">
+              ${isAlive ? "🟢" : "🔴"} ${pick.team} ${pick.stake ? pick.stake + "p" : ""}
+
+              <span style="
+                position:absolute;
+                top:-8px;
+                right:-6px;
+                background:${isAlive ? "rgba(46,204,113,.95)" : "rgba(255,94,94,.95)"};
+                color:#07111f;
+                border-radius:999px;
+                padding:3px 7px;
+                font-size:11px;
+                font-weight:900;
+                border:1px solid rgba(255,255,255,.35);
+              ">
+                +${prettyPoints(pick.current)}
+              </span>
+
+              ${isAlive && pick.next > pick.current ? `
+                <span style="
+                  display:block;
+                  margin-top:4px;
+                  font-size:11px;
+                  color:rgba(255,255,255,.72);
+                ">
+                  Neste: +${prettyPoints(pick.next)}
+                </span>
+              ` : ""}
+            </span>
+          `;
+        }).join("")}
+
+        <span class="compact-bonus-pill rtg-pill">
+          Totalt <strong>+${prettyPoints(rtgPoints)}</strong>
+        </span>
+      </div>
+    </div>
+  `;
+}
 function getRatings(player,allRows){const maxPoints=Math.max(...allRows.map(row=>cleanNumber(row.points)),1),maxExact=Math.max(...allRows.map(row=>cleanNumber(row.exact)),1),maxUnderdog=Math.max(...allRows.map(row=>cleanNumber(row.underdog)),1),maxDiff=Math.max(...allRows.map(row=>cleanNumber(row.diff)),1),maxOutcome=Math.max(...allRows.map(row=>cleanNumber(row.outcome)),1);const tip=toRating(cleanNumber(player.exact)+cleanNumber(player.diff)*.6,maxExact+maxDiff*.6),out=toRating(cleanNumber(player.underdog),maxUnderdog),res=toRating(cleanNumber(player.points),maxPoints),luk=toRating(cleanNumber(player.diff)+cleanNumber(player.outcome)*.25,maxDiff+maxOutcome*.25),ovr=Math.round((tip+out+res+luk)/4);return{tip,out,res,luk,ovr}}
 function getStatComment(player,ratings){if(cleanNumber(player.rank)<=3)return"Topp 3 akkurat nå. Dette er skjermdump-materiale.";if(ratings.out>=90)return"Outsider-radaren blinker. Her har det kommet noen modige treff.";if(ratings.tip>=90)return"Høy presisjon. Eksakte treff og målforskjell har løftet kortet.";if(cleanNumber(player.rtg_points)>0)return"Road to Glory har begynt å betale. Nå handler det om å holde lagene levende.";return"Solid turnering så langt. Fortsatt mye poeng å spille om."}
 function normalizeNameKey(value){return slugify(value||"")}
