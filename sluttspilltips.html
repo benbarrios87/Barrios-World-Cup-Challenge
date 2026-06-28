@@ -1279,13 +1279,13 @@ const KNOCKOUT_OUTCOME_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_KNOCKOUT_
 const KNOCKOUT_DIFF_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_KNOCKOUT_DIFF`;
 const KNOCKOUT_EXACT_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_KNOCKOUT_EXACT`;
 const SUBMISSIONS_API_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_SUBMISSIONS`;
-
+const KNOCKOUT_BONUS_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_KNOCKOUT_BONUS`;
 const SUBMIT_URL = "https://script.google.com/macros/s/AKfycbz5qmCFs2y9Uw6bePoXdp-uGaicEhZJtfFcni3oqlOO0hEWct6yxWqQqCcYzZFJ1v49VQ/exec"
 
 const ADMIN_PIN_LOCAL = "2026"; // Kun visuell lås. Apps Script må validere ekte PIN.
 const BONUS_MAX = 10;
 const BONUS_TEAM_MAX = 5;
-const RTG_DEADLINE = new Date("2026-06-28T21:00:00+02:00");
+const RTG_DEADLINE = new Date("2026-06-29T19:00:00+02:00");
 
 const BONUS_STAGE_MULTIPLIERS = {
   round16: 0.4,
@@ -1675,6 +1675,7 @@ function updateRoundStatus(){
     const id = getMatchId(match);
     return isActive(match.active) && hasTeams(match, id);
   });
+
   const open = active.filter(match => !deadlinePassed(match));
   const tipped = open.filter(match => hasTip(getMatchId(match))).length;
 
