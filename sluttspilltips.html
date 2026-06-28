@@ -1870,13 +1870,34 @@ function updateRtgVisibility(){
     status.innerHTML = "";
   }
 }
+  function forceShowRTG(){
+  const section = document.getElementById("bonusSection");
+  const editor = document.getElementById("rtgEditorCard");
+  const content = document.getElementById("rtgEditorContent");
+  const list = document.getElementById("bonusList");
+  const status = document.getElementById("rtgDeliveredStatus");
+
+  if(section) section.style.display = "block";
+  if(editor) editor.style.display = "block";
+  if(content) content.style.display = "grid";
+  if(list) list.style.display = "grid";
+
+  if(status){
+    status.style.display = "none";
+    status.innerHTML = "";
+  }
+
+  renderBonus();
+  updateBonusStatus();
+}
+  
 
 function renderAllViews(){
   renderBracket();
   renderMobileList();
   renderDeadlineOverview();
   renderFocusDashboard();
-  updateRtgVisibility();
+  forceShowRTG();
 }
 
 function renderBracket(){
@@ -2623,7 +2644,7 @@ rtgLastSavedAt = new Date().toLocaleString("no-NO", {
 
 updateBonusStatus();
 renderFocusDashboard();
-updateRtgVisibility();
+forceShowRTG();
   alert("Road to Glory er sendt inn!");
 }
 
