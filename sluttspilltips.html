@@ -1861,25 +1861,13 @@ function updateRtgVisibility(){
     return;
   }
 
-  // FØR DEADLINE: alltid vis editor, også for de som har levert
   editor.style.display = "block";
   if(content) content.style.display = "grid";
 
+  // FØR DEADLINE: ikke vis låse-/leveringsboksen over editoren
   if(status){
-    status.style.display = rtgLastSavedAt ? "block" : "none";
-
-    if(rtgLastSavedAt){
-      status.innerHTML = `
-        <h2 style="margin-top:0;color:var(--green);">✅ Road to Glory er levert</h2>
-        <p class="small-text">
-          Sist sendt inn: <strong>${rtgLastSavedAt}</strong><br>
-          ${prettyNumber(total)} / ${BONUS_MAX} RTG-poeng brukt.
-        </p>
-        <p class="small-text">
-          Du kan endre og sende inn på nytt frem til fristen. Siste innsending gjelder.
-        </p>
-      `;
-    }
+    status.style.display = "none";
+    status.innerHTML = "";
   }
 }
 
@@ -2534,12 +2522,10 @@ function updateBonusPreview(input){
 function updateBonusStatus(){
   const total = Object.values(localBonus).reduce((sum,value) => sum + safeNumber(value), 0);
   const box = document.getElementById("bonusStatus");
-  const deliveredBox = document.getElementById("rtgDeliveredStatus");
-
   if(!box) return;
 
   const over = total > BONUS_MAX;
-  const complete = total === BONUS_MAX && !over;
+  const complete = total === BONUS_MAX;
 
   const choiceLines = Object.entries(localBonus)
     .filter(([team,stake]) => safeNumber(stake) > 0)
@@ -2563,41 +2549,14 @@ function updateBonusStatus(){
 
     <div class="small-text" style="margin-top:8px;">
       ${
-  over
-    ? "Du har brukt for mange RTG-poeng."
-    : complete
-      ? (rtgLastSavedAt
-          ? "✅ Lagret. Du kan fortsatt endre og sende inn på nytt frem til fristen."
-          : "Klar til innsending.")
-      : "Du har ikke brukt alle RTG-poengene ennå."
-}
+        over
+          ? "Du har brukt for mange RTG-poeng. Juster ned før innsending."
+          : complete
+            ? "Klar til innsending. Du kan endre og sende inn på nytt frem til fristen."
+            : "Du har ikke brukt alle RTG-poengene ennå."
+      }
     </div>
   `;
-
-  if(deliveredBox){
-    deliveredBox.style.display = "block";
-
-    if(rtgLastSavedAt){
-      deliveredBox.innerHTML = `
-        <h2 style="margin-top:0;color:var(--green);">✅ Road to Glory er levert</h2>
-        <p class="small-text">
-          Sist sendt inn: <strong>${rtgLastSavedAt}</strong><br>
-          ${prettyNumber(total)} / ${BONUS_MAX} RTG-poeng brukt.
-        </p>
-        <p class="small-text">
-          Du kan endre og sende inn på nytt frem til fristen. Siste innsending gjelder.
-        </p>
-      `;
-    }else{
-      deliveredBox.innerHTML = `
-        <h2 style="margin-top:0;color:var(--gold);">🧨 Road to Glory</h2>
-        <p class="small-text">
-          Ikke sendt inn ennå på denne enheten.<br>
-          ${prettyNumber(total)} / ${BONUS_MAX} RTG-poeng brukt.
-        </p>
-      `;
-    }
-  }
 }
   
 async function submitBonus(){
