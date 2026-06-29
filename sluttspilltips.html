@@ -2412,13 +2412,7 @@ async function loadSavedFromSheet(){
   }
 
   try{
-
     const rows = await fetchSheet(SUBMISSIONS_API_URL);
-
-    if(!rows.length){
-      alert("Kunne ikke hente data fra serveren. Prøv igjen om noen sekunder.");
-      return;
-    }
 
     const userRows = rows.filter(row =>
       String(row.phone || "").trim() === phone &&
@@ -2430,23 +2424,32 @@ async function loadSavedFromSheet(){
       return;
     }
 
-    // Finn SISTE timestamp
-    const latestTimestamp = userRows
-      .map(r => String(r.timestamp))
-      .sort()
-      .pop();
+    const latestByMatch = {};
 
-    const latestRows = userRows.filter(r => r.timestamp === latestTimestamp);
+    userRows.forEach(row => {
+      const id = String(row.match_id || row.id || "").trim();
+      if(!id) return;
+
+      const time = new Date(row.timestamp).getTime() || 0;
+      const existing = latestByMatch[id];
+
+      if(!existing || time >= existing.time){
+        latestByMatch[id] = { row, time };
+      }
+    });
+
+    const latestRows = Object.values(latestByMatch).map(item => item.row);
 
     localTips = {};
 
-    latestRows.forEach(row=>{
-      const id = String(row.match_id || "").trim();
+    latestRows.forEach(row => {
+      const id = String(row.match_id || row.id || "").trim();
+      if(!id) return;
 
       localTips[id] = {
         match_id:id,
-        tips_home:row.tips_home,
-        tips_away:row.tips_away
+        tips_home:row.tips_home || "",
+        tips_away:row.tips_away || ""
       };
     });
 
@@ -2460,7 +2463,7 @@ async function loadSavedFromSheet(){
     alert("Kunne ikke laste sluttspilltips.");
   }
 }
-
+  
 function scrollToBonus(){
   document.getElementById("bonusSection").scrollIntoView({ behavior:"smooth", block:"start" });
 }
