@@ -62,7 +62,7 @@ function cleanNumber(value){if(value===undefined||value===null||value==="")retur
 function prettyPoints(value){const n=cleanNumber(value);if(Number.isInteger(n))return String(n);return n.toFixed(1).replace(/\.0$/,'')}
 function clamp(value,min,max){return Math.max(min,Math.min(max,value))}
 function toRating(value,maxValue){if(maxValue<=0)return 75;return clamp(Math.round(75+(value/maxValue)*24),75,99)}
-function getQueryName(){return new URLSearchParams(window.location.search).get("name")||""}
+function getQueryName(){   const params = new URLSearchParams(window.location.search);    const name = params.get("name");   if(name) return name;    const raw = window.location.search.replace("?","").trim();   if(raw && raw !== "nan") return decodeURIComponent(raw);    return ""; }
 function getInitials(name){return String(name||"").split(" ").map(p=>p[0]||"").join("").slice(0,2).toUpperCase()}
 function slugify(value){return String(value||"").trim().toLowerCase().replace(/æ/g,"ae").replace(/ø/g,"o").replace(/å/g,"a").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]/g,"")}
 function firstNameSlug(name){return slugify(String(name||"").trim().split(/\s+/)[0]||"default")}
