@@ -1998,20 +1998,27 @@ function latestTimestampForPhone(phone){
 }
 
 function getLatestMatchTipsForPhone(phone){
-  const userMatchRows = submissionsCache.filter(row =>
+  const userRows = submissionsCache.filter(row =>
     String(row.phone || "").trim() === String(phone || "").trim() &&
-    String(row.type || "").trim().toLowerCase() === "match"
+    ["match","knockout"].includes(String(row.type || "").trim().toLowerCase())
   );
 
-  if(userMatchRows.length === 0) return [];
+  const latestByMatch = {};
 
-  const latestTimestamp = userMatchRows[userMatchRows.length - 1].timestamp;
+  userRows.forEach(row => {
+    const id = String(row.match_id || row.id || "").trim();
+    if(!id) return;
 
-  return userMatchRows.filter(row =>
-    String(row.timestamp || "") === String(latestTimestamp || "")
-  );
+    const time = new Date(row.timestamp).getTime() || 0;
+    const existing = latestByMatch[id];
+
+    if(!existing || time >= existing.time){
+      latestByMatch[id] = { row, time };
+    }
+  });
+
+  return Object.values(latestByMatch).map(item => item.row);
 }
-
 function calculateTipPoints(tip, match, result){
   if(!tip || !match || !result) return 0;
 
@@ -2165,8 +2172,15 @@ submissionsCache
     ["match","knockout"].includes(String(row.type || "").trim().toLowerCase())
   )
   .forEach(row => {
-    const id = cleanNumber(row.match_id || row.id);
-    if(id) latestTipByMatchId[id] = row;
+    const id = String(row.match_id || row.id || "").trim();
+    if(!id) return;
+
+    const time = new Date(row.timestamp).getTime() || 0;
+    const existing = latestTipByMatchId[id];
+
+    if(!existing || time >= existing.time){
+      latestTipByMatchId[id] = { row, time };
+    }
   });
   const nextMatches = getNextThreeMatches();
   const displayName = getNameForPhone(phone);
@@ -2205,7 +2219,7 @@ if(displayName){
   nextBox.innerHTML = nextMatches.map(match => {
     const matchId = String(match.id || match.match_id || "").trim();
 
-  const tip = latestTipByMatchId[cleanNumber(matchId)];
+  const tip = latestTipByMatchId[matchId]?.row;
 
 const homeTip = String(tip?.tips_home ?? "").trim();
 const awayTip = String(tip?.tips_away ?? "").trim();
