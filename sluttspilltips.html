@@ -2012,6 +2012,38 @@ function hydrateKnownSlotsIntoMatch(match){
     tier_away:match.tier_away || getTeamTier(match.away || away.name)
   };
 }
+  function getLatestRtgRowsForPhone(rows, phone){
+  const userRows = rows.filter(row =>
+    String(row.phone || "").trim() === String(phone || "").trim()
+  );
+
+  if(userRows.length === 0) return [];
+
+  const latestTime = Math.max(...userRows.map(row =>
+    new Date(row.timestamp).getTime() || 0
+  ));
+
+  return userRows.filter(row =>
+    (new Date(row.timestamp).getTime() || 0) === latestTime
+  );
+}
+
+function applyRtgRows(rows){
+  localBonus = {};
+
+  rows.forEach(row => {
+    const team = String(row.team || "").trim();
+    const stake = safeNumber(row.stake);
+
+    if(team && stake > 0){
+      localBonus[team] = stake;
+    }
+  });
+
+  if(rows.length){
+    rtgLastSavedAt = rows[0].timestamp || "hentet fra server";
+  }
+}
 
 function openMatchModal(matchId){
   currentMatchId = String(matchId);
@@ -2412,17 +2444,18 @@ async function loadSavedFromSheet(){
   }
 
   try{
-    const rows = await fetchSheet(SUBMISSIONS_API_URL);
+    const [rows, rtgRowsAll] = await Promise.all([   fetchSheet(SUBMISSIONS_API_URL),   fetchSheet(KNOCKOUT_BONUS_URL) ]);
 
     const userRows = rows.filter(row =>
       String(row.phone || "").trim() === phone &&
       String(row.type || "").trim().toLowerCase() === "knockout"
     );
-
-    if(userRows.length === 0){
-      alert("Fant ingen lagrede sluttspilltips på dette telefonnummeret.");
-      return;
-    }
+const latestRtgRows = getLatestRtgRowsForPhone(rtgRowsAll, phone);
+    
+    if(userRows.length === 0 && latestRtgRows.length === 0){
+  alert("Fant ingen lagrede sluttspilltips eller RTG på dette telefonnummeret.");
+  return;
+}
 
     const latestByMatch = {};
 
@@ -2453,6 +2486,9 @@ async function loadSavedFromSheet(){
       };
     });
 
+if(latestRtgRows.length){
+  applyRtgRows(latestRtgRows);
+}
     saveLocalState();
     renderAllViews();
 
