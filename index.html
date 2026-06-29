@@ -2864,10 +2864,29 @@ knockoutMatchesCache = knockoutMatches;
   frontpageCache = frontpage;
 
   resultsById = {};
-  results.forEach(result => {
-    const id = String(result.id || result.match_id || "").trim();
-    if(id) resultsById[id] = result;
-  });
+
+results.forEach(result => {
+  const id = String(result.id || result.match_id || "").trim();
+  if(id) resultsById[id] = result;
+});
+
+knockoutMatches.forEach(match => {
+  const id = String(match.id || match.match_id || "").trim();
+
+  if(
+    id &&
+    match.actual_home !== "" &&
+    match.actual_home !== undefined &&
+    match.actual_away !== "" &&
+    match.actual_away !== undefined
+  ){
+    resultsById[id] = {
+      ...match,
+      id,
+      match_id: id
+    };
+  }
+});
   
 loadLivePool();
 
