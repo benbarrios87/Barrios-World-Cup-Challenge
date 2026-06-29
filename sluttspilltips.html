@@ -2638,7 +2638,24 @@ function updateBonusStatus(){
     </div>
   `;
 }
-  
+  function forceShowRTG(){
+  const editor = document.getElementById("rtgEditorCard");
+  const content = document.getElementById("rtgEditorContent");
+  const status = document.getElementById("rtgDeliveredStatus");
+
+  if(editor) editor.style.display = "block";
+  if(content) content.style.display = "grid";
+
+  if(status){
+    status.style.display = "block";
+    status.innerHTML = `
+      <h2 style="margin-top:0;color:var(--green);">✅ Din RTG er sendt inn</h2>
+      <div class="rtg-locked-summary">
+        Du kan fortsatt gjøre endringer frem til fristen. Siste innsending gjelder.
+      </div>
+    `;
+  }
+}
 async function submitBonus(){
   const phone = document.getElementById("playerPhone").value.trim();
 
