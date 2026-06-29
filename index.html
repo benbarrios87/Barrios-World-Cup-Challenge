@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="no">
 <head>
@@ -2075,6 +2076,7 @@ function calculateTipPoints(tip, match, result){
 
   return 0;
 }
+
 function getLastThreeBets(phone){
   const matchTips = getLatestMatchTipsForPhone(phone);
 
@@ -2841,31 +2843,38 @@ async function initVmHub(){
   }
 
   const [
-  registrations,
-  matches,
-  knockoutMatches,
-  submissions,
-  results,
-  outcome,
-  diff,
-  exact,
-  leaderboard,
-  frontpage
-] = await Promise.all([
-  fetchSheet(REGISTRATIONS_URL),
-  fetchSheet(MATCHES_URL),
-  fetchSheet(KNOCKOUT_MATCHES_URL),
-  fetchSheet(SUBMISSIONS_URL),
-  fetchSheet(RESULTS_URL),
-  fetchSheet(OUTCOME_URL),
-  fetchSheet(DIFF_URL),
-  fetchSheet(EXACT_URL),
-  fetchSheet(PROFILE_CACHE_URL),
-  fetchSheet(FRONTPAGE_CACHE_URL)
-    knockoutOutcomeRules = await fetchSheet(KNOCKOUT_OUTCOME_URL);
-knockoutDiffRules = await fetchSheet(KNOCKOUT_DIFF_URL);
-knockoutExactRules = await fetchSheet(KNOCKOUT_EXACT_URL);
-]);
+    registrations,
+    matches,
+    knockoutMatches,
+    submissions,
+    results,
+    outcome,
+    diff,
+    exact,
+    leaderboard,
+    frontpage,
+    knockoutOutcome,
+    knockoutDiff,
+    knockoutExact
+  ] = await Promise.all([
+    fetchSheet(REGISTRATIONS_URL),
+    fetchSheet(MATCHES_URL),
+    fetchSheet(KNOCKOUT_MATCHES_URL),
+    fetchSheet(SUBMISSIONS_URL),
+    fetchSheet(RESULTS_URL),
+    fetchSheet(OUTCOME_URL),
+    fetchSheet(DIFF_URL),
+    fetchSheet(EXACT_URL),
+    fetchSheet(PROFILE_CACHE_URL),
+    fetchSheet(FRONTPAGE_CACHE_URL),
+    fetchSheet(KNOCKOUT_OUTCOME_URL),
+    fetchSheet(KNOCKOUT_DIFF_URL),
+    fetchSheet(KNOCKOUT_EXACT_URL)
+  ]);
+
+  knockoutOutcomeRules = knockoutOutcome;
+  knockoutDiffRules = knockoutDiff;
+  knockoutExactRules = knockoutExact;
 
   registrationsCache = registrations;
  matchesCache = matches;
