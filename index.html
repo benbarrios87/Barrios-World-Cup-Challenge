@@ -1901,7 +1901,35 @@ function getBonusStories(){
       "Bonus"
     ));
   }
+const rtgPlayers = leaderboardCache
+  .filter(row => cleanNumber(row.rtg_points) > 0)
+  .sort((a,b) => cleanNumber(b.rtg_points) - cleanNumber(a.rtg_points));
 
+const rtgLeader = rtgPlayers[0];
+
+if(rtgLeader){
+  stories.push(makeStory(
+    "🧨",
+    "RTG-kongen akkurat nå",
+    `${rtgLeader.name} har hentet mest Road to Glory-bonus: ${cleanNumber(rtgLeader.rtg_points)} poeng.`,
+    "bonus",
+    "Road to Glory"
+  ));
+}
+
+const aliveCount = leaderboardCache.filter(row =>
+  String(row.rtg_alive || "").toLowerCase() === "true"
+).length;
+
+if(aliveCount > 0){
+  stories.push(makeStory(
+    "🔥",
+    "RTG lever fortsatt",
+    `${aliveCount} spillere har fortsatt levende Road to Glory-valg.`,
+    "bonus",
+    "Road to Glory"
+  ));
+}
   return stories;
 }
 
