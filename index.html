@@ -1353,6 +1353,9 @@ const PROFILE_CACHE_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_PROFILE_CACH
 const FRONTPAGE_CACHE_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_FRONTPAGE_CACHE`;
 const ANNOUNCEMENTS_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_ANNOUNCEMENTS`;
 const KNOCKOUT_MATCHES_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_KNOCKOUT_MATCHES`;
+  const KNOCKOUT_OUTCOME_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_KNOCKOUT_OUTCOME`;
+const KNOCKOUT_DIFF_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_KNOCKOUT_DIFF`;
+const KNOCKOUT_EXACT_URL = `https://opensheet.elk.sh/${SHEET_ID}/API_KNOCKOUT_EXACT`;
 
 const BUY_IN = 600;
 const FREE_ENTRIES = 1;
@@ -1367,6 +1370,9 @@ let exactRules = [];
 let registrationsCache = [];
 let leaderboardCache = [];
 let frontpageCache = [];
+let knockoutOutcomeRules = [];
+let knockoutDiffRules = [];
+let knockoutExactRules = [];
 
 function isVmHubMode(){
   return new Date() >= VM_HUB_START;
@@ -2035,6 +2041,12 @@ function calculateTipPoints(tip, match, result){
     return 0;
   }
 
+  const isKnockout = String(tip.type || match.source || "").toLowerCase() === "knockout";
+
+  const useOutcomeRules = isKnockout ? knockoutOutcomeRules : outcomeRules;
+  const useDiffRules = isKnockout ? knockoutDiffRules : diffRules;
+  const useExactRules = isKnockout ? knockoutExactRules : exactRules;
+
   const tipHome = cleanNumber(tip.tips_home);
   const tipAway = cleanNumber(tip.tips_away);
   const actualHome = cleanNumber(result.actual_home);
@@ -2050,20 +2062,19 @@ function calculateTipPoints(tip, match, result){
   const tierType = getTierType(match, tipOutcome);
 
   if(tipHome === actualHome && tipAway === actualAway){
-    return getRulePoint(exactRules, tierDiff, tierType);
+    return getRulePoint(useExactRules, tierDiff, tierType);
   }
 
   if(tipDiff === actualDiff){
-    return getRulePoint(diffRules, tierDiff, tierType);
+    return getRulePoint(useDiffRules, tierDiff, tierType);
   }
 
   if(tipOutcome === actualOutcome){
-    return getRulePoint(outcomeRules, tierDiff, tierType);
+    return getRulePoint(useOutcomeRules, tierDiff, tierType);
   }
 
   return 0;
 }
-
 function getLastThreeBets(phone){
   const matchTips = getLatestMatchTipsForPhone(phone);
 
@@ -2851,6 +2862,9 @@ async function initVmHub(){
   fetchSheet(EXACT_URL),
   fetchSheet(PROFILE_CACHE_URL),
   fetchSheet(FRONTPAGE_CACHE_URL)
+    knockoutOutcomeRules = await fetchSheet(KNOCKOUT_OUTCOME_URL);
+knockoutDiffRules = await fetchSheet(KNOCKOUT_DIFF_URL);
+knockoutExactRules = await fetchSheet(KNOCKOUT_EXACT_URL);
 ]);
 
   registrationsCache = registrations;
