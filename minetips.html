@@ -418,17 +418,36 @@ function getMatchLabel(match){
 }
 
 function getLatestRowsForPhone(rows, phone){
+
   const userRows = rows.filter(row =>
     String(row.phone || "").trim() === String(phone || "").trim()
   );
 
   if(userRows.length === 0) return [];
 
-  const latestTime = Math.max(...userRows.map(row => getTimeKey(row.timestamp)));
+  const latestByMatch = {};
 
-  return userRows.filter(row =>
-    getTimeKey(row.timestamp) === latestTime
-  );
+  userRows.forEach(row => {
+
+    // bonusspill skal fortsatt bruke type som nøkkel
+    const key =
+      row.type === "bestplayer" || row.type === "topscorer"
+        ? row.type
+        : String(row.match_id || row.id || "").trim();
+
+    if(!key) return;
+
+    const time = getTimeKey(row.timestamp);
+
+    if(!latestByMatch[key] || time > latestByMatch[key].time){
+      latestByMatch[key] = {
+        row,
+        time
+      };
+    }
+  });
+
+  return Object.values(latestByMatch).map(x => x.row);
 }
 
 function getTimeKey(value){
