@@ -686,7 +686,7 @@ function renderBonusTags(row){
   const rtg = cleanNumber(row.rtg_points);
 
   if(rtg > 0){
-    tags.push(`<div class="tag" style="background:rgba(255,79,216,0.16);border-color:rgba(255,79,216,0.35);color:#ffb8ef;font-weight:bold;">🧨 RTG +${rtg}</div>`);
+    tags.push(`<div class="tag" style="background:rgba(255,79,216,0.16);border-color:rgba(255,79,216,0.35);color:#ffb8ef;font-weight:bold;">🧨 RTG +${rtg.toFixed(1).replace(".", ",")}</div>`);
   }else if(String(row.rtg_alive || "").toLowerCase() === "true"){
     tags.push(`<div class="tag" style="background:rgba(255,79,216,0.16);border-color:rgba(255,79,216,0.35);color:#ffb8ef;font-weight:bold;">🧨 RTG lever</div>`);
   }
