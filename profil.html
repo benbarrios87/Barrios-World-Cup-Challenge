@@ -101,7 +101,40 @@ function toRating(value,max){if(max<=0)return 75;return Math.max(75,Math.min(99,
 function getRatings(player,rows){const maxPoints=Math.max(...rows.map(r=>cleanNumber(r.points)),1);const maxExact=Math.max(...rows.map(r=>cleanNumber(r.exact)),1);const maxUnderdog=Math.max(...rows.map(r=>cleanNumber(r.underdog)),1);const maxDiff=Math.max(...rows.map(r=>cleanNumber(r.diff)),1);const maxOutcome=Math.max(...rows.map(r=>cleanNumber(r.outcome)),1);const tip=toRating(cleanNumber(player.exact)+cleanNumber(player.diff)*.6,maxExact+maxDiff*.6);const out=toRating(cleanNumber(player.underdog),maxUnderdog);const res=toRating(cleanNumber(player.points),maxPoints);const luk=toRating(cleanNumber(player.diff)+cleanNumber(player.outcome)*.25,maxDiff+maxOutcome*.25);return{ovr:Math.round((tip+out+res+luk)/4),tip,out,res,luk};}
 function splitBonus(names,points){const n=String(names||"").split("|").map(x=>x.trim()).filter(Boolean);const p=String(points||"").split("|").map(x=>x.trim());return n.map((name,i)=>({name,points:cleanNumber(p[i])}));}
 function renderBonus(title,icon,names,points){const items=splitBonus(names,points);if(!items.length)return`<div class="pill">${icon} ${title}: <strong>Ikke fylt ut</strong></div>`;return items.map(i=>`<span class="pill">${icon} ${i.name} <strong>+${pretty(i.points)}</strong></span>`).join("");}
-function renderRtg(player){const raw=String(player.rtg_picks||"").split("|").map(x=>x.trim()).filter(Boolean);const pts=cleanNumber(player.rtg_points);if(!raw.length && pts===0)return"";const picks=raw.map(item=>{const p=item.split("~");return{team:p[0]||item,stake:p[1]||"",current:p[2]||0,status:p[4]||""};});return`<div class="panel"><h2 class="section-title">🧨 Road to Glory</h2><div class="compact-list">${picks.map(p=>`<span class="pill rtg-pill">${p.status==="alive"?"🟢":"🔴"} ${p.team} ${p.stake?p.stake+"p":""} <strong>+${pretty(p.current)}</strong></span>`).join("")}<span class="pill rtg-pill">Totalt <strong>+${pretty(pts)}</strong></span></div></div>`;}
+function renderRtg(player){
+  const raw = String(player.rtg_picks || "").split("|").map(x => x.trim()).filter(Boolean);
+  const pts = cleanNumber(player.rtg_points);
+
+  if(!raw.length && pts === 0) return "";
+
+  const picks = raw.map(item => {
+    const p = item.split("~");
+    return {
+      team: p[0] || item,
+      stake: p[1] || "",
+      current: p[2] || 0,
+      next: p[3] || "",
+      status: p[4] || ""
+    };
+  });
+
+  return `
+    <div class="panel">
+      <h2 class="section-title">🧨 Road to Glory</h2>
+      <div class="compact-list">
+        ${picks.map(p => `
+          <span class="pill rtg-pill">
+            ${p.status === "alive" ? "🟢" : "🔴"} ${p.team}
+            ${p.stake ? p.stake + "p" : ""}
+            <strong>+${pretty(p.current)}</strong>
+            ${p.status === "alive" && p.next ? `<span style="opacity:.8;"> · neste +${pretty(p.next)}</span>` : ""}
+          </span>
+        `).join("")}
+        <span class="pill rtg-pill">Totalt <strong>+${pretty(pts)}</strong></span>
+      </div>
+    </div>
+  `;
+}
 function renderNextTips(player){const rows=[1,2,3,4].map(i=>({match:player[`next_${i}_match`],tip:player[`next_${i}_tip`]})).filter(r=>r.match);if(!rows.length)return"";return`<div class="panel"><h2 class="section-title">Neste 4 tips</h2><div class="compact-list">${rows.map(r=>`<span class="pill">${r.match} <strong>${r.tip || "Mangler tips"}</strong></span>`).join("")}</div></div>`;}
 function renderLastResults(player){const rows=[1,2,3,4,5,6,7,8].map(i=>player[`last_${i}`]).filter(Boolean);if(!rows.length)return"";return`<div class="panel"><h2 class="section-title">Siste 8 resultater</h2><div class="compact-list">${rows.map(r=>`<span class="pill">${r}</span>`).join("")}</div></div>`;}
 function renderMatchHistory(historyRows,player){const rows=historyRows.filter(r=>String(r.phone||"").trim()===String(player.phone||"").trim()).sort((a,b)=>cleanNumber(b.match_id)-cleanNumber(a.match_id));if(!rows.length)return"";return`<div class="panel"><h2 class="section-title">Poenghistorikk</h2>${rows.map(r=>`<div class="history-row"><div><strong>${r.match||"Kamp "+(r.match_id||"")}</strong><div class="note">Du: ${r.tip||""} · Resultat: ${r.result||""} · ${r.reason||""}</div></div><div class="points-plus">+${pretty(r.points)} p</div></div>`).join("")}</div>`;}
