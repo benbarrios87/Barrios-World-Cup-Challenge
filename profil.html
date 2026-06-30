@@ -124,11 +124,12 @@ function renderRtg(player){
       <div class="compact-list">
         ${picks.map(p => `
           <span class="pill rtg-pill">
-            ${p.status === "alive" ? "🟢" : "🔴"} ${p.team}
-            ${p.stake ? p.stake + "p" : ""}
-            <strong>+${pretty(p.current)}</strong>
-            ${p.status === "alive" && p.next ? `<span style="opacity:.8;"> · neste +${pretty(p.next)}</span>` : ""}
-          </span>
+  ${p.status === "alive" ? "🟢" : "🔴"}
+  ${p.team}
+  ${p.stake ? p.stake + "p" : ""}
+  <strong>+${pretty(p.current)}</strong>
+  ${p.status === "alive" && p.next ? ` <span style="opacity:.75">(+${pretty(p.next)})</span>` : ""}
+</span>
         `).join("")}
         <span class="pill rtg-pill">Totalt <strong>+${pretty(pts)}</strong></span>
       </div>
