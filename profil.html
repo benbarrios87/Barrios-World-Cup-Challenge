@@ -52,6 +52,8 @@ const SHEET_ID="1Ud5i11MEUXwvKDDsfyxvNIdyJgMbY_pS50BkecyzhDo";
 const PROFILE_CACHE_URL=`https://opensheet.elk.sh/${SHEET_ID}/API_PROFILE_CACHE`;
 const MATCH_HISTORY_URL=`https://opensheet.elk.sh/${SHEET_ID}/API_MATCH_HISTORY`;
 const HISTORY_URL=`https://opensheet.elk.sh/${SHEET_ID}/API_HISTORY`;
+  const KNOCKOUT_MATCH_HISTORY_URL =
+  `https://opensheet.elk.sh/${SHEET_ID}/API_KNOCKOUT_MATCH_HISTORY`;
 
 async function fetchSheet(url){
   try{
@@ -128,7 +130,7 @@ function renderRtg(player){
   ${p.team}
   ${p.stake ? p.stake + "p" : ""}
   <strong>+${pretty(p.current)}</strong>
-  ${p.status === "alive" && p.next ? ` <span style="opacity:.75">(+${pretty(p.next)})</span>` : ""}
+ ${p.status === "alive" && p.next ? `<span style="opacity:.8;"> (neste runde: +${pretty(p.next)})</span>` : ""}
 </span>
         `).join("")}
         <span class="pill rtg-pill">Totalt <strong>+${pretty(pts)}</strong></span>
@@ -144,7 +146,13 @@ async function loadProfile(){
   const content=document.getElementById("content");
   const rawName=getQueryName();
   const queryName=normName(rawName);
-  const [rows,historyRows] = await Promise.all([fetchSheet(PROFILE_CACHE_URL),fetchSheet(MATCH_HISTORY_URL)]);
+  const [rows, groupHistory, knockoutHistory] = await Promise.all([
+  fetchSheet(PROFILE_CACHE_URL),
+  fetchSheet(MATCH_HISTORY_URL),
+  fetchSheet(KNOCKOUT_MATCH_HISTORY_URL)
+]);
+
+const historyRows = [...groupHistory, ...knockoutHistory];
   rows.sort((a,b)=>cleanNumber(a.rank)-cleanNumber(b.rank)||cleanNumber(b.points)-cleanNumber(a.points)||String(a.name||"").localeCompare(String(b.name||""),"no"));
   if(!queryName){content.innerHTML=renderDebug(rawName,queryName,rows);return;}
   let player=rows.find(r=>normName(r.name)===queryName);
