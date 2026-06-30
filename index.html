@@ -1499,16 +1499,19 @@ function getRulePoint(rules, tierDiff, type){
 }
 
 function getMaxPossiblePoints(tip, match){
-const homeTip = tip?.tips_home ?? tip?.tip_home ?? "";
-const awayTip = tip?.tips_away ?? tip?.tip_away ?? "";
+  const homeTip = tip?.tips_home ?? tip?.tip_home ?? "";
+  const awayTip = tip?.tips_away ?? tip?.tip_away ?? "";
 
   if(!tip || !match || homeTip === "" || awayTip === "") return 0;
+
+  const isKnockout = String(tip.type || match.source || "").toLowerCase() === "knockout";
+  const useExactRules = isKnockout ? knockoutExactRules : exactRules;
 
   const tipOutcome = getOutcome(homeTip, awayTip);
   const tierDiff = Math.abs(parseTier(match.tier_home) - parseTier(match.tier_away));
   const tierType = getTierType(match, tipOutcome);
 
-  return getRulePoint(exactRules, tierDiff, tierType);
+  return getRulePoint(useExactRules, tierDiff, tierType);
 }
 
 function getSavedPhone(){
