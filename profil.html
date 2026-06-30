@@ -52,6 +52,7 @@ const SHEET_ID="1Ud5i11MEUXwvKDDsfyxvNIdyJgMbY_pS50BkecyzhDo";
 const PROFILE_CACHE_URL=`https://opensheet.elk.sh/${SHEET_ID}/API_PROFILE_CACHE`;
 const MATCH_HISTORY_URL=`https://opensheet.elk.sh/${SHEET_ID}/API_MATCH_HISTORY`;
 const HISTORY_URL=`https://opensheet.elk.sh/${SHEET_ID}/API_HISTORY`;
+  const PLAYERS_URL=`https://opensheet.elk.sh/${SHEET_ID}/API_PLAYERS`;
   const KNOCKOUT_MATCH_HISTORY_URL =
   `https://opensheet.elk.sh/${SHEET_ID}/API_KNOCKOUT_MATCH_HISTORY`;
 
@@ -102,8 +103,41 @@ function handlePhotoError(img,initials){let c=[];try{c=JSON.parse(img.dataset.ca
 function toRating(value,max){if(max<=0)return 75;return Math.max(75,Math.min(99,Math.round(75+(value/max)*24)));}
 function getRatings(player,rows){const maxPoints=Math.max(...rows.map(r=>cleanNumber(r.points)),1);const maxExact=Math.max(...rows.map(r=>cleanNumber(r.exact)),1);const maxUnderdog=Math.max(...rows.map(r=>cleanNumber(r.underdog)),1);const maxDiff=Math.max(...rows.map(r=>cleanNumber(r.diff)),1);const maxOutcome=Math.max(...rows.map(r=>cleanNumber(r.outcome)),1);const tip=toRating(cleanNumber(player.exact)+cleanNumber(player.diff)*.6,maxExact+maxDiff*.6);const out=toRating(cleanNumber(player.underdog),maxUnderdog);const res=toRating(cleanNumber(player.points),maxPoints);const luk=toRating(cleanNumber(player.diff)+cleanNumber(player.outcome)*.25,maxDiff+maxOutcome*.25);return{ovr:Math.round((tip+out+res+luk)/4),tip,out,res,luk};}
 function splitBonus(names,points){const n=String(names||"").split("|").map(x=>x.trim()).filter(Boolean);const p=String(points||"").split("|").map(x=>x.trim());return n.map((name,i)=>({name,points:cleanNumber(p[i])}));}
-function renderBonus(title,icon,names,points){const items=splitBonus(names,points);if(!items.length)return`<div class="pill">${icon} ${title}: <strong>Ikke fylt ut</strong></div>`;return items.map(i=>`<span class="pill">${icon} ${i.name} <strong>+${pretty(i.points)}</strong></span>`).join("");}
-function renderRtg(player){
+function getMultiplier(playerRows, type, name){
+  const key = normalizePlayerKey(name);
+
+  const row = playerRows.find(r =>
+    String(r.type || "").trim().toLowerCase() === type &&
+    normalizePlayerKey(r.name) === key
+  );
+
+  return row ? cleanNumber(row.multiplier || 1) : 1;
+}
+
+function normalizePlayerKey(value){
+  return String(value || "")
+    .trim()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g,"")
+    .replace(/\s+/g," ");
+}
+
+function renderBonus(title,icon,names,points,type,playerRows){
+  const items=splitBonus(names,points);
+
+  if(!items.length){
+    return `<div class="pill">${icon} ${title}: <strong>Ikke fylt ut</strong></div>`;
+  }
+
+  return items.map(i=>{
+    const mult = getMultiplier(playerRows,type,i.name);
+    const multText = mult && mult !== 1 ? ` <span style="opacity:.75">(x${pretty(mult)})</span>` : "";
+
+    return `<span class="pill">${icon} ${i.name}${multText} <strong>+${pretty(i.points)}</strong></span>`;
+  }).join("");
+}
+  function renderRtg(player){
   const raw = String(player.rtg_picks || "").split("|").map(x => x.trim()).filter(Boolean);
   const pts = cleanNumber(player.rtg_points);
 
@@ -146,10 +180,11 @@ async function loadProfile(){
   const content=document.getElementById("content");
   const rawName=getQueryName();
   const queryName=normName(rawName);
-  const [rows, groupHistory, knockoutHistory] = await Promise.all([
+ const [rows, groupHistory, knockoutHistory, playerRows] = await Promise.all([
   fetchSheet(PROFILE_CACHE_URL),
   fetchSheet(MATCH_HISTORY_URL),
-  fetchSheet(KNOCKOUT_MATCH_HISTORY_URL)
+  fetchSheet(KNOCKOUT_MATCH_HISTORY_URL),
+  fetchSheet(PLAYERS_URL)
 ]);
 
 const historyRows = [...groupHistory, ...knockoutHistory];
@@ -175,7 +210,7 @@ const historyRows = [...groupHistory, ...knockoutHistory];
         <div class="panel"><h2 class="section-title">Kortanalyse</h2><div class="note">${cleanNumber(player.rank)<=3?"Topp 3 akkurat nå. Dette er skjermdump-materiale.":"Solid turnering så langt. Fortsatt mye poeng å spille om."}</div></div>
         <div class="panel"><h2 class="section-title">Statistikk</h2><div class="mini-grid"><div class="mini-box"><strong>${hitPct}%</strong><span>treffprosent</span></div><div class="mini-box"><strong>${pretty(player.underdog)}</strong><span>outsider</span></div><div class="mini-box"><strong>${pretty(player.exact)}</strong><span>eksakte</span></div></div></div>
         ${renderRtg(player)}
-        <div class="panel"><h2 class="section-title">Bonusvalg</h2><div class="compact-list">${renderBonus("Toppscorer","⚽",player.top_scorer_all||player.top_scorer,player.top_scorer_points_all||player.top_scorer_points)}${renderBonus("Beste spiller","⭐",player.best_player_all||player.best_player,player.best_player_points_all||player.best_player_points)}</div></div>
+        <div class="panel"><h2 class="section-title">Bonusvalg</h2><div class="compact-list">${renderBonus("Toppscorer","⚽",player.top_scorer_all||player.top_scorer,player.top_scorer_points_all||player.top_scorer_points,"topscorer",playerRows)}${renderBonus("Beste spiller","⭐",player.best_player_all||player.best_player,player.best_player_points_all||player.best_player_points,"bestplayer",playerRows)}</div></div>
         ${renderNextTips(player)}${renderLastResults(player)}${renderMatchHistory(historyRows,player)}
       </div>
     </div>`;
