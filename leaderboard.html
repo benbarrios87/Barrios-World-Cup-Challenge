@@ -766,7 +766,7 @@ async function loadLeaderboard(){
     const playedCount = Math.max(0, ...rows.map(row => cleanNumber(row.played)));
     const totalExact = rows.reduce((sum,row) => sum + cleanNumber(row.exact),0);
     const totalRtg = rows.reduce((sum,row) => sum + cleanNumber(row.rtg_points),0);
-    const leaderPoints = rows[0] ? cleanNumber(rows[0].points) : 0;
+    const leaderPoints = rows.length ? cleanNumber(rows[0].points) : 0;
 
     statusBox.innerHTML = `
       <div class="status-card">
@@ -785,7 +785,9 @@ async function loadLeaderboard(){
       </div>
 
       <div class="status-card" style="background:rgba(46,204,113,0.14);border-color:rgba(46,204,113,0.25);">
-        <strong style="color:#9dffc7;">${leaderPoints}</strong>
+       <strong style="color:#9dffc7;">
+  ${leaderPoints.toFixed(2).replace(".",",")}
+</strong>
         <span>Lederpoeng</span>
       </div>
 
@@ -795,7 +797,7 @@ async function loadLeaderboard(){
       </div>
 
       <div class="status-card" style="background:rgba(255,79,216,0.12);border-color:rgba(255,79,216,0.25);">
-  <strong style="color:#ffb8ef;">${totalRtg}</strong>
+  <strong style="color:#ffb8ef;">${totalRtg.toFixed(2).replace(".",",")}</strong>
   <span>RTG-poeng</span>
 </div>
     `;
@@ -843,7 +845,7 @@ async function loadLeaderboard(){
             </div>
 
             <div class="points">
-              ${cleanNumber(row.points)}
+              ${cleanNumber(row.points).toFixed(2).replace(".",",")}
               <span>poeng</span>
             </div>
           </div>
