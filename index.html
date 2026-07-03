@@ -1921,7 +1921,7 @@ if(rtgLeader){
   stories.push(makeStory(
     "🧨",
     "RTG-kongen akkurat nå",
-    `${rtgLeader.name} har hentet mest Road to Glory-bonus: ${cleanNumber(rtgLeader.rtg_points)} poeng.`,
+    `${rtgLeader.name} har hentet mest Road to Glory-bonus: ${cleanNumber(rtgLeader.rtg_points).toLocaleString("no-NO", {   minimumFractionDigits: 2,   maximumFractionDigits: 2 })} poeng.`,
     "bonus",
     "Road to Glory"
   ));
