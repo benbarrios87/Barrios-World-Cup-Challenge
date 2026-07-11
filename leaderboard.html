@@ -690,6 +690,21 @@ function renderBonusTags(row){
   }else if(String(row.rtg_alive || "").toLowerCase() === "true"){
     tags.push(`<div class="tag" style="background:rgba(255,79,216,0.16);border-color:rgba(255,79,216,0.35);color:#ffb8ef;font-weight:bold;">🧨 RTG lever</div>`);
   }
+  const award = cleanNumber(row.award_points);
+
+if (award > 0) {
+  tags.push(`
+    <div class="tag"
+      style="
+        background:rgba(255,209,102,.18);
+        border-color:rgba(255,209,102,.35);
+        color:#ffe28a;
+        font-weight:bold;
+      ">
+      🏆 Awards +${award.toFixed(1).replace(".", ",")}
+    </div>
+  `);
+}
 
   if(row.top_scorer){
     tags.push(`<div class="tag">⚽ ${row.top_scorer} +${cleanNumber(row.top_scorer_points)}</div>`);
