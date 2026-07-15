@@ -137,37 +137,81 @@ function renderBonus(title,icon,names,points,type,playerRows){
     return `<span class="pill">${icon} ${i.name}${multText} <strong>+${pretty(i.points)}</strong></span>`;
   }).join("");
 }
-  function renderRtg(player){
-  const raw = String(player.rtg_picks || "").split("|").map(x => x.trim()).filter(Boolean);
+ function renderRtg(player){
+  const raw = String(player.rtg_picks || "")
+    .split("|")
+    .map(x => x.trim())
+    .filter(Boolean);
+
   const pts = cleanNumber(player.rtg_points);
 
   if(!raw.length && pts === 0) return "";
 
   const picks = raw.map(item => {
     const p = item.split("~");
+
     return {
       team: p[0] || item,
       stake: p[1] || "",
-      current: p[2] || 0,
-      next: p[3] || "",
-      status: p[4] || ""
+      current: cleanNumber(p[2]),
+      bronze: cleanNumber(p[3]),
+      finalist: cleanNumber(p[4]),
+      winner: cleanNumber(p[5]),
+      status: p[6] || "",
+      stage: p[7] || ""
     };
   });
+
+  function renderPossibilities(p){
+    if(p.status !== "alive") return "";
+
+    if(p.stage === "finalist"){
+      return `
+        <div style="margin-top:6px;display:grid;gap:3px;font-size:12px;">
+          <span>🥈 Sølv: <strong>+${pretty(p.finalist)}</strong></span>
+          <span>🥇 Gull: <strong>+${pretty(p.winner)}</strong></span>
+        </div>
+      `;
+    }
+
+    if(p.stage === "bronze"){
+      return `
+        <div style="margin-top:6px;display:grid;gap:3px;font-size:12px;">
+          <span>4. plass: <strong>+${pretty(p.current)}</strong></span>
+          <span>🥉 Bronse: <strong>+${pretty(p.bronze)}</strong></span>
+        </div>
+      `;
+    }
+
+    return `
+      <div style="margin-top:6px;display:grid;gap:3px;font-size:12px;">
+        ${p.bronze ? `<span>🥉 Bronse: <strong>+${pretty(p.bronze)}</strong></span>` : ""}
+        ${p.finalist ? `<span>🥈 Sølv: <strong>+${pretty(p.finalist)}</strong></span>` : ""}
+        ${p.winner ? `<span>🥇 Gull: <strong>+${pretty(p.winner)}</strong></span>` : ""}
+      </div>
+    `;
+  }
 
   return `
     <div class="panel">
       <h2 class="section-title">🧨 Road to Glory</h2>
+
       <div class="compact-list">
         ${picks.map(p => `
-          <span class="pill rtg-pill">
-  ${p.status === "alive" ? "🟢" : "🔴"}
-  ${p.team}
-  ${p.stake ? p.stake + "p" : ""}
-  <strong>+${pretty(p.current)}</strong>
- ${p.status === "alive" && p.next ? `<span style="opacity:.8;"> (neste runde: +${pretty(p.next)})</span>` : ""}
-</span>
+          <span class="pill rtg-pill" style="display:block;">
+            ${p.status === "alive" ? "🟢" : "🔴"}
+            ${p.team}
+            ${p.stake ? p.stake + "p" : ""}
+
+            <strong>+${pretty(p.current)}</strong>
+
+            ${renderPossibilities(p)}
+          </span>
         `).join("")}
-        <span class="pill rtg-pill">Totalt <strong>+${pretty(pts)}</strong></span>
+
+        <span class="pill rtg-pill">
+          Totalt <strong>+${pretty(pts)}</strong>
+        </span>
       </div>
     </div>
   `;
