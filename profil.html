@@ -166,13 +166,13 @@ function renderBonus(title,icon,names,points,type,playerRows){
     if(p.status !== "alive") return "";
 
     if(p.stage === "finalist"){
-      return `
-        <div style="margin-top:6px;display:grid;gap:3px;font-size:12px;">
-          <span>🥈 Sølv: <strong>+${pretty(p.finalist)}</strong></span>
-          <span>🥇 Gull: <strong>+${pretty(p.winner)}</strong></span>
-        </div>
-      `;
-    }
+  return `
+    <div style="margin-top:6px;display:grid;gap:3px;font-size:12px;">
+      <span>🥈 Sølv sikret: ${p.stage === "finalist" || p.stage === "bronze"   ? ""   : `<strong>+${pretty(p.current)}</strong>` }</span>
+      <span>🥇 Blir verdensmester: <strong>+${pretty(p.winner)}</strong></span>
+    </div>
+  `;
+}
 
     if(p.stage === "bronze"){
       return `
