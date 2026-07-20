@@ -304,6 +304,7 @@ body::before{
   grid-template-columns:repeat(4,1fr);
   gap:12px;
 }
+  
 
 .point{
   background:var(--card2);
@@ -997,6 +998,24 @@ body::before{
     box-sizing:border-box;
     text-align:center;
   }
+  .announcement-modal{
+  overflow-y:auto;
+  align-items:flex-start;
+}
+
+.announcement-modal-card{
+  max-height:calc(100vh - 40px);
+  overflow-y:auto;
+  margin:auto;
+}
+
+.announcement-modal-card .cta-main{
+  position:sticky;
+  bottom:0;
+  width:100%;
+  margin-top:16px;
+  z-index:2;
+}
 }
 </style>
 </head>
