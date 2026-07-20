@@ -1016,6 +1016,9 @@ body::before{
   margin-top:16px;
   z-index:2;
 }
+
+#preLaunchContent{
+  display:none;
 }
 </style>
 </head>
@@ -1031,12 +1034,36 @@ body::before{
       src="/fcbarrioslogo.png"
       alt="FC Barrios World Cup Challenge"
     >
+    <div class="card">
+
+<h2>🏆 VM 2026 er avsluttet</h2>
+
+<p>
+<b>Verdensmester:</b> Andreas Stræte (195,40 poeng)
+</p>
+
+<p>
+⚽ Toppscorer: Kylian Mbappé
+<br>
+⭐ Best Player: Rodri
+</p>
+
+<p>
+Takk til alle som har deltatt!
+Leaderboard, statistikk og profiler blir liggende tilgjengelig en periode.
+</p>
+
+</div>
 
     <div>
       <div class="badge">VM 2026</div>
-      <h1>FC Barrios World Cup Challenge</h1>
+      <h1>FC Barrios World Cup Challenge 2026 • Sluttresultater</h1>
       <p id="heroSubtitle" class="hero-subtitle">
-       Tipp hele VM. Treff eksakte resultater. Samle poeng. Klatre på leaderboardet.
+      🏆 VM 2026 er ferdigspilt!
+
+Takk til alle som deltok i FC Barrios World Cup Challenge 2026.
+
+Resultater, statistikk, profiler og historikk blir liggende tilgjengelig en stund før FC Barrios flyttes over til den nye plattformen.
       </p>
     </div>
   </div>
@@ -1308,20 +1335,7 @@ Målet er enkelt: samle flest poeng før finalen er spilt.
 
   <div id="bottomMenuCard" class="card">
     <div class="menu-grid">
-      <a id="registerLink" class="menu-link primary" href="registrer.html">
-        <strong>📝 Meld meg på</strong>
-        <span>Registrer deg til FC Barrios World Cup Challenge 2026. Deltageravgift er 600 kr.</span>
-      </a>
 
-      <a id="tipsLink" class="menu-link" href="tips.html">
-        <strong>⚽ Innlevering av tips</strong>
-        <span>Fyll inn resultatene dine for kampene. Tipsene må leveres før VM starter.</span>
-      </a>
-
-      <a class="menu-link" href="minetips.html">
-        <strong>🧠 Mine tips</strong>
-        <span>Se hva du har levert inn, status på tipsene dine og bonusvalgene dine.</span>
-      </a>
 
       <a class="menu-link" href="leaderboard.html">
         <strong>👤 Profiler</strong>
@@ -1342,6 +1356,7 @@ Målet er enkelt: samle flest poeng før finalen er spilt.
         <strong>🏆 Sluttspill</strong>
         <span>Se veien fra Round of 32 til finalen i VM 2026.</span>
       </a>
+      
       
     </div>
   </div>
@@ -2781,6 +2796,21 @@ function renderFrontpageWidgets(){
   renderFrontForm();
   renderFrontSlump();
 }
+  function hideFinishedTournamentSections(){
+
+  [
+    "countdownCard",
+    "nextTipsCard",
+    "nextMatchesCard",
+    "communityPredictionsCard",
+    "frontForm",
+    "frontSlump"
+  ].forEach(id=>{
+      const el=document.getElementById(id);
+      if(el) el.style.display="none";
+  });
+
+}
 
   function renderFrontSlump(){
   const box = document.getElementById("frontSlump");
@@ -2937,6 +2967,7 @@ loadLivePool();
 
 await renderAnnouncementModal();
 await renderHomepageAnnouncements();
+  hideFinishedTournamentSections();
 
 renderLatestNews();
 renderFrontpageWidgets();
